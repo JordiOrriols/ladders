@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { EmptyIndividualState } from "../molecules/EmptyIndividualState";
 import { MemberList } from "../molecules/MemberList";
 import { MemberDetailsPanel } from "../molecules/MemberDetailsPanel";
+import { ErrorBoundary } from "../ErrorBoundary";
 
 interface Member {
   id: string;
@@ -32,13 +33,17 @@ export function IndividualTab({
 
   return (
     <div className="grid lg:grid-cols-3 gap-6">
-      <MemberList
-        members={members}
-        selectedMemberId={selectedMember?.id}
-        onSelectMember={setSelectedMember}
-      />
+      <ErrorBoundary componentName="MemberList">
+        <MemberList
+          members={members}
+          selectedMemberId={selectedMember?.id}
+          onSelectMember={setSelectedMember}
+        />
+      </ErrorBoundary>
       <div className="lg:col-span-2">
-        <MemberDetailsPanel member={selectedMember} onEdit={onEditMember} />
+        <ErrorBoundary componentName="MemberDetailsPanel">
+          <MemberDetailsPanel member={selectedMember} onEdit={onEditMember} />
+        </ErrorBoundary>
       </div>
     </div>
   );

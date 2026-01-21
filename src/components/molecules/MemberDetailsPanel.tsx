@@ -4,6 +4,7 @@ import { Button } from "../ui/button";
 import RadarChart from "../atoms/radarChart";
 import { CompetencyDetailsCard } from "./CompetencyDetailsCard";
 import { VERTICALS_DATA } from "../atoms/levelSelector";
+import { ErrorBoundary } from "../ErrorBoundary";
 
 interface Member {
   id: string;
@@ -51,12 +52,14 @@ export function MemberDetailsPanel({
       </div>
 
       <div className="flex justify-center mb-8">
-        <RadarChart
-          currentLevels={member.currentLevels}
-          goalLevels={member.goalLevels}
-          selfAssessmentLevels={member.selfAssessmentLevels}
-          size={350}
-        />
+        <ErrorBoundary componentName="RadarChart">
+          <RadarChart
+            currentLevels={member.currentLevels}
+            goalLevels={member.goalLevels}
+            selfAssessmentLevels={member.selfAssessmentLevels}
+            size={350}
+          />
+        </ErrorBoundary>
       </div>
 
       {/* Competency Details */}
@@ -64,13 +67,14 @@ export function MemberDetailsPanel({
         <h3 className="font-semibold text-slate-800">Competency Details</h3>
         <div className="grid sm:grid-cols-2 gap-4">
           {Object.keys(VERTICALS_DATA).map((vertical) => (
-            <CompetencyDetailsCard
-              key={vertical}
-              vertical={vertical}
-              currentLevel={member.currentLevels[vertical] || 0}
-              goalLevel={member.goalLevels[vertical] || 0}
-              selfAssessmentLevel={member.selfAssessmentLevels?.[vertical] || 0}
-            />
+            <ErrorBoundary key={vertical} componentName={`CompetencyCard-${vertical}`}>
+              <CompetencyDetailsCard
+                vertical={vertical}
+                currentLevel={member.currentLevels[vertical] || 0}
+                goalLevel={member.goalLevels[vertical] || 0}
+                selfAssessmentLevel={member.selfAssessmentLevels?.[vertical] || 0}
+              />
+            </ErrorBoundary>
           ))}
         </div>
       </div>
