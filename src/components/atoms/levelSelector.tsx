@@ -73,7 +73,9 @@ export default function LevelSelector({
   return (
     <div className={`rounded-xl border ${verticalBgColors[vertical]} overflow-hidden`}>
       <button
+        type="button"
         onClick={(e) => {
+          e.preventDefault();
           e.stopPropagation();
           setExpanded(!expanded);
         }}
@@ -108,7 +110,7 @@ export default function LevelSelector({
       </button>
 
       {expanded && (
-        <div className="px-4 pb-4 space-y-2">
+        <div className="px-4 pb-4 space-y-2" onClick={(e) => e.stopPropagation()}>
           {levels.map((level) => (
             <div
               key={level.level}
@@ -118,6 +120,7 @@ export default function LevelSelector({
                 selfAssessmentLevel === level.level ? 'border-purple-400 ring-1 ring-purple-200' :
                 'border-slate-200'
               }`}
+              onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="flex-1 min-w-0">
@@ -134,10 +137,12 @@ export default function LevelSelector({
                 </div>
                 <div className="flex gap-1 shrink-0">
                   <Button
+                    type="button"
                     size="sm"
                     variant={currentLevel === level.level ? "default" : "outline"}
                     className={`h-7 px-2 text-xs ${currentLevel === level.level ? 'bg-emerald-500 hover:bg-emerald-600' : ''}`}
                     onClick={(e) => {
+                      e.preventDefault();
                       e.stopPropagation();
                       onCurrentChange(currentLevel === level.level ? 0 : level.level);
                     }}
@@ -145,10 +150,12 @@ export default function LevelSelector({
                     Current
                   </Button>
                   <Button
+                    type="button"
                     size="sm"
                     variant={goalLevel === level.level ? "default" : "outline"}
                     className={`h-7 px-2 text-xs ${goalLevel === level.level ? 'bg-amber-500 hover:bg-amber-600' : ''}`}
                     onClick={(e) => {
+                      e.preventDefault();
                       e.stopPropagation();
                       onGoalChange(goalLevel === level.level ? 0 : level.level);
                     }}

@@ -15,8 +15,11 @@ export default function MemberForm({ member, onSave, onClose }) {
   const [goalLevels, setGoalLevels] = useState({});
   const [selfAssessmentLevels, setSelfAssessmentLevels] = useState({});
 
+  console.log('[MemberForm] Rendered with member:', member?.name, 'editing:', !!member);
+
   useEffect(() => {
     if (member) {
+      console.log('[MemberForm] useEffect: Loading member data for', member.name);
       setName(member.name || '');
       setRole(member.role || '');
       setCurrentLevels(member.currentLevels || {});
@@ -27,6 +30,7 @@ export default function MemberForm({ member, onSave, onClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log('[MemberForm] handleSubmit called');
     if (!name.trim()) return;
 
     onSave({
@@ -65,15 +69,26 @@ export default function MemberForm({ member, onSave, onClose }) {
   };
 
   const handleCurrentChange = (vertical, level) => {
+    console.log('[LevelSelector] Current level changed for', vertical, 'to', level);
     setCurrentLevels(prev => ({ ...prev, [vertical]: level }));
   };
 
   const handleGoalChange = (vertical, level) => {
+    console.log('[LevelSelector] Goal level changed for', vertical, 'to', level);
     setGoalLevels(prev => ({ ...prev, [vertical]: level }));
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-start justify-center overflow-y-auto py-8" onClick={onClose}>
+    <div 
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-start justify-center overflow-y-auto py-8" 
+      onClick={(e) => {
+        // Only close if clicking directly on the backdrop, not on child elements
+        if (e.target === e.currentTarget) {
+          console.log('[MemberForm] Backdrop clicked - closing');
+          onClose();
+        }
+      }}
+    >
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl mx-4" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between p-6 border-b border-slate-200">
           <h2 className="text-xl font-semibold text-slate-800">
@@ -84,7 +99,7 @@ export default function MemberForm({ member, onSave, onClose }) {
           </Button>
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
           <div className="p-6 grid lg:grid-cols-2 gap-8">
             <div className="space-y-6">
               <div className="space-y-4">
