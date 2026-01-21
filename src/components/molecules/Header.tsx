@@ -1,19 +1,18 @@
 import React from "react";
 import { Plus, Info, ClipboardCheck, LayoutGrid } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 
 interface HeaderProps {
   onAddMember: () => void;
   onShowReference: () => void;
+  onNavigateToSelfAssessment?: () => void;
 }
 
-export function Header({ onAddMember, onShowReference }: HeaderProps) {
-  const navigate = useNavigate();
-
-  const handleNavigateToSelfAssessment = () => {
-    navigate("/SelfAssessment");
-  };
+export function Header({
+  onAddMember,
+  onShowReference,
+  onNavigateToSelfAssessment,
+}: HeaderProps) {
   return (
     <header className="bg-white border-b border-slate-200 sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -30,15 +29,17 @@ export function Header({ onAddMember, onShowReference }: HeaderProps) {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleNavigateToSelfAssessment}
-              className="hidden sm:flex"
-            >
-              <ClipboardCheck className="w-4 h-4 mr-2" />
-              Self Assessment
-            </Button>
+            {onNavigateToSelfAssessment && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onNavigateToSelfAssessment}
+                className="hidden sm:flex"
+              >
+                <ClipboardCheck className="w-4 h-4 mr-2" />
+                Self Assessment
+              </Button>
+            )}
             <Button
               variant="outline"
               size="sm"
