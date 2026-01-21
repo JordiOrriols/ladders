@@ -1,6 +1,9 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "../ui/button";
-import { VERTICALS_DATA } from "../atoms/levelSelector";
+
+const VERTICALS = ['Technology', 'System', 'People', 'Process', 'Influence'];
+const LEVELS = [1, 2, 3, 4, 5];
 
 interface ReferenceModalProps {
   isOpen: boolean;
@@ -8,6 +11,7 @@ interface ReferenceModalProps {
 }
 
 export function ReferenceModal({ isOpen, onClose }: ReferenceModalProps) {
+  const { t } = useTranslation();
   if (!isOpen) return null;
 
   return (
@@ -15,7 +19,7 @@ export function ReferenceModal({ isOpen, onClose }: ReferenceModalProps) {
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl mx-4">
         <div className="flex items-center justify-between p-6 border-b border-slate-200">
           <h2 className="text-xl font-semibold text-slate-800">
-            Engineering Ladder Reference
+            {t('reference.title')}
           </h2>
           <Button
             size="icon"
@@ -26,27 +30,27 @@ export function ReferenceModal({ isOpen, onClose }: ReferenceModalProps) {
           </Button>
         </div>
         <div className="p-6 max-h-[70vh] overflow-y-auto space-y-6">
-          {Object.entries(VERTICALS_DATA).map(([vertical, levels]) => (
+          {VERTICALS.map((vertical) => (
             <div key={vertical}>
               <h3 className="font-semibold text-lg text-slate-800 mb-3">
                 {vertical}
               </h3>
               <div className="space-y-2">
-                {levels.map((level) => (
+                {LEVELS.map((level) => (
                   <div
-                    key={level.level}
+                    key={level}
                     className="p-3 bg-slate-50 rounded-lg"
                   >
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-xs font-medium text-slate-400 bg-white px-2 py-0.5 rounded">
-                        L{level.level}
+                        L{level}
                       </span>
                       <span className="font-medium text-slate-700">
-                        {level.name}
+                        {t(`levels.${vertical}.${level}.name`)}
                       </span>
                     </div>
                     <p className="text-sm text-slate-600">
-                      {level.description}
+                      {t(`levels.${vertical}.${level}.description`)}
                     </p>
                   </div>
                 ))}
@@ -56,7 +60,7 @@ export function ReferenceModal({ isOpen, onClose }: ReferenceModalProps) {
         </div>
         <div className="p-6 border-t border-slate-200 bg-slate-50 rounded-b-2xl">
           <Button onClick={onClose} className="w-full">
-            Close
+            {t('buttons.close')}
           </Button>
         </div>
       </div>

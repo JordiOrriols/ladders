@@ -1,42 +1,45 @@
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
+
+export const VERTICALS = ['Technology', 'System', 'People', 'Process', 'Influence'];
 
 const VERTICALS_DATA = {
   Technology: [
-    { level: 1, name: 'Adopts', description: 'Actively learns and adopts the technology and tools defined by the team' },
-    { level: 2, name: 'Specializes', description: 'Is the go-to person for one or more technologies and takes initiative to learn new ones' },
-    { level: 3, name: 'Evangelizes', description: 'Researches, creates proofs of concept and introduces new technologies to the team' },
-    { level: 4, name: 'Masters', description: 'Has very deep knowledge about the whole technology stack of the system' },
-    { level: 5, name: 'Creates', description: 'Designs and creates new technologies that are widely used either by internal or external teams' }
+    { level: 1, name: 'Adopts' },
+    { level: 2, name: 'Specializes' },
+    { level: 3, name: 'Evangelizes' },
+    { level: 4, name: 'Masters' },
+    { level: 5, name: 'Creates' }
   ],
   System: [
-    { level: 1, name: 'Enhances', description: 'Successfully pushes new features and bug fixes to improve and extend the system' },
-    { level: 2, name: 'Designs', description: 'Designs and implements medium to large size features while reducing the system\'s tech debt' },
-    { level: 3, name: 'Owns', description: 'Owns the production operation and monitoring of the system and is aware of its SLAs' },
-    { level: 4, name: 'Evolves', description: 'Evolves the architecture to support future requirements and defines its SLAs' },
-    { level: 5, name: 'Leads', description: 'Leads the technical excellence of the system and creates plans to mitigate outages' }
+    { level: 1, name: 'Enhances' },
+    { level: 2, name: 'Designs' },
+    { level: 3, name: 'Owns' },
+    { level: 4, name: 'Evolves' },
+    { level: 5, name: 'Leads' }
   ],
   People: [
-    { level: 1, name: 'Learns', description: 'Quickly learns from others and consistently steps up when it is required' },
-    { level: 2, name: 'Supports', description: 'Proactively supports other team members and helps them to be successful' },
-    { level: 3, name: 'Mentors', description: 'Mentors others to accelerate their career-growth and encourages them to participate' },
-    { level: 4, name: 'Coordinates', description: 'Coordinates team members providing effective feedback and moderating discussions' },
-    { level: 5, name: 'Manages', description: 'Manages the team members\' career, expectations, performance and level of happiness' }
+    { level: 1, name: 'Learns' },
+    { level: 2, name: 'Supports' },
+    { level: 3, name: 'Mentors' },
+    { level: 4, name: 'Coordinates' },
+    { level: 5, name: 'Manages' }
   ],
   Process: [
-    { level: 1, name: 'Follows', description: 'Follows the team processes, delivering a consistent flow of features to production' },
-    { level: 2, name: 'Enforces', description: 'Enforces the team processes, making sure everybody understands the benefits and tradeoffs' },
-    { level: 3, name: 'Challenges', description: 'Challenges the team processes, looking for ways to improve them' },
-    { level: 4, name: 'Adjusts', description: 'Adjusts the team processes, listening to feedback and guiding the team through the changes' },
-    { level: 5, name: 'Defines', description: 'Defines the right processes for the team\'s maturity level, balancing agility and discipline' }
+    { level: 1, name: 'Follows' },
+    { level: 2, name: 'Enforces' },
+    { level: 3, name: 'Challenges' },
+    { level: 4, name: 'Adjusts' },
+    { level: 5, name: 'Defines' }
   ],
   Influence: [
-    { level: 1, name: 'Subsystem', description: 'Makes an impact on one or more subsystems' },
-    { level: 2, name: 'Team', description: 'Makes an impact on the whole team, not just on specific parts of it' },
-    { level: 3, name: 'Multiple Teams', description: 'Makes an impact not only on their team but also on other teams' },
-    { level: 4, name: 'Company', description: 'Makes an impact on the whole tech organization' },
-    { level: 5, name: 'Community', description: 'Makes an impact on the tech community' }
+    { level: 1, name: 'Subsystem' },
+    { level: 2, name: 'Team' },
+    { level: 3, name: 'Multiple Teams' },
+    { level: 4, name: 'Company' },
+    { level: 5, name: 'Community' }
   ]
 };
 
@@ -64,6 +67,7 @@ export default function LevelSelector({
   onCurrentChange, 
   onGoalChange 
 }) {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const levels = VERTICALS_DATA[vertical];
   const currentLevelData = levels.find(l => l.level === currentLevel);
@@ -87,16 +91,16 @@ export default function LevelSelector({
             <h3 className="font-semibold text-slate-800">{vertical}</h3>
             <div className="text-xs space-y-0.5">
               <p className="text-slate-600">
-                {currentLevelData ? `Current: L${currentLevel} ${currentLevelData.name}` : 'Current: Not set'}
+                {currentLevelData ? `Current: L${currentLevel} ${t(`levels.${vertical}.${currentLevel}.name`)}` : 'Current: Not set'}
               </p>
               {goalLevelData && goalLevel > 0 && (
                 <p className="text-slate-600">
-                  Goal: L{goalLevel} {goalLevelData.name}
+                  Goal: L{goalLevel} {t(`levels.${vertical}.${goalLevel}.name`)}
                 </p>
               )}
               {selfAssessmentLevelData && selfAssessmentLevel > 0 && (
                 <p className="text-purple-600">
-                  Self: L{selfAssessmentLevel} {selfAssessmentLevelData.name}
+                  Self: L{selfAssessmentLevel} {t(`levels.${vertical}.${selfAssessmentLevel}.name`)}
                 </p>
               )}
             </div>
@@ -126,14 +130,14 @@ export default function LevelSelector({
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-medium text-slate-400">L{level.level}</span>
-                    <span className="font-medium text-slate-700">{level.name}</span>
+                    <span className="font-medium text-slate-700">{t(`levels.${vertical}.${level.level}.name`)}</span>
                     {selfAssessmentLevel === level.level && (
                       <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">
                         Self
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-slate-500 mt-1">{level.description}</p>
+                  <p className="text-xs text-slate-500 mt-1">{t(`levels.${vertical}.${level.level}.description`)}</p>
                 </div>
                 <div className="flex gap-1 shrink-0">
                   <Button

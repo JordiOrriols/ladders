@@ -1,5 +1,5 @@
 import React from "react";
-import { VERTICALS_DATA } from "../atoms/levelSelector";
+import { useTranslation } from "react-i18next";
 
 interface CompetencyDetailsProps {
   vertical: string;
@@ -14,13 +14,7 @@ export function CompetencyDetailsCard({
   goalLevel,
   selfAssessmentLevel,
 }: CompetencyDetailsProps) {
-  const currentData = VERTICALS_DATA[vertical]?.find(
-    (l) => l.level === currentLevel,
-  );
-  const goalData = VERTICALS_DATA[vertical]?.find((l) => l.level === goalLevel);
-  const selfAssessmentData = VERTICALS_DATA[vertical]?.find(
-    (l) => l.level === selfAssessmentLevel,
-  );
+  const { t } = useTranslation();
 
   return (
     <div className="p-4 bg-slate-50 rounded-xl">
@@ -29,22 +23,22 @@ export function CompetencyDetailsCard({
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-emerald-500" />
           <span className="text-slate-600">
-            {currentData ? `L${currentLevel}: ${currentData.name}` : "Not set"}
+            {currentLevel > 0 ? `L${currentLevel}: ${t(`levels.${vertical}.${currentLevel}.name`)}` : "Not set"}
           </span>
         </div>
-        {goalData && goalLevel > 0 && (
+        {goalLevel > 0 && (
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-amber-500" />
             <span className="text-slate-600">
-              Goal L{goalLevel}: {goalData.name}
+              Goal L{goalLevel}: {t(`levels.${vertical}.${goalLevel}.name`)}
             </span>
           </div>
         )}
-        {selfAssessmentData && selfAssessmentLevel > 0 && (
+        {selfAssessmentLevel > 0 && (
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-purple-500" />
             <span className="text-slate-600">
-              Self L{selfAssessmentLevel}: {selfAssessmentData.name}
+              Self L{selfAssessmentLevel}: {t(`levels.${vertical}.${selfAssessmentLevel}.name`)}
             </span>
           </div>
         )}

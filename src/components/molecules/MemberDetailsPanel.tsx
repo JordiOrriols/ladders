@@ -4,8 +4,9 @@ import { useTranslation } from "react-i18next";
 import { Button } from "../ui/button";
 import RadarChart from "../atoms/radarChart";
 import { CompetencyDetailsCard } from "./CompetencyDetailsCard";
-import { VERTICALS_DATA } from "../atoms/levelSelector";
 import { ErrorBoundary } from "../ErrorBoundary";
+
+const VERTICALS = ['Technology', 'System', 'People', 'Process', 'Influence'];
 
 interface Member {
   id: string;
@@ -69,7 +70,7 @@ export function MemberDetailsPanel({
       <div className="space-y-4">
         <h3 className="font-semibold text-slate-800">{t('memberDetails.competencyDetails')}</h3>
         <div className="grid sm:grid-cols-2 gap-4">
-          {Object.keys(VERTICALS_DATA).map((vertical) => (
+          {VERTICALS.map((vertical) => (
             <ErrorBoundary key={vertical} componentName={`CompetencyCard-${vertical}`}>
               <CompetencyDetailsCard
                 vertical={vertical}
