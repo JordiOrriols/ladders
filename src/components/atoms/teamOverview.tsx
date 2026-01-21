@@ -1,5 +1,5 @@
 import React from 'react';
-import RadarChart from './RadarChart';
+import RadarChart from './radarChart';
 import { Users } from 'lucide-react';
 
 const memberColors = [

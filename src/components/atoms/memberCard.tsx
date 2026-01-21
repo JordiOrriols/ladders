@@ -1,7 +1,7 @@
 import React from 'react';
 import { User, Pencil, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import RadarChart from './RadarChart';
+import RadarChart from './radarChart';
 
 export default function MemberCard({ member, onEdit, onDelete, onClick }) {
   return (

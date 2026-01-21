@@ -3,8 +3,8 @@ import { X, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import LevelSelector from './LevelSelector';
-import RadarChart from './RadarChart';
+import LevelSelector from './levelSelector';
+import RadarChart from './radarChart';
 
 const VERTICALS = ['Technology', 'System', 'People', 'Process', 'Influence'];
 
