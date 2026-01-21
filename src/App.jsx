@@ -1,8 +1,8 @@
 import React from "react";
-import CodeVisualizerPage from "./CodeVisualizer";
+import Home from "./pages/home";
 
 export default () => (
   <>
-      <CodeVisualizerPage/>
+    <Home />
   </>
 );
