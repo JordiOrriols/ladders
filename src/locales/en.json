@@ -54,37 +54,103 @@
   },
   "levels": {
     "Technology": {
-      "1": { "name": "Adopts", "description": "Actively learns and adopts the technology and tools defined by the team" },
-      "2": { "name": "Specializes", "description": "Is the go-to person for one or more technologies and takes initiative to learn new ones" },
-      "3": { "name": "Evangelizes", "description": "Researches, creates proofs of concept and introduces new technologies to the team" },
-      "4": { "name": "Masters", "description": "Has very deep knowledge about the whole technology stack of the system" },
-      "5": { "name": "Creates", "description": "Designs and creates new technologies that are widely used either by internal or external teams" }
+      "1": {
+        "name": "Adopts",
+        "description": "Actively learns and adopts the technology and tools defined by the team"
+      },
+      "2": {
+        "name": "Specializes",
+        "description": "Is the go-to person for one or more technologies and takes initiative to learn new ones"
+      },
+      "3": {
+        "name": "Evangelizes",
+        "description": "Researches, creates proofs of concept and introduces new technologies to the team"
+      },
+      "4": {
+        "name": "Masters",
+        "description": "Has very deep knowledge about the whole technology stack of the system"
+      },
+      "5": {
+        "name": "Creates",
+        "description": "Designs and creates new technologies that are widely used either by internal or external teams"
+      }
     },
     "System": {
-      "1": { "name": "Enhances", "description": "Successfully pushes new features and bug fixes to improve and extend the system" },
-      "2": { "name": "Designs", "description": "Designs and implements medium to large size features while reducing the system's tech debt" },
-      "3": { "name": "Owns", "description": "Owns the production operation and monitoring of the system and is aware of its SLAs" },
-      "4": { "name": "Evolves", "description": "Evolves the architecture to support future requirements and defines its SLAs" },
-      "5": { "name": "Leads", "description": "Leads the technical excellence of the system and creates plans to mitigate outages" }
+      "1": {
+        "name": "Enhances",
+        "description": "Successfully pushes new features and bug fixes to improve and extend the system"
+      },
+      "2": {
+        "name": "Designs",
+        "description": "Designs and implements medium to large size features while reducing the system's tech debt"
+      },
+      "3": {
+        "name": "Owns",
+        "description": "Owns the production operation and monitoring of the system and is aware of its SLAs"
+      },
+      "4": {
+        "name": "Evolves",
+        "description": "Evolves the architecture to support future requirements and defines its SLAs"
+      },
+      "5": {
+        "name": "Leads",
+        "description": "Leads the technical excellence of the system and creates plans to mitigate outages"
+      }
     },
     "People": {
-      "1": { "name": "Learns", "description": "Quickly learns from others and consistently steps up when it is required" },
-      "2": { "name": "Supports", "description": "Proactively supports other team members and helps them to be successful" },
-      "3": { "name": "Mentors", "description": "Mentors others to accelerate their career-growth and encourages them to participate" },
-      "4": { "name": "Coordinates", "description": "Coordinates team members providing effective feedback and moderating discussions" },
-      "5": { "name": "Manages", "description": "Manages the team members' career, expectations, performance and level of happiness" }
+      "1": {
+        "name": "Learns",
+        "description": "Quickly learns from others and consistently steps up when it is required"
+      },
+      "2": {
+        "name": "Supports",
+        "description": "Proactively supports other team members and helps them to be successful"
+      },
+      "3": {
+        "name": "Mentors",
+        "description": "Mentors others to accelerate their career-growth and encourages them to participate"
+      },
+      "4": {
+        "name": "Coordinates",
+        "description": "Coordinates team members providing effective feedback and moderating discussions"
+      },
+      "5": {
+        "name": "Manages",
+        "description": "Manages the team members' career, expectations, performance and level of happiness"
+      }
     },
     "Process": {
-      "1": { "name": "Follows", "description": "Follows the team processes, delivering a consistent flow of features to production" },
-      "2": { "name": "Enforces", "description": "Enforces the team processes, making sure everybody understands the benefits and tradeoffs" },
-      "3": { "name": "Challenges", "description": "Challenges the team processes, looking for ways to improve them" },
-      "4": { "name": "Adjusts", "description": "Adjusts the team processes, listening to feedback and guiding the team through the changes" },
-      "5": { "name": "Defines", "description": "Defines the right processes for the team's maturity level, balancing agility and discipline" }
+      "1": {
+        "name": "Follows",
+        "description": "Follows the team processes, delivering a consistent flow of features to production"
+      },
+      "2": {
+        "name": "Enforces",
+        "description": "Enforces the team processes, making sure everybody understands the benefits and tradeoffs"
+      },
+      "3": {
+        "name": "Challenges",
+        "description": "Challenges the team processes, looking for ways to improve them"
+      },
+      "4": {
+        "name": "Adjusts",
+        "description": "Adjusts the team processes, listening to feedback and guiding the team through the changes"
+      },
+      "5": {
+        "name": "Defines",
+        "description": "Defines the right processes for the team's maturity level, balancing agility and discipline"
+      }
     },
     "Influence": {
       "1": { "name": "Subsystem", "description": "Makes an impact on one or more subsystems" },
-      "2": { "name": "Team", "description": "Makes an impact on the whole team, not just on specific parts of it" },
-      "3": { "name": "Multiple Teams", "description": "Makes an impact not only on their team but also on other teams" },
+      "2": {
+        "name": "Team",
+        "description": "Makes an impact on the whole team, not just on specific parts of it"
+      },
+      "3": {
+        "name": "Multiple Teams",
+        "description": "Makes an impact not only on their team but also on other teams"
+      },
       "4": { "name": "Company", "description": "Makes an impact on the whole tech organization" },
       "5": { "name": "Community", "description": "Makes an impact on the tech community" }
     }

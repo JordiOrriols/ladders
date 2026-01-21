@@ -15,15 +15,11 @@ export function EmptyTeamState({ onAddMember }: EmptyTeamStateProps) {
       <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4">
         <Users className="w-8 h-8 text-slate-400" />
       </div>
-      <h3 className="text-lg font-semibold text-slate-800 mb-2">
-        {t('teamView.empty')}
-      </h3>
-      <p className="text-slate-500 mb-6">
-        {t('teamView.emptyDescription')}
-      </p>
+      <h3 className="text-lg font-semibold text-slate-800 mb-2">{t("teamView.empty")}</h3>
+      <p className="text-slate-500 mb-6">{t("teamView.emptyDescription")}</p>
       <Button onClick={onAddMember}>
         <Plus className="w-4 h-4 mr-2" />
-        {t('teamView.addFirst')}
+        {t("teamView.addFirst")}
       </Button>
     </div>
   );

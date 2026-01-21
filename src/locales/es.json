@@ -54,37 +54,103 @@
   },
   "levels": {
     "Technology": {
-      "1": { "name": "Adopta", "description": "Aprende activamente y adopta la tecnología y herramientas definidas por el equipo" },
-      "2": { "name": "Especializa", "description": "Es la persona clave para una o más tecnologías y toma la iniciativa para aprender nuevas" },
-      "3": { "name": "Evangeliza", "description": "Investiga, crea pruebas de concepto e introduce nuevas tecnologías al equipo" },
-      "4": { "name": "Domina", "description": "Tiene conocimiento muy profundo de toda la pila de tecnología del sistema" },
-      "5": { "name": "Crea", "description": "Diseña y crea nuevas tecnologías que son ampliamente utilizadas por equipos internos o externos" }
+      "1": {
+        "name": "Adopta",
+        "description": "Aprende activamente y adopta la tecnología y herramientas definidas por el equipo"
+      },
+      "2": {
+        "name": "Especializa",
+        "description": "Es la persona clave para una o más tecnologías y toma la iniciativa para aprender nuevas"
+      },
+      "3": {
+        "name": "Evangeliza",
+        "description": "Investiga, crea pruebas de concepto e introduce nuevas tecnologías al equipo"
+      },
+      "4": {
+        "name": "Domina",
+        "description": "Tiene conocimiento muy profundo de toda la pila de tecnología del sistema"
+      },
+      "5": {
+        "name": "Crea",
+        "description": "Diseña y crea nuevas tecnologías que son ampliamente utilizadas por equipos internos o externos"
+      }
     },
     "System": {
-      "1": { "name": "Mejora", "description": "Implementa exitosamente nuevas características y correcciones de errores para mejorar y extender el sistema" },
-      "2": { "name": "Diseña", "description": "Diseña e implementa características de mediano a gran tamaño mientras reduce la deuda técnica del sistema" },
-      "3": { "name": "Posee", "description": "Posee la operación de producción y supervisión del sistema y está consciente de sus SLA" },
-      "4": { "name": "Evoluciona", "description": "Evoluciona la arquitectura para soportar requisitos futuros y define sus SLA" },
-      "5": { "name": "Lidera", "description": "Lidera la excelencia técnica del sistema y crea planes para mitigar interrupciones" }
+      "1": {
+        "name": "Mejora",
+        "description": "Implementa exitosamente nuevas características y correcciones de errores para mejorar y extender el sistema"
+      },
+      "2": {
+        "name": "Diseña",
+        "description": "Diseña e implementa características de mediano a gran tamaño mientras reduce la deuda técnica del sistema"
+      },
+      "3": {
+        "name": "Posee",
+        "description": "Posee la operación de producción y supervisión del sistema y está consciente de sus SLA"
+      },
+      "4": {
+        "name": "Evoluciona",
+        "description": "Evoluciona la arquitectura para soportar requisitos futuros y define sus SLA"
+      },
+      "5": {
+        "name": "Lidera",
+        "description": "Lidera la excelencia técnica del sistema y crea planes para mitigar interrupciones"
+      }
     },
     "People": {
-      "1": { "name": "Aprende", "description": "Aprende rápidamente de otros y se ofrece consistentemente cuando es necesario" },
-      "2": { "name": "Apoya", "description": "Apoya proactivamente a otros miembros del equipo y los ayuda a tener éxito" },
-      "3": { "name": "Mentoriza", "description": "Mentoriza a otros para acelerar su crecimiento profesional y los alienta a participar" },
-      "4": { "name": "Coordina", "description": "Coordina miembros del equipo proporcionando retroalimentación efectiva y moderando discusiones" },
-      "5": { "name": "Gestiona", "description": "Gestiona la carrera, expectativas, desempeño y nivel de felicidad de los miembros del equipo" }
+      "1": {
+        "name": "Aprende",
+        "description": "Aprende rápidamente de otros y se ofrece consistentemente cuando es necesario"
+      },
+      "2": {
+        "name": "Apoya",
+        "description": "Apoya proactivamente a otros miembros del equipo y los ayuda a tener éxito"
+      },
+      "3": {
+        "name": "Mentoriza",
+        "description": "Mentoriza a otros para acelerar su crecimiento profesional y los alienta a participar"
+      },
+      "4": {
+        "name": "Coordina",
+        "description": "Coordina miembros del equipo proporcionando retroalimentación efectiva y moderando discusiones"
+      },
+      "5": {
+        "name": "Gestiona",
+        "description": "Gestiona la carrera, expectativas, desempeño y nivel de felicidad de los miembros del equipo"
+      }
     },
     "Process": {
-      "1": { "name": "Sigue", "description": "Sigue los procesos del equipo, entregando un flujo consistente de características a producción" },
-      "2": { "name": "Refuerza", "description": "Refuerza los procesos del equipo, asegurando que todos entiendan los beneficios y compromisos" },
-      "3": { "name": "Desafía", "description": "Desafía los procesos del equipo, buscando formas de mejorarlos" },
-      "4": { "name": "Ajusta", "description": "Ajusta los procesos del equipo, escuchando retroalimentación y guiando al equipo a través de los cambios" },
-      "5": { "name": "Define", "description": "Define los procesos correctos para el nivel de madurez del equipo, equilibrando agilidad y disciplina" }
+      "1": {
+        "name": "Sigue",
+        "description": "Sigue los procesos del equipo, entregando un flujo consistente de características a producción"
+      },
+      "2": {
+        "name": "Refuerza",
+        "description": "Refuerza los procesos del equipo, asegurando que todos entiendan los beneficios y compromisos"
+      },
+      "3": {
+        "name": "Desafía",
+        "description": "Desafía los procesos del equipo, buscando formas de mejorarlos"
+      },
+      "4": {
+        "name": "Ajusta",
+        "description": "Ajusta los procesos del equipo, escuchando retroalimentación y guiando al equipo a través de los cambios"
+      },
+      "5": {
+        "name": "Define",
+        "description": "Define los procesos correctos para el nivel de madurez del equipo, equilibrando agilidad y disciplina"
+      }
     },
     "Influence": {
       "1": { "name": "Subsistema", "description": "Tiene impacto en uno o más subsistemas" },
-      "2": { "name": "Equipo", "description": "Tiene impacto en todo el equipo, no solo en partes específicas" },
-      "3": { "name": "Múltiples Equipos", "description": "Tiene impacto no solo en su equipo sino también en otros equipos" },
+      "2": {
+        "name": "Equipo",
+        "description": "Tiene impacto en todo el equipo, no solo en partes específicas"
+      },
+      "3": {
+        "name": "Múltiples Equipos",
+        "description": "Tiene impacto no solo en su equipo sino también en otros equipos"
+      },
       "4": { "name": "Empresa", "description": "Tiene impacto en toda la organización técnica" },
       "5": { "name": "Comunidad", "description": "Tiene impacto en la comunidad tecnológica" }
     }

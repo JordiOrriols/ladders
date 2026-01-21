@@ -23,7 +23,9 @@ export function CompetencyDetailsCard({
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-emerald-500" />
           <span className="text-slate-600">
-            {currentLevel > 0 ? `L${currentLevel}: ${t(`levels.${vertical}.${currentLevel}.name`)}` : "Not set"}
+            {currentLevel > 0
+              ? `L${currentLevel}: ${t(`levels.${vertical}.${currentLevel}.name`)}`
+              : "Not set"}
           </span>
         </div>
         {goalLevel > 0 && (

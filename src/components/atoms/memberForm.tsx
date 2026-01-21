@@ -1,28 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { X, Upload } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import LevelSelector from './levelSelector';
-import { VERTICALS } from './levelSelector';
-import RadarChart from './radarChart';
+import React, { useState, useEffect } from "react";
+import { X, Upload } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import LevelSelector from "./levelSelector";
+import { VERTICALS } from "./levelSelector";
+import RadarChart from "./radarChart";
 
 export default function MemberForm({ member, onSave, onClose }) {
   const { t } = useTranslation();
-  const [name, setName] = useState('');
-  const [role, setRole] = useState('');
+  const [name, setName] = useState("");
+  const [role, setRole] = useState("");
   const [currentLevels, setCurrentLevels] = useState({});
   const [goalLevels, setGoalLevels] = useState({});
   const [selfAssessmentLevels, setSelfAssessmentLevels] = useState({});
 
-  console.log('[MemberForm] Rendered with member:', member?.name, 'editing:', !!member);
+  console.log("[MemberForm] Rendered with member:", member?.name, "editing:", !!member);
 
   useEffect(() => {
     if (member) {
-      console.log('[MemberForm] useEffect: Loading member data for', member.name);
-      setName(member.name || '');
-      setRole(member.role || '');
+      console.log("[MemberForm] useEffect: Loading member data for", member.name);
+      setName(member.name || "");
+      setRole(member.role || "");
       setCurrentLevels(member.currentLevels || {});
       setGoalLevels(member.goalLevels || {});
       setSelfAssessmentLevels(member.selfAssessmentLevels || {});
@@ -31,7 +31,7 @@ export default function MemberForm({ member, onSave, onClose }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('[MemberForm] handleSubmit called');
+    console.log("[MemberForm] handleSubmit called");
     if (!name.trim()) return;
 
     onSave({
@@ -40,7 +40,7 @@ export default function MemberForm({ member, onSave, onClose }) {
       role: role.trim(),
       currentLevels,
       goalLevels,
-      selfAssessmentLevels
+      selfAssessmentLevels,
     });
   };
 
@@ -63,60 +63,67 @@ export default function MemberForm({ member, onSave, onClose }) {
           setSelfAssessmentLevels(data.currentLevels);
         }
       } catch {
-        alert(t('validation.importError'));
+        alert(t("validation.importError"));
       }
     };
     reader.readAsText(file);
-    event.target.value = '';
+    event.target.value = "";
   };
 
   const handleCurrentChange = (vertical, level) => {
-    console.log('[LevelSelector] Current level changed for', vertical, 'to', level);
-    setCurrentLevels(prev => ({ ...prev, [vertical]: level }));
+    console.log("[LevelSelector] Current level changed for", vertical, "to", level);
+    setCurrentLevels((prev) => ({ ...prev, [vertical]: level }));
   };
 
   const handleGoalChange = (vertical, level) => {
-    console.log('[LevelSelector] Goal level changed for', vertical, 'to', level);
-    setGoalLevels(prev => ({ ...prev, [vertical]: level }));
+    console.log("[LevelSelector] Goal level changed for", vertical, "to", level);
+    setGoalLevels((prev) => ({ ...prev, [vertical]: level }));
   };
 
   return (
-    <div 
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-start justify-center overflow-y-auto py-8" 
+    <div
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-start justify-center overflow-y-auto py-8"
       onClick={(e) => {
         // Only close if clicking directly on the backdrop, not on child elements
         if (e.target === e.currentTarget) {
-          console.log('[MemberForm] Backdrop clicked - closing');
+          console.log("[MemberForm] Backdrop clicked - closing");
           onClose();
         }
       }}
     >
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl mx-4" onClick={(e) => e.stopPropagation()}>
+      <div
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl mx-4"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex items-center justify-between p-6 border-b border-slate-200">
           <h2 className="text-xl font-semibold text-slate-800">
-            {member ? t('forms.editTeamMember') : t('forms.addTeamMember')}
+            {member ? t("forms.editTeamMember") : t("forms.addTeamMember")}
           </h2>
           <Button size="icon" variant="ghost" onClick={onClose}>
             <X className="w-5 h-5" />
           </Button>
         </div>
 
-        <form onSubmit={handleSubmit} onClick={(e) => e.stopPropagation()} onMouseDown={(e) => e.stopPropagation()}>
+        <form
+          onSubmit={handleSubmit}
+          onClick={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+        >
           <div className="p-6 grid lg:grid-cols-2 gap-8">
             <div className="space-y-6">
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="name">{t('forms.name')}</Label>
+                  <Label htmlFor="name">{t("forms.name")}</Label>
                   <Input
                     id="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder={t('forms.name')}
+                    placeholder={t("forms.name")}
                     className="mt-1"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="role">{t('forms.role')}</Label>
+                  <Label htmlFor="role">{t("forms.role")}</Label>
                   <Input
                     id="role"
                     value={role}
@@ -137,22 +144,20 @@ export default function MemberForm({ member, onSave, onClose }) {
                     type="button"
                     variant="outline"
                     className="w-full"
-                    onClick={() => document.getElementById('import-assessment-file')?.click()}
+                    onClick={() => document.getElementById("import-assessment-file")?.click()}
                   >
                     <Upload className="w-4 h-4 mr-2" />
-                    {t('buttons.importAssessment')}
+                    {t("buttons.importAssessment")}
                   </Button>
                   {Object.keys(selfAssessmentLevels).length > 0 && (
-                    <p className="text-xs text-slate-500 mt-1">
-                      {t('validation.importSuccess')}
-                    </p>
+                    <p className="text-xs text-slate-500 mt-1">{t("validation.importSuccess")}</p>
                   )}
                 </div>
               </div>
 
               <div className="space-y-3">
-                <Label>{t('forms.competencies')}</Label>
-                {VERTICALS.map(vertical => (
+                <Label>{t("forms.competencies")}</Label>
+                {VERTICALS.map((vertical) => (
                   <LevelSelector
                     key={vertical}
                     vertical={vertical}
@@ -167,7 +172,7 @@ export default function MemberForm({ member, onSave, onClose }) {
             </div>
 
             <div className="flex flex-col items-center justify-center lg:sticky lg:top-6">
-              <h3 className="text-sm font-medium text-slate-500 mb-4">{t('forms.preview')}</h3>
+              <h3 className="text-sm font-medium text-slate-500 mb-4">{t("forms.preview")}</h3>
               <RadarChart
                 currentLevels={currentLevels}
                 goalLevels={goalLevels}
@@ -179,10 +184,10 @@ export default function MemberForm({ member, onSave, onClose }) {
 
           <div className="flex justify-end gap-3 p-6 border-t border-slate-200 bg-slate-50 rounded-b-2xl">
             <Button type="button" variant="outline" onClick={onClose}>
-              {t('buttons.cancel')}
+              {t("buttons.cancel")}
             </Button>
             <Button type="submit" disabled={!name.trim()}>
-              {member ? t('buttons.save') : t('buttons.add')}
+              {member ? t("buttons.save") : t("buttons.add")}
             </Button>
           </div>
         </form>

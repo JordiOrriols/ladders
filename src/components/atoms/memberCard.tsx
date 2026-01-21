@@ -1,11 +1,11 @@
-import React from 'react';
-import { User, Pencil, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import RadarChart from './radarChart';
+import React from "react";
+import { User, Pencil, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import RadarChart from "./radarChart";
 
 export default function MemberCard({ member, onEdit, onDelete, onClick }) {
   return (
-    <div 
+    <div
       className="bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-lg hover:border-slate-300 transition-all cursor-pointer group"
       onClick={onClick}
     >
@@ -16,9 +16,7 @@ export default function MemberCard({ member, onEdit, onDelete, onClick }) {
           </div>
           <div>
             <h3 className="font-semibold text-slate-800">{member.name}</h3>
-            {member.role && (
-              <p className="text-xs text-slate-500">{member.role}</p>
-            )}
+            {member.role && <p className="text-xs text-slate-500">{member.role}</p>}
           </div>
         </div>
         <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">

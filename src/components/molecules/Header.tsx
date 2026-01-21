@@ -9,11 +9,7 @@ interface HeaderProps {
   onNavigateToSelfAssessment?: () => void;
 }
 
-export function Header({
-  onAddMember,
-  onShowReference,
-  onNavigateToSelfAssessment,
-}: HeaderProps) {
+export function Header({ onAddMember, onShowReference, onNavigateToSelfAssessment }: HeaderProps) {
   const { t, i18n } = useTranslation();
 
   const changeLanguage = (lng: string) => {
@@ -29,9 +25,7 @@ export function Header({
               <LayoutGrid className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-lg font-semibold text-slate-800">
-                {t("header.title")}
-              </h1>
+              <h1 className="text-lg font-semibold text-slate-800">{t("header.title")}</h1>
               <p className="text-xs text-slate-500">{t("header.subtitle")}</p>
             </div>
           </div>
@@ -64,7 +58,7 @@ export function Header({
                 CA
               </Button>
             </div>
-            
+
             {onNavigateToSelfAssessment && (
               <Button
                 variant="outline"

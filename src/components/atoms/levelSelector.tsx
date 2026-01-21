@@ -1,79 +1,79 @@
-import React, { useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
-import { Button } from '@/components/ui/button';
+import React, { useState } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { Button } from "@/components/ui/button";
 
-export const VERTICALS = ['Technology', 'System', 'People', 'Process', 'Influence'];
+export const VERTICALS = ["Technology", "System", "People", "Process", "Influence"];
 export const LEVELS = [1, 2, 3, 4, 5];
 
 const VERTICALS_DATA = {
   Technology: [
-    { level: 1, name: 'Adopts' },
-    { level: 2, name: 'Specializes' },
-    { level: 3, name: 'Evangelizes' },
-    { level: 4, name: 'Masters' },
-    { level: 5, name: 'Creates' }
+    { level: 1, name: "Adopts" },
+    { level: 2, name: "Specializes" },
+    { level: 3, name: "Evangelizes" },
+    { level: 4, name: "Masters" },
+    { level: 5, name: "Creates" },
   ],
   System: [
-    { level: 1, name: 'Enhances' },
-    { level: 2, name: 'Designs' },
-    { level: 3, name: 'Owns' },
-    { level: 4, name: 'Evolves' },
-    { level: 5, name: 'Leads' }
+    { level: 1, name: "Enhances" },
+    { level: 2, name: "Designs" },
+    { level: 3, name: "Owns" },
+    { level: 4, name: "Evolves" },
+    { level: 5, name: "Leads" },
   ],
   People: [
-    { level: 1, name: 'Learns' },
-    { level: 2, name: 'Supports' },
-    { level: 3, name: 'Mentors' },
-    { level: 4, name: 'Coordinates' },
-    { level: 5, name: 'Manages' }
+    { level: 1, name: "Learns" },
+    { level: 2, name: "Supports" },
+    { level: 3, name: "Mentors" },
+    { level: 4, name: "Coordinates" },
+    { level: 5, name: "Manages" },
   ],
   Process: [
-    { level: 1, name: 'Follows' },
-    { level: 2, name: 'Enforces' },
-    { level: 3, name: 'Challenges' },
-    { level: 4, name: 'Adjusts' },
-    { level: 5, name: 'Defines' }
+    { level: 1, name: "Follows" },
+    { level: 2, name: "Enforces" },
+    { level: 3, name: "Challenges" },
+    { level: 4, name: "Adjusts" },
+    { level: 5, name: "Defines" },
   ],
   Influence: [
-    { level: 1, name: 'Subsystem' },
-    { level: 2, name: 'Team' },
-    { level: 3, name: 'Multiple Teams' },
-    { level: 4, name: 'Company' },
-    { level: 5, name: 'Community' }
-  ]
+    { level: 1, name: "Subsystem" },
+    { level: 2, name: "Team" },
+    { level: 3, name: "Multiple Teams" },
+    { level: 4, name: "Company" },
+    { level: 5, name: "Community" },
+  ],
 };
 
 const verticalColors = {
-  Technology: 'bg-indigo-500',
-  System: 'bg-cyan-500',
-  People: 'bg-amber-500',
-  Process: 'bg-emerald-500',
-  Influence: 'bg-pink-500'
+  Technology: "bg-indigo-500",
+  System: "bg-cyan-500",
+  People: "bg-amber-500",
+  Process: "bg-emerald-500",
+  Influence: "bg-pink-500",
 };
 
 const verticalBgColors = {
-  Technology: 'bg-indigo-50 border-indigo-200',
-  System: 'bg-cyan-50 border-cyan-200',
-  People: 'bg-amber-50 border-amber-200',
-  Process: 'bg-emerald-50 border-emerald-200',
-  Influence: 'bg-pink-50 border-pink-200'
+  Technology: "bg-indigo-50 border-indigo-200",
+  System: "bg-cyan-50 border-cyan-200",
+  People: "bg-amber-50 border-amber-200",
+  Process: "bg-emerald-50 border-emerald-200",
+  Influence: "bg-pink-50 border-pink-200",
 };
 
-export default function LevelSelector({ 
-  vertical, 
-  currentLevel, 
-  goalLevel, 
+export default function LevelSelector({
+  vertical,
+  currentLevel,
+  goalLevel,
   selfAssessmentLevel = 0,
-  onCurrentChange, 
-  onGoalChange 
+  onCurrentChange,
+  onGoalChange,
 }) {
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const levels = VERTICALS_DATA[vertical];
-  const currentLevelData = levels.find(l => l.level === currentLevel);
-  const goalLevelData = levels.find(l => l.level === goalLevel);
-  const selfAssessmentLevelData = levels.find(l => l.level === selfAssessmentLevel);
+  const currentLevelData = levels.find((l) => l.level === currentLevel);
+  const goalLevelData = levels.find((l) => l.level === goalLevel);
+  const selfAssessmentLevelData = levels.find((l) => l.level === selfAssessmentLevel);
 
   return (
     <div className={`rounded-xl border ${verticalBgColors[vertical]} overflow-hidden`}>
@@ -92,7 +92,9 @@ export default function LevelSelector({
             <h3 className="font-semibold text-slate-800">{vertical}</h3>
             <div className="text-xs space-y-0.5">
               <p className="text-slate-600">
-                {currentLevelData ? `Current: L${currentLevel} ${t(`levels.${vertical}.${currentLevel}.name`)}` : 'Current: Not set'}
+                {currentLevelData
+                  ? `Current: L${currentLevel} ${t(`levels.${vertical}.${currentLevel}.name`)}`
+                  : "Current: Not set"}
               </p>
               {goalLevelData && goalLevel > 0 && (
                 <p className="text-slate-600">
@@ -120,10 +122,13 @@ export default function LevelSelector({
             <div
               key={level.level}
               className={`p-3 rounded-lg bg-white border transition-all ${
-                currentLevel === level.level ? 'border-emerald-400 ring-1 ring-emerald-200' : 
-                goalLevel === level.level ? 'border-amber-400 ring-1 ring-amber-200' : 
-                selfAssessmentLevel === level.level ? 'border-purple-400 ring-1 ring-purple-200' :
-                'border-slate-200'
+                currentLevel === level.level
+                  ? "border-emerald-400 ring-1 ring-emerald-200"
+                  : goalLevel === level.level
+                    ? "border-amber-400 ring-1 ring-amber-200"
+                    : selfAssessmentLevel === level.level
+                      ? "border-purple-400 ring-1 ring-purple-200"
+                      : "border-slate-200"
               }`}
               onClick={(e) => e.stopPropagation()}
             >
@@ -131,21 +136,25 @@ export default function LevelSelector({
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-medium text-slate-400">L{level.level}</span>
-                    <span className="font-medium text-slate-700">{t(`levels.${vertical}.${level.level}.name`)}</span>
+                    <span className="font-medium text-slate-700">
+                      {t(`levels.${vertical}.${level.level}.name`)}
+                    </span>
                     {selfAssessmentLevel === level.level && (
                       <span className="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">
                         Self
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-slate-500 mt-1">{t(`levels.${vertical}.${level.level}.description`)}</p>
+                  <p className="text-xs text-slate-500 mt-1">
+                    {t(`levels.${vertical}.${level.level}.description`)}
+                  </p>
                 </div>
                 <div className="flex gap-1 shrink-0">
                   <Button
                     type="button"
                     size="sm"
                     variant={currentLevel === level.level ? "default" : "outline"}
-                    className={`h-7 px-2 text-xs ${currentLevel === level.level ? 'bg-emerald-500 hover:bg-emerald-600' : ''}`}
+                    className={`h-7 px-2 text-xs ${currentLevel === level.level ? "bg-emerald-500 hover:bg-emerald-600" : ""}`}
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
@@ -158,7 +167,7 @@ export default function LevelSelector({
                     type="button"
                     size="sm"
                     variant={goalLevel === level.level ? "default" : "outline"}
-                    className={`h-7 px-2 text-xs ${goalLevel === level.level ? 'bg-amber-500 hover:bg-amber-600' : ''}`}
+                    className={`h-7 px-2 text-xs ${goalLevel === level.level ? "bg-amber-500 hover:bg-amber-600" : ""}`}
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();

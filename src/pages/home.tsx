@@ -115,10 +115,7 @@ export default function Home() {
       </ErrorBoundary>
 
       <ErrorBoundary componentName="ReferenceModal">
-        <ReferenceModal
-          isOpen={showReference}
-          onClose={() => setShowReference(false)}
-        />
+        <ReferenceModal isOpen={showReference} onClose={() => setShowReference(false)} />
       </ErrorBoundary>
     </div>
   );

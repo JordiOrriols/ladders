@@ -2,12 +2,7 @@ import React from "react";
 import { Users, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { Member } from "../../types";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-} from "../ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "../ui/tabs";
 import { TeamTab } from "./TeamTab";
 import { IndividualTab } from "./IndividualTab";
 import { ErrorBoundary } from "../ErrorBoundary";
@@ -32,19 +27,13 @@ export function MainTabs({
   return (
     <Tabs defaultValue="team" className="space-y-6">
       <TabsList className="bg-white border border-slate-200">
-        <TabsTrigger
-          value="team"
-          className="data-[state=active]:bg-slate-100"
-        >
+        <TabsTrigger value="team" className="data-[state=active]:bg-slate-100">
           <Users className="w-4 h-4 mr-2" />
-          {t('tabs.team')}
+          {t("tabs.team")}
         </TabsTrigger>
-        <TabsTrigger
-          value="individual"
-          className="data-[state=active]:bg-slate-100"
-        >
+        <TabsTrigger value="individual" className="data-[state=active]:bg-slate-100">
           <User className="w-4 h-4 mr-2" />
-          {t('tabs.individual')}
+          {t("tabs.individual")}
         </TabsTrigger>
       </TabsList>
 
@@ -62,11 +51,7 @@ export function MainTabs({
 
       <TabsContent value="individual" className="mt-6">
         <ErrorBoundary componentName="IndividualTab">
-          <IndividualTab
-            members={members}
-            onAddMember={onAddMember}
-            onEditMember={onEditMember}
-          />
+          <IndividualTab members={members} onAddMember={onAddMember} onEditMember={onEditMember} />
         </ErrorBoundary>
       </TabsContent>
     </Tabs>

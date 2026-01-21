@@ -21,19 +21,14 @@ interface MemberDetailsPanelProps {
   onEdit: (member: Member) => void;
 }
 
-export function MemberDetailsPanel({
-  member,
-  onEdit,
-}: MemberDetailsPanelProps) {
+export function MemberDetailsPanel({ member, onEdit }: MemberDetailsPanelProps) {
   const { t } = useTranslation();
 
   if (!member) {
     return (
       <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center">
         <User className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-        <p className="text-slate-500">
-          {t('individualView.empty')}
-        </p>
+        <p className="text-slate-500">{t("individualView.empty")}</p>
       </div>
     );
   }
@@ -42,15 +37,11 @@ export function MemberDetailsPanel({
     <div className="bg-white rounded-2xl border border-slate-200 p-6">
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-semibold text-slate-800">
-            {member.name}
-          </h2>
-          {member.role && (
-            <p className="text-slate-500">{member.role}</p>
-          )}
+          <h2 className="text-2xl font-semibold text-slate-800">{member.name}</h2>
+          {member.role && <p className="text-slate-500">{member.role}</p>}
         </div>
         <Button variant="outline" onClick={() => onEdit(member)}>
-          {t('buttons.edit')}
+          {t("buttons.edit")}
         </Button>
       </div>
 
@@ -67,7 +58,7 @@ export function MemberDetailsPanel({
 
       {/* Competency Details */}
       <div className="space-y-4">
-        <h3 className="font-semibold text-slate-800">{t('memberDetails.competencyDetails')}</h3>
+        <h3 className="font-semibold text-slate-800">{t("memberDetails.competencyDetails")}</h3>
         <div className="grid sm:grid-cols-2 gap-4">
           {VERTICALS.map((vertical) => (
             <ErrorBoundary key={vertical} componentName={`CompetencyCard-${vertical}`}>

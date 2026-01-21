@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Download, Upload, Trash2, LayoutGrid } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import LevelSelector from '@/components/atoms/levelSelector';
-import RadarChart from '@/components/atoms/radarChart';
-import { VERTICALS } from '@/components/atoms/levelSelector';
+import React, { useState, useEffect } from "react";
+import { ArrowLeft, Download, Upload, Trash2, LayoutGrid } from "lucide-react";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import LevelSelector from "@/components/atoms/levelSelector";
+import RadarChart from "@/components/atoms/radarChart";
+import { VERTICALS } from "@/components/atoms/levelSelector";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,11 +19,11 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-const STORAGE_KEY = 'self-assessment-data';
+const STORAGE_KEY = "self-assessment-data";
 
 export default function SelfAssessment() {
-  const [name, setName] = useState('');
-  const [role, setRole] = useState('');
+  const [name, setName] = useState("");
+  const [role, setRole] = useState("");
   const [currentLevels, setCurrentLevels] = useState<Record<string, number>>({});
   const [goalLevels, setGoalLevels] = useState<Record<string, number>>({});
   const [showClearDialog, setShowClearDialog] = useState(false);
@@ -34,12 +34,12 @@ export default function SelfAssessment() {
     if (saved) {
       try {
         const data = JSON.parse(saved);
-        setName(data.name || '');
-        setRole(data.role || '');
+        setName(data.name || "");
+        setRole(data.role || "");
         setCurrentLevels(data.currentLevels || {});
         setGoalLevels(data.goalLevels || {});
       } catch (e) {
-        console.error('Failed to load assessment data', e);
+        console.error("Failed to load assessment data", e);
       }
     }
   }, []);
@@ -77,14 +77,14 @@ export default function SelfAssessment() {
       role,
       currentLevels,
       goalLevels,
-      exportedAt: new Date().toISOString()
+      exportedAt: new Date().toISOString(),
     };
 
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
-    link.download = `assessment-${name.replace(/\s+/g, '-').toLowerCase() || 'unnamed'}-${Date.now()}.json`;
+    link.download = `assessment-${name.replace(/\s+/g, "-").toLowerCase() || "unnamed"}-${Date.now()}.json`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -100,22 +100,22 @@ export default function SelfAssessment() {
       try {
         const result = e.target?.result as string;
         const data = JSON.parse(result);
-        setName(data.name || '');
-        setRole(data.role || '');
+        setName(data.name || "");
+        setRole(data.role || "");
         setCurrentLevels(data.currentLevels || {});
         setGoalLevels(data.goalLevels || {});
         saveToLocalStorage(data);
       } catch {
-        alert('Failed to import file. Please ensure it\'s a valid JSON file.');
+        alert("Failed to import file. Please ensure it's a valid JSON file.");
       }
     };
     reader.readAsText(file);
-    event.target.value = '';
+    event.target.value = "";
   };
 
   const handleClear = () => {
-    setName('');
-    setRole('');
+    setName("");
+    setRole("");
     setCurrentLevels({});
     setGoalLevels({});
     localStorage.removeItem(STORAGE_KEY);
@@ -129,7 +129,7 @@ export default function SelfAssessment() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
-              <Link to={createPageUrl('Home')}>
+              <Link to={createPageUrl("Home")}>
                 <Button variant="ghost" size="icon">
                   <ArrowLeft className="w-5 h-5" />
                 </Button>
@@ -155,23 +155,16 @@ export default function SelfAssessment() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => document.getElementById('import-file')?.click()}
+                onClick={() => document.getElementById("import-file")?.click()}
               >
                 <Upload className="w-4 h-4 mr-2" />
                 Import
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowClearDialog(true)}
-              >
+              <Button variant="outline" size="sm" onClick={() => setShowClearDialog(true)}>
                 <Trash2 className="w-4 h-4 mr-2" />
                 Clear
               </Button>
-              <Button
-                onClick={handleExport}
-                disabled={!name.trim()}
-              >
+              <Button onClick={handleExport} disabled={!name.trim()}>
                 <Download className="w-4 h-4 mr-2" />
                 Export
               </Button>
@@ -214,7 +207,7 @@ export default function SelfAssessment() {
             <div className="bg-white rounded-2xl border border-slate-200 p-6">
               <h2 className="text-lg font-semibold text-slate-800 mb-4">Competencies</h2>
               <div className="space-y-3">
-                {VERTICALS.map(vertical => (
+                {VERTICALS.map((vertical) => (
                   <LevelSelector
                     key={vertical}
                     vertical={vertical}
@@ -243,15 +236,11 @@ export default function SelfAssessment() {
           <div className="lg:sticky lg:top-24 lg:self-start">
             <div className="bg-white rounded-2xl border border-slate-200 p-6">
               <h2 className="text-lg font-semibold text-slate-800 mb-6 text-center">
-                {name || 'Your Assessment'} Preview
+                {name || "Your Assessment"} Preview
               </h2>
-              
+
               <div className="flex justify-center mb-8">
-                <RadarChart
-                  currentLevels={currentLevels}
-                  goalLevels={goalLevels}
-                  size={350}
-                />
+                <RadarChart currentLevels={currentLevels} goalLevels={goalLevels} size={350} />
               </div>
 
               {/* Summary Stats */}
@@ -260,16 +249,26 @@ export default function SelfAssessment() {
                   <p className="text-xs text-emerald-600 font-medium mb-1">Current Average</p>
                   <p className="text-2xl font-bold text-emerald-700">
                     {Object.values(currentLevels).length > 0
-                      ? (Object.values(currentLevels).reduce((a, b) => (a as number) + (b as number), 0) / 5).toFixed(1)
-                      : '0.0'}
+                      ? (
+                          Object.values(currentLevels).reduce(
+                            (a, b) => (a as number) + (b as number),
+                            0
+                          ) / 5
+                        ).toFixed(1)
+                      : "0.0"}
                   </p>
                 </div>
                 <div className="p-4 bg-amber-50 rounded-xl border border-amber-200">
                   <p className="text-xs text-amber-600 font-medium mb-1">Goal Average</p>
                   <p className="text-2xl font-bold text-amber-700">
                     {Object.values(goalLevels).length > 0
-                      ? (Object.values(goalLevels).reduce((a, b) => (a as number) + (b as number), 0) / 5).toFixed(1)
-                      : '0.0'}
+                      ? (
+                          Object.values(goalLevels).reduce(
+                            (a, b) => (a as number) + (b as number),
+                            0
+                          ) / 5
+                        ).toFixed(1)
+                      : "0.0"}
                   </p>
                 </div>
               </div>
@@ -277,10 +276,10 @@ export default function SelfAssessment() {
               {/* Progress by Vertical */}
               <div className="mt-6 space-y-3">
                 <h3 className="text-sm font-semibold text-slate-700">Competency Levels</h3>
-                {VERTICALS.map(vertical => {
+                {VERTICALS.map((vertical) => {
                   const current = currentLevels[vertical] || 0;
                   const goal = goalLevels[vertical] || 0;
-                  
+
                   return (
                     <div key={vertical} className="flex items-center justify-between text-sm">
                       <span className="text-slate-600 font-medium">{vertical}</span>
@@ -312,15 +311,13 @@ export default function SelfAssessment() {
           <AlertDialogHeader>
             <AlertDialogTitle>Clear all assessment data?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will remove all your assessment data including name, role, and all competency levels. This action cannot be undone.
+              This will remove all your assessment data including name, role, and all competency
+              levels. This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
-              onClick={handleClear}
-              className="bg-red-500 hover:bg-red-600"
-            >
+            <AlertDialogAction onClick={handleClear} className="bg-red-500 hover:bg-red-600">
               Clear All
             </AlertDialogAction>
           </AlertDialogFooter>

@@ -11,11 +11,7 @@ interface IndividualTabProps {
   onEditMember: (member: Member) => void;
 }
 
-export function IndividualTab({
-  members,
-  onAddMember,
-  onEditMember,
-}: IndividualTabProps) {
+export function IndividualTab({ members, onAddMember, onEditMember }: IndividualTabProps) {
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
 
   if (members.length === 0) {
