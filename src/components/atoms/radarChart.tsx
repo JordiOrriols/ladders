@@ -1,7 +1,5 @@
 import React, { useMemo } from 'react';
-import { VERTICALS } from './levelSelector';
-
-const LEVELS = 5;
+import { VERTICALS, LEVELS } from './levelSelector';
 
 const verticalColors = {
   Technology: '#6366f1',
@@ -25,7 +23,7 @@ export default function RadarChart({
   
   const getPoint = (verticalIndex, level) => {
     const angle = (Math.PI * 2 * verticalIndex) / VERTICALS.length - Math.PI / 2;
-    const radius = (level / LEVELS) * maxRadius;
+    const radius = (level / LEVELS.length) * maxRadius;
     return {
       x: center + radius * Math.cos(angle),
       y: center + radius * Math.sin(angle)
