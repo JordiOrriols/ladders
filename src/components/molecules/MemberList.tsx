@@ -1,16 +1,11 @@
 import React from "react";
 import { User } from "lucide-react";
 import { useTranslation } from "react-i18next";
-
-interface Member {
-  id: string;
-  name: string;
-  role?: string;
-}
+import type { Member } from "../../types";
 
 interface MemberListProps {
   members: Member[];
-  selectedMemberId?: string;
+  selectedMemberId?: string | undefined;
   onSelectMember: (member: Member) => void;
 }
 
