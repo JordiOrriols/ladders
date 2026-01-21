@@ -44,14 +44,15 @@ export default function MemberForm({ member, onSave, onClose }) {
     });
   };
 
-  const handleImportAssessment = (event) => {
+  const handleImportAssessment = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
-        const data = JSON.parse(e.target.result);
+        const result = e.target?.result as string;
+        const data = JSON.parse(result);
         if (data.name && !name) {
           setName(data.name);
         }
@@ -61,7 +62,7 @@ export default function MemberForm({ member, onSave, onClose }) {
         if (data.currentLevels) {
           setSelfAssessmentLevels(data.currentLevels);
         }
-      } catch (error) {
+      } catch {
         alert(t('validation.importError'));
       }
     };
@@ -136,7 +137,7 @@ export default function MemberForm({ member, onSave, onClose }) {
                     type="button"
                     variant="outline"
                     className="w-full"
-                    onClick={() => document.getElementById('import-assessment-file').click()}
+                    onClick={() => document.getElementById('import-assessment-file')?.click()}
                   >
                     <Upload className="w-4 h-4 mr-2" />
                     {t('buttons.importAssessment')}

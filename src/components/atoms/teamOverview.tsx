@@ -35,7 +35,7 @@ export default function TeamOverview({ members }) {
             <div className="flex items-center gap-3 mb-4">
               <div 
                 className="w-4 h-4 rounded-full"
-                style={{ backgroundColor: memberColors[index % memberColors.length].stroke }}
+                style={{ backgroundColor: memberColors[index % memberColors.length]!.stroke }}
               />
               <div>
                 <h3 className="font-semibold text-slate-800">{member.name}</h3>
@@ -66,7 +66,7 @@ export default function TeamOverview({ members }) {
             <div key={member.id} className="flex items-center gap-2">
               <div 
                 className="w-3 h-3 rounded-full"
-                style={{ backgroundColor: memberColors[index % memberColors.length].stroke }}
+                style={{ backgroundColor: memberColors[index % memberColors.length]!.stroke }}
               />
               <span className="text-sm text-slate-600">{member.name}</span>
             </div>

@@ -1,19 +1,9 @@
 import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
+import type { Member } from "../../types";
 import { EmptyIndividualState } from "../molecules/EmptyIndividualState";
 import { MemberList } from "../molecules/MemberList";
 import { MemberDetailsPanel } from "../molecules/MemberDetailsPanel";
 import { ErrorBoundary } from "../ErrorBoundary";
-
-interface Member {
-  id: string;
-  name: string;
-  role?: string;
-  currentLevels: Record<string, number>;
-  goalLevels: Record<string, number>;
-  selfAssessmentLevels?: Record<string, number>;
-  [key: string]: any;
-}
 
 interface IndividualTabProps {
   members: Member[];
@@ -38,7 +28,7 @@ export function IndividualTab({
         <MemberList
           members={members}
           selectedMemberId={selectedMember?.id}
-          onSelectMember={setSelectedMember}
+          onSelectMember={(member) => setSelectedMember(member)}
         />
       </ErrorBoundary>
       <div className="lg:col-span-2">

@@ -24,7 +24,7 @@ export class ErrorBoundary extends React.Component<
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+  override componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error(
       `Error in ${this.props.componentName || "component"}:`,
       error,
@@ -32,7 +32,7 @@ export class ErrorBoundary extends React.Component<
     );
   }
 
-  render() {
+  override render() {
     if (this.state.hasError && this.state.error) {
       return this.props.fallback ? (
         this.props.fallback(this.state.error)

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import MemberForm from "../components/atoms/memberform";
+import type { Member } from "../types";
+import MemberForm from "../components/atoms/memberForm";
 import { Header } from "../components/molecules/Header";
 import { DeleteMemberDialog } from "../components/molecules/DeleteMemberDialog";
 import { ReferenceModal } from "../components/molecules/ReferenceModal";
@@ -11,11 +12,11 @@ const STORAGE_KEY = "engineering-ladder-data";
 
 export default function Home() {
   const navigate = useNavigate();
-  const [members, setMembers] = useState([]);
+  const [members, setMembers] = useState<Member[]>([]);
   const [showForm, setShowForm] = useState(false);
-  const [editingMember, setEditingMember] = useState(null);
-  const [selectedMember, setSelectedMember] = useState(null);
-  const [deleteId, setDeleteId] = useState(null);
+  const [editingMember, setEditingMember] = useState<Member | null>(null);
+  const [selectedMember, setSelectedMember] = useState<Member | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
   const [showReference, setShowReference] = useState(false);
 
   // Load from localStorage on mount

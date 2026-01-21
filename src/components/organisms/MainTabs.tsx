@@ -1,6 +1,7 @@
 import React from "react";
 import { Users, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import type { Member } from "../../types";
 import {
   Tabs,
   TabsList,
@@ -10,13 +11,6 @@ import {
 import { TeamTab } from "./TeamTab";
 import { IndividualTab } from "./IndividualTab";
 import { ErrorBoundary } from "../ErrorBoundary";
-
-interface Member {
-  id: string;
-  name: string;
-  role?: string;
-  [key: string]: any;
-}
 
 interface MainTabsProps {
   members: Member[];

@@ -1,14 +1,6 @@
 import React, { useMemo } from 'react';
 import { VERTICALS, LEVELS } from './levelSelector';
 
-const verticalColors = {
-  Technology: '#6366f1',
-  System: '#06b6d4',
-  People: '#f59e0b',
-  Process: '#10b981',
-  Influence: '#ec4899'
-};
-
 export default function RadarChart({ 
   currentLevels = {}, 
   goalLevels = {}, 
@@ -40,8 +32,8 @@ export default function RadarChart({
   };
 
   const gridLines = useMemo(() => {
-    const lines = [];
-    for (let level = 1; level <= LEVELS; level++) {
+    const lines: string[] = [];
+    for (let level = 1; level <= LEVELS.length; level++) {
       const points = VERTICALS.map((_, i) => getPoint(i, level));
       const pathData = points.map((p, i) => 
         `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`
@@ -53,7 +45,7 @@ export default function RadarChart({
 
   const axisLines = useMemo(() => {
     return VERTICALS.map((_, i) => {
-      const end = getPoint(i, LEVELS);
+      const end = getPoint(i, LEVELS.length);
       return { x1: center, y1: center, x2: end.x, y2: end.y };
     });
   }, [size]);
@@ -208,7 +200,7 @@ export default function RadarChart({
         })}
 
         {/* Level numbers on first axis */}
-        {showLabels && Array.from({ length: LEVELS }, (_, i) => {
+        {showLabels && Array.from({ length: LEVELS.length }, (_, i) => {
           const level = i + 1;
           const point = getPoint(0, level);
           return (

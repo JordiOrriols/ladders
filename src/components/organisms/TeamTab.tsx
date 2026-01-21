@@ -1,15 +1,7 @@
 import React from "react";
-import { Users } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import type { Member } from "../../types";
 import MemberCard from "../atoms/memberCard";
 import { EmptyTeamState } from "../molecules/EmptyTeamState";
-
-interface Member {
-  id: string;
-  name: string;
-  role?: string;
-  [key: string]: any;
-}
 
 interface TeamTabProps {
   members: Member[];

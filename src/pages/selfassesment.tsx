@@ -5,8 +5,8 @@ import { createPageUrl } from '@/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import LevelSelector from '@/components/LevelSelector';
-import RadarChart from '@/components/RadarChart';
+import LevelSelector from '@/components/atoms/levelSelector';
+import RadarChart from '@/components/atoms/radarChart';
 import { VERTICALS } from '@/components/atoms/levelSelector';
 import {
   AlertDialog,
@@ -24,8 +24,8 @@ const STORAGE_KEY = 'self-assessment-data';
 export default function SelfAssessment() {
   const [name, setName] = useState('');
   const [role, setRole] = useState('');
-  const [currentLevels, setCurrentLevels] = useState({});
-  const [goalLevels, setGoalLevels] = useState({});
+  const [currentLevels, setCurrentLevels] = useState<Record<string, number>>({});
+  const [goalLevels, setGoalLevels] = useState<Record<string, number>>({});
   const [showClearDialog, setShowClearDialog] = useState(false);
 
   // Load from localStorage on mount
@@ -98,13 +98,14 @@ export default function SelfAssessment() {
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
-        const data = JSON.parse(e.target.result);
+        const result = e.target?.result as string;
+        const data = JSON.parse(result);
         setName(data.name || '');
         setRole(data.role || '');
         setCurrentLevels(data.currentLevels || {});
         setGoalLevels(data.goalLevels || {});
         saveToLocalStorage(data);
-      } catch (error) {
+      } catch {
         alert('Failed to import file. Please ensure it\'s a valid JSON file.');
       }
     };
@@ -154,7 +155,7 @@ export default function SelfAssessment() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => document.getElementById('import-file').click()}
+                onClick={() => document.getElementById('import-file')?.click()}
               >
                 <Upload className="w-4 h-4 mr-2" />
                 Import
@@ -259,7 +260,7 @@ export default function SelfAssessment() {
                   <p className="text-xs text-emerald-600 font-medium mb-1">Current Average</p>
                   <p className="text-2xl font-bold text-emerald-700">
                     {Object.values(currentLevels).length > 0
-                      ? (Object.values(currentLevels).reduce((a, b) => a + b, 0) / 5).toFixed(1)
+                      ? (Object.values(currentLevels).reduce((a, b) => (a as number) + (b as number), 0) / 5).toFixed(1)
                       : '0.0'}
                   </p>
                 </div>
@@ -267,7 +268,7 @@ export default function SelfAssessment() {
                   <p className="text-xs text-amber-600 font-medium mb-1">Goal Average</p>
                   <p className="text-2xl font-bold text-amber-700">
                     {Object.values(goalLevels).length > 0
-                      ? (Object.values(goalLevels).reduce((a, b) => a + b, 0) / 5).toFixed(1)
+                      ? (Object.values(goalLevels).reduce((a, b) => (a as number) + (b as number), 0) / 5).toFixed(1)
                       : '0.0'}
                   </p>
                 </div>
