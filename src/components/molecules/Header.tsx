@@ -1,5 +1,6 @@
 import React from "react";
-import { Plus, Info, ClipboardCheck, LayoutGrid } from "lucide-react";
+import { Plus, Info, ClipboardCheck, LayoutGrid, Globe } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "../ui/button";
 
 interface HeaderProps {
@@ -13,6 +14,12 @@ export function Header({
   onShowReference,
   onNavigateToSelfAssessment,
 }: HeaderProps) {
+  const { t, i18n } = useTranslation();
+
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+  };
+
   return (
     <header className="bg-white border-b border-slate-200 sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -23,12 +30,41 @@ export function Header({
             </div>
             <div>
               <h1 className="text-lg font-semibold text-slate-800">
-                Engineering Ladder
+                {t("header.title")}
               </h1>
-              <p className="text-xs text-slate-500">Team competency tracker</p>
+              <p className="text-xs text-slate-500">{t("header.subtitle")}</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
+            {/* Language Selector */}
+            <div className="hidden sm:flex items-center gap-1 px-2 py-1 bg-slate-100 rounded-lg">
+              <Globe className="w-4 h-4 text-slate-600" />
+              <Button
+                variant={i18n.language === "en" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => changeLanguage("en")}
+                className="h-7 px-2 text-xs"
+              >
+                EN
+              </Button>
+              <Button
+                variant={i18n.language === "es" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => changeLanguage("es")}
+                className="h-7 px-2 text-xs"
+              >
+                ES
+              </Button>
+              <Button
+                variant={i18n.language === "ca" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => changeLanguage("ca")}
+                className="h-7 px-2 text-xs"
+              >
+                CA
+              </Button>
+            </div>
+            
             {onNavigateToSelfAssessment && (
               <Button
                 variant="outline"
@@ -37,7 +73,7 @@ export function Header({
                 className="hidden sm:flex"
               >
                 <ClipboardCheck className="w-4 h-4 mr-2" />
-                Self Assessment
+                {t("header.selfAssessment")}
               </Button>
             )}
             <Button
@@ -47,11 +83,11 @@ export function Header({
               className="hidden sm:flex"
             >
               <Info className="w-4 h-4 mr-2" />
-              Reference
+              {t("header.reference")}
             </Button>
             <Button onClick={onAddMember}>
               <Plus className="w-4 h-4 mr-2" />
-              Add Member
+              {t("header.addMember")}
             </Button>
           </div>
         </div>

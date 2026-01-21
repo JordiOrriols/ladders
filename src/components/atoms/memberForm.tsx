@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Upload } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,6 +10,7 @@ import RadarChart from './radarChart';
 const VERTICALS = ['Technology', 'System', 'People', 'Process', 'Influence'];
 
 export default function MemberForm({ member, onSave, onClose }) {
+  const { t } = useTranslation();
   const [name, setName] = useState('');
   const [role, setRole] = useState('');
   const [currentLevels, setCurrentLevels] = useState({});
@@ -61,7 +63,7 @@ export default function MemberForm({ member, onSave, onClose }) {
           setSelfAssessmentLevels(data.currentLevels);
         }
       } catch (error) {
-        alert('Failed to import file. Please ensure it\'s a valid self-assessment JSON file.');
+        alert(t('validation.importError'));
       }
     };
     reader.readAsText(file);
@@ -92,7 +94,7 @@ export default function MemberForm({ member, onSave, onClose }) {
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl mx-4" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between p-6 border-b border-slate-200">
           <h2 className="text-xl font-semibold text-slate-800">
-            {member ? 'Edit Team Member' : 'Add Team Member'}
+            {member ? t('forms.editTeamMember') : t('forms.addTeamMember')}
           </h2>
           <Button size="icon" variant="ghost" onClick={onClose}>
             <X className="w-5 h-5" />
@@ -104,17 +106,17 @@ export default function MemberForm({ member, onSave, onClose }) {
             <div className="space-y-6">
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="name">Name</Label>
+                  <Label htmlFor="name">{t('forms.name')}</Label>
                   <Input
                     id="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Enter name"
+                    placeholder={t('forms.name')}
                     className="mt-1"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="role">Role (optional)</Label>
+                  <Label htmlFor="role">{t('forms.role')}</Label>
                   <Input
                     id="role"
                     value={role}
@@ -138,18 +140,18 @@ export default function MemberForm({ member, onSave, onClose }) {
                     onClick={() => document.getElementById('import-assessment-file').click()}
                   >
                     <Upload className="w-4 h-4 mr-2" />
-                    Import Self Assessment
+                    {t('buttons.importAssessment')}
                   </Button>
                   {Object.keys(selfAssessmentLevels).length > 0 && (
                     <p className="text-xs text-slate-500 mt-1">
-                      Self assessment imported successfully
+                      {t('validation.importSuccess')}
                     </p>
                   )}
                 </div>
               </div>
 
               <div className="space-y-3">
-                <Label>Competencies</Label>
+                <Label>{t('forms.competencies')}</Label>
                 {VERTICALS.map(vertical => (
                   <LevelSelector
                     key={vertical}
@@ -165,7 +167,7 @@ export default function MemberForm({ member, onSave, onClose }) {
             </div>
 
             <div className="flex flex-col items-center justify-center lg:sticky lg:top-6">
-              <h3 className="text-sm font-medium text-slate-500 mb-4">Preview</h3>
+              <h3 className="text-sm font-medium text-slate-500 mb-4">{t('forms.preview')}</h3>
               <RadarChart
                 currentLevels={currentLevels}
                 goalLevels={goalLevels}
@@ -177,10 +179,10 @@ export default function MemberForm({ member, onSave, onClose }) {
 
           <div className="flex justify-end gap-3 p-6 border-t border-slate-200 bg-slate-50 rounded-b-2xl">
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              {t('buttons.cancel')}
             </Button>
             <Button type="submit" disabled={!name.trim()}>
-              {member ? 'Save Changes' : 'Add Member'}
+              {member ? t('buttons.save') : t('buttons.add')}
             </Button>
           </div>
         </form>

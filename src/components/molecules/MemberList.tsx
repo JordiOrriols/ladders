@@ -1,5 +1,6 @@
 import React from "react";
 import { User } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface Member {
   id: string;
@@ -18,10 +19,12 @@ export function MemberList({
   selectedMemberId,
   onSelectMember,
 }: MemberListProps) {
+  const { t } = useTranslation();
+
   return (
     <div className="lg:col-span-1 space-y-2">
       <h3 className="text-sm font-medium text-slate-500 mb-3 px-1">
-        Select a member
+        {t('individualView.selectMember')}
       </h3>
       {members.map((member) => (
         <button

@@ -1,5 +1,6 @@
 import React from "react";
 import { User } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "../ui/button";
 import RadarChart from "../atoms/radarChart";
 import { CompetencyDetailsCard } from "./CompetencyDetailsCard";
@@ -24,12 +25,14 @@ export function MemberDetailsPanel({
   member,
   onEdit,
 }: MemberDetailsPanelProps) {
+  const { t } = useTranslation();
+
   if (!member) {
     return (
       <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center">
         <User className="w-12 h-12 text-slate-300 mx-auto mb-4" />
         <p className="text-slate-500">
-          Select a team member to view their profile
+          {t('individualView.empty')}
         </p>
       </div>
     );
@@ -47,7 +50,7 @@ export function MemberDetailsPanel({
           )}
         </div>
         <Button variant="outline" onClick={() => onEdit(member)}>
-          Edit
+          {t('buttons.edit')}
         </Button>
       </div>
 
@@ -64,7 +67,7 @@ export function MemberDetailsPanel({
 
       {/* Competency Details */}
       <div className="space-y-4">
-        <h3 className="font-semibold text-slate-800">Competency Details</h3>
+        <h3 className="font-semibold text-slate-800">{t('memberDetails.competencyDetails')}</h3>
         <div className="grid sm:grid-cols-2 gap-4">
           {Object.keys(VERTICALS_DATA).map((vertical) => (
             <ErrorBoundary key={vertical} componentName={`CompetencyCard-${vertical}`}>

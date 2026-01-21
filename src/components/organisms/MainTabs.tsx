@@ -1,5 +1,6 @@
 import React from "react";
 import { Users, User } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import {
   Tabs,
   TabsList,
@@ -32,6 +33,8 @@ export function MainTabs({
   onDeleteMember,
   onSelectMember,
 }: MainTabsProps) {
+  const { t } = useTranslation();
+
   return (
     <Tabs defaultValue="team" className="space-y-6">
       <TabsList className="bg-white border border-slate-200">
@@ -40,14 +43,14 @@ export function MainTabs({
           className="data-[state=active]:bg-slate-100"
         >
           <Users className="w-4 h-4 mr-2" />
-          Team
+          {t('tabs.team')}
         </TabsTrigger>
         <TabsTrigger
           value="individual"
           className="data-[state=active]:bg-slate-100"
         >
           <User className="w-4 h-4 mr-2" />
-          Individual
+          {t('tabs.individual')}
         </TabsTrigger>
       </TabsList>
 

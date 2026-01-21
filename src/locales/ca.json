@@ -1,0 +1,98 @@
+{
+  "header": {
+    "title": "Escala d'Enginyeria",
+    "subtitle": "Rastreador de competències del equip",
+    "selfAssessment": "Autoevaluació",
+    "reference": "Referència",
+    "addMember": "Afegir Membre"
+  },
+  "buttons": {
+    "cancel": "Cancelar",
+    "save": "Guardar Canvis",
+    "add": "Afegir Membre",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "close": "Tancar",
+    "importAssessment": "Importar Autoevaluació"
+  },
+  "forms": {
+    "addTeamMember": "Afegir Membre de l'Equip",
+    "editTeamMember": "Editar Membre de l'Equip",
+    "name": "Nom",
+    "role": "Rol (opcional)",
+    "competencies": "Competències",
+    "preview": "Vista Prèvia"
+  },
+  "validation": {
+    "importSuccess": "Autoevaluació importada correctament",
+    "importError": "Error en importar l'arxiu. Assegureu-vos que és un arxiu JSON d'autoevaluació vàlid."
+  },
+  "tabs": {
+    "team": "Equip",
+    "individual": "Individual"
+  },
+  "teamView": {
+    "empty": "Sense membres de l'equip encara",
+    "emptyDescription": "Afegiu el vostre primer membre de l'equip per comenzar a rastrejar competències",
+    "addFirst": "Afegir Primer Membre"
+  },
+  "individualView": {
+    "empty": "Sense membres de l'equip",
+    "emptyDescription": "Afegiu membres de l'equip per veure perfils individuals",
+    "selectMember": "Seleccionar un membre"
+  },
+  "memberDetails": {
+    "competencyDetails": "Detalls de Competències"
+  },
+  "reference": {
+    "title": "Referència de Escala d'Enginyeria",
+    "levelTemplate": "N{level}: {name}"
+  },
+  "deleteDialog": {
+    "title": "Eliminar membre de l'equip?",
+    "description": "Aquesta acció no es pot desfer. Això eliminarà permanentment el membre de l'equip i les seves dades."
+  },
+  "levels": {
+    "Technology": {
+      "1": { "name": "Adopta", "description": "Aprèn activament i adopta la tecnologia i les eines definides per l'equip" },
+      "2": { "name": "Especialitza", "description": "És la persona clau per a una o més tecnologies i pren la iniciativa per aprendre noves" },
+      "3": { "name": "Evangelitza", "description": "Investiga, crea proves de concepte i introdueix noves tecnologies a l'equip" },
+      "4": { "name": "Domina", "description": "Té coneixement molt profund de tota l'stack de tecnologia del sistema" },
+      "5": { "name": "Crea", "description": "Dissenya i crea noves tecnologies que són àmpliament utilitzades per equips interns o externs" }
+    },
+    "System": {
+      "1": { "name": "Millora", "description": "Implementa exitosament noves característiques i correccions d'errors per millorar i estendre el sistema" },
+      "2": { "name": "Dissenya", "description": "Dissenya i implementa característiques de mitjà a gran mida mentre redueix la deuta tècnica del sistema" },
+      "3": { "name": "Posseeix", "description": "Posseeix l'operació de producció i monitoratge del sistema i és conscient dels seus SLA" },
+      "4": { "name": "Evoluciona", "description": "Evoluciona l'arquitectura per suportar requisits futurs i defineix els seus SLA" },
+      "5": { "name": "Lidera", "description": "Lidera l'excel·lència tècnica del sistema i crea plans per mitigar interrupcions" }
+    },
+    "People": {
+      "1": { "name": "Aprèn", "description": "Aprèn ràpidament dels altres i es presenta consistentment quan és necessari" },
+      "2": { "name": "Suporta", "description": "Suporta proactivament altres membres de l'equip i els ajuda a tenir èxit" },
+      "3": { "name": "Mentoritza", "description": "Mentoritza altres per accelerar el seu creixement professional i els anima a participar" },
+      "4": { "name": "Coordina", "description": "Coordina membres de l'equip proporcionant retroalimentació efectiva i moderant discussions" },
+      "5": { "name": "Gestiona", "description": "Gestiona la carrera, expectatives, rendiment i nivell de felicitat dels membres de l'equip" }
+    },
+    "Process": {
+      "1": { "name": "Segueix", "description": "Segueix els processos de l'equip, entregant un flux consistent de característiques a producció" },
+      "2": { "name": "Reforça", "description": "Reforça els processos de l'equip, assegurant que tots entenen els beneficis i compromisos" },
+      "3": { "name": "Desafia", "description": "Desafia els processos de l'equip, cercant formes de millorar-los" },
+      "4": { "name": "Ajusta", "description": "Ajusta els processos de l'equip, escoltant retroalimentació i guiant l'equip a través dels canvis" },
+      "5": { "name": "Defineix", "description": "Defineix els processos correctes per al nivell de maduresa de l'equip, equilibrant agilitat i disciplina" }
+    },
+    "Influence": {
+      "1": { "name": "Subsistema", "description": "Té impacte en un o més subsistemes" },
+      "2": { "name": "Equip", "description": "Té impacte en tot l'equip, no només en parts específiques" },
+      "3": { "name": "Múltiples Equips", "description": "Té impacte no només en el seu equip sinó també en altres equips" },
+      "4": { "name": "Empresa", "description": "Té impacte en tota l'organització tècnica" },
+      "5": { "name": "Comunitat", "description": "Té impacte en la comunitat tecnològica" }
+    }
+  },
+  "competencyLabels": {
+    "current": "Actual: {{level}} {{name}}",
+    "currentNotSet": "Actual: No establert",
+    "goal": "Objectiu: {{level}} {{name}}",
+    "self": "Autoevaluació: {{level}} {{name}}"
+  }
+}

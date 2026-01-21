@@ -1,5 +1,6 @@
 import React from "react";
 import { Users } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import MemberCard from "../atoms/memberCard";
 import { EmptyTeamState } from "../molecules/EmptyTeamState";
 
