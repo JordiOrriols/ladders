@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import MemberForm from "../components/atoms/memberForm";
+import { useNavigate } from "react-router-dom";
+import MemberForm from "../components/atoms/memberform";
 import { Header } from "../components/molecules/Header";
 import { DeleteMemberDialog } from "../components/molecules/DeleteMemberDialog";
 import { ReferenceModal } from "../components/molecules/ReferenceModal";
@@ -9,6 +10,7 @@ import { ErrorBoundary } from "../components/ErrorBoundary";
 const STORAGE_KEY = "engineering-ladder-data";
 
 export default function Home() {
+  const navigate = useNavigate();
   const [members, setMembers] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [editingMember, setEditingMember] = useState(null);
@@ -72,6 +74,7 @@ export default function Home() {
         <Header
           onAddMember={() => setShowForm(true)}
           onShowReference={() => setShowReference(true)}
+          onNavigateToSelfAssessment={() => navigate("/SelfAssessment")}
         />
       </ErrorBoundary>
 
