@@ -5,8 +5,7 @@ import { Button } from "../ui/button";
 import RadarChart from "../atoms/radarChart";
 import { CompetencyDetailsCard } from "./CompetencyDetailsCard";
 import { ErrorBoundary } from "../ErrorBoundary";
-
-const VERTICALS = ['Technology', 'System', 'People', 'Process', 'Influence'];
+import { VERTICALS } from "../atoms/levelSelector";
 
 interface Member {
   id: string;

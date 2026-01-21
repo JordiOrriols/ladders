@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import LevelSelector from '@/components/LevelSelector';
 import RadarChart from '@/components/RadarChart';
+import { VERTICALS } from '@/components/atoms/levelSelector';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,7 +20,6 @@ import {
 } from "@/components/ui/alert-dialog";
 
 const STORAGE_KEY = 'self-assessment-data';
-const VERTICALS = ['Technology', 'System', 'People', 'Process', 'Influence'];
 
 export default function SelfAssessment() {
   const [name, setName] = useState('');

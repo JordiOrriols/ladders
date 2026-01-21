@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
+import { VERTICALS } from './levelSelector';
 
-const VERTICALS = ['Technology', 'System', 'People', 'Process', 'Influence'];
 const LEVELS = 5;
 
 const verticalColors = {

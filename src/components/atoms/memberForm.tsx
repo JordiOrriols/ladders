@@ -5,9 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import LevelSelector from './levelSelector';
+import { VERTICALS } from './levelSelector';
 import RadarChart from './radarChart';
-
-const VERTICALS = ['Technology', 'System', 'People', 'Process', 'Influence'];
 
 export default function MemberForm({ member, onSave, onClose }) {
   const { t } = useTranslation();
