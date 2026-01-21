@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 
 export const VERTICALS = ['Technology', 'System', 'People', 'Process', 'Influence'];
+export const LEVELS = [1, 2, 3, 4, 5];
 
 const VERTICALS_DATA = {
   Technology: [

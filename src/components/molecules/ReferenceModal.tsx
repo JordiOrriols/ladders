@@ -1,9 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "../ui/button";
-import { VERTICALS } from "../atoms/levelSelector";
-
-const LEVELS = [1, 2, 3, 4, 5];
+import { VERTICALS, LEVELS } from "../atoms/levelSelector";
 
 interface ReferenceModalProps {
   isOpen: boolean;
