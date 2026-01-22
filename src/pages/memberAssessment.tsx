@@ -174,11 +174,7 @@ export default function MemberAssessmentPage() {
                 className="hidden"
                 onChange={handleImportSelfAssessment}
               />
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => fileInputRef.current?.click()}
-              >
+              <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
                 <Download className="w-4 h-4 mr-2" />
                 {t("memberAssessment.importSelfAssessment")}
               </Button>
