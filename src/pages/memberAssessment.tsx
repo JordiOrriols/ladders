@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Share2 } from "lucide-react";
+import { ArrowLeft, Download, Share2 } from "lucide-react";
 import LevelSelector, { VERTICALS } from "@/components/atoms/levelSelector";
 import RadarChart from "@/components/atoms/radarChart";
 import { Button } from "@/components/ui/button";
@@ -65,7 +65,9 @@ export default function MemberAssessmentPage() {
 
     setMembers((prev) => {
       const exists = prev.find((m) => m.id === payload.id);
-      const next = exists ? prev.map((m) => (m.id === payload.id ? payload : m)) : [...prev, payload];
+      const next = exists
+        ? prev.map((m) => (m.id === payload.id ? payload : m))
+        : [...prev, payload];
       localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
       return next;
     });
@@ -81,6 +83,34 @@ export default function MemberAssessmentPage() {
 
   const handleCommentChange = (vertical: string, value: string) => {
     setComments((prev) => ({ ...prev, [vertical]: value }));
+  };
+
+  const handleImportSelfAssessment = () => {
+    const raw = localStorage.getItem("self-assessment-data");
+    if (!raw) {
+      alert("No self-assessment found on this device.");
+      return;
+    }
+
+    try {
+      const data = JSON.parse(raw) as {
+        name?: string;
+        role?: string;
+        currentLevels?: Record<string, number>;
+        comments?: Record<string, string>;
+      };
+
+      setSelfAssessmentLevels(data.currentLevels || {});
+
+      // Keep existing manager-entered values; only backfill if empty
+      if (!name && data.name) setName(data.name);
+      if (!role && data.role) setRole(data.role);
+
+      alert("Imported self-assessment levels.");
+    } catch (e) {
+      console.error("Failed to import self-assessment", e);
+      alert("Could not import self-assessment data.");
+    }
   };
 
   const handleShareLink = () => {
@@ -112,6 +142,10 @@ export default function MemberAssessmentPage() {
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" onClick={handleImportSelfAssessment}>
+                <Download className="w-4 h-4 mr-2" />
+                Import Self-Assessment
+              </Button>
               <Button variant="outline" onClick={handleShareLink}>
                 <Share2 className="w-4 h-4 mr-2" />
                 Share Self-Assessment
@@ -200,8 +234,10 @@ export default function MemberAssessmentPage() {
                   <p className="text-2xl font-bold text-emerald-700">
                     {Object.values(currentLevels).length > 0
                       ? (
-                          Object.values(currentLevels).reduce((a, b) => (a as number) + (b as number), 0) /
-                          VERTICALS.length
+                          Object.values(currentLevels).reduce(
+                            (a, b) => (a as number) + (b as number),
+                            0
+                          ) / VERTICALS.length
                         ).toFixed(1)
                       : "0.0"}
                   </p>
@@ -211,8 +247,10 @@ export default function MemberAssessmentPage() {
                   <p className="text-2xl font-bold text-amber-700">
                     {Object.values(goalLevels).length > 0
                       ? (
-                          Object.values(goalLevels).reduce((a, b) => (a as number) + (b as number), 0) /
-                          VERTICALS.length
+                          Object.values(goalLevels).reduce(
+                            (a, b) => (a as number) + (b as number),
+                            0
+                          ) / VERTICALS.length
                         ).toFixed(1)
                       : "0.0"}
                   </p>
