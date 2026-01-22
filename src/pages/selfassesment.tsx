@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Download, Trash2, LayoutGrid } from "lucide-react";
+import { ArrowLeft, Download, Trash2, LayoutGrid, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -100,6 +100,15 @@ export default function SelfAssessment() {
     setShowClearDialog(false);
   };
 
+  const handleShareLink = () => {
+    const url = `${window.location.origin}/SelfAssessment`;
+    navigator.clipboard.writeText(url).then(() => {
+      alert("Link copied to clipboard!");
+    }).catch(() => {
+      alert("Failed to copy link");
+    });
+  };
+
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
@@ -125,6 +134,10 @@ export default function SelfAssessment() {
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" onClick={handleShareLink}>
+                <Share2 className="w-4 h-4 mr-2" />
+                Share Link
+              </Button>
               <Button variant="outline" size="sm" onClick={() => setShowClearDialog(true)}>
                 <Trash2 className="w-4 h-4 mr-2" />
                 Clear

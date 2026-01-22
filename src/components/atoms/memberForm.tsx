@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { X, Upload } from "lucide-react";
+import { X, Upload, Share2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -80,6 +80,15 @@ export default function MemberForm({ member, onSave, onClose }) {
     setGoalLevels((prev) => ({ ...prev, [vertical]: level }));
   };
 
+  const handleShareLink = () => {
+    const url = `${window.location.origin}/SelfAssessment`;
+    navigator.clipboard.writeText(url).then(() => {
+      alert("Self-assessment link copied to clipboard!");
+    }).catch(() => {
+      alert("Failed to copy link");
+    });
+  };
+
   return (
     <div
       className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-start justify-center overflow-y-auto py-8"
@@ -140,15 +149,26 @@ export default function MemberForm({ member, onSave, onClose }) {
                     onChange={handleImportAssessment}
                     className="hidden"
                   />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full"
-                    onClick={() => document.getElementById("import-assessment-file")?.click()}
-                  >
-                    <Upload className="w-4 h-4 mr-2" />
-                    {t("buttons.importAssessment")}
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => document.getElementById("import-assessment-file")?.click()}
+                    >
+                      <Upload className="w-4 h-4 mr-2" />
+                      {t("buttons.importAssessment")}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="flex-1"
+                      onClick={handleShareLink}
+                    >
+                      <Share2 className="w-4 h-4 mr-2" />
+                      Share Link
+                    </Button>
+                  </div>
                   {Object.keys(selfAssessmentLevels).length > 0 && (
                     <p className="text-xs text-slate-500 mt-1">{t("validation.importSuccess")}</p>
                   )}
