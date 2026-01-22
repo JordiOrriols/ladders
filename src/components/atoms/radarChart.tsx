@@ -33,7 +33,7 @@ export default function RadarChart({
     textElements.forEach((text) => {
       const currentClass = text.getAttribute("class") || "";
       // Reduce font size classes
-      let newClass = currentClass
+      const newClass = currentClass
         .replace("text-xs", "text-[9px]")
         .replace("text-[10px]", "text-[7px]");
       text.setAttribute("class", newClass);
