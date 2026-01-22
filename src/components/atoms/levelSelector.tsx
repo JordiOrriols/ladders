@@ -68,13 +68,26 @@ export default function LevelSelector({
   onCurrentChange,
   onGoalChange,
   hideGoal = false,
+  comment = "",
+  onCommentChange,
+  expanded,
+  onToggle,
 }) {
   const { t } = useTranslation();
-  const [expanded, setExpanded] = useState(false);
+  const [internalExpanded, setInternalExpanded] = useState(false);
   const levels = VERTICALS_DATA[vertical];
   const currentLevelData = levels.find((l) => l.level === currentLevel);
   const goalLevelData = levels.find((l) => l.level === goalLevel);
   const selfAssessmentLevelData = levels.find((l) => l.level === selfAssessmentLevel);
+
+  const isExpanded = expanded ?? internalExpanded;
+  const toggle = () => {
+    if (onToggle) {
+      onToggle();
+    } else {
+      setInternalExpanded((prev) => !prev);
+    }
+  };
 
   return (
     <div className={`rounded-xl border ${verticalBgColors[vertical]} overflow-hidden`}>
@@ -83,7 +96,7 @@ export default function LevelSelector({
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
-          setExpanded(!expanded);
+          toggle();
         }}
         className="w-full p-4 flex items-center justify-between hover:bg-white/50 transition-colors"
       >
@@ -110,14 +123,14 @@ export default function LevelSelector({
             </div>
           </div>
         </div>
-        {expanded ? (
+        {isExpanded ? (
           <ChevronUp className="w-5 h-5 text-slate-400" />
         ) : (
           <ChevronDown className="w-5 h-5 text-slate-400" />
         )}
       </button>
 
-      {expanded && (
+      {isExpanded && (
         <div className="px-4 pb-4 space-y-2" onClick={(e) => e.stopPropagation()}>
           {levels.map((level) => (
             <div
@@ -183,6 +196,17 @@ export default function LevelSelector({
               </div>
             </div>
           ))}
+
+          <div className="space-y-1 pt-2">
+            <label className="text-xs font-semibold text-slate-700">Comments</label>
+            <textarea
+              value={comment}
+              onChange={(e) => onCommentChange?.(e.target.value)}
+              placeholder="Add notes for this competency"
+              className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200"
+              rows={3}
+            />
+          </div>
         </div>
       )}
     </div>

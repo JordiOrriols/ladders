@@ -15,6 +15,8 @@ export default function MemberForm({ member, onSave, onClose }) {
   const [currentLevels, setCurrentLevels] = useState({});
   const [goalLevels, setGoalLevels] = useState({});
   const [selfAssessmentLevels, setSelfAssessmentLevels] = useState({});
+  const [comments, setComments] = useState<Record<string, string>>({});
+  const [expandedVertical, setExpandedVertical] = useState<string | null>(null);
 
   console.log("[MemberForm] Rendered with member:", member?.name, "editing:", !!member);
 
@@ -26,6 +28,7 @@ export default function MemberForm({ member, onSave, onClose }) {
       setCurrentLevels(member.currentLevels || {});
       setGoalLevels(member.goalLevels || {});
       setSelfAssessmentLevels(member.selfAssessmentLevels || {});
+      setComments(member.comments || {});
     }
   }, [member]);
 
@@ -40,6 +43,7 @@ export default function MemberForm({ member, onSave, onClose }) {
       role: role.trim(),
       currentLevels,
       goalLevels,
+      comments,
       selfAssessmentLevels,
     });
   };
@@ -78,6 +82,10 @@ export default function MemberForm({ member, onSave, onClose }) {
   const handleGoalChange = (vertical, level) => {
     console.log("[LevelSelector] Goal level changed for", vertical, "to", level);
     setGoalLevels((prev) => ({ ...prev, [vertical]: level }));
+  };
+
+  const handleCommentChange = (vertical: string, value: string) => {
+    setComments((prev) => ({ ...prev, [vertical]: value }));
   };
 
   const handleShareLink = () => {
@@ -188,8 +196,14 @@ export default function MemberForm({ member, onSave, onClose }) {
                     currentLevel={currentLevels[vertical] || 0}
                     goalLevel={goalLevels[vertical] || 0}
                     selfAssessmentLevel={selfAssessmentLevels[vertical] || 0}
+                    comment={comments[vertical] || ""}
                     onCurrentChange={(level) => handleCurrentChange(vertical, level)}
                     onGoalChange={(level) => handleGoalChange(vertical, level)}
+                    onCommentChange={(value) => handleCommentChange(vertical, value)}
+                    expanded={expandedVertical === vertical}
+                    onToggle={() =>
+                      setExpandedVertical((prev) => (prev === vertical ? null : vertical))
+                    }
                   />
                 ))}
               </div>
