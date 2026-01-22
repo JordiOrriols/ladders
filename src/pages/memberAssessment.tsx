@@ -139,7 +139,9 @@ export default function MemberAssessmentPage() {
                 <ArrowLeft className="w-5 h-5" />
               </Button>
               <div>
-                <h1 className="text-lg font-semibold text-slate-800">{t("memberAssessment.title")}</h1>
+                <h1 className="text-lg font-semibold text-slate-800">
+                  {t("memberAssessment.title")}
+                </h1>
                 <p className="text-xs text-slate-500">{t("memberAssessment.subtitle")}</p>
               </div>
             </div>
@@ -163,7 +165,9 @@ export default function MemberAssessmentPage() {
           {/* Left Column - Form */}
           <div className="space-y-6">
             <div className="bg-white rounded-2xl border border-slate-200 p-6">
-              <h2 className="text-lg font-semibold text-slate-800 mb-4">{t("memberAssessment.personalInfo")}</h2>
+              <h2 className="text-lg font-semibold text-slate-800 mb-4">
+                {t("memberAssessment.personalInfo")}
+              </h2>
               <div className="space-y-4">
                 <div>
                   <Label htmlFor="name">Name</Label>
@@ -189,7 +193,9 @@ export default function MemberAssessmentPage() {
             </div>
 
             <div className="bg-white rounded-2xl border border-slate-200 p-6">
-              <h2 className="text-lg font-semibold text-slate-800 mb-4">{t("memberAssessment.competencies")}</h2>
+              <h2 className="text-lg font-semibold text-slate-800 mb-4">
+                {t("memberAssessment.competencies")}
+              </h2>
               <div className="space-y-3">
                 {VERTICALS.map((vertical) => (
                   <LevelSelector
@@ -232,7 +238,9 @@ export default function MemberAssessmentPage() {
               {/* Summary Stats */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-200">
-                  <p className="text-xs text-emerald-600 font-medium mb-1">{t("memberAssessment.currentAverage")}</p>
+                  <p className="text-xs text-emerald-600 font-medium mb-1">
+                    {t("memberAssessment.currentAverage")}
+                  </p>
                   <p className="text-2xl font-bold text-emerald-700">
                     {Object.values(currentLevels).length > 0
                       ? (
@@ -245,7 +253,9 @@ export default function MemberAssessmentPage() {
                   </p>
                 </div>
                 <div className="p-4 bg-amber-50 rounded-xl border border-amber-200">
-                  <p className="text-xs text-amber-600 font-medium mb-1">{t("memberAssessment.goalAverage")}</p>
+                  <p className="text-xs text-amber-600 font-medium mb-1">
+                    {t("memberAssessment.goalAverage")}
+                  </p>
                   <p className="text-2xl font-bold text-amber-700">
                     {Object.values(goalLevels).length > 0
                       ? (
@@ -261,7 +271,9 @@ export default function MemberAssessmentPage() {
 
               {/* Progress by Vertical */}
               <div className="mt-6 space-y-3">
-                <h3 className="text-sm font-semibold text-slate-700">{t("memberAssessment.competencyLevels")}</h3>
+                <h3 className="text-sm font-semibold text-slate-700">
+                  {t("memberAssessment.competencyLevels")}
+                </h3>
                 {VERTICALS.map((vertical) => {
                   const current = currentLevels[vertical] || 0;
                   const goal = goalLevels[vertical] || 0;

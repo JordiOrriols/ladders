@@ -56,7 +56,9 @@ describe("MemberCard", () => {
   });
 
   it("should render radar chart", () => {
-    const { container } = renderWithI18n(<MemberCard member={mockMember} onEdit={mockOnEdit} onDelete={mockOnDelete} />);
+    const { container } = renderWithI18n(
+      <MemberCard member={mockMember} onEdit={mockOnEdit} onDelete={mockOnDelete} />
+    );
     expect(container.querySelector("svg")).toBeTruthy();
   });
 

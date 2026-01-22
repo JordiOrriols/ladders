@@ -49,7 +49,14 @@ describe("CompetencyDetailsCard", () => {
   });
 
   it("should handle all levels", () => {
-    renderWithI18n(<CompetencyDetailsCard {...defaultProps} currentLevel={5} goalLevel={5} selfAssessmentLevel={5} />);
+    renderWithI18n(
+      <CompetencyDetailsCard
+        {...defaultProps}
+        currentLevel={5}
+        goalLevel={5}
+        selfAssessmentLevel={5}
+      />
+    );
     const level5Elements = screen.queryAllByText(/L5/);
     expect(level5Elements.length).toBeGreaterThan(0);
   });

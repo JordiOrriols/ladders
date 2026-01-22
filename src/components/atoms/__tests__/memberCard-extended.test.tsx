@@ -54,11 +54,7 @@ describe("MemberCard Extended Tests", () => {
 
   it("should calculate correct average level", () => {
     const { container } = renderWithI18n(
-      <MemberCard
-        member={mockMember}
-        onEdit={mockOnEdit}
-        onDelete={mockOnDelete}
-      />
+      <MemberCard member={mockMember} onEdit={mockOnEdit} onDelete={mockOnDelete} />
     );
     // Average = (4+3+4+3+4) / 5 = 3.6
     expect(container).toBeTruthy();
@@ -66,11 +62,7 @@ describe("MemberCard Extended Tests", () => {
 
   it("should display radar chart", () => {
     const { container } = renderWithI18n(
-      <MemberCard
-        member={mockMember}
-        onEdit={mockOnEdit}
-        onDelete={mockOnDelete}
-      />
+      <MemberCard member={mockMember} onEdit={mockOnEdit} onDelete={mockOnDelete} />
     );
     expect(container.querySelector("svg")).toBeTruthy();
   });
@@ -115,22 +107,14 @@ describe("MemberCard Extended Tests", () => {
     };
 
     renderWithI18n(
-      <MemberCard
-        member={differentMember}
-        onEdit={mockOnEdit}
-        onDelete={mockOnDelete}
-      />
+      <MemberCard member={differentMember} onEdit={mockOnEdit} onDelete={mockOnDelete} />
     );
     expect(screen.getByText("Bob Smith")).toBeTruthy();
   });
 
   it("should show action buttons on hover", () => {
     const { container } = renderWithI18n(
-      <MemberCard
-        member={mockMember}
-        onEdit={mockOnEdit}
-        onDelete={mockOnDelete}
-      />
+      <MemberCard member={mockMember} onEdit={mockOnEdit} onDelete={mockOnDelete} />
     );
     const buttons = container.querySelectorAll("button");
     expect(buttons.length >= 2).toBe(true); // Edit and Delete buttons

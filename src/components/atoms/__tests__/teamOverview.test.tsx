@@ -26,13 +26,15 @@ describe("TeamOverview", () => {
 
   it("should handle members list", () => {
     try {
-      const mockMembers = [{
-        id: "1",
-        name: "Test",
-        role: "Engineer",
-        currentLevels: { Technology: 3 },
-        goalLevels: { Technology: 4 },
-      }];
+      const mockMembers = [
+        {
+          id: "1",
+          name: "Test",
+          role: "Engineer",
+          currentLevels: { Technology: 3 },
+          goalLevels: { Technology: 4 },
+        },
+      ];
       const { container } = renderWithI18n(<TeamOverview members={mockMembers} />);
       expect(container).toBeTruthy();
     } catch (e) {

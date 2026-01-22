@@ -19,7 +19,9 @@ describe("MemberForm", () => {
 
   it("should render form component", () => {
     try {
-      const { container } = renderWithI18n(<MemberForm onSave={mockOnSave} onCancel={mockOnCancel} />);
+      const { container } = renderWithI18n(
+        <MemberForm onSave={mockOnSave} onCancel={mockOnCancel} />
+      );
       // If it renders without error, test passes
       expect(container).toBeTruthy();
     } catch (e) {
@@ -37,7 +39,9 @@ describe("MemberForm", () => {
       goalLevels: {},
     };
     try {
-      const { container } = renderWithI18n(<MemberForm member={mockMember} onSave={mockOnSave} onCancel={mockOnCancel} />);
+      const { container } = renderWithI18n(
+        <MemberForm member={mockMember} onSave={mockOnSave} onCancel={mockOnCancel} />
+      );
       expect(container).toBeTruthy();
     } catch (e) {
       // Component rendering is complex

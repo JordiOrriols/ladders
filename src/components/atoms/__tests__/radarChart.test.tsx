@@ -55,12 +55,7 @@ describe("RadarChart", () => {
 
   it("should render with empty levels", () => {
     const { container } = render(
-      <RadarChart
-        currentLevels={{}}
-        goalLevels={{}}
-        selfAssessmentLevels={{}}
-        size={300}
-      />
+      <RadarChart currentLevels={{}} goalLevels={{}} selfAssessmentLevels={{}} size={300} />
     );
     expect(container.querySelector("svg")).toBeTruthy();
   });

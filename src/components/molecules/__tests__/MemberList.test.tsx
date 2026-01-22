@@ -35,33 +35,55 @@ describe("MemberList", () => {
   });
 
   it("should render member names", () => {
-    renderWithI18n(<MemberList members={mockMembers} selectedMemberId={null} onSelectMember={mockOnSelectMember} />);
+    renderWithI18n(
+      <MemberList
+        members={mockMembers}
+        selectedMemberId={null}
+        onSelectMember={mockOnSelectMember}
+      />
+    );
     expect(screen.getByText("John Doe")).toBeTruthy();
     expect(screen.getByText("Jane Smith")).toBeTruthy();
   });
 
   it("should render member roles", () => {
-    renderWithI18n(<MemberList members={mockMembers} selectedMemberId={null} onSelectMember={mockOnSelectMember} />);
+    renderWithI18n(
+      <MemberList
+        members={mockMembers}
+        selectedMemberId={null}
+        onSelectMember={mockOnSelectMember}
+      />
+    );
     expect(screen.getByText("Senior Engineer")).toBeTruthy();
     expect(screen.getByText("Tech Lead")).toBeTruthy();
   });
 
   it("should highlight selected member", () => {
-    renderWithI18n(<MemberList members={mockMembers} selectedMemberId="1" onSelectMember={mockOnSelectMember} />);
+    renderWithI18n(
+      <MemberList members={mockMembers} selectedMemberId="1" onSelectMember={mockOnSelectMember} />
+    );
 
     const buttons = screen.getAllByRole("button");
     expect(buttons[0].className).toMatch(/bg-indigo-50/);
   });
 
   it("should render empty list", () => {
-    renderWithI18n(<MemberList members={[]} selectedMemberId={null} onSelectMember={mockOnSelectMember} />);
+    renderWithI18n(
+      <MemberList members={[]} selectedMemberId={null} onSelectMember={mockOnSelectMember} />
+    );
     // No members should be rendered
     expect(screen.queryByText("John Doe")).toBeNull();
   });
 
   it("should call onSelectMember when member is clicked", async () => {
     const user = userEvent.setup();
-    renderWithI18n(<MemberList members={mockMembers} selectedMemberId={null} onSelectMember={mockOnSelectMember} />);
+    renderWithI18n(
+      <MemberList
+        members={mockMembers}
+        selectedMemberId={null}
+        onSelectMember={mockOnSelectMember}
+      />
+    );
 
     const button = screen.getByRole("button", { name: /John Doe/i });
     await user.click(button);

@@ -18,12 +18,7 @@ describe("RadarChart Extended Tests", () => {
 
   it("should render with current levels only", () => {
     const { container } = render(
-      <RadarChart
-        currentLevels={levels}
-        goalLevels={{}}
-        selfAssessmentLevels={{}}
-        size={300}
-      />
+      <RadarChart currentLevels={levels} goalLevels={{}} selfAssessmentLevels={{}} size={300} />
     );
     expect(container.querySelector("svg")).toBeTruthy();
   });
@@ -48,12 +43,7 @@ describe("RadarChart Extended Tests", () => {
 
   it("should render with self assessment levels", () => {
     const { container } = render(
-      <RadarChart
-        currentLevels={levels}
-        goalLevels={{}}
-        selfAssessmentLevels={levels}
-        size={300}
-      />
+      <RadarChart currentLevels={levels} goalLevels={{}} selfAssessmentLevels={levels} size={300} />
     );
     expect(container.querySelector("svg")).toBeTruthy();
   });
@@ -62,12 +52,7 @@ describe("RadarChart Extended Tests", () => {
     const sizes = [200, 300, 400, 500];
     sizes.forEach((size) => {
       const { container } = render(
-        <RadarChart
-          currentLevels={levels}
-          goalLevels={{}}
-          selfAssessmentLevels={{}}
-          size={size}
-        />
+        <RadarChart currentLevels={levels} goalLevels={{}} selfAssessmentLevels={{}} size={size} />
       );
       expect(container.querySelector("svg")).toBeTruthy();
     });
@@ -108,12 +93,7 @@ describe("RadarChart Extended Tests", () => {
 
   it("should render download button", () => {
     const { container } = render(
-      <RadarChart
-        currentLevels={levels}
-        goalLevels={{}}
-        selfAssessmentLevels={{}}
-        size={300}
-      />
+      <RadarChart currentLevels={levels} goalLevels={{}} selfAssessmentLevels={{}} size={300} />
     );
     const downloadBtn = screen.queryByRole("button");
     if (downloadBtn) {

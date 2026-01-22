@@ -10,9 +10,7 @@ import MemberAssessment from "../memberAssessment";
 const renderWithProviders = (component: React.ReactElement) => {
   return render(
     <BrowserRouter>
-      <I18nextProvider i18n={i18n}>
-        {component}
-      </I18nextProvider>
+      <I18nextProvider i18n={i18n}>{component}</I18nextProvider>
     </BrowserRouter>
   );
 };

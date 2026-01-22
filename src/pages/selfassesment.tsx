@@ -145,7 +145,9 @@ export default function SelfAssessment() {
                   <LayoutGrid className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-lg font-semibold text-slate-800">{t("selfAssessment.title")}</h1>
+                  <h1 className="text-lg font-semibold text-slate-800">
+                    {t("selfAssessment.title")}
+                  </h1>
                   <p className="text-xs text-slate-500">{t("selfAssessment.subtitle")}</p>
                 </div>
               </div>
@@ -174,7 +176,9 @@ export default function SelfAssessment() {
           {/* Left Column - Form */}
           <div className="space-y-6">
             <div className="bg-white rounded-2xl border border-slate-200 p-6">
-              <h2 className="text-lg font-semibold text-slate-800 mb-4">{t("selfAssessment.personalInfo")}</h2>
+              <h2 className="text-lg font-semibold text-slate-800 mb-4">
+                {t("selfAssessment.personalInfo")}
+              </h2>
               <div className="space-y-4">
                 <div>
                   <Label htmlFor="name">{t("forms.name")}</Label>
@@ -200,7 +204,9 @@ export default function SelfAssessment() {
             </div>
 
             <div className="bg-white rounded-2xl border border-slate-200 p-6">
-              <h2 className="text-lg font-semibold text-slate-800 mb-4">{t("selfAssessment.competencies")}</h2>
+              <h2 className="text-lg font-semibold text-slate-800 mb-4">
+                {t("selfAssessment.competencies")}
+              </h2>
               <div className="space-y-3">
                 {VERTICALS.map((vertical) => (
                   <LevelSelector
@@ -225,9 +231,11 @@ export default function SelfAssessment() {
             <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl border border-indigo-200 p-6">
               <h3 className="font-semibold text-indigo-900 mb-2">{t("selfAssessment.howToUse")}</h3>
               <ul className="text-sm text-indigo-700 space-y-1">
-                {(t("selfAssessment.howToUseItems", { returnObjects: true }) as string[]).map((item, i) => (
-                  <li key={i}>• {item}</li>
-                ))}
+                {(t("selfAssessment.howToUseItems", { returnObjects: true }) as string[]).map(
+                  (item, i) => (
+                    <li key={i}>• {item}</li>
+                  )
+                )}
               </ul>
             </div>
           </div>
@@ -251,7 +259,9 @@ export default function SelfAssessment() {
               {/* Summary Stats */}
               <div className="grid grid-cols-1 gap-4">
                 <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-200">
-                  <p className="text-xs text-emerald-600 font-medium mb-1">{t("selfAssessment.currentAverage")}</p>
+                  <p className="text-xs text-emerald-600 font-medium mb-1">
+                    {t("selfAssessment.currentAverage")}
+                  </p>
                   <p className="text-2xl font-bold text-emerald-700">
                     {Object.values(currentLevels).length > 0
                       ? (
@@ -267,7 +277,9 @@ export default function SelfAssessment() {
 
               {/* Progress by Vertical */}
               <div className="mt-6 space-y-3">
-                <h3 className="text-sm font-semibold text-slate-700">{t("selfAssessment.competencyLevels")}</h3>
+                <h3 className="text-sm font-semibold text-slate-700">
+                  {t("selfAssessment.competencyLevels")}
+                </h3>
                 {VERTICALS.map((vertical) => {
                   const current = currentLevels[vertical] || 0;
 
@@ -294,9 +306,7 @@ export default function SelfAssessment() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t("selfAssessment.clearConfirmTitle")}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t("selfAssessment.clearConfirmDesc")}
-            </AlertDialogDescription>
+            <AlertDialogDescription>{t("selfAssessment.clearConfirmDesc")}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{t("buttons.cancel")}</AlertDialogCancel>

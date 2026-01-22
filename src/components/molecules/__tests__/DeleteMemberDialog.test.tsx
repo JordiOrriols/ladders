@@ -25,7 +25,9 @@ describe("DeleteMemberDialog", () => {
     const onConfirm = vi.fn();
     const onCancel = vi.fn();
 
-    const { container } = renderWithI18n(<DeleteMemberDialog isOpen={false} onConfirm={onConfirm} onCancel={onCancel} />);
+    const { container } = renderWithI18n(
+      <DeleteMemberDialog isOpen={false} onConfirm={onConfirm} onCancel={onCancel} />
+    );
 
     expect(container.querySelector('[role="alertdialog"]')).toBeNull();
   });
