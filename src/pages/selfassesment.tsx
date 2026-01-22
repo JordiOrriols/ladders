@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Download, Upload, Trash2, LayoutGrid } from "lucide-react";
+import { ArrowLeft, Download, Trash2, LayoutGrid } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -91,28 +91,6 @@ export default function SelfAssessment() {
     URL.revokeObjectURL(url);
   };
 
-  const handleImport = (event) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const result = e.target?.result as string;
-        const data = JSON.parse(result);
-        setName(data.name || "");
-        setRole(data.role || "");
-        setCurrentLevels(data.currentLevels || {});
-        setGoalLevels(data.goalLevels || {});
-        saveToLocalStorage(data);
-      } catch {
-        alert("Failed to import file. Please ensure it's a valid JSON file.");
-      }
-    };
-    reader.readAsText(file);
-    event.target.value = "";
-  };
-
   const handleClear = () => {
     setName("");
     setRole("");
@@ -147,21 +125,6 @@ export default function SelfAssessment() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <input
-                type="file"
-                id="import-file"
-                accept=".json"
-                onChange={handleImport}
-                className="hidden"
-              />
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => document.getElementById("import-file")?.click()}
-              >
-                <Upload className="w-4 h-4 mr-2" />
-                Import
-              </Button>
               <Button variant="outline" size="sm" onClick={() => setShowClearDialog(true)}>
                 <Trash2 className="w-4 h-4 mr-2" />
                 Clear
@@ -229,7 +192,6 @@ export default function SelfAssessment() {
                 <li>• Set your goal levels for future growth</li>
                 <li>• All changes are saved automatically</li>
                 <li>• Export your assessment as JSON to share with your manager</li>
-                <li>• Import a previous assessment to continue editing</li>
               </ul>
             </div>
           </div>
