@@ -180,6 +180,7 @@ export default function SelfAssessment() {
                     goalLevel={goalLevels[vertical] || 0}
                     onCurrentChange={(level) => handleCurrentChange(vertical, level)}
                     onGoalChange={(level) => handleGoalChange(vertical, level)}
+                    hideGoal={true}
                   />
                 ))}
               </div>
@@ -204,30 +205,22 @@ export default function SelfAssessment() {
               </h2>
 
               <div className="flex justify-center mb-8">
-                <RadarChart currentLevels={currentLevels} goalLevels={goalLevels} size={350} />
+                <RadarChart 
+                  currentLevels={currentLevels} 
+                  goalLevels={goalLevels}
+                  hideGoal={true}
+                  size={350} 
+                />
               </div>
 
               {/* Summary Stats */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4">
                 <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-200">
                   <p className="text-xs text-emerald-600 font-medium mb-1">Current Average</p>
                   <p className="text-2xl font-bold text-emerald-700">
                     {Object.values(currentLevels).length > 0
                       ? (
                           Object.values(currentLevels).reduce(
-                            (a, b) => (a as number) + (b as number),
-                            0
-                          ) / 5
-                        ).toFixed(1)
-                      : "0.0"}
-                  </p>
-                </div>
-                <div className="p-4 bg-amber-50 rounded-xl border border-amber-200">
-                  <p className="text-xs text-amber-600 font-medium mb-1">Goal Average</p>
-                  <p className="text-2xl font-bold text-amber-700">
-                    {Object.values(goalLevels).length > 0
-                      ? (
-                          Object.values(goalLevels).reduce(
                             (a, b) => (a as number) + (b as number),
                             0
                           ) / 5
@@ -242,7 +235,6 @@ export default function SelfAssessment() {
                 <h3 className="text-sm font-semibold text-slate-700">Competency Levels</h3>
                 {VERTICALS.map((vertical) => {
                   const current = currentLevels[vertical] || 0;
-                  const goal = goalLevels[vertical] || 0;
 
                   return (
                     <div key={vertical} className="flex items-center justify-between text-sm">
@@ -252,13 +244,6 @@ export default function SelfAssessment() {
                           <div className="w-2 h-2 rounded-full bg-emerald-500" />
                           <span className="text-slate-500 w-8">L{current || 0}</span>
                         </div>
-                        {goal > 0 && goal !== current && (
-                          <div className="flex items-center gap-1">
-                            <span className="text-slate-400">→</span>
-                            <div className="w-2 h-2 rounded-full bg-amber-500" />
-                            <span className="text-slate-500 w-8">L{goal}</span>
-                          </div>
-                        )}
                       </div>
                     </div>
                   );

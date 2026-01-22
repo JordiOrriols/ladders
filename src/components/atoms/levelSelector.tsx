@@ -67,6 +67,7 @@ export default function LevelSelector({
   selfAssessmentLevel = 0,
   onCurrentChange,
   onGoalChange,
+  hideGoal = false,
 }) {
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
@@ -96,7 +97,7 @@ export default function LevelSelector({
                   ? `Current: L${currentLevel} ${t(`levels.${vertical}.${currentLevel}.name`)}`
                   : "Current: Not set"}
               </p>
-              {goalLevelData && goalLevel > 0 && (
+              {!hideGoal && goalLevelData && goalLevel > 0 && (
                 <p className="text-slate-600">
                   Goal: L{goalLevel} {t(`levels.${vertical}.${goalLevel}.name`)}
                 </p>
@@ -163,19 +164,21 @@ export default function LevelSelector({
                   >
                     Current
                   </Button>
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant={goalLevel === level.level ? "default" : "outline"}
-                    className={`h-7 px-2 text-xs ${goalLevel === level.level ? "bg-amber-500 hover:bg-amber-600" : ""}`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      onGoalChange(goalLevel === level.level ? 0 : level.level);
-                    }}
-                  >
-                    Goal
-                  </Button>
+                  {!hideGoal && (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant={goalLevel === level.level ? "default" : "outline"}
+                      className={`h-7 px-2 text-xs ${goalLevel === level.level ? "bg-amber-500 hover:bg-amber-600" : ""}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        onGoalChange(goalLevel === level.level ? 0 : level.level);
+                      }}
+                    >
+                      Goal
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>

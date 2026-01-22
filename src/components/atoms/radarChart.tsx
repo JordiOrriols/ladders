@@ -10,11 +10,15 @@ export default function RadarChart({
   size = 300,
   showLabels = true,
   showLegend = true,
+  hideGoal = false,
   className = "",
 }) {
   const svgRef = useRef<SVGSVGElement>(null);
   const center = size / 2;
   const maxRadius = size / 2 - (showLabels ? 50 : 20);
+  
+  // Hide goal levels when hideGoal is true
+  const displayGoalLevels = hideGoal ? {} : goalLevels;
 
   const downloadAsImage = () => {
     if (!svgRef.current) return;
@@ -95,10 +99,10 @@ export default function RadarChart({
   }, [currentLevels, size]);
 
   const goalPath = useMemo(() => {
-    const points = VERTICALS.map((v, i) => getPoint(i, goalLevels[v] || 0));
+    const points = VERTICALS.map((v, i) => getPoint(i, displayGoalLevels[v] || 0));
     if (points.every((p) => p.x === center && p.y === center)) return null;
     return points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ") + " Z";
-  }, [goalLevels, size]);
+  }, [displayGoalLevels, size]);
 
   const selfAssessmentPath = useMemo(() => {
     const points = VERTICALS.map((v, i) => getPoint(i, selfAssessmentLevels[v] || 0));
@@ -256,10 +260,12 @@ export default function RadarChart({
             <div className="w-3 h-3 rounded-full bg-emerald-500" />
             <span className="text-xs text-slate-600">Current</span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-amber-500" />
-            <span className="text-xs text-slate-600">Goal</span>
-          </div>
+          {!hideGoal && (
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-amber-500" />
+              <span className="text-xs text-slate-600">Goal</span>
+            </div>
+          )}
           {Object.keys(selfAssessmentLevels).length > 0 && (
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-purple-500" />
