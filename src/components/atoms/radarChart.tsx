@@ -1,4 +1,6 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useRef } from "react";
+import { Download } from "lucide-react";
+import { Button } from "../ui/button";
 import { VERTICALS, LEVELS } from "./levelSelector";
 
 export default function RadarChart({
@@ -10,8 +12,45 @@ export default function RadarChart({
   showLegend = true,
   className = "",
 }) {
+  const svgRef = useRef<SVGSVGElement>(null);
   const center = size / 2;
   const maxRadius = size / 2 - (showLabels ? 50 : 20);
+
+  const downloadAsImage = () => {
+    if (!svgRef.current) return;
+
+    const svg = svgRef.current;
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    
+    if (!ctx) return;
+
+    const img = new Image();
+    const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+    const url = URL.createObjectURL(svgBlob);
+
+    img.onload = () => {
+      canvas.width = size;
+      canvas.height = size;
+      ctx.fillStyle = "white";
+      ctx.fillRect(0, 0, size, size);
+      ctx.drawImage(img, 0, 0);
+      URL.revokeObjectURL(url);
+
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const link = document.createElement("a");
+          link.download = `radar-chart-${Date.now()}.png`;
+          link.href = URL.createObjectURL(blob);
+          link.click();
+          URL.revokeObjectURL(link.href);
+        }
+      });
+    };
+
+    img.src = url;
+  };
 
   const getPoint = (verticalIndex, level) => {
     const angle = (Math.PI * 2 * verticalIndex) / VERTICALS.length - Math.PI / 2;
@@ -68,8 +107,17 @@ export default function RadarChart({
   }, [selfAssessmentLevels, size]);
 
   return (
-    <div className={`flex flex-col items-center ${className}`}>
-      <svg width={size} height={size} className="overflow-visible">
+    <div className={`flex flex-col items-center relative ${className}`}>
+      <Button
+        onClick={downloadAsImage}
+        variant="ghost"
+        size="icon"
+        className="absolute top-0 right-0 z-10"
+        title="Download as PNG"
+      >
+        <Download className="h-4 w-4" />
+      </Button>
+      <svg ref={svgRef} width={size} height={size} className="overflow-visible">
         {/* Grid */}
         {gridLines.map((path, i) => (
           <path key={i} d={path} fill="none" stroke="#e2e8f0" strokeWidth="1" />
