@@ -26,31 +26,50 @@ export default function RadarChart({
     const svg = svgRef.current;
     const svgData = new XMLSerializer().serializeToString(svg);
     const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
     if (!ctx) return;
+
+    // Use 1.2x scale for slightly better resolution
+    const scale = 1.2;
+    const scaledSize = size * scale;
 
     const img = new Image();
     const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
     const url = URL.createObjectURL(svgBlob);
 
     img.onload = () => {
-      canvas.width = size;
-      canvas.height = size;
+      // Set canvas to high resolution
+      canvas.width = scaledSize;
+      canvas.height = scaledSize;
+      
+      // Fill with white background
       ctx.fillStyle = "white";
-      ctx.fillRect(0, 0, size, size);
+      ctx.fillRect(0, 0, scaledSize, scaledSize);
+      
+      // Enable image smoothing for better quality
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+      
+      // Scale context and draw the image
+      ctx.scale(scale, scale);
       ctx.drawImage(img, 0, 0);
       URL.revokeObjectURL(url);
 
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const link = document.createElement("a");
-          link.download = `radar-chart-${Date.now()}.png`;
-          link.href = URL.createObjectURL(blob);
-          link.click();
-          URL.revokeObjectURL(link.href);
-        }
-      });
+      // Export as high-quality PNG
+      canvas.toBlob(
+        (blob) => {
+          if (blob) {
+            const link = document.createElement("a");
+            link.download = `radar-chart-${Date.now()}.png`;
+            link.href = URL.createObjectURL(blob);
+            link.click();
+            URL.revokeObjectURL(link.href);
+          }
+        },
+        "image/png",
+        0.95
+      );
     };
 
     img.src = url;
@@ -67,7 +86,8 @@ export default function RadarChart({
 
   const getLabelPoint = (verticalIndex) => {
     const angle = (Math.PI * 2 * verticalIndex) / VERTICALS.length - Math.PI / 2;
-    const radius = maxRadius + 30;
+    // Closer spacing for compact layout
+    const radius = maxRadius + 10;
     return {
       x: center + radius * Math.cos(angle),
       y: center + radius * Math.sin(angle),
@@ -216,19 +236,43 @@ export default function RadarChart({
         {/* Labels */}
         {showLabels &&
           VERTICALS.map((v, i) => {
+            const angle = (Math.PI * 2 * i) / VERTICALS.length - Math.PI / 2;
             const point = getLabelPoint(i);
-            const isTop = i === 0;
-            const isRight = i === 1 || i === 4;
-            const isLeft = i === 2 || i === 3;
+            
+            // Determine text alignment based on position
+            let textAnchor = "middle";
+            let dominantBaseline = "middle";
+            
+            // Adjust positioning based on angle for better alignment
+            const angleDeg = (angle * 180) / Math.PI + 90;
+            
+            if (angleDeg > 315 || angleDeg < 45) {
+              // Top
+              textAnchor = "middle";
+              dominantBaseline = "auto";
+            } else if (angleDeg >= 45 && angleDeg < 135) {
+              // Right
+              textAnchor = "start";
+              dominantBaseline = "middle";
+            } else if (angleDeg >= 135 && angleDeg < 225) {
+              // Bottom
+              textAnchor = "middle";
+              dominantBaseline = "hanging";
+            } else {
+              // Left
+              textAnchor = "end";
+              dominantBaseline = "middle";
+            }
 
             return (
               <text
                 key={i}
                 x={point.x}
                 y={point.y}
-                textAnchor={isTop ? "middle" : isRight ? "start" : isLeft ? "end" : "middle"}
-                dominantBaseline={isTop ? "auto" : "middle"}
-                className="text-xs font-medium fill-slate-600"
+                textAnchor={textAnchor}
+                dominantBaseline={dominantBaseline}
+                className="text-xs font-semibold fill-slate-500"
+                letterSpacing="0.5"
               >
                 {v}
               </text>
@@ -243,10 +287,11 @@ export default function RadarChart({
             return (
               <text
                 key={`level-${i}`}
-                x={point.x + 8}
+                x={point.x - 12}
                 y={point.y}
                 className="text-[10px] fill-slate-400"
                 dominantBaseline="middle"
+                textAnchor="end"
               >
                 {level}
               </text>
