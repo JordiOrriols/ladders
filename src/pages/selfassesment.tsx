@@ -20,12 +20,18 @@ import {
 
 const STORAGE_KEY = "self-assessment-data";
 
+const formatLevel = (level: number): string => {
+  return level % 1 === 0 ? `${level}` : `${level}`;
+};
+
 export default function SelfAssessment() {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [role, setRole] = useState("");
   const [currentLevels, setCurrentLevels] = useState<Record<string, number>>({});
   const [goalLevels, setGoalLevels] = useState<Record<string, number>>({});
+  const [comments, setComments] = useState<Record<string, string>>({});
+  const [expandedVertical, setExpandedVertical] = useState<string | null>(null);
   const [showClearDialog, setShowClearDialog] = useState(false);
 
   // Load from localStorage on mount
@@ -38,6 +44,7 @@ export default function SelfAssessment() {
         setRole(data.role || "");
         setCurrentLevels(data.currentLevels || {});
         setGoalLevels(data.goalLevels || {});
+        setComments(data.comments || {});
       } catch (e) {
         console.error("Failed to load assessment data", e);
       }
@@ -51,24 +58,30 @@ export default function SelfAssessment() {
 
   const handleNameChange = (value) => {
     setName(value);
-    saveToLocalStorage({ name: value, role, currentLevels, goalLevels });
+    saveToLocalStorage({ name: value, role, currentLevels, goalLevels, comments });
   };
 
   const handleRoleChange = (value) => {
     setRole(value);
-    saveToLocalStorage({ name, role: value, currentLevels, goalLevels });
+    saveToLocalStorage({ name, role: value, currentLevels, goalLevels, comments });
   };
 
   const handleCurrentChange = (vertical, level) => {
     const updated = { ...currentLevels, [vertical]: level };
     setCurrentLevels(updated);
-    saveToLocalStorage({ name, role, currentLevels: updated, goalLevels });
+    saveToLocalStorage({ name, role, currentLevels: updated, goalLevels, comments });
   };
 
   const handleGoalChange = (vertical, level) => {
     const updated = { ...goalLevels, [vertical]: level };
     setGoalLevels(updated);
-    saveToLocalStorage({ name, role, currentLevels, goalLevels: updated });
+    saveToLocalStorage({ name, role, currentLevels, goalLevels: updated, comments });
+  };
+
+  const handleCommentChange = (vertical, value) => {
+    const updated = { ...comments, [vertical]: value };
+    setComments(updated);
+    saveToLocalStorage({ name, role, currentLevels, goalLevels, comments: updated });
   };
 
   const handleExport = () => {
@@ -77,6 +90,7 @@ export default function SelfAssessment() {
       role,
       currentLevels,
       goalLevels,
+      comments,
       exportedAt: new Date().toISOString(),
     };
 
@@ -96,12 +110,14 @@ export default function SelfAssessment() {
     setRole("");
     setCurrentLevels({});
     setGoalLevels({});
+    setComments({});
     localStorage.removeItem(STORAGE_KEY);
     setShowClearDialog(false);
   };
 
   const handleShareLink = () => {
-    const url = `${window.location.origin}/SelfAssessment`;
+    const base = `${window.location.origin}${window.location.pathname}`.replace(/#.*$/, "");
+    const url = `${base}#/SelfAssessment`;
     navigator.clipboard
       .writeText(url)
       .then(() => {
@@ -190,8 +206,14 @@ export default function SelfAssessment() {
                     vertical={vertical}
                     currentLevel={currentLevels[vertical] || 0}
                     goalLevel={goalLevels[vertical] || 0}
+                    comment={comments[vertical] || ""}
                     onCurrentChange={(level) => handleCurrentChange(vertical, level)}
                     onGoalChange={(level) => handleGoalChange(vertical, level)}
+                    onCommentChange={(value) => handleCommentChange(vertical, value)}
+                    expanded={expandedVertical === vertical}
+                    onToggle={() =>
+                      setExpandedVertical((prev) => (prev === vertical ? null : vertical))
+                    }
                     hideGoal={true}
                   />
                 ))}
@@ -254,7 +276,7 @@ export default function SelfAssessment() {
                       <div className="flex items-center gap-2">
                         <div className="flex items-center gap-1">
                           <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                          <span className="text-slate-500 w-8">L{current || 0}</span>
+                          <span className="text-slate-500 w-8">L{formatLevel(current)}</span>
                         </div>
                       </div>
                     </div>
