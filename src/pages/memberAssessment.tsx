@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Save, Users, Share2 } from "lucide-react";
+import { ArrowLeft, Share2 } from "lucide-react";
 import LevelSelector, { VERTICALS } from "@/components/atoms/levelSelector";
 import RadarChart from "@/components/atoms/radarChart";
 import { Button } from "@/components/ui/button";
@@ -22,15 +22,18 @@ export default function MemberAssessmentPage() {
   const [selfAssessmentLevels, setSelfAssessmentLevels] = useState<Record<string, number>>({});
   const [comments, setComments] = useState<Record<string, string>>({});
   const [expandedVertical, setExpandedVertical] = useState<string | null>(VERTICALS[0] ?? null);
+  const [members, setMembers] = useState<Member[]>([]);
+  const [draftId, setDraftId] = useState<string>(() => memberId ?? Date.now().toString());
 
-  const members = useMemo(() => {
+  useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
-    if (!saved) return [] as Member[];
-    try {
-      return JSON.parse(saved) as Member[];
-    } catch (e) {
-      console.error("Failed to parse members", e);
-      return [] as Member[];
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved) as Member[];
+        setMembers(parsed);
+      } catch (e) {
+        console.error("Failed to parse members", e);
+      }
     }
   }, []);
 
@@ -38,6 +41,7 @@ export default function MemberAssessmentPage() {
     if (!memberId) return;
     const found = members.find((m) => m.id === memberId);
     if (found) {
+      setDraftId(found.id);
       setName(found.name || "");
       setRole(found.role || "");
       setCurrentLevels(found.currentLevels || {});
@@ -47,14 +51,10 @@ export default function MemberAssessmentPage() {
     }
   }, [memberId, members]);
 
-  const persist = (updatedMembers: Member[]) => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedMembers));
-  };
-
-  const handleSave = () => {
-    if (!name.trim()) return;
+  useEffect(() => {
+    if (!name.trim()) return; // avoid saving empty drafts without a name
     const payload: Member = {
-      id: memberId || Date.now().toString(),
+      id: draftId,
       name: name.trim(),
       role: role.trim(),
       currentLevels,
@@ -63,14 +63,13 @@ export default function MemberAssessmentPage() {
       comments,
     };
 
-    const exists = members.find((m) => m.id === payload.id);
-    const next = exists
-      ? members.map((m) => (m.id === payload.id ? payload : m))
-      : [...members, payload];
-
-    persist(next);
-    navigate("/");
-  };
+    setMembers((prev) => {
+      const exists = prev.find((m) => m.id === payload.id);
+      const next = exists ? prev.map((m) => (m.id === payload.id ? payload : m)) : [...prev, payload];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      return next;
+    });
+  }, [name, role, currentLevels, goalLevels, selfAssessmentLevels, comments, draftId]);
 
   const handleCurrentChange = (vertical: string, level: number) => {
     setCurrentLevels((prev) => ({ ...prev, [vertical]: level }));
@@ -104,27 +103,18 @@ export default function MemberAssessmentPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
-              <Button variant="ghost" size="icon" onClick={() => navigate("/")}> 
+              <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
                 <ArrowLeft className="w-5 h-5" />
               </Button>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-                  <Users className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-lg font-semibold text-slate-800">Team Member Assessment</h1>
-                  <p className="text-xs text-slate-500">Full-page editor matching Self Assessment</p>
-                </div>
+              <div>
+                <h1 className="text-lg font-semibold text-slate-800">Team Member Assessment</h1>
+                <p className="text-xs text-slate-500">Full-page editor matching Self Assessment</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <Button variant="outline" onClick={handleShareLink}>
                 <Share2 className="w-4 h-4 mr-2" />
                 Share Self-Assessment
-              </Button>
-              <Button onClick={handleSave} disabled={!name.trim()}>
-                <Save className="w-4 h-4 mr-2" />
-                Save Member
               </Button>
             </div>
           </div>
