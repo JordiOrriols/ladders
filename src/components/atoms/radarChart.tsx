@@ -16,7 +16,7 @@ export default function RadarChart({
   const svgRef = useRef<SVGSVGElement>(null);
   const center = size / 2;
   const maxRadius = size / 2 - (showLabels ? 50 : 20);
-  
+
   // Hide goal levels when hideGoal is true
   const displayGoalLevels = hideGoal ? {} : goalLevels;
 
@@ -27,7 +27,7 @@ export default function RadarChart({
     const svgData = new XMLSerializer().serializeToString(svg);
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
-    
+
     if (!ctx) return;
 
     const img = new Image();

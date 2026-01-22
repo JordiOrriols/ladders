@@ -82,11 +82,14 @@ export default function MemberForm({ member, onSave, onClose }) {
 
   const handleShareLink = () => {
     const url = `${window.location.origin}/SelfAssessment`;
-    navigator.clipboard.writeText(url).then(() => {
-      alert("Self-assessment link copied to clipboard!");
-    }).catch(() => {
-      alert("Failed to copy link");
-    });
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        alert("Self-assessment link copied to clipboard!");
+      })
+      .catch(() => {
+        alert("Failed to copy link");
+      });
   };
 
   return (

@@ -55,14 +55,16 @@ export function TeamTab({
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-lg font-semibold text-slate-800">Team Overview</h2>
-          <p className="text-sm text-slate-500">{members.length} member{members.length !== 1 ? 's' : ''}</p>
+          <p className="text-sm text-slate-500">
+            {members.length} member{members.length !== 1 ? "s" : ""}
+          </p>
         </div>
         <Button onClick={handleExportTeam} variant="outline">
           <Download className="w-4 h-4 mr-2" />
           Export Team
         </Button>
       </div>
-      
+
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {members.map((member) => (
           <MemberCard
