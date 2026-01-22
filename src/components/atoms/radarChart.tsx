@@ -24,14 +24,29 @@ export default function RadarChart({
     if (!svgRef.current) return;
 
     const svg = svgRef.current;
-    const svgData = new XMLSerializer().serializeToString(svg);
+
+    // Clone SVG and reduce text sizes
+    const svgClone = svg.cloneNode(true) as SVGSVGElement;
+
+    // Reduce text font sizes by 40% for better proportion
+    const textElements = svgClone.querySelectorAll("text");
+    textElements.forEach((text) => {
+      const currentClass = text.getAttribute("class") || "";
+      // Reduce font size classes
+      let newClass = currentClass
+        .replace("text-xs", "text-[9px]")
+        .replace("text-[10px]", "text-[7px]");
+      text.setAttribute("class", newClass);
+    });
+
+    const svgData = new XMLSerializer().serializeToString(svgClone);
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
     if (!ctx) return;
 
-    // Use 1.2x scale for slightly better resolution
-    const scale = 1.2;
+    // Use 2.5x scale for high resolution
+    const scale = 2.5;
     const scaledSize = size * scale;
 
     const img = new Image();
@@ -42,15 +57,15 @@ export default function RadarChart({
       // Set canvas to high resolution
       canvas.width = scaledSize;
       canvas.height = scaledSize;
-      
+
       // Fill with white background
       ctx.fillStyle = "white";
       ctx.fillRect(0, 0, scaledSize, scaledSize);
-      
+
       // Enable image smoothing for better quality
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = "high";
-      
+
       // Scale context and draw the image
       ctx.scale(scale, scale);
       ctx.drawImage(img, 0, 0);
@@ -142,94 +157,121 @@ export default function RadarChart({
         <Download className="h-4 w-4" />
       </Button>
       <svg ref={svgRef} width={size} height={size} className="overflow-visible">
-        {/* Grid */}
+        {/* Grid - with improved styling */}
         {gridLines.map((path, i) => (
-          <path key={i} d={path} fill="none" stroke="#e2e8f0" strokeWidth="1" />
+          <path
+            key={i}
+            d={path}
+            fill="none"
+            stroke={i === gridLines.length - 1 ? "#d1d5db" : "#e5e7eb"}
+            strokeWidth={i === gridLines.length - 1 ? "1.5" : "1"}
+            opacity={0.7}
+          />
         ))}
 
-        {/* Axes */}
+        {/* Axes - more prominent */}
         {axisLines.map((line, i) => (
-          <line key={i} {...line} stroke="#cbd5e1" strokeWidth="1" />
+          <line key={i} {...line} stroke="#9ca3af" strokeWidth="1.2" opacity="0.6" />
         ))}
 
-        {/* Goal area */}
+        {/* Goal area - with enhanced styling */}
         {goalPath && (
           <path
             d={goalPath}
-            fill="rgba(245, 158, 11, 0.15)"
-            stroke="#f59e0b"
-            strokeWidth="2"
+            fill="rgba(245, 158, 11, 0.12)"
+            stroke="#fbbf24"
+            strokeWidth="2.5"
             strokeDasharray="6 4"
+            opacity="0.85"
           />
         )}
 
-        {/* Self Assessment area */}
+        {/* Self Assessment area - with enhanced styling */}
         {selfAssessmentPath && (
           <path
             d={selfAssessmentPath}
-            fill="rgba(168, 85, 247, 0.15)"
-            stroke="#a855f7"
-            strokeWidth="2"
+            fill="rgba(168, 85, 247, 0.1)"
+            stroke="#c084fc"
+            strokeWidth="2.5"
             strokeDasharray="4 2"
+            opacity="0.8"
           />
         )}
 
-        {/* Current area */}
+        {/* Current area - more prominent */}
         {currentPath && (
-          <path d={currentPath} fill="rgba(16, 185, 129, 0.2)" stroke="#10b981" strokeWidth="2.5" />
+          <path
+            d={currentPath}
+            fill="rgba(16, 185, 129, 0.18)"
+            stroke="#10b981"
+            strokeWidth="3"
+            opacity="0.95"
+          />
         )}
 
-        {/* Current points */}
+        {/* Current points - with enhanced styling */}
         {VERTICALS.map((v, i) => {
           const level = currentLevels[v] || 0;
           if (level === 0) return null;
           const point = getPoint(i, level);
           return (
-            <circle
-              key={`current-${i}`}
-              cx={point.x}
-              cy={point.y}
-              r="5"
-              fill="#10b981"
-              stroke="white"
-              strokeWidth="2"
-            />
+            <g key={`current-${i}`}>
+              {/* Soft shadow/glow effect */}
+              <circle cx={point.x} cy={point.y} r="7" fill="rgba(16, 185, 129, 0.15)" />
+              {/* Main point */}
+              <circle
+                cx={point.x}
+                cy={point.y}
+                r="5.5"
+                fill="#10b981"
+                stroke="white"
+                strokeWidth="2.5"
+              />
+            </g>
           );
         })}
 
-        {/* Goal points */}
+        {/* Goal points - with enhanced styling */}
         {VERTICALS.map((v, i) => {
           const level = goalLevels[v] || 0;
           if (level === 0) return null;
           const point = getPoint(i, level);
           return (
-            <circle
-              key={`goal-${i}`}
-              cx={point.x}
-              cy={point.y}
-              r="4"
-              fill="#f59e0b"
-              stroke="white"
-              strokeWidth="2"
-            />
+            <g key={`goal-${i}`}>
+              {/* Soft shadow/glow effect */}
+              <circle cx={point.x} cy={point.y} r="6" fill="rgba(251, 191, 36, 0.1)" />
+              {/* Main point */}
+              <circle
+                cx={point.x}
+                cy={point.y}
+                r="4.5"
+                fill="#fbbf24"
+                stroke="white"
+                strokeWidth="2"
+              />
+            </g>
           );
         })}
 
-        {/* Self Assessment points */}
+        {/* Self Assessment points - with enhanced styling */}
         {VERTICALS.map((v, i) => {
           const level = selfAssessmentLevels[v] || 0;
           if (level === 0) return null;
           const point = getPoint(i, level);
           return (
-            <circle
-              key={`self-${i}`}
-              cx={point.x}
-              cy={point.y}
-              r="4"
-              fill="#a855f7"
-              stroke="white"
-              strokeWidth="2"
-            />
+            <g key={`self-${i}`}>
+              {/* Soft shadow/glow effect */}
+              <circle cx={point.x} cy={point.y} r="6" fill="rgba(192, 132, 252, 0.1)" />
+              {/* Main point */}
+              <circle
+                cx={point.x}
+                cy={point.y}
+                r="4.5"
+                fill="#c084fc"
+                stroke="white"
+                strokeWidth="2"
+              />
+            </g>
           );
         })}
 
@@ -238,14 +280,14 @@ export default function RadarChart({
           VERTICALS.map((v, i) => {
             const angle = (Math.PI * 2 * i) / VERTICALS.length - Math.PI / 2;
             const point = getLabelPoint(i);
-            
+
             // Determine text alignment based on position
             let textAnchor = "middle";
             let dominantBaseline = "middle";
-            
+
             // Adjust positioning based on angle for better alignment
             const angleDeg = (angle * 180) / Math.PI + 90;
-            
+
             if (angleDeg > 315 || angleDeg < 45) {
               // Top
               textAnchor = "middle";

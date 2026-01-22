@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowLeft, Download, Share2 } from "lucide-react";
@@ -26,6 +26,7 @@ export default function MemberAssessmentPage() {
   const [expandedVertical, setExpandedVertical] = useState<string | null>(VERTICALS[0] ?? null);
   const [members, setMembers] = useState<Member[]>([]);
   const [draftId, setDraftId] = useState<string>(() => memberId ?? Date.now().toString());
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -87,32 +88,52 @@ export default function MemberAssessmentPage() {
     setComments((prev) => ({ ...prev, [vertical]: value }));
   };
 
-  const handleImportSelfAssessment = () => {
+  const handleImportSelfAssessment = (event?: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event?.target?.files?.[0];
+
+    const importFromData = (raw: string) => {
+      try {
+        const data = JSON.parse(raw) as {
+          name?: string;
+          role?: string;
+          currentLevels?: Record<string, number>;
+          goalLevels?: Record<string, number>;
+          comments?: Record<string, string>;
+        };
+
+        const importedSelfLevels = data.currentLevels || {};
+        setSelfAssessmentLevels(importedSelfLevels);
+
+        // Optional backfill name/role only when empty; stay scoped to current edit session
+        if (!name && data.name) setName(data.name);
+        if (!role && data.role) setRole(data.role);
+
+        alert(t("alerts.importSelfAssessmentSuccess"));
+      } catch (e) {
+        console.error("Failed to import self-assessment", e);
+        alert(t("alerts.failedToImportSelfAssessment"));
+      }
+    };
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const raw = e.target?.result as string;
+        importFromData(raw);
+      };
+      reader.readAsText(file);
+      // reset input so same file can be reselected
+      if (event?.target) event.target.value = "";
+      return;
+    }
+
+    // Fallback: previous behavior loading from localStorage
     const raw = localStorage.getItem("self-assessment-data");
     if (!raw) {
       alert(t("alerts.noSelfAssessmentFound"));
       return;
     }
-
-    try {
-      const data = JSON.parse(raw) as {
-        name?: string;
-        role?: string;
-        currentLevels?: Record<string, number>;
-        comments?: Record<string, string>;
-      };
-
-      setSelfAssessmentLevels(data.currentLevels || {});
-
-      // Keep existing manager-entered values; only backfill if empty
-      if (!name && data.name) setName(data.name);
-      if (!role && data.role) setRole(data.role);
-
-      alert(t("alerts.importSelfAssessmentSuccess"));
-    } catch (e) {
-      console.error("Failed to import self-assessment", e);
-      alert(t("alerts.failedToImportSelfAssessment"));
-    }
+    importFromData(raw);
   };
 
   const handleShareLink = () => {
@@ -146,7 +167,18 @@ export default function MemberAssessmentPage() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={handleImportSelfAssessment}>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="application/json"
+                className="hidden"
+                onChange={handleImportSelfAssessment}
+              />
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => fileInputRef.current?.click()}
+              >
                 <Download className="w-4 h-4 mr-2" />
                 {t("memberAssessment.importSelfAssessment")}
               </Button>
