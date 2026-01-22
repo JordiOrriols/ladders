@@ -102,11 +102,14 @@ export default function SelfAssessment() {
 
   const handleShareLink = () => {
     const url = `${window.location.origin}/SelfAssessment`;
-    navigator.clipboard.writeText(url).then(() => {
-      alert("Link copied to clipboard!");
-    }).catch(() => {
-      alert("Failed to copy link");
-    });
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        alert("Link copied to clipboard!");
+      })
+      .catch(() => {
+        alert("Failed to copy link");
+      });
   };
 
   return (
@@ -116,11 +119,7 @@ export default function SelfAssessment() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => navigate("/")}
-              >
+              <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
                 <ArrowLeft className="w-5 h-5" />
               </Button>
               <div className="flex items-center gap-3">
@@ -218,11 +217,11 @@ export default function SelfAssessment() {
               </h2>
 
               <div className="flex justify-center mb-8">
-                <RadarChart 
-                  currentLevels={currentLevels} 
+                <RadarChart
+                  currentLevels={currentLevels}
                   goalLevels={goalLevels}
                   hideGoal={true}
-                  size={350} 
+                  size={350}
                 />
               </div>
 
