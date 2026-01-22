@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { ArrowLeft, Download, Share2 } from "lucide-react";
 import LevelSelector, { VERTICALS } from "@/components/atoms/levelSelector";
 import RadarChart from "@/components/atoms/radarChart";
@@ -11,6 +12,7 @@ import type { Member } from "@/types";
 const STORAGE_KEY = "engineering-ladder-data";
 
 export default function MemberAssessmentPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const memberId = searchParams.get("id");
@@ -88,7 +90,7 @@ export default function MemberAssessmentPage() {
   const handleImportSelfAssessment = () => {
     const raw = localStorage.getItem("self-assessment-data");
     if (!raw) {
-      alert("No self-assessment found on this device.");
+      alert(t("alerts.noSelfAssessmentFound"));
       return;
     }
 
@@ -106,10 +108,10 @@ export default function MemberAssessmentPage() {
       if (!name && data.name) setName(data.name);
       if (!role && data.role) setRole(data.role);
 
-      alert("Imported self-assessment levels.");
+      alert(t("alerts.importSelfAssessmentSuccess"));
     } catch (e) {
       console.error("Failed to import self-assessment", e);
-      alert("Could not import self-assessment data.");
+      alert(t("alerts.failedToImportSelfAssessment"));
     }
   };
 
@@ -119,10 +121,10 @@ export default function MemberAssessmentPage() {
     navigator.clipboard
       .writeText(url)
       .then(() => {
-        alert("Self-assessment link copied to clipboard!");
+        alert(t("alerts.shareLinkCopied"));
       })
       .catch(() => {
-        alert("Failed to copy link");
+        alert(t("alerts.failedToCopyLink"));
       });
   };
 
@@ -137,18 +139,18 @@ export default function MemberAssessmentPage() {
                 <ArrowLeft className="w-5 h-5" />
               </Button>
               <div>
-                <h1 className="text-lg font-semibold text-slate-800">Team Member Assessment</h1>
-                <p className="text-xs text-slate-500">Full-page editor matching Self Assessment</p>
+                <h1 className="text-lg font-semibold text-slate-800">{t("memberAssessment.title")}</h1>
+                <p className="text-xs text-slate-500">{t("memberAssessment.subtitle")}</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" onClick={handleImportSelfAssessment}>
                 <Download className="w-4 h-4 mr-2" />
-                Import Self-Assessment
+                {t("memberAssessment.importSelfAssessment")}
               </Button>
               <Button variant="outline" onClick={handleShareLink}>
                 <Share2 className="w-4 h-4 mr-2" />
-                Share Self-Assessment
+                {t("memberAssessment.shareSelfAssessment")}
               </Button>
             </div>
           </div>
@@ -161,7 +163,7 @@ export default function MemberAssessmentPage() {
           {/* Left Column - Form */}
           <div className="space-y-6">
             <div className="bg-white rounded-2xl border border-slate-200 p-6">
-              <h2 className="text-lg font-semibold text-slate-800 mb-4">Personal Information</h2>
+              <h2 className="text-lg font-semibold text-slate-800 mb-4">{t("memberAssessment.personalInfo")}</h2>
               <div className="space-y-4">
                 <div>
                   <Label htmlFor="name">Name</Label>
@@ -187,7 +189,7 @@ export default function MemberAssessmentPage() {
             </div>
 
             <div className="bg-white rounded-2xl border border-slate-200 p-6">
-              <h2 className="text-lg font-semibold text-slate-800 mb-4">Competencies</h2>
+              <h2 className="text-lg font-semibold text-slate-800 mb-4">{t("memberAssessment.competencies")}</h2>
               <div className="space-y-3">
                 {VERTICALS.map((vertical) => (
                   <LevelSelector
@@ -215,7 +217,7 @@ export default function MemberAssessmentPage() {
           <div className="lg:sticky lg:top-24 lg:self-start">
             <div className="bg-white rounded-2xl border border-slate-200 p-6">
               <h2 className="text-lg font-semibold text-slate-800 mb-6 text-center">
-                {name || "Member"} Preview
+                {t("memberAssessment.preview", { name: name || t("memberAssessment.member") })}
               </h2>
 
               <div className="flex justify-center mb-8">
@@ -230,7 +232,7 @@ export default function MemberAssessmentPage() {
               {/* Summary Stats */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-200">
-                  <p className="text-xs text-emerald-600 font-medium mb-1">Current Average</p>
+                  <p className="text-xs text-emerald-600 font-medium mb-1">{t("memberAssessment.currentAverage")}</p>
                   <p className="text-2xl font-bold text-emerald-700">
                     {Object.values(currentLevels).length > 0
                       ? (
@@ -243,7 +245,7 @@ export default function MemberAssessmentPage() {
                   </p>
                 </div>
                 <div className="p-4 bg-amber-50 rounded-xl border border-amber-200">
-                  <p className="text-xs text-amber-600 font-medium mb-1">Goal Average</p>
+                  <p className="text-xs text-amber-600 font-medium mb-1">{t("memberAssessment.goalAverage")}</p>
                   <p className="text-2xl font-bold text-amber-700">
                     {Object.values(goalLevels).length > 0
                       ? (
@@ -259,7 +261,7 @@ export default function MemberAssessmentPage() {
 
               {/* Progress by Vertical */}
               <div className="mt-6 space-y-3">
-                <h3 className="text-sm font-semibold text-slate-700">Competency Levels</h3>
+                <h3 className="text-sm font-semibold text-slate-700">{t("memberAssessment.competencyLevels")}</h3>
                 {VERTICALS.map((vertical) => {
                   const current = currentLevels[vertical] || 0;
                   const goal = goalLevels[vertical] || 0;

@@ -13,6 +13,7 @@
     "edit": "Editar",
     "delete": "Eliminar",
     "close": "Tancar",
+    "clear": "Netejar",
     "importAssessment": "Importar Autoevaluació"
   },
   "forms": {
@@ -160,5 +161,58 @@
     "currentNotSet": "Actual: No establert",
     "goal": "Objectiu: {{level}} {{name}}",
     "self": "Autoevaluació: {{level}} {{name}}"
+  },
+  "memberAssessment": {
+    "title": "Avaluació de Membre de l'Equip",
+    "subtitle": "Editor de pàgina completa que coincideix amb Autoevaluació",
+    "personalInfo": "Informació Personal",
+    "competencies": "Competències",
+    "preview": "Vista Prèvia {{name}}",
+    "member": "Membre",
+    "currentAverage": "Mitjana Actual",
+    "goalAverage": "Mitjana d'Objectiu",
+    "competencyLevels": "Nivells de Competència",
+    "importSelfAssessment": "Importar Autoevaluació",
+    "shareSelfAssessment": "Compartir Autoevaluació"
+  },
+  "selfAssessment": {
+    "title": "Autoevaluació",
+    "subtitle": "Avalueu les vostres competències",
+    "personalInfo": "Informació Personal",
+    "competencies": "Competències",
+    "preview": "Vista Prèvia {{name}}",
+    "yourAssessment": "La Vostra Avaluació",
+    "currentAverage": "Mitjana Actual",
+    "competencyLevels": "Nivells de Competència",
+    "shareLink": "Compartir Enllaç",
+    "howToUse": "Com usar",
+    "howToUseItems": [
+      "Establiu el vostre nivell actual per a cada competència",
+      "Establiu els vostres nivells d'objectiu per al creixement futur",
+      "Tots els canvis es guarden automàticament",
+      "Exporteu la vostra avaluació com a JSON per compartir amb el vostre responsable"
+    ],
+    "clearConfirmTitle": "¿Netejar totes les dades d'avaluació?",
+    "clearConfirmDesc": "Això eliminarà totes les vostres dades d'avaluació inclòs nom, rol i tots els nivells de competència. Aquesta acció no es pot desfer.",
+    "clearAll": "Netejar Tot"
+  },
+  "alerts": {
+    "linkCopied": "¡Enllaç copiat al porta-retalls!",
+    "shareLinkCopied": "¡Enllaç d'autoevaluació copiat al porta-retalls!",
+    "failedToCopyLink": "Error en copiar l'enllaç",
+    "importSelfAssessmentSuccess": "Nivells d'autoevaluació importats.",
+    "noSelfAssessmentFound": "No hi ha autoevaluació en aquest dispositiu.",
+    "failedToImportSelfAssessment": "No es van poder importar les dades d'autoevaluació.",
+    "teamExported": "¡Equip exportat correctament!",
+    "memberDeleted": "¡Membre eliminat correctament!"
+  },
+  "labels": {
+    "teamOverview": "Descripció General de l'Equip",
+    "teamLegend": "Llegenda de l'Equip",
+    "member": "membre",
+    "members": "membres",
+    "noTeamMembers": "Sense membres de l'equip encara",
+    "addMembersToSeeOverview": "Afegiu membres per veure la descripció general de l'equip",
+    "currentNotSet": "No establert"
   }
 }

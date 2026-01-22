@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { ArrowLeft, Download, Trash2, LayoutGrid, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +26,7 @@ const formatLevel = (level: number): string => {
 };
 
 export default function SelfAssessment() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [role, setRole] = useState("");
@@ -121,10 +123,10 @@ export default function SelfAssessment() {
     navigator.clipboard
       .writeText(url)
       .then(() => {
-        alert("Link copied to clipboard!");
+        alert(t("alerts.linkCopied"));
       })
       .catch(() => {
-        alert("Failed to copy link");
+        alert(t("alerts.failedToCopyLink"));
       });
   };
 
@@ -143,19 +145,19 @@ export default function SelfAssessment() {
                   <LayoutGrid className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-lg font-semibold text-slate-800">Self Assessment</h1>
-                  <p className="text-xs text-slate-500">Evaluate your competencies</p>
+                  <h1 className="text-lg font-semibold text-slate-800">{t("selfAssessment.title")}</h1>
+                  <p className="text-xs text-slate-500">{t("selfAssessment.subtitle")}</p>
                 </div>
               </div>
             </div>
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" onClick={handleShareLink}>
                 <Share2 className="w-4 h-4 mr-2" />
-                Share Link
+                {t("selfAssessment.shareLink")}
               </Button>
               <Button variant="outline" size="sm" onClick={() => setShowClearDialog(true)}>
                 <Trash2 className="w-4 h-4 mr-2" />
-                Clear
+                {t("buttons.clear")}
               </Button>
               <Button onClick={handleExport} disabled={!name.trim()}>
                 <Download className="w-4 h-4 mr-2" />
@@ -172,10 +174,10 @@ export default function SelfAssessment() {
           {/* Left Column - Form */}
           <div className="space-y-6">
             <div className="bg-white rounded-2xl border border-slate-200 p-6">
-              <h2 className="text-lg font-semibold text-slate-800 mb-4">Personal Information</h2>
+              <h2 className="text-lg font-semibold text-slate-800 mb-4">{t("selfAssessment.personalInfo")}</h2>
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="name">Name</Label>
+                  <Label htmlFor="name">{t("forms.name")}</Label>
                   <Input
                     id="name"
                     value={name}
@@ -185,7 +187,7 @@ export default function SelfAssessment() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="role">Role (optional)</Label>
+                  <Label htmlFor="role">{t("forms.role")}</Label>
                   <Input
                     id="role"
                     value={role}
@@ -198,7 +200,7 @@ export default function SelfAssessment() {
             </div>
 
             <div className="bg-white rounded-2xl border border-slate-200 p-6">
-              <h2 className="text-lg font-semibold text-slate-800 mb-4">Competencies</h2>
+              <h2 className="text-lg font-semibold text-slate-800 mb-4">{t("selfAssessment.competencies")}</h2>
               <div className="space-y-3">
                 {VERTICALS.map((vertical) => (
                   <LevelSelector
@@ -221,12 +223,11 @@ export default function SelfAssessment() {
             </div>
 
             <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl border border-indigo-200 p-6">
-              <h3 className="font-semibold text-indigo-900 mb-2">How to use</h3>
+              <h3 className="font-semibold text-indigo-900 mb-2">{t("selfAssessment.howToUse")}</h3>
               <ul className="text-sm text-indigo-700 space-y-1">
-                <li>• Set your current level for each competency</li>
-                <li>• Set your goal levels for future growth</li>
-                <li>• All changes are saved automatically</li>
-                <li>• Export your assessment as JSON to share with your manager</li>
+                {(t("selfAssessment.howToUseItems", { returnObjects: true }) as string[]).map((item, i) => (
+                  <li key={i}>• {item}</li>
+                ))}
               </ul>
             </div>
           </div>
@@ -235,7 +236,7 @@ export default function SelfAssessment() {
           <div className="lg:sticky lg:top-24 lg:self-start">
             <div className="bg-white rounded-2xl border border-slate-200 p-6">
               <h2 className="text-lg font-semibold text-slate-800 mb-6 text-center">
-                {name || "Your Assessment"} Preview
+                {t("selfAssessment.preview", { name: name || t("selfAssessment.yourAssessment") })}
               </h2>
 
               <div className="flex justify-center mb-8">
@@ -250,7 +251,7 @@ export default function SelfAssessment() {
               {/* Summary Stats */}
               <div className="grid grid-cols-1 gap-4">
                 <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-200">
-                  <p className="text-xs text-emerald-600 font-medium mb-1">Current Average</p>
+                  <p className="text-xs text-emerald-600 font-medium mb-1">{t("selfAssessment.currentAverage")}</p>
                   <p className="text-2xl font-bold text-emerald-700">
                     {Object.values(currentLevels).length > 0
                       ? (
@@ -266,7 +267,7 @@ export default function SelfAssessment() {
 
               {/* Progress by Vertical */}
               <div className="mt-6 space-y-3">
-                <h3 className="text-sm font-semibold text-slate-700">Competency Levels</h3>
+                <h3 className="text-sm font-semibold text-slate-700">{t("selfAssessment.competencyLevels")}</h3>
                 {VERTICALS.map((vertical) => {
                   const current = currentLevels[vertical] || 0;
 
@@ -292,16 +293,15 @@ export default function SelfAssessment() {
       <AlertDialog open={showClearDialog} onOpenChange={setShowClearDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Clear all assessment data?</AlertDialogTitle>
+            <AlertDialogTitle>{t("selfAssessment.clearConfirmTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This will remove all your assessment data including name, role, and all competency
-              levels. This action cannot be undone.
+              {t("selfAssessment.clearConfirmDesc")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>{t("buttons.cancel")}</AlertDialogCancel>
             <AlertDialogAction onClick={handleClear} className="bg-red-500 hover:bg-red-600">
-              Clear All
+              {t("selfAssessment.clearAll")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

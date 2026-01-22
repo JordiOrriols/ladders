@@ -160,5 +160,58 @@
     "currentNotSet": "Current: Not set",
     "goal": "Goal: {{level}} {{name}}",
     "self": "Self: {{level}} {{name}}"
+  },
+  "memberAssessment": {
+    "title": "Team Member Assessment",
+    "subtitle": "Full-page editor matching Self Assessment",
+    "personalInfo": "Personal Information",
+    "competencies": "Competencies",
+    "preview": "{{name}} Preview",
+    "member": "Member",
+    "currentAverage": "Current Average",
+    "goalAverage": "Goal Average",
+    "competencyLevels": "Competency Levels",
+    "importSelfAssessment": "Import Self-Assessment",
+    "shareSelfAssessment": "Share Self-Assessment"
+  },
+  "selfAssessment": {
+    "title": "Self Assessment",
+    "subtitle": "Evaluate your competencies",
+    "personalInfo": "Personal Information",
+    "competencies": "Competencies",
+    "preview": "{{name}} Preview",
+    "yourAssessment": "Your Assessment",
+    "currentAverage": "Current Average",
+    "competencyLevels": "Competency Levels",
+    "shareLink": "Share Link",
+    "howToUse": "How to use",
+    "howToUseItems": [
+      "Set your current level for each competency",
+      "Set your goal levels for future growth",
+      "All changes are saved automatically",
+      "Export your assessment as JSON to share with your manager"
+    ],
+    "clearConfirmTitle": "Clear all assessment data?",
+    "clearConfirmDesc": "This will remove all your assessment data including name, role, and all competency levels. This action cannot be undone.",
+    "clearAll": "Clear All"
+  },
+  "alerts": {
+    "linkCopied": "Link copied to clipboard!",
+    "shareLinkCopied": "Self-assessment link copied to clipboard!",
+    "failedToCopyLink": "Failed to copy link",
+    "importSelfAssessmentSuccess": "Imported self-assessment levels.",
+    "noSelfAssessmentFound": "No self-assessment found on this device.",
+    "failedToImportSelfAssessment": "Could not import self-assessment data.",
+    "teamExported": "Team exported successfully!",
+    "memberDeleted": "Member deleted successfully!"
+  },
+  "labels": {
+    "teamOverview": "Team Overview",
+    "teamLegend": "Team Legend",
+    "member": "member",
+    "members": "members",
+    "noTeamMembers": "No team members yet",
+    "addMembersToSeeOverview": "Add members to see the team overview",
+    "currentNotSet": "Not set"
   }
 }

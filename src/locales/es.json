@@ -13,6 +13,7 @@
     "edit": "Editar",
     "delete": "Eliminar",
     "close": "Cerrar",
+    "clear": "Limpiar",
     "importAssessment": "Importar Autoevaluación"
   },
   "forms": {
@@ -160,5 +161,58 @@
     "currentNotSet": "Actual: No establecido",
     "goal": "Objetivo: {{level}} {{name}}",
     "self": "Autoevaluación: {{level}} {{name}}"
+  },
+  "memberAssessment": {
+    "title": "Evaluación de Miembro del Equipo",
+    "subtitle": "Editor de página completa que coincide con Autoevaluación",
+    "personalInfo": "Información Personal",
+    "competencies": "Competencias",
+    "preview": "Vista Previa {{name}}",
+    "member": "Miembro",
+    "currentAverage": "Promedio Actual",
+    "goalAverage": "Promedio de Objetivo",
+    "competencyLevels": "Niveles de Competencia",
+    "importSelfAssessment": "Importar Autoevaluación",
+    "shareSelfAssessment": "Compartir Autoevaluación"
+  },
+  "selfAssessment": {
+    "title": "Autoevaluación",
+    "subtitle": "Evalúe sus competencias",
+    "personalInfo": "Información Personal",
+    "competencies": "Competencias",
+    "preview": "Vista Previa {{name}}",
+    "yourAssessment": "Su Evaluación",
+    "currentAverage": "Promedio Actual",
+    "competencyLevels": "Niveles de Competencia",
+    "shareLink": "Compartir Enlace",
+    "howToUse": "Cómo usar",
+    "howToUseItems": [
+      "Establezca su nivel actual para cada competencia",
+      "Establezca sus niveles de objetivo para crecimiento futuro",
+      "Todos los cambios se guardan automáticamente",
+      "Exporte su evaluación como JSON para compartir con su gerente"
+    ],
+    "clearConfirmTitle": "¿Limpiar todos los datos de evaluación?",
+    "clearConfirmDesc": "Esto eliminará todos sus datos de evaluación incluido nombre, rol y todos los niveles de competencia. Esta acción no se puede deshacer.",
+    "clearAll": "Limpiar Todo"
+  },
+  "alerts": {
+    "linkCopied": "¡Enlace copiado al portapapeles!",
+    "shareLinkCopied": "¡Enlace de autoevaluación copiado al portapapeles!",
+    "failedToCopyLink": "Error al copiar el enlace",
+    "importSelfAssessmentSuccess": "Niveles de autoevaluación importados.",
+    "noSelfAssessmentFound": "No hay autoevaluación en este dispositivo.",
+    "failedToImportSelfAssessment": "No se pudieron importar los datos de autoevaluación.",
+    "teamExported": "¡Equipo exportado correctamente!",
+    "memberDeleted": "¡Miembro eliminado correctamente!"
+  },
+  "labels": {
+    "teamOverview": "Descripción General del Equipo",
+    "teamLegend": "Leyenda del Equipo",
+    "member": "miembro",
+    "members": "miembros",
+    "noTeamMembers": "Sin miembros del equipo todavía",
+    "addMembersToSeeOverview": "Añada miembros para ver la descripción general del equipo",
+    "currentNotSet": "No establecido"
   }
 }
