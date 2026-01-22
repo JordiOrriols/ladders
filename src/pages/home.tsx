@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Member } from "../types";
-import MemberForm from "../components/atoms/memberForm";
 import { Header } from "../components/molecules/Header";
 import { DeleteMemberDialog } from "../components/molecules/DeleteMemberDialog";
 import { ReferenceModal } from "../components/molecules/ReferenceModal";
@@ -13,8 +12,6 @@ const STORAGE_KEY = "engineering-ladder-data";
 export default function Home() {
   const navigate = useNavigate();
   const [members, setMembers] = useState<Member[]>([]);
-  const [showForm, setShowForm] = useState(false);
-  const [editingMember, setEditingMember] = useState<Member | null>(null);
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [showReference, setShowReference] = useState(false);
@@ -33,23 +30,8 @@ export default function Home() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(members));
   }, [members]);
 
-  const handleSaveMember = (member) => {
-    setMembers((prev) => {
-      const exists = prev.find((m) => m.id === member.id);
-      const updated = exists
-        ? prev.map((m) => (m.id === member.id ? member : m))
-        : [...prev, member];
-      // Save immediately to localStorage
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-      return updated;
-    });
-    setShowForm(false);
-    setEditingMember(null);
-  };
-
   const handleEditMember = (member) => {
-    setEditingMember(member);
-    setShowForm(true);
+    navigate(`/MemberAssessment?id=${member.id}`);
   };
 
   const handleDeleteMember = (id) => {
@@ -73,9 +55,8 @@ export default function Home() {
     <div className="min-h-screen bg-slate-50">
       <ErrorBoundary componentName="Header">
         <Header
-          onAddMember={() => setShowForm(true)}
+          onAddMember={() => navigate("/MemberAssessment")}
           onShowReference={() => setShowReference(true)}
-          onNavigateToSelfAssessment={() => navigate("/SelfAssessment")}
         />
       </ErrorBoundary>
 
@@ -84,27 +65,13 @@ export default function Home() {
         <ErrorBoundary componentName="MainTabs">
           <MainTabs
             members={members}
-            onAddMember={() => setShowForm(true)}
+            onAddMember={() => navigate("/MemberAssessment")}
             onEditMember={handleEditMember}
             onDeleteMember={(id) => setDeleteId(id)}
             onSelectMember={handleMemberClick}
           />
         </ErrorBoundary>
       </main>
-
-      {/* Forms and Dialogs */}
-      <ErrorBoundary componentName="MemberForm">
-        {showForm && (
-          <MemberForm
-            member={editingMember}
-            onSave={handleSaveMember}
-            onClose={() => {
-              setShowForm(false);
-              setEditingMember(null);
-            }}
-          />
-        )}
-      </ErrorBoundary>
 
       <ErrorBoundary componentName="DeleteMemberDialog">
         <DeleteMemberDialog

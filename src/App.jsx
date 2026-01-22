@@ -5,6 +5,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import Home from "./pages/home";
 
 const SelfAssessment = lazy(() => import("./pages/selfassesment"));
+const MemberAssessment = lazy(() => import("./pages/memberAssessment"));
 
 export default function App() {
   const { t } = useTranslation();
@@ -15,6 +16,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/SelfAssessment" element={<SelfAssessment />} />
+          <Route path="/MemberAssessment" element={<MemberAssessment />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </ErrorBoundary>

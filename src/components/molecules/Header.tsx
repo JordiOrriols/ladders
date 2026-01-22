@@ -1,15 +1,14 @@
 import React from "react";
-import { Plus, Info, ClipboardCheck, LayoutGrid, Globe } from "lucide-react";
+import { Plus, Info, LayoutGrid, Globe } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "../ui/button";
 
 interface HeaderProps {
   onAddMember: () => void;
   onShowReference: () => void;
-  onNavigateToSelfAssessment?: () => void;
 }
 
-export function Header({ onAddMember, onShowReference, onNavigateToSelfAssessment }: HeaderProps) {
+export function Header({ onAddMember, onShowReference }: HeaderProps) {
   const { t, i18n } = useTranslation();
 
   const changeLanguage = (lng: string) => {
@@ -59,17 +58,6 @@ export function Header({ onAddMember, onShowReference, onNavigateToSelfAssessmen
               </Button>
             </div>
 
-            {onNavigateToSelfAssessment && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={onNavigateToSelfAssessment}
-                className="hidden sm:flex"
-              >
-                <ClipboardCheck className="w-4 h-4 mr-2" />
-                {t("header.selfAssessment")}
-              </Button>
-            )}
             <Button
               variant="outline"
               size="sm"
