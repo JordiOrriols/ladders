@@ -81,7 +81,8 @@ export default function MemberForm({ member, onSave, onClose }) {
   };
 
   const handleShareLink = () => {
-    const url = `${window.location.origin}/SelfAssessment`;
+    const base = `${window.location.origin}${window.location.pathname}`.replace(/#.*$/, "");
+    const url = `${base}#/SelfAssessment`;
     navigator.clipboard
       .writeText(url)
       .then(() => {
