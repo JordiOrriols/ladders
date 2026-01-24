@@ -6,8 +6,30 @@ import { DeleteMemberDialog } from "../components/molecules/DeleteMemberDialog";
 import { ReferenceModal } from "../components/molecules/ReferenceModal";
 import { MainTabs } from "../components/organisms/MainTabs";
 import { ErrorBoundary } from "../components/ErrorBoundary";
+import { loadFromStorage, saveToStorageDebounced } from "@/utils/storage";
 
 const STORAGE_KEY = "engineering-ladder-data";
+const STORAGE_VERSION = 1;
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  !!value && typeof value === "object" && !Array.isArray(value);
+
+const isLevelMap = (value: unknown): value is Record<string, number> => {
+  if (!isRecord(value)) return false;
+  return Object.values(value).every((v) => typeof v === "number");
+};
+
+const isMember = (value: unknown): value is Member => {
+  if (!isRecord(value)) return false;
+  return (
+    typeof value["id"] === "string" &&
+    typeof value["name"] === "string" &&
+    isLevelMap(value["currentLevels"]) &&
+    isLevelMap(value["goalLevels"])
+  );
+};
+
+const isMemberList = (value: unknown): value is Member[] => Array.isArray(value) && value.every(isMember);
 
 export default function Home() {
   const navigate = useNavigate();
@@ -18,27 +40,23 @@ export default function Home() {
 
   // Load from localStorage on mount
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      const data = JSON.parse(saved);
-      setMembers(data);
-    }
+    const loaded = loadFromStorage<Member[]>(STORAGE_KEY, isMemberList, STORAGE_VERSION);
+    if (loaded) setMembers(loaded);
   }, []);
 
-  // Save to localStorage whenever members change
+  // Save to localStorage whenever members change (debounced to reduce churn)
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(members));
+    saveToStorageDebounced(STORAGE_KEY, members, STORAGE_VERSION);
   }, [members]);
 
-  const handleEditMember = (member) => {
+  const handleEditMember = (member: Member) => {
     navigate(`/MemberAssessment?id=${member.id}`);
   };
 
-  const handleDeleteMember = (id) => {
+  const handleDeleteMember = (id: string) => {
     setMembers((prev) => {
       const updated = prev.filter((m) => m.id !== id);
-      // Save immediately to localStorage
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      saveToStorageDebounced(STORAGE_KEY, updated, STORAGE_VERSION);
       return updated;
     });
     setDeleteId(null);
@@ -47,7 +65,7 @@ export default function Home() {
     }
   };
 
-  const handleMemberClick = (member) => {
+  const handleMemberClick = (member: Member) => {
     setSelectedMember(member);
   };
 
@@ -76,7 +94,7 @@ export default function Home() {
       <ErrorBoundary componentName="DeleteMemberDialog">
         <DeleteMemberDialog
           isOpen={!!deleteId}
-          onConfirm={() => handleDeleteMember(deleteId)}
+          onConfirm={() => deleteId && handleDeleteMember(deleteId)}
           onCancel={() => setDeleteId(null)}
         />
       </ErrorBoundary>
