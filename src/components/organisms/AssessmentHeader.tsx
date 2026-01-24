@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export type HeaderAction =
+type HeaderAction =
   | {
       type: "button";
       label: string;
@@ -20,7 +20,7 @@ export type HeaderAction =
       onFile: (file: File) => void;
     };
 
-export type LeadingAdornment = {
+type LeadingAdornment = {
   icon: ReactNode;
   className?: string;
 };

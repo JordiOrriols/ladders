@@ -41,7 +41,7 @@ export function loadFromStorage<T>(
   }
 }
 
-export function saveToStorage<T>(key: string, data: T, version = DEFAULT_VERSION) {
+function saveToStorage<T>(key: string, data: T, version = DEFAULT_VERSION) {
   const payload: VersionedPayload<T> = { version, data };
   try {
     localStorage.setItem(key, JSON.stringify(payload));

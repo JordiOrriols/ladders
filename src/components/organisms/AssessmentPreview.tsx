@@ -2,13 +2,13 @@ import React from "react";
 import type { ReactNode } from "react";
 import RadarChart from "@/components/atoms/radarChart";
 
-export type PreviewMetric = {
+type PreviewMetric = {
   label: string;
   value: string;
   tone: "current" | "goal" | "single";
 };
 
-export type PreviewVerticalStat = {
+type PreviewVerticalStat = {
   vertical: string;
   current: number;
   goal?: number;
