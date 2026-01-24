@@ -282,8 +282,8 @@ export default function RadarChart({
             const point = getLabelPoint(i);
 
             // Determine text alignment based on position
-            let textAnchor = "middle";
-            let dominantBaseline = "middle";
+            let textAnchor: "start" | "middle" | "end" | "inherit" = "middle";
+            let dominantBaseline: "auto" | "middle" | "hanging" | "inherit" = "middle";
 
             // Adjust positioning based on angle for better alignment
             const angleDeg = (angle * 180) / Math.PI + 90;
