@@ -107,12 +107,19 @@ export default function LevelSelector({
             <div className="text-xs space-y-0.5">
               <p className="text-slate-600">
                 {currentLevelData
-                  ? `Current: L${currentLevel} ${t(`levels.${vertical}.${currentLevel}.name`)}`
-                  : "Current: Not set"}
+                  ? `Current: L${currentLevel} ${t(`levels.${vertical}.${Math.floor(currentLevel)}.name`)}`
+                  : currentLevel === Math.floor(currentLevel) + 0.5
+                    ? `Current: L${Math.floor(currentLevel)}+ ${t(`levels.${vertical}.${Math.floor(currentLevel)}.name`)}`
+                    : "Current: Not set"}
               </p>
-              {!hideGoal && goalLevelData && goalLevel > 0 && (
+              {!hideGoal && (goalLevelData || goalLevel === Math.floor(goalLevel) + 0.5) && goalLevel > 0 && (
                 <p className="text-slate-600">
-                  Goal: L{goalLevel} {t(`levels.${vertical}.${goalLevel}.name`)}
+                  Goal: L{goalLevel}
+                  {goalLevel !== Math.floor(goalLevel) && "+"}
+                  {goalLevel !== Math.floor(goalLevel)
+                    ? ""
+                    : ` ${t(`levels.${vertical}.${Math.floor(goalLevel)}.name`)}`}
+                  {goalLevel === Math.floor(goalLevel) && ` ${t(`levels.${vertical}.${goalLevel}.name`)}`}
                 </p>
               )}
               {selfAssessmentLevelData && selfAssessmentLevel > 0 && (
@@ -167,29 +174,67 @@ export default function LevelSelector({
                   <Button
                     type="button"
                     size="sm"
-                    variant={currentLevel === level.level ? "default" : "outline"}
-                    className={`h-7 px-2 text-xs ${currentLevel === level.level ? "bg-emerald-500 hover:bg-emerald-600" : ""}`}
+                    variant={
+                      currentLevel === level.level || currentLevel === level.level + 0.5
+                        ? "default"
+                        : "outline"
+                    }
+                    className={`h-7 px-2 text-xs ${
+                      currentLevel === level.level || currentLevel === level.level + 0.5
+                        ? "bg-emerald-500 hover:bg-emerald-600"
+                        : ""
+                    }`}
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      onCurrentChange(currentLevel === level.level ? 0 : level.level);
+                      // Cycle: not set -> level -> level+0.5 -> not set
+                      if (currentLevel === level.level) {
+                        onCurrentChange(level.level + 0.5);
+                      } else if (currentLevel === level.level + 0.5) {
+                        onCurrentChange(0);
+                      } else {
+                        onCurrentChange(level.level);
+                      }
                     }}
                   >
-                    Current
+                    {currentLevel === level.level
+                      ? "Current"
+                      : currentLevel === level.level + 0.5
+                        ? "Current +"
+                        : "Current"}
                   </Button>
                   {!hideGoal && (
                     <Button
                       type="button"
                       size="sm"
-                      variant={goalLevel === level.level ? "default" : "outline"}
-                      className={`h-7 px-2 text-xs ${goalLevel === level.level ? "bg-amber-500 hover:bg-amber-600" : ""}`}
+                      variant={
+                        goalLevel === level.level || goalLevel === level.level + 0.5
+                          ? "default"
+                          : "outline"
+                      }
+                      className={`h-7 px-2 text-xs ${
+                        goalLevel === level.level || goalLevel === level.level + 0.5
+                          ? "bg-amber-500 hover:bg-amber-600"
+                          : ""
+                      }`}
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        onGoalChange(goalLevel === level.level ? 0 : level.level);
+                        // Cycle: not set -> level -> level+0.5 -> not set
+                        if (goalLevel === level.level) {
+                          onGoalChange(level.level + 0.5);
+                        } else if (goalLevel === level.level + 0.5) {
+                          onGoalChange(0);
+                        } else {
+                          onGoalChange(level.level);
+                        }
                       }}
                     >
-                      Goal
+                      {goalLevel === level.level
+                        ? "Goal"
+                        : goalLevel === level.level + 0.5
+                          ? "Goal +"
+                          : "Goal"}
                     </Button>
                   )}
                 </div>
