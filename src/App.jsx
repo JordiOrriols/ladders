@@ -43,7 +43,7 @@ function ErrorFallback({ error, resetErrorBoundary }) {
 
 export default function App() {
   return (
-    <ErrorBoundary FallbackComponent={ErrorFallback} onReset={() => window.location.href = "/"}>
+    <ErrorBoundary FallbackComponent={ErrorFallback} onReset={() => (window.location.href = "/")}>
       <Suspense fallback={<LoadingFallback />}>
         <Routes>
           <Route path="/" element={<Home />} />

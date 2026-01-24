@@ -95,7 +95,9 @@ export function SelfAssessmentFormColumn({
       </div>
 
       <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl border border-indigo-200 p-6">
-        <h3 className="font-semibold text-indigo-900 mb-2">{t("selfAssessment.howToUse") as string}</h3>
+        <h3 className="font-semibold text-indigo-900 mb-2">
+          {t("selfAssessment.howToUse") as string}
+        </h3>
         <ul className="text-sm text-indigo-700 space-y-1">
           {howToItems.map((item, i) => (
             <li key={i}>• {item}</li>

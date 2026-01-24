@@ -5,7 +5,11 @@ export function buildShareLink(route: string): string {
 }
 
 export function exportJson(prefix: string, payload: unknown) {
-  const safePrefix = prefix.trim().toLowerCase().replace(/[^a-z0-9-]/g, "-") || "export";
+  const safePrefix =
+    prefix
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9-]/g, "-") || "export";
   const fileName = `${safePrefix}-${Date.now()}.json`;
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
   const url = URL.createObjectURL(blob);

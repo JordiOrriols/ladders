@@ -29,7 +29,8 @@ const isMember = (value: unknown): value is Member => {
   );
 };
 
-const isMemberList = (value: unknown): value is Member[] => Array.isArray(value) && value.every(isMember);
+const isMemberList = (value: unknown): value is Member[] =>
+  Array.isArray(value) && value.every(isMember);
 
 export default function Home() {
   const navigate = useNavigate();

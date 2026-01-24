@@ -65,12 +65,9 @@ export function useSelfAssessmentForm(t: Translator) {
     }
   }, []);
 
-  const persist = useCallback(
-    (next: SelfAssessment) => {
-      saveToStorageDebounced(STORAGE_KEY, next, STORAGE_VERSION);
-    },
-    []
-  );
+  const persist = useCallback((next: SelfAssessment) => {
+    saveToStorageDebounced(STORAGE_KEY, next, STORAGE_VERSION);
+  }, []);
 
   // Persist on change
   useEffect(() => {

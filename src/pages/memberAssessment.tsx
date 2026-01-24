@@ -44,13 +44,21 @@ export default function MemberAssessmentPage() {
           {
             type: "file",
             label: t("memberAssessment.importSelfAssessment"),
-            icon: <span className="mr-1" aria-hidden>📥</span>,
+            icon: (
+              <span className="mr-1" aria-hidden>
+                📥
+              </span>
+            ),
             onFile: (file) => handleImportSelfAssessment(file),
           },
           {
             type: "button",
             label: t("memberAssessment.shareSelfAssessment"),
-            icon: <span className="mr-1" aria-hidden>🔗</span>,
+            icon: (
+              <span className="mr-1" aria-hidden>
+                🔗
+              </span>
+            ),
             variant: "outline",
             size: "sm",
             onClick: handleShareLink,

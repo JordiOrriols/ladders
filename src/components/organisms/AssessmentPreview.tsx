@@ -61,10 +61,7 @@ export function AssessmentPreview({ title, radar, metrics, verticalStats, labels
 
         <div className={`grid gap-4 ${metrics.length > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
           {metrics.map((metric, idx) => (
-            <div
-              key={idx}
-              className={`p-4 rounded-xl border ${toneStyles[metric.tone]}`}
-            >
+            <div key={idx} className={`p-4 rounded-xl border ${toneStyles[metric.tone]}`}>
               <p className="text-xs font-medium mb-1 text-current">{metric.label}</p>
               <p className="text-2xl font-bold text-current">{metric.value}</p>
             </div>
@@ -79,19 +76,28 @@ export function AssessmentPreview({ title, radar, metrics, verticalStats, labels
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-1">
                   <div className="w-2 h-2 rounded-full bg-emerald-500" />
-                  <span className="text-slate-500 w-10">{labels.currentLabel}{current || 0}</span>
+                  <span className="text-slate-500 w-10">
+                    {labels.currentLabel}
+                    {current || 0}
+                  </span>
                 </div>
                 {typeof self === "number" && self > 0 && labels.selfLabel && (
                   <div className="flex items-center gap-1">
                     <div className="w-2 h-2 rounded-full bg-purple-500" />
-                    <span className="text-slate-500 w-10">{labels.selfLabel}{self}</span>
+                    <span className="text-slate-500 w-10">
+                      {labels.selfLabel}
+                      {self}
+                    </span>
                   </div>
                 )}
                 {typeof goal === "number" && goal > 0 && goal !== current && labels.goalLabel && (
                   <div className="flex items-center gap-1">
                     {arrow}
                     <div className="w-2 h-2 rounded-full bg-amber-500" />
-                    <span className="text-slate-500 w-10">{labels.goalLabel}{goal}</span>
+                    <span className="text-slate-500 w-10">
+                      {labels.goalLabel}
+                      {goal}
+                    </span>
                   </div>
                 )}
               </div>

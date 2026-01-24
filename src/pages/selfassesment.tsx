@@ -22,7 +22,16 @@ export default function SelfAssessment() {
   const [showClearDialog, setShowClearDialog] = useState(false);
 
   const {
-    state: { name, role, currentLevels, goalLevels, comments, expandedVertical, verticalStats, currentAverage },
+    state: {
+      name,
+      role,
+      currentLevels,
+      goalLevels,
+      comments,
+      expandedVertical,
+      verticalStats,
+      currentAverage,
+    },
     setExpandedVertical,
     handleNameChange,
     handleRoleChange,
@@ -48,7 +57,11 @@ export default function SelfAssessment() {
           {
             type: "button",
             label: t("selfAssessment.shareLink"),
-            icon: <span className="mr-1" aria-hidden>🔗</span>,
+            icon: (
+              <span className="mr-1" aria-hidden>
+                🔗
+              </span>
+            ),
             variant: "outline",
             size: "sm",
             onClick: handleShareLink,
@@ -56,7 +69,11 @@ export default function SelfAssessment() {
           {
             type: "button",
             label: t("buttons.clear"),
-            icon: <span className="mr-1" aria-hidden>🗑️</span>,
+            icon: (
+              <span className="mr-1" aria-hidden>
+                🗑️
+              </span>
+            ),
             variant: "outline",
             size: "sm",
             onClick: () => setShowClearDialog(true),
@@ -64,7 +81,11 @@ export default function SelfAssessment() {
           {
             type: "button",
             label: t("buttons.export", "Export"),
-            icon: <span className="mr-1" aria-hidden>⬇️</span>,
+            icon: (
+              <span className="mr-1" aria-hidden>
+                ⬇️
+              </span>
+            ),
             onClick: handleExport,
           },
         ]}
@@ -92,7 +113,9 @@ export default function SelfAssessment() {
           />
 
           <AssessmentPreview
-            title={t("selfAssessment.preview", { name: name || t("selfAssessment.yourAssessment") })}
+            title={t("selfAssessment.preview", {
+              name: name || t("selfAssessment.yourAssessment"),
+            })}
             radar={{
               currentLevels: currentLevels,
               goalLevels: goalLevels,

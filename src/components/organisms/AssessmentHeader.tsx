@@ -57,7 +57,9 @@ export function AssessmentHeader({ title, subtitle, onBack, leadingAdornment, ac
             )}
             <div className="flex items-center gap-3">
               {leadingAdornment && (
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${leadingAdornment.className ?? ""}`}>
+                <div
+                  className={`w-10 h-10 rounded-xl flex items-center justify-center ${leadingAdornment.className ?? ""}`}
+                >
                   {leadingAdornment.icon}
                 </div>
               )}
@@ -93,11 +95,7 @@ export function AssessmentHeader({ title, subtitle, onBack, leadingAdornment, ac
                     className="hidden"
                     onChange={(event) => handleFileChange(event, action.onFile)}
                   />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => fileInputRef.current?.click()}
-                  >
+                  <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
                     {action.icon && <span className="mr-2 inline-flex">{action.icon}</span>}
                     {action.label}
                   </Button>

@@ -44,7 +44,8 @@ const isMember = (value: unknown): value is Member => {
   );
 };
 
-const isMemberList = (value: unknown): value is Member[] => Array.isArray(value) && value.every(isMember);
+const isMemberList = (value: unknown): value is Member[] =>
+  Array.isArray(value) && value.every(isMember);
 
 const isSelfAssessmentPayload = (value: unknown): value is SelfAssessmentPayload => {
   if (!isRecord(value)) return false;
@@ -97,16 +98,13 @@ export function useMemberAssessmentForm(memberId: string | null, t: Translator) 
     }
   }, [memberId, members]);
 
-  const persistMembers = useCallback(
-    (updater: (prev: Member[]) => Member[]) => {
-      setMembers((prev) => {
-        const next = updater(prev);
-        saveToStorageDebounced(STORAGE_KEY, next, STORAGE_VERSION);
-        return next;
-      });
-    },
-    []
-  );
+  const persistMembers = useCallback((updater: (prev: Member[]) => Member[]) => {
+    setMembers((prev) => {
+      const next = updater(prev);
+      saveToStorageDebounced(STORAGE_KEY, next, STORAGE_VERSION);
+      return next;
+    });
+  }, []);
 
   // Persist whenever form changes and name is present
   useEffect(() => {
@@ -125,7 +123,16 @@ export function useMemberAssessmentForm(memberId: string | null, t: Translator) 
       const exists = prev.find((m) => m.id === payload.id);
       return exists ? prev.map((m) => (m.id === payload.id ? payload : m)) : [...prev, payload];
     });
-  }, [name, role, currentLevels, goalLevels, selfAssessmentLevels, comments, draftId, persistMembers]);
+  }, [
+    name,
+    role,
+    currentLevels,
+    goalLevels,
+    selfAssessmentLevels,
+    comments,
+    draftId,
+    persistMembers,
+  ]);
 
   const handleCurrentChange = useCallback((vertical: string, level: number) => {
     setCurrentLevels((prev) => ({ ...prev, [vertical]: level }));
@@ -155,7 +162,10 @@ export function useMemberAssessmentForm(memberId: string | null, t: Translator) 
 
       if (file) {
         try {
-          const parsed = await importJsonFromFile<SelfAssessmentPayload>(file, isSelfAssessmentPayload);
+          const parsed = await importJsonFromFile<SelfAssessmentPayload>(
+            file,
+            isSelfAssessmentPayload
+          );
           importFromData(parsed);
         } catch (error) {
           console.error("Failed to import self-assessment", error);
@@ -164,7 +174,10 @@ export function useMemberAssessmentForm(memberId: string | null, t: Translator) 
         return;
       }
 
-      const raw = loadFromStorage<SelfAssessmentPayload>("self-assessment-data", isSelfAssessmentPayload);
+      const raw = loadFromStorage<SelfAssessmentPayload>(
+        "self-assessment-data",
+        isSelfAssessmentPayload
+      );
       if (!raw) {
         alert(t("alerts.noSelfAssessmentFound"));
         return;
@@ -185,18 +198,21 @@ export function useMemberAssessmentForm(memberId: string | null, t: Translator) 
     }
   }, [t]);
 
-  const removeMember = useCallback((id: string) => {
-    persistMembers((prev) => prev.filter((m) => m.id !== id));
-    if (id === draftId) {
-      setDraftId(Date.now().toString());
-      setName("");
-      setRole("");
-      setCurrentLevels({});
-      setGoalLevels({});
-      setSelfAssessmentLevels({});
-      setComments({});
-    }
-  }, [draftId, persistMembers]);
+  const removeMember = useCallback(
+    (id: string) => {
+      persistMembers((prev) => prev.filter((m) => m.id !== id));
+      if (id === draftId) {
+        setDraftId(Date.now().toString());
+        setName("");
+        setRole("");
+        setCurrentLevels({});
+        setGoalLevels({});
+        setSelfAssessmentLevels({});
+        setComments({});
+      }
+    },
+    [draftId, persistMembers]
+  );
 
   const verticalStats = useMemo(
     () =>
