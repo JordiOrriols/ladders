@@ -1,5 +1,4 @@
 import React from "react";
-import type { TFunction } from "i18next";
 import LevelSelector, { VERTICALS } from "@/components/atoms/levelSelector";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -35,7 +34,6 @@ type Props = {
   onCommentChange: (vertical: string, value: string) => void;
   onToggleVertical: (vertical: string) => void;
   labels: Labels;
-  t: TFunction<"translation">;
   hideGoal?: boolean;
   selfAssessmentLevels?: LevelMap;
   howTo?: HowTo;
@@ -55,7 +53,6 @@ export function AssessmentFormColumn({
   onCommentChange,
   onToggleVertical,
   labels,
-  t,
   hideGoal = false,
   selfAssessmentLevels,
   howTo,
