@@ -1,6 +1,6 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { AssessmentFormColumn } from "@/components/organisms/AssessmentFormColumn";
-import type { TFunction } from "i18next";
 
 type LevelMap = Record<string, number>;
 type CommentMap = Record<string, string>;
@@ -18,11 +18,10 @@ type Props = {
   onGoalChange: (vertical: string, level: number) => void;
   onCommentChange: (vertical: string, value: string) => void;
   onToggleVertical: (vertical: string) => void;
-  t: TFunction<"translation">;
 };
 
 export function SelfAssessmentFormColumn(props: Props) {
-  const { t } = props;
+  const { t } = useTranslation();
   const howToItems: string[] =
     (t("selfAssessment.howToUseItems", { returnObjects: true }) as unknown as string[]) || [];
 

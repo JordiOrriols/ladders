@@ -50,6 +50,7 @@ export default function MemberAssessmentPage() {
               </span>
             ),
             onFile: (file) => handleImportSelfAssessment(file),
+            eventId: "member_assessment_import_self",
           },
           {
             type: "button",
@@ -62,6 +63,7 @@ export default function MemberAssessmentPage() {
             variant: "outline",
             size: "sm",
             onClick: handleShareLink,
+            eventId: "member_assessment_share",
           },
         ]}
       />
@@ -85,7 +87,6 @@ export default function MemberAssessmentPage() {
             onToggleVertical={(vertical) =>
               setExpandedVertical((prev) => (prev === vertical ? null : vertical))
             }
-            t={t}
           />
 
           <AssessmentPreview

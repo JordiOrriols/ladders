@@ -17,7 +17,7 @@ export function ReferenceModal({ isOpen, onClose }: ReferenceModalProps) {
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl mx-4">
         <div className="flex items-center justify-between p-6 border-b border-slate-200">
           <h2 className="text-xl font-semibold text-slate-800">{t("reference.title")}</h2>
-          <Button size="icon" variant="ghost" onClick={onClose}>
+          <Button eventId="reference_modal_close" size="icon" variant="ghost" onClick={onClose}>
             <span className="text-xl">&times;</span>
           </Button>
         </div>
@@ -46,7 +46,7 @@ export function ReferenceModal({ isOpen, onClose }: ReferenceModalProps) {
           ))}
         </div>
         <div className="p-6 border-t border-slate-200 bg-slate-50 rounded-b-2xl">
-          <Button onClick={onClose} className="w-full">
+          <Button eventId="reference_modal_close_footer" onClick={onClose} className="w-full">
             {t("buttons.close")}
           </Button>
         </div>

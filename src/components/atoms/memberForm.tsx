@@ -140,7 +140,7 @@ export default function MemberForm({ member, onSave, onClose }) {
           <h2 className="text-xl font-semibold text-slate-800">
             {member ? t("forms.editTeamMember") : t("forms.addTeamMember")}
           </h2>
-          <Button size="icon" variant="ghost" onClick={onClose}>
+          <Button eventId="member_form_close" size="icon" variant="ghost" onClick={onClose}>
             <X className="w-5 h-5" />
           </Button>
         </div>
@@ -179,6 +179,7 @@ export default function MemberForm({ member, onSave, onClose }) {
                   />
                   <div className="flex gap-2">
                     <Button
+                      eventId="member_form_import_assessment"
                       type="button"
                       variant="outline"
                       className="flex-1"
@@ -188,6 +189,7 @@ export default function MemberForm({ member, onSave, onClose }) {
                       {t("buttons.importAssessment")}
                     </Button>
                     <Button
+                      eventId="member_form_share_link"
                       type="button"
                       variant="outline"
                       className="flex-1"
@@ -235,10 +237,10 @@ export default function MemberForm({ member, onSave, onClose }) {
           </div>
 
           <div className="flex justify-end gap-3 p-6 border-t border-slate-200 bg-slate-50 rounded-b-2xl">
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button eventId="member_form_cancel" type="button" variant="outline" onClick={onClose}>
               {t("buttons.cancel")}
             </Button>
-            <Button type="submit" disabled={!name.trim()}>
+            <Button eventId="member_form_submit" type="submit" disabled={!name.trim()}>
               {member ? t("buttons.save") : t("buttons.add")}
             </Button>
           </div>

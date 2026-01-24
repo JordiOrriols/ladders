@@ -47,7 +47,7 @@ function MemberDetailsPanelComponent({ member, onEdit }: MemberDetailsPanelProps
           <h2 className="text-2xl font-semibold text-slate-800">{member.name}</h2>
           {member.role && <p className="text-slate-500">{member.role}</p>}
         </div>
-        <Button variant="outline" onClick={handleEditClick}>
+        <Button eventId="member_details_edit" variant="outline" onClick={handleEditClick}>
           {t("buttons.edit")}
         </Button>
       </div>

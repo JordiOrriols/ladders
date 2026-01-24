@@ -33,6 +33,7 @@ export function Header({ onAddMember, onShowReference }: HeaderProps) {
             <div className="hidden sm:flex items-center gap-1 px-2 py-1 bg-slate-100 rounded-lg">
               <Globe className="w-4 h-4 text-slate-600" />
               <Button
+                eventId="header_language_en"
                 variant={i18n.language === "en" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => changeLanguage("en")}
@@ -41,6 +42,7 @@ export function Header({ onAddMember, onShowReference }: HeaderProps) {
                 EN
               </Button>
               <Button
+                eventId="header_language_es"
                 variant={i18n.language === "es" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => changeLanguage("es")}
@@ -49,6 +51,7 @@ export function Header({ onAddMember, onShowReference }: HeaderProps) {
                 ES
               </Button>
               <Button
+                eventId="header_language_ca"
                 variant={i18n.language === "ca" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => changeLanguage("ca")}
@@ -59,6 +62,7 @@ export function Header({ onAddMember, onShowReference }: HeaderProps) {
             </div>
 
             <Button
+              eventId="header_show_reference"
               variant="outline"
               size="sm"
               onClick={onShowReference}
@@ -67,7 +71,7 @@ export function Header({ onAddMember, onShowReference }: HeaderProps) {
               <Info className="w-4 h-4 mr-2" />
               {t("header.reference")}
             </Button>
-            <Button onClick={onAddMember}>
+            <Button eventId="header_add_member" onClick={onAddMember}>
               <Plus className="w-4 h-4 mr-2" />
               {t("header.addMember")}
             </Button>

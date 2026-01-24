@@ -84,6 +84,7 @@ function RadarChart({
   return (
     <div className={`flex flex-col items-center relative ${className}`}>
       <Button
+        eventId="radar_chart_download"
         onClick={downloadAsImage}
         variant="ghost"
         size="icon"

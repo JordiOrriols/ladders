@@ -63,7 +63,7 @@ export function TeamTab({
             {members.length} member{members.length !== 1 ? "s" : ""}
           </p>
         </div>
-        <Button onClick={handleExportTeam} variant="outline">
+        <Button eventId="team_export" onClick={handleExportTeam} variant="outline">
           <Download className="w-4 h-4 mr-2" />
           Export Team
         </Button>

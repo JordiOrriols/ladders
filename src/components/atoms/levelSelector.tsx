@@ -213,6 +213,7 @@ export default function LevelSelector({
                 </div>
                 <div className="flex gap-1 shrink-0">
                   <Button
+                    eventId={`level_selector_current_${vertical}_L${level.level}`}
                     type="button"
                     size="sm"
                     variant={
@@ -235,6 +236,7 @@ export default function LevelSelector({
                   </Button>
                   {!hideGoal && (
                     <Button
+                      eventId={`level_selector_goal_${vertical}_L${level.level}`}
                       type="button"
                       size="sm"
                       variant={

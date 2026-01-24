@@ -17,7 +17,7 @@ export function EmptyIndividualState({ onAddMember }: EmptyIndividualStateProps)
       </div>
       <h3 className="text-lg font-semibold text-slate-800 mb-2">{t("individualView.empty")}</h3>
       <p className="text-slate-500 mb-6">{t("individualView.emptyDescription")}</p>
-      <Button onClick={onAddMember}>
+      <Button eventId="empty_individual_add_member" onClick={onAddMember}>
         <Plus className="w-4 h-4 mr-2" />
         {t("buttons.add")}
       </Button>

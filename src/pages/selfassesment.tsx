@@ -65,6 +65,7 @@ export default function SelfAssessment() {
             variant: "outline",
             size: "sm",
             onClick: handleShareLink,
+            eventId: "self_assessment_share",
           },
           {
             type: "button",
@@ -77,6 +78,7 @@ export default function SelfAssessment() {
             variant: "outline",
             size: "sm",
             onClick: () => setShowClearDialog(true),
+            eventId: "self_assessment_clear",
           },
           {
             type: "button",
@@ -87,6 +89,7 @@ export default function SelfAssessment() {
               </span>
             ),
             onClick: handleExport,
+            eventId: "self_assessment_export",
           },
         ]}
       />
@@ -109,7 +112,6 @@ export default function SelfAssessment() {
             onToggleVertical={(vertical) =>
               setExpandedVertical((prev) => (prev === vertical ? null : vertical))
             }
-            t={t}
           />
 
           <AssessmentPreview

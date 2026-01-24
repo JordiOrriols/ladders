@@ -11,6 +11,7 @@ type HeaderAction =
       variant?: "default" | "outline" | "ghost";
       size?: "sm" | "icon";
       onClick: () => void;
+      eventId: string;
     }
   | {
       type: "file";
@@ -18,6 +19,7 @@ type HeaderAction =
       icon?: ReactNode;
       accept?: string;
       onFile: (file: File) => void;
+      eventId: string;
     };
 
 type LeadingAdornment = {
@@ -51,7 +53,7 @@ export function AssessmentHeader({ title, subtitle, onBack, leadingAdornment, ac
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-3">
             {onBack && (
-              <Button variant="ghost" size="icon" onClick={onBack} aria-label="Go back">
+              <Button eventId="assessment_header_back" variant="ghost" size="icon" onClick={onBack} aria-label="Go back">
                 <ArrowLeft className="w-5 h-5" />
               </Button>
             )}
@@ -76,6 +78,7 @@ export function AssessmentHeader({ title, subtitle, onBack, leadingAdornment, ac
                 return (
                   <Button
                     key={idx}
+                    eventId={action.eventId}
                     variant={action.variant ?? "outline"}
                     size={action.size ?? "sm"}
                     onClick={action.onClick}
@@ -95,7 +98,7 @@ export function AssessmentHeader({ title, subtitle, onBack, leadingAdornment, ac
                     className="hidden"
                     onChange={(event) => handleFileChange(event, action.onFile)}
                   />
-                  <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
+                  <Button eventId={action.eventId} variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
                     {action.icon && <span className="mr-2 inline-flex">{action.icon}</span>}
                     {action.label}
                   </Button>
