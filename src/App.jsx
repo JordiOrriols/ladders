@@ -20,7 +20,7 @@ function LoadingFallback() {
 }
 
 // Error fallback component
-function ErrorFallback({ error, resetErrorBoundary }: { error: Error; resetErrorBoundary: () => void }) {
+function ErrorFallback({ error, resetErrorBoundary }) {
   const { t } = useTranslation();
 
   return (

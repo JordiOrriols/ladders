@@ -46,7 +46,7 @@ export function TeamTab({
     URL.revokeObjectURL(url);
   };
 
-  if (members.length === 0) {
+  if (!members || members.length === 0) {
     return <EmptyTeamState onAddMember={onAddMember} />;
   }
 
