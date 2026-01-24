@@ -32,8 +32,8 @@ export function MemberAssessmentFormColumn(props: Props) {
         competenciesTitle: t("memberAssessment.competencies"),
         nameLabel: t("forms.name", "Name"),
         roleLabel: t("forms.role", "Role"),
-        namePlaceholder: "Enter member name",
-        rolePlaceholder: "e.g. Senior Engineer",
+        namePlaceholder: t("forms.memberNamePlaceholder"),
+        rolePlaceholder: t("forms.rolePlaceholder"),
       }}
       hideGoal={false}
       selfAssessmentLevels={props.selfAssessmentLevels}

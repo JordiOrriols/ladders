@@ -14,7 +14,13 @@
     "delete": "Eliminar",
     "close": "Cerrar",
     "clear": "Limpiar",
-    "importAssessment": "Importar Autoevaluación"
+    "importAssessment": "Importar Autoevaluación",
+    "exportTeam": "Exportar Equipo",
+    "shareLink": "Compartir Enlace",
+    "current": "Actual",
+    "currentPlus": "Actual +",
+    "goal": "Objetivo",
+    "goalPlus": "Objetivo +"
   },
   "forms": {
     "addTeamMember": "Añadir Miembro del Equipo",
@@ -22,7 +28,12 @@
     "name": "Nombre",
     "role": "Rol (opcional)",
     "competencies": "Competencias",
-    "preview": "Vista Previa"
+    "preview": "Vista Previa",
+    "comments": "Comentarios",
+    "commentsPlaceholder": "Añadir notas para esta competencia",
+    "rolePlaceholder": "p.ej. Ingeniero Senior",
+    "namePlaceholder": "Introduce tu nombre",
+    "memberNamePlaceholder": "Introduce el nombre del miembro"
   },
   "validation": {
     "importSuccess": "Autoevaluación importada correctamente",

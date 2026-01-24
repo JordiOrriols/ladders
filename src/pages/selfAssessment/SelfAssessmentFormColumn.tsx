@@ -33,8 +33,8 @@ export function SelfAssessmentFormColumn(props: Props) {
         competenciesTitle: t("selfAssessment.competencies") as string,
         nameLabel: t("forms.name", "Name") as string,
         roleLabel: t("forms.role", "Role") as string,
-        namePlaceholder: "Enter your name",
-        rolePlaceholder: "e.g. Senior Engineer",
+        namePlaceholder: t("forms.namePlaceholder") as string,
+        rolePlaceholder: t("forms.rolePlaceholder") as string,
       }}
       hideGoal
       howTo={{

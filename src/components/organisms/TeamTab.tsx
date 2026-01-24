@@ -1,5 +1,6 @@
 import React from "react";
 import { Download } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { Member } from "../../types";
 import MemberCard from "../atoms/memberCard";
 import { EmptyTeamState } from "../molecules/EmptyTeamState";
@@ -20,6 +21,8 @@ export function TeamTab({
   onDeleteMember,
   onSelectMember,
 }: TeamTabProps) {
+  const { t } = useTranslation();
+
   const handleExportTeam = () => {
     const data = {
       teamName: "Engineering Team",
@@ -58,14 +61,14 @@ export function TeamTab({
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-lg font-semibold text-slate-800">Team Overview</h2>
+          <h2 className="text-lg font-semibold text-slate-800">{t("labels.teamOverview")}</h2>
           <p className="text-sm text-slate-500">
-            {members.length} member{members.length !== 1 ? "s" : ""}
+            {members.length} {members.length !== 1 ? t("labels.members") : t("labels.member")}
           </p>
         </div>
         <Button eventId="team_export" onClick={handleExportTeam} variant="outline">
           <Download className="w-4 h-4 mr-2" />
-          Export Team
+          {t("buttons.exportTeam")}
         </Button>
       </div>
 

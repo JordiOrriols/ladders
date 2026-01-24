@@ -13,7 +13,13 @@
     "edit": "Edit",
     "delete": "Delete",
     "close": "Close",
-    "importAssessment": "Import Self Assessment"
+    "importAssessment": "Import Self Assessment",
+    "exportTeam": "Export Team",
+    "shareLink": "Share Link",
+    "current": "Current",
+    "currentPlus": "Current +",
+    "goal": "Goal",
+    "goalPlus": "Goal +"
   },
   "forms": {
     "addTeamMember": "Add Team Member",
@@ -21,7 +27,12 @@
     "name": "Name",
     "role": "Role (optional)",
     "competencies": "Competencies",
-    "preview": "Preview"
+    "preview": "Preview",
+    "comments": "Comments",
+    "commentsPlaceholder": "Add notes for this competency",
+    "rolePlaceholder": "e.g. Senior Engineer",
+    "namePlaceholder": "Enter your name",
+    "memberNamePlaceholder": "Enter member name"
   },
   "validation": {
     "importSuccess": "Self assessment imported successfully",

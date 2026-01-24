@@ -229,10 +229,10 @@ export default function LevelSelector({
                     onClick={handleCurrentButtonClick(level.level)}
                   >
                     {currentLevel === level.level
-                      ? "Current"
+                      ? t("buttons.current")
                       : currentLevel === level.level + 0.5
-                        ? "Current +"
-                        : "Current"}
+                        ? t("buttons.currentPlus")
+                        : t("buttons.current")}
                   </Button>
                   {!hideGoal && (
                     <Button
@@ -252,10 +252,10 @@ export default function LevelSelector({
                       onClick={handleGoalButtonClick(level.level)}
                     >
                       {goalLevel === level.level
-                        ? "Goal"
+                        ? t("buttons.goal")
                         : goalLevel === level.level + 0.5
-                          ? "Goal +"
-                          : "Goal"}
+                          ? t("buttons.goalPlus")
+                          : t("buttons.goal")}
                     </Button>
                   )}
                 </div>
@@ -264,11 +264,11 @@ export default function LevelSelector({
           ))}
 
           <div className="space-y-1 pt-2">
-            <label className="text-xs font-semibold text-slate-700">Comments</label>
+            <label className="text-xs font-semibold text-slate-700">{t("forms.comments")}</label>
             <textarea
               value={comment}
               onChange={(e) => onCommentChange?.(e.target.value)}
-              placeholder="Add notes for this competency"
+              placeholder={t("forms.commentsPlaceholder")}
               className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 shadow-sm focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200"
               rows={3}
             />

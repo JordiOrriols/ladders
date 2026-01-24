@@ -120,10 +120,10 @@ export default function MemberForm({ member, onSave, onClose }) {
     navigator.clipboard
       .writeText(url)
       .then(() => {
-        alert("Self-assessment link copied to clipboard!");
+        alert(t("alerts.shareLinkCopied"));
       })
       .catch(() => {
-        alert("Failed to copy link");
+        alert(t("alerts.failedToCopyLink"));
       });
   };
 
@@ -165,7 +165,7 @@ export default function MemberForm({ member, onSave, onClose }) {
                     id="role"
                     value={role}
                     onChange={(e) => handleRoleInputChange(e.target.value)}
-                    placeholder="e.g. Senior Engineer"
+                    placeholder={t("forms.rolePlaceholder")}
                     className="mt-1"
                   />
                 </div>
@@ -196,7 +196,7 @@ export default function MemberForm({ member, onSave, onClose }) {
                       onClick={handleShareLink}
                     >
                       <Share2 className="w-4 h-4 mr-2" />
-                      Share Link
+                      {t("buttons.shareLink")}
                     </Button>
                   </div>
                   {Object.keys(selfAssessmentLevels).length > 0 && (

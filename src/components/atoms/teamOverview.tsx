@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import RadarChart from "./radarChart";
 import { Users } from "lucide-react";
 
@@ -14,12 +15,14 @@ const memberColors = [
 ];
 
 export default function TeamOverview({ members }) {
+  const { t } = useTranslation();
+
   if (members.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-slate-400">
         <Users className="w-16 h-16 mb-4 opacity-50" />
-        <p className="text-lg">No team members yet</p>
-        <p className="text-sm">Add members to see the team overview</p>
+        <p className="text-lg">{t("labels.noTeamMembers")}</p>
+        <p className="text-sm">{t("labels.addMembersToSeeOverview")}</p>
       </div>
     );
   }

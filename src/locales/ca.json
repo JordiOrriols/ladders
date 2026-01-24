@@ -14,7 +14,13 @@
     "delete": "Eliminar",
     "close": "Tancar",
     "clear": "Netejar",
-    "importAssessment": "Importar Autoevaluació"
+    "importAssessment": "Importar Autoevaluació",
+    "exportTeam": "Exportar Equip",
+    "shareLink": "Compartir Enllaç",
+    "current": "Actual",
+    "currentPlus": "Actual +",
+    "goal": "Objectiu",
+    "goalPlus": "Objectiu +"
   },
   "forms": {
     "addTeamMember": "Afegir Membre de l'Equip",
@@ -22,7 +28,12 @@
     "name": "Nom",
     "role": "Rol (opcional)",
     "competencies": "Competències",
-    "preview": "Vista Prèvia"
+    "preview": "Vista Prèvia",
+    "comments": "Comentaris",
+    "commentsPlaceholder": "Afegir notes per a aquesta competència",
+    "rolePlaceholder": "p.ex. Enginyer Sènior",
+    "namePlaceholder": "Introdueix el teu nom",
+    "memberNamePlaceholder": "Introdueix el nom del membre"
   },
   "validation": {
     "importSuccess": "Autoevaluació importada correctament",
