@@ -1,9 +1,6 @@
 import React from "react";
+import { AssessmentFormColumn } from "@/components/organisms/AssessmentFormColumn";
 import type { TFunction } from "i18next";
-import LevelSelector from "@/components/atoms/levelSelector";
-import { VERTICALS } from "@/components/atoms/levelSelector";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 type LevelMap = Record<string, number>;
 type CommentMap = Record<string, string>;
@@ -25,75 +22,22 @@ type Props = {
   t: TFunction<"translation">;
 };
 
-export function MemberAssessmentFormColumn({
-  name,
-  role,
-  currentLevels,
-  goalLevels,
-  selfAssessmentLevels,
-  comments,
-  expandedVertical,
-  onNameChange,
-  onRoleChange,
-  onCurrentChange,
-  onGoalChange,
-  onCommentChange,
-  onToggleVertical,
-  t,
-}: Props) {
-  return (
-    <div className="space-y-6">
-      <div className="bg-white rounded-2xl border border-slate-200 p-6">
-        <h2 className="text-lg font-semibold text-slate-800 mb-4">
-          {t("memberAssessment.personalInfo")}
-        </h2>
-        <div className="space-y-4">
-          <div>
-            <Label htmlFor="name">{t("forms.name", "Name")}</Label>
-            <Input
-              id="name"
-              value={name}
-              onChange={(e) => onNameChange(e.target.value)}
-              placeholder="Enter member name"
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="role">{t("forms.role", "Role")}</Label>
-            <Input
-              id="role"
-              value={role}
-              onChange={(e) => onRoleChange(e.target.value)}
-              placeholder="e.g. Senior Engineer"
-              className="mt-1"
-            />
-          </div>
-        </div>
-      </div>
+export function MemberAssessmentFormColumn(props: Props) {
+  const { t } = props;
 
-      <div className="bg-white rounded-2xl border border-slate-200 p-6">
-        <h2 className="text-lg font-semibold text-slate-800 mb-4">
-          {t("memberAssessment.competencies")}
-        </h2>
-        <div className="space-y-3">
-          {VERTICALS.map((vertical) => (
-            <LevelSelector
-              key={vertical}
-              vertical={vertical}
-              currentLevel={currentLevels[vertical] || 0}
-              goalLevel={goalLevels[vertical] || 0}
-              selfAssessmentLevel={selfAssessmentLevels[vertical] || 0}
-              comment={comments[vertical] || ""}
-              onCurrentChange={(level) => onCurrentChange(vertical, level)}
-              onGoalChange={(level) => onGoalChange(vertical, level)}
-              onCommentChange={(value) => onCommentChange(vertical, value)}
-              expanded={expandedVertical === vertical}
-              onToggle={() => onToggleVertical(vertical)}
-              hideGoal={false}
-            />
-          ))}
-        </div>
-      </div>
-    </div>
+  return (
+    <AssessmentFormColumn
+      {...props}
+      labels={{
+        personalTitle: t("memberAssessment.personalInfo"),
+        competenciesTitle: t("memberAssessment.competencies"),
+        nameLabel: t("forms.name", "Name"),
+        roleLabel: t("forms.role", "Role"),
+        namePlaceholder: "Enter member name",
+        rolePlaceholder: "e.g. Senior Engineer",
+      }}
+      hideGoal={false}
+      selfAssessmentLevels={props.selfAssessmentLevels}
+    />
   );
 }
