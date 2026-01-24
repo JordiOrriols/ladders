@@ -25,18 +25,59 @@ export default function RadarChart({
 
     const svg = svgRef.current;
 
-    // Clone SVG and reduce text sizes
+    // Clone SVG and apply proper styling
     const svgClone = svg.cloneNode(true) as SVGSVGElement;
 
-    // Reduce text font sizes by 40% for better proportion
+    // Add margins around the chart
+    const margin = 40;
+    const newSize = size + margin * 2;
+    svgClone.setAttribute("width", newSize.toString());
+    svgClone.setAttribute("height", newSize.toString());
+    svgClone.setAttribute("viewBox", `0 0 ${newSize} ${newSize}`);
+
+    // Create a group to hold the original content with translation
+    const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    g.setAttribute("transform", `translate(${margin}, ${margin})`);
+
+    // Move all children into the group
+    while (svgClone.firstChild) {
+      g.appendChild(svgClone.firstChild);
+    }
+    svgClone.appendChild(g);
+
+    // Process and convert Tailwind classes to explicit SVG styles
     const textElements = svgClone.querySelectorAll("text");
     textElements.forEach((text) => {
       const currentClass = text.getAttribute("class") || "";
-      // Reduce font size classes
-      const newClass = currentClass
-        .replace("text-xs", "text-[9px]")
-        .replace("text-[10px]", "text-[7px]");
-      text.setAttribute("class", newClass);
+
+      // Map Tailwind classes to actual fill colors and font properties
+      if (currentClass.includes("fill-slate-500")) {
+        text.setAttribute("fill", "#64748b");
+      } else if (currentClass.includes("fill-slate-400")) {
+        text.setAttribute("fill", "#94a3b8");
+      }
+
+      // Set font family for better rendering
+      text.setAttribute("font-family", "system-ui, -apple-system, sans-serif");
+
+      // Handle font sizes
+      if (currentClass.includes("text-xs")) {
+        text.setAttribute("font-size", "12");
+      } else if (currentClass.includes("text-[10px]")) {
+        text.setAttribute("font-size", "10");
+      } else if (currentClass.includes("text-[9px]")) {
+        text.setAttribute("font-size", "9");
+      } else if (currentClass.includes("text-[7px]")) {
+        text.setAttribute("font-size", "7");
+      }
+
+      // Handle font weight
+      if (currentClass.includes("font-semibold")) {
+        text.setAttribute("font-weight", "600");
+      }
+
+      // Remove class attribute as we've converted it to explicit styles
+      text.removeAttribute("class");
     });
 
     const svgData = new XMLSerializer().serializeToString(svgClone);
@@ -47,14 +88,14 @@ export default function RadarChart({
 
     // Use 2.5x scale for high resolution
     const scale = 2.5;
-    const scaledSize = size * scale;
+    const scaledSize = newSize * scale;
 
     const img = new Image();
     const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
     const url = URL.createObjectURL(svgBlob);
 
     img.onload = () => {
-      // Set canvas to high resolution
+      // Set canvas to high resolution with margins included
       canvas.width = scaledSize;
       canvas.height = scaledSize;
 
