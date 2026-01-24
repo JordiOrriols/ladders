@@ -89,15 +89,51 @@ export default function LevelSelector({
     }
   };
 
+  const handleHeaderClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggle();
+  };
+
+  const handleDivClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+  };
+
+  const handleCurrentButtonClick = (level: number) => {
+    return (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      // Cycle: not set -> level -> level+0.5 -> not set
+      if (currentLevel === level) {
+        onCurrentChange(level + 0.5);
+      } else if (currentLevel === level + 0.5) {
+        onCurrentChange(0);
+      } else {
+        onCurrentChange(level);
+      }
+    };
+  };
+
+  const handleGoalButtonClick = (level: number) => {
+    return (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+      // Cycle: not set -> level -> level+0.5 -> not set
+      if (goalLevel === level) {
+        onGoalChange(level + 0.5);
+      } else if (goalLevel === level + 0.5) {
+        onGoalChange(0);
+      } else {
+        onGoalChange(level);
+      }
+    };
+  };
+
   return (
     <div className={`rounded-xl border ${verticalBgColors[vertical]} overflow-hidden`}>
       <button
         type="button"
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          toggle();
-        }}
+        onClick={handleHeaderClick}
         className="w-full p-4 flex items-center justify-between hover:bg-white/50 transition-colors"
         aria-expanded={isExpanded}
         aria-label={`${vertical} competency details. Current level: ${currentLevel || "not set"}. Goal level: ${goalLevel || "not set"}`}
@@ -143,7 +179,7 @@ export default function LevelSelector({
       </button>
 
       {isExpanded && (
-        <div className="px-4 pb-4 space-y-2" onClick={(e) => e.stopPropagation()}>
+        <div className="px-4 pb-4 space-y-2" onClick={handleDivClick}>
           {levels.map((level) => (
             <div
               key={level.level}
@@ -156,7 +192,7 @@ export default function LevelSelector({
                       ? "border-purple-400 ring-1 ring-purple-200"
                       : "border-slate-200"
               }`}
-              onClick={(e) => e.stopPropagation()}
+              onClick={handleDivClick}
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="flex-1 min-w-0">
@@ -189,18 +225,7 @@ export default function LevelSelector({
                         ? "bg-emerald-500 hover:bg-emerald-600"
                         : ""
                     }`}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      // Cycle: not set -> level -> level+0.5 -> not set
-                      if (currentLevel === level.level) {
-                        onCurrentChange(level.level + 0.5);
-                      } else if (currentLevel === level.level + 0.5) {
-                        onCurrentChange(0);
-                      } else {
-                        onCurrentChange(level.level);
-                      }
-                    }}
+                    onClick={handleCurrentButtonClick(level.level)}
                   >
                     {currentLevel === level.level
                       ? "Current"
@@ -222,18 +247,7 @@ export default function LevelSelector({
                           ? "bg-amber-500 hover:bg-amber-600"
                           : ""
                       }`}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        // Cycle: not set -> level -> level+0.5 -> not set
-                        if (goalLevel === level.level) {
-                          onGoalChange(level.level + 0.5);
-                        } else if (goalLevel === level.level + 0.5) {
-                          onGoalChange(0);
-                        } else {
-                          onGoalChange(level.level);
-                        }
-                      }}
+                      onClick={handleGoalButtonClick(level.level)}
                     >
                       {goalLevel === level.level
                         ? "Goal"

@@ -25,6 +25,12 @@ interface MemberDetailsPanelProps {
 function MemberDetailsPanelComponent({ member, onEdit }: MemberDetailsPanelProps) {
   const { t } = useTranslation();
 
+  const handleEditClick = () => {
+    if (member) {
+      onEdit(member);
+    }
+  };
+
   if (!member) {
     return (
       <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center">
@@ -41,7 +47,7 @@ function MemberDetailsPanelComponent({ member, onEdit }: MemberDetailsPanelProps
           <h2 className="text-2xl font-semibold text-slate-800">{member.name}</h2>
           {member.role && <p className="text-slate-500">{member.role}</p>}
         </div>
-        <Button variant="outline" onClick={() => onEdit(member)}>
+        <Button variant="outline" onClick={handleEditClick}>
           {t("buttons.edit")}
         </Button>
       </div>

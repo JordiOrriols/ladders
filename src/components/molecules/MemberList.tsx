@@ -12,6 +12,10 @@ interface MemberListProps {
 function MemberListComponent({ members, selectedMemberId, onSelectMember }: MemberListProps) {
   const { t } = useTranslation();
 
+  const handleMemberClick = (member: Member) => {
+    onSelectMember(member);
+  };
+
   return (
     <div className="lg:col-span-1 space-y-2">
       <h3 className="text-sm font-medium text-slate-500 mb-3 px-1" id="member-list-heading">
@@ -22,7 +26,7 @@ function MemberListComponent({ members, selectedMemberId, onSelectMember }: Memb
           {members.map((member) => (
             <button
               key={member.id}
-              onClick={() => onSelectMember(member)}
+              onClick={() => handleMemberClick(member)}
               className={`w-full p-4 rounded-xl border text-left transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
                 selectedMemberId === member.id
                   ? "bg-indigo-50 border-indigo-200"

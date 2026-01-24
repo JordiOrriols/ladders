@@ -24,8 +24,8 @@ export function TeamTab({
     const data = {
       teamName: "Engineering Team",
       exportedAt: new Date().toISOString(),
-      totalMembers: members.length,
-      members: members.map((member) => ({
+      totalMembers: members?.length || 0,
+      members: (members || []).map((member) => ({
         id: member.id,
         name: member.name,
         role: member.role,
@@ -44,6 +44,10 @@ export function TeamTab({
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
+  };
+
+  const handleMemberSelect = (member: Member) => {
+    onSelectMember(member);
   };
 
   if (!members || members.length === 0) {
@@ -72,7 +76,7 @@ export function TeamTab({
             member={member}
             onEdit={onEditMember}
             onDelete={(id) => onDeleteMember(id)}
-            onClick={() => onSelectMember(member)}
+            onClick={() => handleMemberSelect(member)}
           />
         ))}
       </div>

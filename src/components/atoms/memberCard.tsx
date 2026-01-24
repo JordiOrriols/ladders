@@ -20,6 +20,16 @@ interface MemberCardProps {
 }
 
 export default function MemberCard({ member, onEdit, onDelete, onClick }: MemberCardProps) {
+  const handleEditClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    onEdit(member);
+  };
+
+  const handleDeleteClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    onDelete(member.id);
+  };
+
   return (
     <div
       className="bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-lg hover:border-slate-300 transition-all cursor-pointer group"
@@ -40,10 +50,7 @@ export default function MemberCard({ member, onEdit, onDelete, onClick }: Member
             size="icon"
             variant="ghost"
             className="h-8 w-8"
-            onClick={(e) => {
-              e.stopPropagation();
-              onEdit(member);
-            }}
+            onClick={handleEditClick}
           >
             <Pencil className="w-4 h-4 text-slate-400" />
           </Button>
@@ -51,10 +58,7 @@ export default function MemberCard({ member, onEdit, onDelete, onClick }: Member
             size="icon"
             variant="ghost"
             className="h-8 w-8"
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete(member.id);
-            }}
+            onClick={handleDeleteClick}
           >
             <Trash2 className="w-4 h-4 text-slate-400 hover:text-red-500" />
           </Button>
