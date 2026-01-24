@@ -32,6 +32,32 @@ export default function MemberForm({ member, onSave, onClose }) {
     }
   }, [member]);
 
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      console.log("[MemberForm] Backdrop clicked - closing");
+      onClose();
+    }
+  };
+
+  const handleDialogClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+  };
+
+  const handleFormClick = (e: React.MouseEvent<HTMLFormElement>) => {
+    e.stopPropagation();
+  };
+
+  const handleNameInputChange = (value: string) => setName(value);
+  const handleRoleInputChange = (value: string) => setRole(value);
+
+  const handleImportClick = () => {
+    document.getElementById("import-assessment-file")?.click();
+  };
+
+  const handleToggleVertical = (vertical: string) => {
+    setExpandedVertical((prev) => (prev === vertical ? null : vertical));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("[MemberForm] handleSubmit called");
@@ -104,17 +130,11 @@ export default function MemberForm({ member, onSave, onClose }) {
   return (
     <div
       className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-start justify-center overflow-y-auto py-8"
-      onClick={(e) => {
-        // Only close if clicking directly on the backdrop, not on child elements
-        if (e.target === e.currentTarget) {
-          console.log("[MemberForm] Backdrop clicked - closing");
-          onClose();
-        }
-      }}
+      onClick={handleBackdropClick}
     >
       <div
         className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl mx-4"
-        onClick={(e) => e.stopPropagation()}
+        onClick={handleDialogClick}
       >
         <div className="flex items-center justify-between p-6 border-b border-slate-200">
           <h2 className="text-xl font-semibold text-slate-800">
@@ -125,11 +145,7 @@ export default function MemberForm({ member, onSave, onClose }) {
           </Button>
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          onClick={(e) => e.stopPropagation()}
-          onMouseDown={(e) => e.stopPropagation()}
-        >
+        <form onSubmit={handleSubmit} onClick={handleFormClick} onMouseDown={handleFormClick}>
           <div className="p-6 grid lg:grid-cols-2 gap-8">
             <div className="space-y-6">
               <div className="space-y-4">
@@ -138,7 +154,7 @@ export default function MemberForm({ member, onSave, onClose }) {
                   <Input
                     id="name"
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => handleNameInputChange(e.target.value)}
                     placeholder={t("forms.name")}
                     className="mt-1"
                   />
@@ -148,7 +164,7 @@ export default function MemberForm({ member, onSave, onClose }) {
                   <Input
                     id="role"
                     value={role}
-                    onChange={(e) => setRole(e.target.value)}
+                    onChange={(e) => handleRoleInputChange(e.target.value)}
                     placeholder="e.g. Senior Engineer"
                     className="mt-1"
                   />
@@ -166,7 +182,7 @@ export default function MemberForm({ member, onSave, onClose }) {
                       type="button"
                       variant="outline"
                       className="flex-1"
-                      onClick={() => document.getElementById("import-assessment-file")?.click()}
+                      onClick={handleImportClick}
                     >
                       <Upload className="w-4 h-4 mr-2" />
                       {t("buttons.importAssessment")}
@@ -201,9 +217,7 @@ export default function MemberForm({ member, onSave, onClose }) {
                     onGoalChange={(level) => handleGoalChange(vertical, level)}
                     onCommentChange={(value) => handleCommentChange(vertical, value)}
                     expanded={expandedVertical === vertical}
-                    onToggle={() =>
-                      setExpandedVertical((prev) => (prev === vertical ? null : vertical))
-                    }
+                    onToggle={() => handleToggleVertical(vertical)}
                   />
                 ))}
               </div>

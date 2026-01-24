@@ -1,7 +1,8 @@
-import React, { useMemo, useRef, memo } from "react";
+import React, { useMemo, useRef, memo, useCallback } from "react";
 import { Download } from "lucide-react";
 import { Button } from "../ui/button";
 import { VERTICALS, LEVELS } from "./levelSelector";
+import { downloadRadarImage } from "../../utils/downloadRadarImage";
 
 function RadarChart({
   currentLevels = {},
@@ -20,126 +21,10 @@ function RadarChart({
   // Hide goal levels when hideGoal is true
   const displayGoalLevels = hideGoal ? {} : goalLevels;
 
-  const downloadAsImage = () => {
+  const downloadAsImage = useCallback(() => {
     if (!svgRef.current) return;
-
-    const svg = svgRef.current;
-
-    // Clone SVG and apply proper styling
-    const svgClone = svg.cloneNode(true) as SVGSVGElement;
-
-    // Add margins around the chart
-    const margin = 40;
-    const newSize = size + margin * 2;
-    svgClone.setAttribute("width", newSize.toString());
-    svgClone.setAttribute("height", newSize.toString());
-    svgClone.setAttribute("viewBox", `0 0 ${newSize} ${newSize}`);
-
-    // Create a group to hold the original content with translation
-    const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-    g.setAttribute("transform", `translate(${margin}, ${margin})`);
-
-    // Move all children into the group
-    while (svgClone.firstChild) {
-      g.appendChild(svgClone.firstChild);
-    }
-    svgClone.appendChild(g);
-
-    // Reduce stroke widths for borders and lines
-    const paths = svgClone.querySelectorAll("path, line");
-    paths.forEach((element) => {
-      const strokeWidth = element.getAttribute("strokeWidth");
-      if (strokeWidth) {
-        const currentWidth = parseFloat(strokeWidth);
-        element.setAttribute("strokeWidth", (currentWidth * 0.75).toString());
-      }
-    });
-
-    // Process and convert Tailwind classes to explicit SVG styles
-    const textElements = svgClone.querySelectorAll("text");
-    textElements.forEach((text) => {
-      const currentClass = text.getAttribute("class") || "";
-
-      // Map Tailwind classes to actual fill colors and font properties
-      if (currentClass.includes("fill-slate-500")) {
-        text.setAttribute("fill", "#64748b");
-      } else if (currentClass.includes("fill-slate-400")) {
-        text.setAttribute("fill", "#94a3b8");
-      }
-
-      // Set font family for better rendering
-      text.setAttribute("font-family", "system-ui, -apple-system, sans-serif");
-
-      // Handle font sizes - reduce by 20%
-      if (currentClass.includes("text-xs")) {
-        text.setAttribute("font-size", "10");
-      } else if (currentClass.includes("text-[10px]")) {
-        text.setAttribute("font-size", "8");
-      } else if (currentClass.includes("text-[9px]")) {
-        text.setAttribute("font-size", "7");
-      } else if (currentClass.includes("text-[7px]")) {
-        text.setAttribute("font-size", "6");
-      }
-
-      // Handle font weight
-      if (currentClass.includes("font-semibold")) {
-        text.setAttribute("font-weight", "600");
-      }
-
-      // Remove class attribute as we've converted it to explicit styles
-      text.removeAttribute("class");
-    });
-
-    const svgData = new XMLSerializer().serializeToString(svgClone);
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d", { willReadFrequently: true });
-
-    if (!ctx) return;
-
-    // Use 2.5x scale for high resolution
-    const scale = 2.5;
-    const scaledSize = newSize * scale;
-
-    const img = new Image();
-    const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
-    const url = URL.createObjectURL(svgBlob);
-
-    img.onload = () => {
-      // Set canvas to high resolution with margins included
-      canvas.width = scaledSize;
-      canvas.height = scaledSize;
-
-      // Fill with white background
-      ctx.fillStyle = "white";
-      ctx.fillRect(0, 0, scaledSize, scaledSize);
-
-      // Enable image smoothing for better quality
-      ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = "high";
-
-      // Scale context and draw the image
-      ctx.scale(scale, scale);
-      ctx.drawImage(img, 0, 0);
-      URL.revokeObjectURL(url);
-
-      // Export as high-quality PNG
-      canvas.toBlob(
-        (blob) => {
-          if (blob) {
-            const link = document.createElement("a");
-            link.download = `radar-chart-${Date.now()}.png`;
-            link.href = URL.createObjectURL(blob);
-            link.click();
-            URL.revokeObjectURL(link.href);
-          }
-        },
-        "image/png",
-        0.95
-      );
-    };
-
-    img.src = url;
-  };
+    downloadRadarImage(svgRef.current, size);
+  }, [size]);
 
   const getPoint = (verticalIndex, level) => {
     const angle = (Math.PI * 2 * verticalIndex) / VERTICALS.length - Math.PI / 2;
