@@ -1,9 +1,9 @@
 import React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { MemberAssessmentHeader } from "./memberAssessment/MemberAssessmentHeader";
+import { AssessmentHeader } from "@/components/organisms/AssessmentHeader";
+import { AssessmentPreview } from "@/components/organisms/AssessmentPreview";
 import { MemberAssessmentFormColumn } from "./memberAssessment/MemberAssessmentFormColumn";
-import { MemberAssessmentPreview } from "./memberAssessment/MemberAssessmentPreview";
 import { useMemberAssessmentForm } from "@/hooks/useMemberAssessmentForm";
 
 export default function MemberAssessmentPage() {
@@ -36,14 +36,26 @@ export default function MemberAssessmentPage() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <MemberAssessmentHeader
+      <AssessmentHeader
         onBack={() => navigate("/")}
-        onImport={(file) => handleImportSelfAssessment(file)}
-        onShare={handleShareLink}
         title={t("memberAssessment.title")}
         subtitle={t("memberAssessment.subtitle")}
-        importLabel={t("memberAssessment.importSelfAssessment")}
-        shareLabel={t("memberAssessment.shareSelfAssessment")}
+        actions={[
+          {
+            type: "file",
+            label: t("memberAssessment.importSelfAssessment"),
+            icon: <span className="mr-1" aria-hidden>📥</span>,
+            onFile: (file) => handleImportSelfAssessment(file),
+          },
+          {
+            type: "button",
+            label: t("memberAssessment.shareSelfAssessment"),
+            icon: <span className="mr-1" aria-hidden>🔗</span>,
+            variant: "outline",
+            size: "sm",
+            onClick: handleShareLink,
+          },
+        ]}
       />
 
       {/* Main Content */}
@@ -68,17 +80,38 @@ export default function MemberAssessmentPage() {
             t={t}
           />
 
-          <MemberAssessmentPreview
-            name={name}
-            t={t}
-            currentAverage={currentAverage}
-            goalAverage={goalAverage}
+          <AssessmentPreview
+            title={t("memberAssessment.preview", { name: name || t("memberAssessment.member") })}
+            radar={{
+              currentLevels: currentLevels,
+              goalLevels: goalLevels,
+              selfAssessmentLevels: selfAssessmentLevels,
+              size: 350,
+            }}
+            metrics={[
+              {
+                label: t("memberAssessment.currentAverage"),
+                value: currentAverage.toFixed(1),
+                tone: "current",
+              },
+              {
+                label: t("memberAssessment.goalAverage"),
+                value: goalAverage.toFixed(1),
+                tone: "goal",
+              },
+            ]}
             verticalStats={verticalStats.map((item) => ({
               vertical: item.vertical,
               current: item.current,
               goal: item.goal,
               self: item.self,
             }))}
+            labels={{
+              sectionTitle: t("memberAssessment.competencyLevels"),
+              currentLabel: "L",
+              goalLabel: "L",
+              selfLabel: "L",
+            }}
           />
         </div>
       </main>

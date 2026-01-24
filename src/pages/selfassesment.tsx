@@ -11,10 +11,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { AssessmentHeader } from "@/components/organisms/AssessmentHeader";
+import { AssessmentPreview } from "@/components/organisms/AssessmentPreview";
 import { useSelfAssessmentForm } from "@/hooks/useSelfAssessmentForm";
-import { SelfAssessmentHeader } from "./selfAssessment/SelfAssessmentHeader";
 import { SelfAssessmentFormColumn } from "./selfAssessment/SelfAssessmentFormColumn";
-import { SelfAssessmentPreview } from "./selfAssessment/SelfAssessmentPreview";
 
 export default function SelfAssessment() {
   const { t } = useTranslation();
@@ -36,16 +36,38 @@ export default function SelfAssessment() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <SelfAssessmentHeader
+      <AssessmentHeader
         onBack={() => navigate("/")}
-        onShare={handleShareLink}
-        onClear={() => setShowClearDialog(true)}
-        onExport={handleExport}
         title={t("selfAssessment.title")}
         subtitle={t("selfAssessment.subtitle")}
-        shareLabel={t("selfAssessment.shareLink")}
-        clearLabel={t("buttons.clear")}
-        exportLabel={t("buttons.export", "Export")}
+        leadingAdornment={{
+          icon: <span className="text-white">⬢</span>,
+          className: "bg-gradient-to-br from-purple-500 to-pink-600",
+        }}
+        actions={[
+          {
+            type: "button",
+            label: t("selfAssessment.shareLink"),
+            icon: <span className="mr-1" aria-hidden>🔗</span>,
+            variant: "outline",
+            size: "sm",
+            onClick: handleShareLink,
+          },
+          {
+            type: "button",
+            label: t("buttons.clear"),
+            icon: <span className="mr-1" aria-hidden>🗑️</span>,
+            variant: "outline",
+            size: "sm",
+            onClick: () => setShowClearDialog(true),
+          },
+          {
+            type: "button",
+            label: t("buttons.export", "Export"),
+            icon: <span className="mr-1" aria-hidden>⬇️</span>,
+            onClick: handleExport,
+          },
+        ]}
       />
 
       {/* Main Content */}
@@ -69,11 +91,26 @@ export default function SelfAssessment() {
             t={t}
           />
 
-          <SelfAssessmentPreview
-            name={name}
-            t={t}
-            currentAverage={currentAverage}
+          <AssessmentPreview
+            title={t("selfAssessment.preview", { name: name || t("selfAssessment.yourAssessment") })}
+            radar={{
+              currentLevels: currentLevels,
+              goalLevels: goalLevels,
+              hideGoal: true,
+              size: 350,
+            }}
+            metrics={[
+              {
+                label: t("selfAssessment.currentAverage"),
+                value: currentAverage.toFixed(1),
+                tone: "current",
+              },
+            ]}
             verticalStats={verticalStats}
+            labels={{
+              sectionTitle: t("selfAssessment.competencyLevels"),
+              currentLabel: "L",
+            }}
           />
         </div>
       </main>
