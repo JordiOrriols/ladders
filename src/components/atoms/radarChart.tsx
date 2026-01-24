@@ -45,6 +45,16 @@ export default function RadarChart({
     }
     svgClone.appendChild(g);
 
+    // Reduce stroke widths for borders and lines
+    const paths = svgClone.querySelectorAll("path, line");
+    paths.forEach((element) => {
+      const strokeWidth = element.getAttribute("strokeWidth");
+      if (strokeWidth) {
+        const currentWidth = parseFloat(strokeWidth);
+        element.setAttribute("strokeWidth", (currentWidth * 0.75).toString());
+      }
+    });
+
     // Process and convert Tailwind classes to explicit SVG styles
     const textElements = svgClone.querySelectorAll("text");
     textElements.forEach((text) => {
@@ -60,15 +70,15 @@ export default function RadarChart({
       // Set font family for better rendering
       text.setAttribute("font-family", "system-ui, -apple-system, sans-serif");
 
-      // Handle font sizes
+      // Handle font sizes - reduce by 20%
       if (currentClass.includes("text-xs")) {
-        text.setAttribute("font-size", "12");
-      } else if (currentClass.includes("text-[10px]")) {
         text.setAttribute("font-size", "10");
+      } else if (currentClass.includes("text-[10px]")) {
+        text.setAttribute("font-size", "8");
       } else if (currentClass.includes("text-[9px]")) {
-        text.setAttribute("font-size", "9");
-      } else if (currentClass.includes("text-[7px]")) {
         text.setAttribute("font-size", "7");
+      } else if (currentClass.includes("text-[7px]")) {
+        text.setAttribute("font-size", "6");
       }
 
       // Handle font weight
