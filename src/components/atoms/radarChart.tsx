@@ -1,9 +1,9 @@
-import React, { useMemo, useRef } from "react";
+import React, { useMemo, useRef, memo } from "react";
 import { Download } from "lucide-react";
 import { Button } from "../ui/button";
 import { VERTICALS, LEVELS } from "./levelSelector";
 
-export default function RadarChart({
+function RadarChart({
   currentLevels = {},
   goalLevels = {},
   selfAssessmentLevels = {},
@@ -203,11 +203,19 @@ export default function RadarChart({
         variant="ghost"
         size="icon"
         className="absolute top-0 right-0 z-10"
-        title="Download as PNG"
+        title="Download chart as PNG image"
+        aria-label="Download chart as PNG image"
       >
         <Download className="h-4 w-4" />
       </Button>
-      <svg ref={svgRef} width={size} height={size} className="overflow-visible">
+      <svg
+        ref={svgRef}
+        width={size}
+        height={size}
+        className="overflow-visible"
+        role="img"
+        aria-label="Competency radar chart showing current levels, goal levels, and self-assessment"
+      >
         {/* Grid - with improved styling */}
         {gridLines.map((path, i) => (
           <path
@@ -415,3 +423,5 @@ export default function RadarChart({
     </div>
   );
 }
+
+export default memo(RadarChart);

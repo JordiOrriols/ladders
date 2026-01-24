@@ -1,4 +1,4 @@
-import React from "react";
+import React, { memo } from "react";
 import { User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "../ui/button";
@@ -19,9 +19,10 @@ interface Member {
 interface MemberDetailsPanelProps {
   member: Member | null;
   onEdit: (member: Member) => void;
+  onClose?: () => void;
 }
 
-export function MemberDetailsPanel({ member, onEdit }: MemberDetailsPanelProps) {
+function MemberDetailsPanelComponent({ member, onEdit }: MemberDetailsPanelProps) {
   const { t } = useTranslation();
 
   if (!member) {
@@ -75,3 +76,5 @@ export function MemberDetailsPanel({ member, onEdit }: MemberDetailsPanelProps) 
     </div>
   );
 }
+
+export const MemberDetailsPanel = memo(MemberDetailsPanelComponent);

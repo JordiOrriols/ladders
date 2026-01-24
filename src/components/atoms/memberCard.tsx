@@ -3,7 +3,23 @@ import { User, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import RadarChart from "./radarChart";
 
-export default function MemberCard({ member, onEdit, onDelete, onClick }) {
+interface Member {
+  id: string;
+  name: string;
+  role?: string;
+  currentLevels: Record<string, number>;
+  goalLevels: Record<string, number>;
+  selfAssessmentLevels?: Record<string, number>;
+}
+
+interface MemberCardProps {
+  member: Member;
+  onEdit: (member: Member) => void;
+  onDelete: (id: string) => void;
+  onClick?: () => void;
+}
+
+export default function MemberCard({ member, onEdit, onDelete, onClick }: MemberCardProps) {
   return (
     <div
       className="bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-lg hover:border-slate-300 transition-all cursor-pointer group"

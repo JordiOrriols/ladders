@@ -99,6 +99,8 @@ export default function LevelSelector({
           toggle();
         }}
         className="w-full p-4 flex items-center justify-between hover:bg-white/50 transition-colors"
+        aria-expanded={isExpanded}
+        aria-label={`${vertical} competency details. Current level: ${currentLevel || "not set"}. Goal level: ${goalLevel || "not set"}`}
       >
         <div className="flex items-center gap-3">
           <div className={`w-2 h-8 rounded-full ${verticalColors[vertical]}`} />
@@ -112,16 +114,19 @@ export default function LevelSelector({
                     ? `Current: L${Math.floor(currentLevel)}+ ${t(`levels.${vertical}.${Math.floor(currentLevel)}.name`)}`
                     : "Current: Not set"}
               </p>
-              {!hideGoal && (goalLevelData || goalLevel === Math.floor(goalLevel) + 0.5) && goalLevel > 0 && (
-                <p className="text-slate-600">
-                  Goal: L{goalLevel}
-                  {goalLevel !== Math.floor(goalLevel) && "+"}
-                  {goalLevel !== Math.floor(goalLevel)
-                    ? ""
-                    : ` ${t(`levels.${vertical}.${Math.floor(goalLevel)}.name`)}`}
-                  {goalLevel === Math.floor(goalLevel) && ` ${t(`levels.${vertical}.${goalLevel}.name`)}`}
-                </p>
-              )}
+              {!hideGoal &&
+                (goalLevelData || goalLevel === Math.floor(goalLevel) + 0.5) &&
+                goalLevel > 0 && (
+                  <p className="text-slate-600">
+                    Goal: L{goalLevel}
+                    {goalLevel !== Math.floor(goalLevel) && "+"}
+                    {goalLevel !== Math.floor(goalLevel)
+                      ? ""
+                      : ` ${t(`levels.${vertical}.${Math.floor(goalLevel)}.name`)}`}
+                    {goalLevel === Math.floor(goalLevel) &&
+                      ` ${t(`levels.${vertical}.${goalLevel}.name`)}`}
+                  </p>
+                )}
               {selfAssessmentLevelData && selfAssessmentLevel > 0 && (
                 <p className="text-purple-600">
                   Self: L{selfAssessmentLevel} {t(`levels.${vertical}.${selfAssessmentLevel}.name`)}
