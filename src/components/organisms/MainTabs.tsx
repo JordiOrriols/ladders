@@ -25,13 +25,13 @@ export function MainTabs({
   const { t } = useTranslation();
 
   return (
-    <Tabs defaultValue="team" className="space-y-6">
-      <TabsList className="bg-white border border-slate-200">
-        <TabsTrigger value="team" className="data-[state=active]:bg-slate-100">
+    <Tabs defaultValue="team" className="space-y-6" data-testid="main-tabs">
+      <TabsList className="bg-white border border-slate-200" data-testid="tabs-list">
+        <TabsTrigger value="team" className="data-[state=active]:bg-slate-100" data-testid="tab-team">
           <Users className="w-4 h-4 mr-2" />
           {t("tabs.team")}
         </TabsTrigger>
-        <TabsTrigger value="individual" className="data-[state=active]:bg-slate-100">
+        <TabsTrigger value="individual" className="data-[state=active]:bg-slate-100" data-testid="tab-individual">
           <User className="w-4 h-4 mr-2" />
           {t("tabs.individual")}
         </TabsTrigger>

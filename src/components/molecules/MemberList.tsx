@@ -17,7 +17,7 @@ function MemberListComponent({ members, selectedMemberId, onSelectMember }: Memb
   };
 
   return (
-    <div className="lg:col-span-1 space-y-2">
+    <div className="lg:col-span-1 space-y-2" data-testid="member-list">
       <h3 className="text-sm font-medium text-slate-500 mb-3 px-1" id="member-list-heading">
         {t("individualView.selectMember")}
       </h3>
@@ -27,6 +27,7 @@ function MemberListComponent({ members, selectedMemberId, onSelectMember }: Memb
             <button
               key={member.id}
               onClick={() => handleMemberClick(member)}
+              data-testid={`member-card-${member.id}`}
               className={`w-full p-4 rounded-xl border text-left transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
                 selectedMemberId === member.id
                   ? "bg-indigo-50 border-indigo-200"
