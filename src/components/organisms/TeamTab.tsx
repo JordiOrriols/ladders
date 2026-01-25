@@ -61,18 +61,28 @@ export function TeamTab({
     <div className="space-y-4" data-testid="team-tab">
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-lg font-semibold text-slate-800" data-testid="team-overview-title">{t("labels.teamOverview")}</h2>
+          <h2 className="text-lg font-semibold text-slate-800" data-testid="team-overview-title">
+            {t("labels.teamOverview")}
+          </h2>
           <p className="text-sm text-slate-500" data-testid="team-member-count">
             {members.length} {members.length !== 1 ? t("labels.members") : t("labels.member")}
           </p>
         </div>
-        <Button eventId="team_export" onClick={handleExportTeam} variant="outline" data-testid="export-team-button">
+        <Button
+          eventId="team_export"
+          onClick={handleExportTeam}
+          variant="outline"
+          data-testid="export-team-button"
+        >
           <Download className="w-4 h-4 mr-2" />
           {t("buttons.exportTeam")}
         </Button>
       </div>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" data-testid="team-grid">
+      <div
+        className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+        data-testid="team-grid"
+      >
         {members.map((member) => (
           <MemberCard
             key={member.id}

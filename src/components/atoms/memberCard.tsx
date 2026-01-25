@@ -42,8 +42,14 @@ export default function MemberCard({ member, onEdit, onDelete, onClick }: Member
             <User className="w-5 h-5 text-slate-500" />
           </div>
           <div>
-            <h3 className="font-semibold text-slate-800" data-testid="member-name">{member.name}</h3>
-            {member.role && <p className="text-xs text-slate-500" data-testid="member-role">{member.role}</p>}
+            <h3 className="font-semibold text-slate-800" data-testid="member-name">
+              {member.name}
+            </h3>
+            {member.role && (
+              <p className="text-xs text-slate-500" data-testid="member-role">
+                {member.role}
+              </p>
+            )}
           </div>
         </div>
         <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">

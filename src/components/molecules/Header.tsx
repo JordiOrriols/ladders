@@ -24,13 +24,20 @@ export function Header({ onAddMember, onShowReference }: HeaderProps) {
               <LayoutGrid className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-lg font-semibold text-slate-800" data-testid="header-title">{t("header.title")}</h1>
-              <p className="text-xs text-slate-500" data-testid="header-subtitle">{t("header.subtitle")}</p>
+              <h1 className="text-lg font-semibold text-slate-800" data-testid="header-title">
+                {t("header.title")}
+              </h1>
+              <p className="text-xs text-slate-500" data-testid="header-subtitle">
+                {t("header.subtitle")}
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-2">
             {/* Language Selector */}
-            <div className="hidden sm:flex items-center gap-1 px-2 py-1 bg-slate-100 rounded-lg" data-testid="language-selector">
+            <div
+              className="hidden sm:flex items-center gap-1 px-2 py-1 bg-slate-100 rounded-lg"
+              data-testid="language-selector"
+            >
               <Globe className="w-4 h-4 text-slate-600" />
               <Button
                 eventId="header_language_en"
@@ -75,7 +82,11 @@ export function Header({ onAddMember, onShowReference }: HeaderProps) {
               <Info className="w-4 h-4 mr-2" />
               {t("header.reference")}
             </Button>
-            <Button eventId="header_add_member" onClick={onAddMember} data-testid="add-member-button">
+            <Button
+              eventId="header_add_member"
+              onClick={onAddMember}
+              data-testid="add-member-button"
+            >
               <Plus className="w-4 h-4 mr-2" />
               {t("header.addMember")}
             </Button>
