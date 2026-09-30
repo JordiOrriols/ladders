@@ -7,9 +7,6 @@ import { DataProvider } from "./data/DataProvider";
 import { EntryGate } from "./components/EntryGate";
 
 const AssessmentPage = lazy(() => import("./pages/AssessmentPage"));
-const LegacyMemberRedirect = lazy(() =>
-  import("./pages/AssessmentPage").then((m) => ({ default: m.LegacyMemberRedirect }))
-);
 const ViewPage = lazy(() => import("./pages/ViewPage"));
 
 // Loading fallback component
@@ -57,8 +54,7 @@ export default function App() {
               <Route path="/member/:id" element={<AssessmentPage />} />
               <Route path="/e/:token" element={<AssessmentPage />} />
               <Route path="/v/:token" element={<ViewPage />} />
-              <Route path="/SelfAssessment" element={<AssessmentPage />} />
-              <Route path="/MemberAssessment" element={<LegacyMemberRedirect />} />
+              <Route path="/assessment" element={<AssessmentPage />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Suspense>

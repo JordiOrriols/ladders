@@ -18,7 +18,7 @@ const renderAt = (path: string) =>
           <Route path="/member/:id" element={<AssessmentPage />} />
           <Route path="/e/:token" element={<AssessmentPage />} />
           <Route path="/v/:token" element={<ViewPage />} />
-          <Route path="/SelfAssessment" element={<AssessmentPage />} />
+          <Route path="/assessment" element={<AssessmentPage />} />
         </Routes>
       </I18nextProvider>
     </MemoryRouter>
@@ -49,7 +49,7 @@ describe("AssessmentPage", () => {
   });
 
   it("renders the anonymous self-assessment with history and file actions", async () => {
-    renderAt("/SelfAssessment");
+    renderAt("/assessment");
     expect(await screen.findByTestId("version-panel")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Export/ })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Publish" })).toBeDisabled();
@@ -60,7 +60,7 @@ describe("AssessmentPage", () => {
   it("imports a legacy self-assessment file as a version and exports the history", async () => {
     const createObjectURL = vi.fn(() => "blob:x");
     Object.assign(URL, { createObjectURL, revokeObjectURL: vi.fn() });
-    const { container } = renderAt("/SelfAssessment");
+    const { container } = renderAt("/assessment");
     await screen.findByTestId("version-panel");
 
     const file = new File(

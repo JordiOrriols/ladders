@@ -22,8 +22,8 @@ describe("sharing helpers", () => {
   });
 
   it("builds a hash-based share link", () => {
-    const url = buildShareLink("SelfAssessment");
-    expect(url).toBe("https://example.com/app/index.html#/SelfAssessment");
+    const url = buildShareLink("assessment");
+    expect(url).toBe("https://example.com/app/index.html#/assessment");
   });
 
   it("copies to clipboard when available", async () => {

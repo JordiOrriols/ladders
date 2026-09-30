@@ -170,7 +170,7 @@ describe("useEvaluationEditor", () => {
     expect(reloaded.result.current.evaluations[0]?.kind).toBe("self");
   });
 
-  it("migrates the legacy self-assessment storage into a draft version", async () => {
+  it("ignores legacy self-assessment storage", async () => {
     localStorage.setItem(
       "self-assessment-data",
       JSON.stringify({
@@ -185,9 +185,9 @@ describe("useEvaluationEditor", () => {
       })
     );
     const { result } = await renderEditor(createLocalSelfStore());
-    expect(result.current.profile.name).toBe("Old");
-    expect(result.current.evaluations[0]?.status).toBe("draft");
-    expect(result.current.form.currentLevels).toEqual({ Technology: 2 });
+    expect(result.current.profile.name).toBe("");
+    expect(result.current.evaluations).toHaveLength(0);
+    expect(result.current.form.currentLevels).toEqual({});
   });
 
   it("reports not found for unknown peer links", async () => {

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Download, FileUp, Save, Send } from "lucide-react";
 import { AssessmentFormColumn } from "@/components/organisms/AssessmentFormColumn";
@@ -350,10 +350,4 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
       </main>
     </div>
   );
-}
-
-export function LegacyMemberRedirect() {
-  const { search } = useLocation();
-  const id = new URLSearchParams(search).get("id");
-  return <Navigate to={`/member/${id ?? "new"}`} replace />;
 }

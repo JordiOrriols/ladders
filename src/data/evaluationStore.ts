@@ -10,7 +10,7 @@ import { loadFromStorage, saveToStorage } from "@/utils/storage";
 import { newId } from "./evaluations";
 import type { Repository } from "./repository";
 import * as tokenApi from "./tokenApi";
-import { isAssessmentFile, isEvaluation, isRecord } from "./validators";
+import { isEvaluation, isRecord } from "./validators";
 
 export type StoreSnapshot = {
   profile: MemberProfile;
@@ -151,37 +151,9 @@ const isLocalSelfData = (value: unknown): value is LocalSelfData =>
   Array.isArray(value["evaluations"]) &&
   value["evaluations"].every(isEvaluation);
 
-function migrateLegacySelf(data: unknown): LocalSelfData | null {
-  if (!isAssessmentFile(data)) return null;
-  const evaluations: Evaluation[] = data.currentLevels
-    ? [
-        {
-          id: newId(),
-          memberId: LOCAL_SELF_ID,
-          kind: "self",
-          status: "draft",
-          authorName: data.name ?? null,
-          currentLevels: data.currentLevels,
-          goalLevels: data.goalLevels ?? {},
-          comments: data.comments ?? {},
-          createdAt: new Date().toISOString(),
-        },
-      ]
-    : [];
-  return { name: data.name ?? "", role: data.role ?? "", templateId: null, evaluations };
-}
-
 function loadLocalSelf(): LocalSelfData {
-  const current = loadFromStorage<LocalSelfData>(
-    SELF_STORAGE_KEY,
-    isLocalSelfData,
-    SELF_STORAGE_VERSION,
-    (data, version) => (version === 1 ? migrateLegacySelf(data) : null)
-  );
-  if (current) return current;
-  const legacy = loadFromStorage(SELF_STORAGE_KEY, isAssessmentFile, 1);
   return (
-    (legacy && migrateLegacySelf(legacy)) ?? {
+    loadFromStorage<LocalSelfData>(SELF_STORAGE_KEY, isLocalSelfData, SELF_STORAGE_VERSION) ?? {
       name: "",
       role: "",
       templateId: null,
