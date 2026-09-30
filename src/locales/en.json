@@ -21,6 +21,7 @@
     "goal": "Goal",
     "goalPlus": "Goal +",
     "saveDraft": "Save draft",
+    "moreSaveOptions": "More save options",
     "publish": "Publish",
     "submit": "Submit",
     "import": "Import",
@@ -241,6 +242,9 @@
     "nameRequired": "Please enter a name before saving.",
     "authorRequired": "Please enter your name before submitting.",
     "saveFailed": "Could not save. Please try again.",
+    "noChanges": "There are no changes to save.",
+    "publishDraftFirst": "Save a draft before publishing.",
+    "draftAlreadyExists": "Finish or delete the existing draft first.",
     "saveMemberFirst": "Save the member first.",
     "teamImported": "Team imported successfully!",
     "teamImportFailed": "Could not import the team file."

@@ -22,6 +22,7 @@
     "goal": "Objectiu",
     "goalPlus": "Objectiu +",
     "saveDraft": "Desar esborrany",
+    "moreSaveOptions": "Més opcions de desament",
     "publish": "Publicar",
     "submit": "Enviar",
     "import": "Importar",
@@ -242,6 +243,9 @@
     "nameRequired": "Introduïu un nom abans de desar.",
     "authorRequired": "Introduïu el vostre nom abans d'enviar.",
     "saveFailed": "No s'ha pogut desar. Torneu-ho a provar.",
+    "noChanges": "No hi ha canvis per desar.",
+    "publishDraftFirst": "Deseu un esborrany abans de publicar.",
+    "draftAlreadyExists": "Acabeu o elimineu l'esborrany existent primer.",
     "saveMemberFirst": "Deseu primer el membre.",
     "teamImported": "Equip importat correctament!",
     "teamImportFailed": "No s'ha pogut importar l'arxiu de l'equip."

@@ -34,7 +34,10 @@ describe("AssessmentPage", () => {
     renderAt("/member/new");
     const nameInput = await screen.findByLabelText("Name");
     await userEvent.type(nameInput, "Ada");
-    await userEvent.click(screen.getByRole("button", { name: /Publish/ }));
+    await userEvent.click(screen.getAllByRole("button", { name: "Current" })[0]!);
+    expect(screen.getByRole("button", { name: "Publish" })).toBeDisabled();
+    await userEvent.click(screen.getByRole("button", { name: "More save options" }));
+    await userEvent.click(screen.getByRole("menuitem", { name: "Save draft" }));
 
     await waitFor(async () => {
       const repo = createLocalRepository();
@@ -49,7 +52,9 @@ describe("AssessmentPage", () => {
     renderAt("/SelfAssessment");
     expect(await screen.findByTestId("version-panel")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Export/ })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Save draft/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Publish" })).toBeDisabled();
+    await userEvent.click(screen.getByRole("button", { name: "More save options" }));
+    expect(screen.getByRole("menuitem", { name: "Save draft" })).toHaveAttribute("data-disabled");
   });
 
   it("imports a legacy self-assessment file as a version and exports the history", async () => {

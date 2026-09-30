@@ -20,6 +20,20 @@ begin
   ) then
     raise exception 'published evaluation content is immutable';
   end if;
+
+  if new.kind in ('manager', 'self')
+    and new.status = 'draft'
+    and old.status <> 'draft'
+    and exists (
+      select 1
+      from public.evaluations e
+      where e.id <> new.id
+        and e.member_id = new.member_id
+        and e.kind = new.kind
+        and e.status = 'draft'
+    ) then
+    raise exception 'a draft already exists' using errcode = '23505';
+  end if;
   return new;
 end;
 $$;

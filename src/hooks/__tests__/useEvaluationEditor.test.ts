@@ -18,7 +18,7 @@ const renderEditor = async (store: EvaluationStore) => {
 describe("useEvaluationEditor", () => {
   beforeEach(() => localStorage.clear());
 
-  it("creates a new manager version on every save, creating the member first", async () => {
+  it("creates one draft, updates it in place, and publishes the same version", async () => {
     const repo = createLocalRepository();
     const store = createManagerStore(repo, null);
     const { result } = await renderEditor(store);
@@ -35,7 +35,16 @@ describe("useEvaluationEditor", () => {
     await act(async () => {
       await result.current.save("draft");
     });
+    const draftId = result.current.editingId;
+    expect(result.current.canPublish).toBe(true);
+
     act(() => result.current.handleCurrentChange("Technology", 3));
+    await act(async () => {
+      await result.current.save("draft");
+    });
+    expect(result.current.editingId).toBe(draftId);
+    expect(result.current.evaluations).toHaveLength(1);
+
     await act(async () => {
       await result.current.save("published");
     });
@@ -43,8 +52,66 @@ describe("useEvaluationEditor", () => {
     const memberId = result.current.memberId!;
     expect((await repo.getMember(memberId))?.templateId).toBe("D2");
     const versions = await repo.listEvaluations(memberId);
-    expect(versions.map((v) => v.status).sort()).toEqual(["draft", "published"]);
-    expect(result.current.evaluations).toHaveLength(2);
+    expect(versions).toHaveLength(1);
+    expect(versions[0]).toMatchObject({
+      id: draftId,
+      status: "published",
+      currentLevels: { Technology: 3 },
+    });
+    expect(result.current.canPublish).toBe(false);
+    expect(result.current.dirty).toBe(false);
+  });
+
+  it("creates a new draft only after published content changes", async () => {
+    const repo = createLocalRepository();
+    const member = await repo.createMember({ name: "Bo", role: "", templateId: null });
+    const published = await repo.createEvaluation(member.id, "manager", {
+      status: "published",
+      authorName: null,
+      currentLevels: { Technology: 2 },
+      goalLevels: {},
+      comments: {},
+    });
+    const { result } = await renderEditor(createManagerStore(repo, member.id));
+
+    expect(result.current.canSaveDraft).toBe(false);
+    expect(result.current.canPublish).toBe(false);
+    await expect(result.current.save("draft")).rejects.toThrow("noChanges");
+
+    act(() => result.current.handleCurrentChange("Technology", 3));
+    expect(result.current.canSaveDraft).toBe(true);
+    await act(async () => {
+      await result.current.save("draft");
+    });
+
+    const versions = await repo.listEvaluations(member.id);
+    expect(versions).toHaveLength(2);
+    expect(versions.find((evaluation) => evaluation.id === published.id)?.status).toBe("published");
+    expect(result.current.editingId).not.toBe(published.id);
+    expect(result.current.canStartNewVersion).toBe(false);
+  });
+
+  it("saves profile-only changes without creating a version", async () => {
+    const repo = createLocalRepository();
+    const member = await repo.createMember({ name: "Bo", role: "Dev", templateId: null });
+    await repo.createEvaluation(member.id, "manager", {
+      status: "published",
+      authorName: null,
+      currentLevels: { Technology: 2 },
+      goalLevels: {},
+      comments: {},
+    });
+    const { result } = await renderEditor(createManagerStore(repo, member.id));
+
+    act(() => result.current.setRole("Staff Engineer"));
+    expect(result.current.profileChanged).toBe(true);
+    expect(result.current.contentChanged).toBe(false);
+    await act(async () => {
+      await result.current.save("draft");
+    });
+
+    expect((await repo.getMember(member.id))?.role).toBe("Staff Engineer");
+    expect(await repo.listEvaluations(member.id)).toHaveLength(1);
     expect(result.current.dirty).toBe(false);
   });
 
@@ -81,10 +148,8 @@ describe("useEvaluationEditor", () => {
     act(() => result.current.selectVersion(self.id));
     expect(result.current.compareIds).toEqual([]);
 
-    await act(async () => {
-      await result.current.setVersionStatus(old, "draft");
-      await result.current.deleteVersion(old);
-    });
+    expect(result.current.canChangeVersionStatus(old)).toBe(false);
+    await act(async () => result.current.deleteVersion(old));
     expect(result.current.evaluations.map((e) => e.id)).not.toContain(old.id);
     expect(result.current.editingId).toBeNull();
   });

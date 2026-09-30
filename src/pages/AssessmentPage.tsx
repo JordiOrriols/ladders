@@ -205,24 +205,37 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
               ]
             : []),
           ...(isPeer
-            ? []
-            : [
+            ? [
                 {
                   type: "button" as const,
-                  label: t("buttons.saveDraft"),
-                  icon: <Save className="w-4 h-4" />,
-                  onClick: () => void handleSave("draft"),
-                  eventId: `${mode}_save_draft`,
+                  variant: "default" as const,
+                  label: t("buttons.submit"),
+                  icon: <Send className="w-4 h-4" />,
+                  disabled: editor.saving,
+                  onClick: () => void handleSave("published"),
+                  eventId: `${mode}_publish`,
+                },
+              ]
+            : [
+                {
+                  type: "split" as const,
+                  label: t("buttons.publish"),
+                  icon: <Send className="w-4 h-4" />,
+                  disabled: !editor.canPublish,
+                  onClick: () => void handleSave("published"),
+                  eventId: `${mode}_publish`,
+                  menuLabel: t("buttons.moreSaveOptions"),
+                  items: [
+                    {
+                      label: t("buttons.saveDraft"),
+                      icon: <Save className="w-4 h-4" />,
+                      disabled: !editor.canSaveDraft,
+                      onSelect: () => void handleSave("draft"),
+                      eventId: `${mode}_save_draft`,
+                    },
+                  ],
                 },
               ]),
-          {
-            type: "button" as const,
-            variant: "default" as const,
-            label: t(isPeer ? "buttons.submit" : "buttons.publish"),
-            icon: <Send className="w-4 h-4" />,
-            onClick: () => void handleSave("published"),
-            eventId: `${mode}_publish`,
-          },
         ]}
       />
 
@@ -245,11 +258,11 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
                 compareIds={editor.compareIds}
                 onSelect={editor.selectVersion}
                 onToggleCompare={editor.toggleCompare}
-                onNew={editor.startNewVersion}
+                {...(editor.canStartNewVersion ? { onNew: editor.startNewVersion } : {})}
                 isNewSelected={editor.editingId === null}
                 onSetStatus={(e, s) => void editor.setVersionStatus(e, s)}
                 onDelete={(e) => void editor.deleteVersion(e)}
-                canChangeStatus={store.canChangeStatus}
+                canChangeStatus={editor.canChangeVersionStatus}
                 canDelete={store.canDelete}
               />
             </div>

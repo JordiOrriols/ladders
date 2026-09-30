@@ -22,6 +22,7 @@
     "goal": "Objetivo",
     "goalPlus": "Objetivo +",
     "saveDraft": "Guardar borrador",
+    "moreSaveOptions": "Más opciones de guardado",
     "publish": "Publicar",
     "submit": "Enviar",
     "import": "Importar",
@@ -242,6 +243,9 @@
     "nameRequired": "Introduzca un nombre antes de guardar.",
     "authorRequired": "Introduzca su nombre antes de enviar.",
     "saveFailed": "No se pudo guardar. Inténtelo de nuevo.",
+    "noChanges": "No hay cambios que guardar.",
+    "publishDraftFirst": "Guarde un borrador antes de publicar.",
+    "draftAlreadyExists": "Termine o elimine el borrador existente primero.",
     "saveMemberFirst": "Guarde primero el miembro.",
     "teamImported": "¡Equipo importado correctamente!",
     "teamImportFailed": "No se pudo importar el archivo del equipo."

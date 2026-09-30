@@ -239,6 +239,13 @@ export function createLocalSelfStore(): EvaluationStore {
       return updated;
     },
     async setStatus(id, status) {
+      const data = loadLocalSelf();
+      if (
+        status === "draft" &&
+        data.evaluations.some((evaluation) => evaluation.id !== id && evaluation.status === "draft")
+      ) {
+        throw new Error("A draft already exists");
+      }
       updateLocalSelf((data) => ({
         ...data,
         evaluations: data.evaluations.map((e) => (e.id === id ? { ...e, status } : e)),

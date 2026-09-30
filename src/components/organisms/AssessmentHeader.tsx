@@ -2,6 +2,8 @@ import React, { useCallback, useRef } from "react";
 import type { ReactNode } from "react";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SplitButton } from "@/components/molecules/SplitButton";
+import type { SplitButtonItem } from "@/components/molecules/SplitButton";
 
 type HeaderAction =
   | {
@@ -12,6 +14,7 @@ type HeaderAction =
       size?: "sm" | "icon";
       onClick: () => void;
       eventId: string;
+      disabled?: boolean;
     }
   | {
       type: "file";
@@ -20,6 +23,16 @@ type HeaderAction =
       accept?: string;
       onFile: (file: File) => void;
       eventId: string;
+    }
+  | {
+      type: "split";
+      label: string;
+      icon?: ReactNode;
+      eventId: string;
+      onClick: () => void;
+      disabled?: boolean;
+      menuLabel: string;
+      items: SplitButtonItem[];
     };
 
 type LeadingAdornment = {
@@ -96,11 +109,27 @@ export function AssessmentHeader({
                     eventId={action.eventId}
                     variant={action.variant ?? "outline"}
                     size={action.size ?? "sm"}
+                    disabled={action.disabled}
                     onClick={action.onClick}
                   >
                     {action.icon && <span className="mr-2 inline-flex">{action.icon}</span>}
                     {action.label}
                   </Button>
+                );
+              }
+
+              if (action.type === "split") {
+                return (
+                  <SplitButton
+                    key={idx}
+                    label={action.label}
+                    icon={action.icon}
+                    eventId={action.eventId}
+                    onClick={action.onClick}
+                    {...(action.disabled !== undefined ? { disabled: action.disabled } : {})}
+                    menuLabel={action.menuLabel}
+                    items={action.items}
+                  />
                 );
               }
 

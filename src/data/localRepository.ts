@@ -166,6 +166,19 @@ export function createLocalRepository(): Repository {
       return updated;
     },
     async setEvaluationStatus(id, status) {
+      const current = loadLocalTeam();
+      const target = current.evaluations.find((evaluation) => evaluation.id === id);
+      if (!target) throw new Error("Evaluation not found");
+      const hasOtherDraft = current.evaluations.some(
+        (evaluation) =>
+          evaluation.id !== id &&
+          evaluation.memberId === target.memberId &&
+          evaluation.kind === target.kind &&
+          evaluation.status === "draft"
+      );
+      if (status === "draft" && target.kind !== "peer" && hasOtherDraft) {
+        throw new Error("A draft already exists");
+      }
       update((data) => ({
         ...data,
         evaluations: data.evaluations.map((e) => (e.id === id ? { ...e, status } : e)),

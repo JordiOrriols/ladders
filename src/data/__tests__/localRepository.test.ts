@@ -91,6 +91,17 @@ describe("localRepository", () => {
     await expect(
       repo.updateEvaluationDraft(draft.id, { ...updated, status: "draft" })
     ).rejects.toThrow("Only drafts can be updated");
+
+    await repo.createEvaluation(member.id, "manager", {
+      status: "draft",
+      authorName: null,
+      currentLevels: { Technology: 4 },
+      goalLevels: {},
+      comments: {},
+    });
+    await expect(repo.setEvaluationStatus(draft.id, "draft")).rejects.toThrow(
+      "A draft already exists"
+    );
   });
 });
 
