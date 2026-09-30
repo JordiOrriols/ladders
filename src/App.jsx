@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { ErrorBoundary } from "react-error-boundary";
 import Home from "./pages/home";
 import { DataProvider } from "./data/DataProvider";
+import { EntryGate } from "./components/EntryGate";
 
 const AssessmentPage = lazy(() => import("./pages/AssessmentPage"));
 const LegacyMemberRedirect = lazy(() =>
@@ -49,17 +50,19 @@ export default function App() {
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback} onReset={() => (window.location.href = "/")}>
       <DataProvider>
-        <Suspense fallback={<LoadingFallback />}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/member/:id" element={<AssessmentPage />} />
-            <Route path="/e/:token" element={<AssessmentPage />} />
-            <Route path="/v/:token" element={<ViewPage />} />
-            <Route path="/SelfAssessment" element={<AssessmentPage />} />
-            <Route path="/MemberAssessment" element={<LegacyMemberRedirect />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </Suspense>
+        <EntryGate>
+          <Suspense fallback={<LoadingFallback />}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/member/:id" element={<AssessmentPage />} />
+              <Route path="/e/:token" element={<AssessmentPage />} />
+              <Route path="/v/:token" element={<ViewPage />} />
+              <Route path="/SelfAssessment" element={<AssessmentPage />} />
+              <Route path="/MemberAssessment" element={<LegacyMemberRedirect />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Suspense>
+        </EntryGate>
       </DataProvider>
     </ErrorBoundary>
   );

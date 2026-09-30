@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useData } from "@/data/DataProvider";
 import { Button } from "../ui/button";
@@ -17,17 +17,22 @@ import {
 type Props = {
   isOpen: boolean;
   onClose: () => void;
+  initialMode?: "signIn" | "signUp";
 };
 
-export function LoginDialog({ isOpen, onClose }: Props) {
+export function LoginDialog({ isOpen, onClose, initialMode = "signIn" }: Props) {
   const { t } = useTranslation();
   const { signIn, signUp } = useData();
-  const [mode, setMode] = useState<"signIn" | "signUp">("signIn");
+  const [mode, setMode] = useState<"signIn" | "signUp">(initialMode);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) setMode(initialMode);
+  }, [initialMode, isOpen]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();

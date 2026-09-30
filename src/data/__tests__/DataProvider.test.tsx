@@ -5,7 +5,7 @@ import React from "react";
 import { I18nextProvider } from "react-i18next";
 import i18n from "@/i18n";
 import { Header } from "@/components/molecules/Header";
-import { DataProvider, useData } from "../DataProvider";
+import { ANONYMOUS_MODE_KEY, DataProvider, useData } from "../DataProvider";
 
 const { auth, state, migrate } = vi.hoisted(() => {
   const state: { listener?: (event: string, session: unknown) => void } = {};
@@ -29,8 +29,14 @@ vi.mock("../supabaseClient", () => ({ supabase: { auth } }));
 vi.mock("../teamTransfer", () => ({ migrateLocalTeam: migrate }));
 
 function RepoKind() {
-  const { repository, loading } = useData();
-  return <span data-testid="repo">{loading ? "loading" : repository.kind}</span>;
+  const { repository, loading, anonymousMode, continueAnonymously } = useData();
+  return (
+    <div>
+      <span data-testid="repo">{loading ? "loading" : repository.kind}</span>
+      <span data-testid="anonymous">{String(anonymousMode)}</span>
+      <button onClick={continueAnonymously}>Anonymous</button>
+    </div>
+  );
 }
 
 const renderApp = () =>
@@ -44,7 +50,17 @@ const renderApp = () =>
   );
 
 describe("DataProvider + login", () => {
-  beforeEach(() => vi.clearAllMocks());
+  beforeEach(() => {
+    localStorage.clear();
+    vi.clearAllMocks();
+  });
+
+  it("remembers the anonymous choice in this browser", async () => {
+    renderApp();
+    await userEvent.click(await screen.findByRole("button", { name: "Anonymous" }));
+    expect(screen.getByTestId("anonymous")).toHaveTextContent("true");
+    expect(localStorage.getItem(ANONYMOUS_MODE_KEY)).toBe("true");
+  });
 
   it("uses local storage until signed in, then the remote repository", async () => {
     renderApp();

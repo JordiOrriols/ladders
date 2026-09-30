@@ -317,6 +317,17 @@
       "enable": "Activado"
     }
   },
+  "welcome": {
+    "eyebrow": "Escalera de Ingeniería",
+    "title": "¿Cómo quiere empezar?",
+    "description": "Inicie sesión para mantener su equipo protegido y disponible entre dispositivos, o continúe de forma anónima con los datos guardados solo en este navegador.",
+    "accountTitle": "Usar una cuenta",
+    "accountDescription": "Guarde su equipo en la base de datos y cree enlaces permanentes para autoevaluaciones y evaluaciones de compañeros.",
+    "anonymousTitle": "Empezar anónimamente",
+    "anonymousDescription": "Pruebe la evaluación sin cuenta. Su información se guarda en el almacenamiento local de este navegador.",
+    "anonymousAction": "Continuar anónimamente",
+    "authUnavailable": "El acceso con cuenta no está configurado en este despliegue."
+  },
   "auth": {
     "signIn": "Iniciar sesión",
     "signUp": "Crear cuenta",

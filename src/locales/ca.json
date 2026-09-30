@@ -317,6 +317,17 @@
       "enable": "Activat"
     }
   },
+  "welcome": {
+    "eyebrow": "Escala d'Enginyeria",
+    "title": "Com voleu començar?",
+    "description": "Inicieu sessió per mantenir el vostre equip protegit i disponible entre dispositius, o continueu de forma anònima amb les dades desades només en aquest navegador.",
+    "accountTitle": "Usar un compte",
+    "accountDescription": "Deseu el vostre equip a la base de dades i creeu enllaços permanents per a autoavaluacions i avaluacions de companys.",
+    "anonymousTitle": "Començar anònimament",
+    "anonymousDescription": "Proveu l'avaluació sense compte. La vostra informació es desa a l'emmagatzematge local d'aquest navegador.",
+    "anonymousAction": "Continuar anònimament",
+    "authUnavailable": "L'accés amb compte no està configurat en aquest desplegament."
+  },
   "auth": {
     "signIn": "Iniciar sessió",
     "signUp": "Crear compte",

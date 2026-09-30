@@ -13,19 +13,25 @@ type DataContextValue = {
   user: User | null;
   /** True until the session is restored and any pending migration finished. */
   loading: boolean;
+  anonymousMode: boolean;
   repository: Repository;
+  continueAnonymously(): void;
   signIn(email: string, password: string): Promise<void>;
   signUp(email: string, password: string): Promise<{ needsConfirmation: boolean }>;
   signOut(): Promise<void>;
 };
 
 const localRepository = createLocalRepository();
+export const ANONYMOUS_MODE_KEY = "ladders-anonymous-mode";
 
 const DataContext = createContext<DataContextValue | null>(null);
 
 export function DataProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(!!supabase);
+  const [anonymousMode, setAnonymousMode] = useState(
+    () => localStorage.getItem(ANONYMOUS_MODE_KEY) === "true"
+  );
 
   useEffect(() => {
     if (!supabase) return;
@@ -64,7 +70,12 @@ export function DataProvider({ children }: { children: ReactNode }) {
       authEnabled: !!client,
       user,
       loading,
+      anonymousMode,
       repository: client && user ? createSupabaseRepository(client) : localRepository,
+      continueAnonymously() {
+        localStorage.setItem(ANONYMOUS_MODE_KEY, "true");
+        setAnonymousMode(true);
+      },
       async signIn(email, password) {
         if (!client) return;
         const { error } = await client.auth.signInWithPassword({ email, password });
@@ -84,7 +95,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
         await client?.auth.signOut();
       },
     };
-  }, [user, loading]);
+  }, [user, loading, anonymousMode]);
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
 }
@@ -93,7 +104,9 @@ const fallback: DataContextValue = {
   authEnabled: false,
   user: null,
   loading: false,
+  anonymousMode: true,
   repository: localRepository,
+  continueAnonymously: () => {},
   signIn: async () => {},
   signUp: async () => ({ needsConfirmation: false }),
   signOut: async () => {},
