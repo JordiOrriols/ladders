@@ -50,6 +50,7 @@ function MemberDetailsPanelComponent({
         key={member.id}
         evaluations={evaluations.filter((e) => e.memberId === member.id)}
         templateId={member.templateId ?? null}
+        showVersionPanel={false}
       />
     </div>
   );

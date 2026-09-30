@@ -15,10 +15,11 @@ import type { Evaluation } from "@/types";
 type Props = {
   evaluations: Evaluation[];
   templateId: string | null;
+  showVersionPanel?: boolean;
 };
 
 /** Read-only history browser: version side panel, radar with overlays and level details. */
-export function EvaluationViewer({ evaluations, templateId }: Props) {
+export function EvaluationViewer({ evaluations, templateId, showVersionPanel = true }: Props) {
   const { t, i18n } = useTranslation();
   const { sorted, selected, select, compare, compareIds, toggleCompare } = useVersionSelection(
     evaluations,
@@ -47,14 +48,19 @@ export function EvaluationViewer({ evaluations, templateId }: Props) {
   );
 
   return (
-    <div className="grid md:grid-cols-[220px_1fr] gap-6" data-testid="evaluation-viewer">
-      <VersionPanel
-        evaluations={sorted}
-        selectedId={selected?.id ?? null}
-        compareIds={compareIds}
-        onSelect={select}
-        onToggleCompare={toggleCompare}
-      />
+    <div
+      className={showVersionPanel ? "grid gap-6 md:grid-cols-[220px_1fr]" : "grid gap-6"}
+      data-testid="evaluation-viewer"
+    >
+      {showVersionPanel && (
+        <VersionPanel
+          evaluations={sorted}
+          selectedId={selected?.id ?? null}
+          compareIds={compareIds}
+          onSelect={select}
+          onToggleCompare={toggleCompare}
+        />
+      )}
       <div className="space-y-6 min-w-0">
         {selected && (
           <p className="text-sm text-slate-500 text-center capitalize">

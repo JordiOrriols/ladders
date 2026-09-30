@@ -71,7 +71,7 @@ describe("TeamTab import/export", () => {
 });
 
 describe("IndividualTab", () => {
-  it("selects the first member and shows their version history and template", async () => {
+  it("selects the first member without showing version history", async () => {
     const onEditMember = vi.fn();
     renderWithI18n(
       <IndividualTab
@@ -82,12 +82,12 @@ describe("IndividualTab", () => {
       />
     );
     expect(screen.getByRole("heading", { name: "Ada" })).toBeInTheDocument();
-    expect(screen.getAllByText("May 2026").length).toBeGreaterThan(0);
+    expect(screen.queryByTestId("version-panel")).not.toBeInTheDocument();
     expect(screen.getByTestId("template-panel")).toHaveTextContent("D2");
 
     await userEvent.click(screen.getByTestId("member-card-b"));
     expect(screen.getByRole("heading", { name: "Bo" })).toBeInTheDocument();
-    expect(screen.getByText("No versions saved yet")).toBeInTheDocument();
+    expect(screen.queryByText("No versions saved yet")).not.toBeInTheDocument();
 
     await userEvent.click(screen.getByRole("button", { name: "Edit" }));
     expect(onEditMember).toHaveBeenCalledWith(members[1]);
