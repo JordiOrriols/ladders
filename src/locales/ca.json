@@ -337,6 +337,13 @@
     "sendResetEmail": "Enviar email de recuperació",
     "passwordResetSent": "Reviseu el vostre email per continuar amb el canvi de contrasenya.",
     "backToSignIn": "Tornar a iniciar sessió",
+    "resetPasswordTitle": "Establir una contrasenya nova",
+    "resetPasswordDescription": "Trieu una contrasenya nova de com a mínim 8 caràcters.",
+    "newPassword": "Contrasenya nova",
+    "confirmPassword": "Confirmar contrasenya",
+    "updatePassword": "Actualitzar contrasenya",
+    "passwordTooShort": "La contrasenya ha de tenir com a mínim 8 caràcters.",
+    "passwordsDoNotMatch": "Les contrasenyes no coincideixen.",
     "checkEmail": "Reviseu el vostre email per confirmar el compte.",
     "switchToSignUp": "No teniu compte? Creeu-ne un",
     "switchToSignIn": "Ja teniu compte? Inicieu sessió"

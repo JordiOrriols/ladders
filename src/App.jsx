@@ -5,6 +5,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import Home from "./pages/home";
 import { DataProvider } from "./data/DataProvider";
 import { EntryGate } from "./components/EntryGate";
+import { PasswordResetDialog } from "./components/molecules/PasswordResetDialog";
 
 const AssessmentPage = lazy(() => import("./pages/AssessmentPage"));
 const ViewPage = lazy(() => import("./pages/ViewPage"));
@@ -47,6 +48,7 @@ export default function App() {
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback} onReset={() => (window.location.href = "/")}>
       <DataProvider>
+        <PasswordResetDialog />
         <EntryGate>
           <Suspense fallback={<LoadingFallback />}>
             <Routes>

@@ -336,6 +336,13 @@
     "sendResetEmail": "Send reset email",
     "passwordResetSent": "Check your email for password reset instructions.",
     "backToSignIn": "Back to sign in",
+    "resetPasswordTitle": "Set a new password",
+    "resetPasswordDescription": "Choose a new password with at least 8 characters.",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
+    "updatePassword": "Update password",
+    "passwordTooShort": "Password must be at least 8 characters.",
+    "passwordsDoNotMatch": "Passwords do not match.",
     "checkEmail": "Check your email to confirm your account.",
     "switchToSignUp": "No account? Create one",
     "switchToSignIn": "Already have an account? Sign in"

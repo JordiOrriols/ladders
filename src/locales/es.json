@@ -337,6 +337,13 @@
     "sendResetEmail": "Enviar email de recuperación",
     "passwordResetSent": "Revise su email para continuar con el cambio de contraseña.",
     "backToSignIn": "Volver a iniciar sesión",
+    "resetPasswordTitle": "Establecer una nueva contraseña",
+    "resetPasswordDescription": "Elija una contraseña nueva de al menos 8 caracteres.",
+    "newPassword": "Nueva contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "updatePassword": "Actualizar contraseña",
+    "passwordTooShort": "La contraseña debe tener al menos 8 caracteres.",
+    "passwordsDoNotMatch": "Las contraseñas no coinciden.",
     "checkEmail": "Revise su email para confirmar la cuenta.",
     "switchToSignUp": "¿No tiene cuenta? Cree una",
     "switchToSignIn": "¿Ya tiene cuenta? Inicie sesión"
