@@ -28,6 +28,7 @@ export interface EvaluationStore {
   load(): Promise<StoreSnapshot | null>;
   saveProfile(profile: MemberProfile): Promise<void>;
   create(input: EvaluationInput): Promise<Evaluation>;
+  updateDraft?(id: string, input: EvaluationInput): Promise<Evaluation>;
   setStatus(id: string, status: EvaluationStatus): Promise<void>;
   remove(id: string): Promise<void>;
   canChangeStatus(evaluation: Evaluation): boolean;
@@ -65,6 +66,7 @@ export function createManagerStore(repo: Repository, initialMemberId: string | n
       if (!memberId) throw new Error("Save the member first");
       return repo.createEvaluation(memberId, "manager", input);
     },
+    updateDraft: (id, input) => repo.updateEvaluationDraft(id, input),
     setStatus: (id, status) => repo.setEvaluationStatus(id, status),
     remove: (id) => repo.deleteEvaluation(id),
     // Self versions belong to the evaluated person; the owner can only hide them by deleting.
@@ -96,6 +98,7 @@ export function createSelfTokenStore(token: string): EvaluationStore {
     },
     async saveProfile() {},
     create: (input) => tokenApi.saveSelfEvaluation(token, input),
+    updateDraft: (id, input) => tokenApi.updateSelfEvaluationDraft(token, id, input),
     setStatus: (id, status) => tokenApi.setSelfEvaluationStatus(token, id, status),
     remove: (id) => tokenApi.deleteSelfEvaluation(token, id),
     canChangeStatus: () => true,
@@ -213,9 +216,27 @@ export function createLocalSelfStore(): EvaluationStore {
       updateLocalSelf((data) => ({ ...data, ...profile }));
     },
     async create(input) {
+      const existingDraft = loadLocalSelf().evaluations.some(
+        (evaluation) => evaluation.kind === "self" && evaluation.status === "draft"
+      );
+      if (input.status === "draft" && existingDraft) throw new Error("A draft already exists");
       const evaluation = build(input);
       updateLocalSelf((data) => ({ ...data, evaluations: [...data.evaluations, evaluation] }));
       return evaluation;
+    },
+    async updateDraft(id, input) {
+      let updated: Evaluation | undefined;
+      updateLocalSelf((data) => ({
+        ...data,
+        evaluations: data.evaluations.map((evaluation) => {
+          if (evaluation.id !== id) return evaluation;
+          if (evaluation.status !== "draft") throw new Error("Only drafts can be updated");
+          updated = { ...evaluation, ...input, authorName: evaluation.authorName };
+          return updated;
+        }),
+      }));
+      if (!updated) throw new Error("Evaluation not found");
+      return updated;
     },
     async setStatus(id, status) {
       updateLocalSelf((data) => ({

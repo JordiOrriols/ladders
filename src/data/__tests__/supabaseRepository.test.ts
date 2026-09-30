@@ -120,4 +120,33 @@ describe("supabaseRepository", () => {
       created_at: "2026-01-02",
     });
   });
+
+  it("updates draft content without changing its author", async () => {
+    const updatedRow = {
+      ...evaluationRow,
+      status: "published",
+      current_levels: { Technology: 4 },
+    };
+    const { client, calls } = fakeClient([{ data: updatedRow, error: null }]);
+    const updated = await createSupabaseRepository(client).updateEvaluationDraft("e1", {
+      status: "published",
+      authorName: "not-sent",
+      currentLevels: { Technology: 4 },
+      goalLevels: {},
+      comments: {},
+    });
+
+    expect(updated.id).toBe("e1");
+    expect(calls).toContainEqual([
+      "evaluations",
+      "update",
+      {
+        status: "published",
+        current_levels: { Technology: 4 },
+        goal_levels: {},
+        comments: {},
+      },
+    ]);
+    expect(calls).toContainEqual(["evaluations", "eq", "status", "draft"]);
+  });
 });

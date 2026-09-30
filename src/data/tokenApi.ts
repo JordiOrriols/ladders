@@ -68,6 +68,23 @@ export async function saveSelfEvaluation(
   return toEvaluation(row);
 }
 
+export async function updateSelfEvaluationDraft(
+  token: string,
+  id: string,
+  input: EvaluationInput
+): Promise<Evaluation> {
+  const payload = toEvaluationPayload(input);
+  const row = await rpc<EvaluationRow>("self_update_draft", {
+    p_token: token,
+    p_id: id,
+    p_status: payload.status,
+    p_current: payload.current_levels,
+    p_goal: payload.goal_levels,
+    p_comments: payload.comments,
+  });
+  return toEvaluation(row);
+}
+
 export async function setSelfEvaluationStatus(token: string, id: string, status: EvaluationStatus) {
   await rpc<null>("self_set_status", { p_token: token, p_id: id, p_status: status });
 }

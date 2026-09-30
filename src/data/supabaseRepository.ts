@@ -142,6 +142,23 @@ export function createSupabaseRepository(client: SupabaseClient): Repository {
       );
       return toEvaluation(row);
     },
+    async updateEvaluationDraft(id, input) {
+      const row = unwrap<EvaluationRow>(
+        await client
+          .from("evaluations")
+          .update({
+            status: input.status,
+            current_levels: input.currentLevels,
+            goal_levels: input.goalLevels,
+            comments: input.comments,
+          })
+          .eq("id", id)
+          .eq("status", "draft")
+          .select(EVALUATION_COLUMNS)
+          .single<EvaluationRow>()
+      );
+      return toEvaluation(row);
+    },
     async setEvaluationStatus(id, status) {
       const { error } = await client.from("evaluations").update({ status }).eq("id", id);
       if (error) throw new Error(error.message);

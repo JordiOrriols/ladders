@@ -131,6 +131,16 @@ export function createLocalRepository(): Repository {
       return memberId ? evaluations.filter((e) => e.memberId === memberId) : evaluations;
     },
     async createEvaluation(memberId, kind, input, createdAt) {
+      const current = loadLocalTeam();
+      const hasDraft = current.evaluations.some(
+        (evaluation) =>
+          evaluation.memberId === memberId &&
+          evaluation.kind === kind &&
+          evaluation.status === "draft"
+      );
+      if (input.status === "draft" && kind !== "peer" && hasDraft) {
+        throw new Error("A draft already exists");
+      }
       const evaluation: Evaluation = {
         ...input,
         id: newId(),
@@ -140,6 +150,20 @@ export function createLocalRepository(): Repository {
       };
       update((data) => ({ ...data, evaluations: [...data.evaluations, evaluation] }));
       return evaluation;
+    },
+    async updateEvaluationDraft(id, input) {
+      let updated: Evaluation | undefined;
+      update((data) => ({
+        ...data,
+        evaluations: data.evaluations.map((evaluation) => {
+          if (evaluation.id !== id) return evaluation;
+          if (evaluation.status !== "draft") throw new Error("Only drafts can be updated");
+          updated = { ...evaluation, ...input, authorName: evaluation.authorName };
+          return updated;
+        }),
+      }));
+      if (!updated) throw new Error("Evaluation not found");
+      return updated;
     },
     async setEvaluationStatus(id, status) {
       update((data) => ({

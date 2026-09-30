@@ -55,6 +55,43 @@ describe("localRepository", () => {
     expect(await repo.listMembers()).toHaveLength(0);
     expect(await repo.listEvaluations()).toHaveLength(0);
   });
+
+  it("updates a draft in place and prevents a second draft", async () => {
+    const repo = createLocalRepository();
+    const member = await repo.createMember({ name: "Bo", role: "", templateId: null });
+    const draft = await repo.createEvaluation(member.id, "manager", {
+      status: "draft",
+      authorName: null,
+      currentLevels: { Technology: 1 },
+      goalLevels: {},
+      comments: {},
+    });
+
+    await expect(
+      repo.createEvaluation(member.id, "manager", {
+        status: "draft",
+        authorName: null,
+        currentLevels: { Technology: 2 },
+        goalLevels: {},
+        comments: {},
+      })
+    ).rejects.toThrow("A draft already exists");
+
+    const updated = await repo.updateEvaluationDraft(draft.id, {
+      status: "published",
+      authorName: "ignored",
+      currentLevels: { Technology: 3 },
+      goalLevels: { Technology: 4 },
+      comments: { Technology: "Improved" },
+    });
+    expect(updated.id).toBe(draft.id);
+    expect(updated.authorName).toBeNull();
+    expect(updated.status).toBe("published");
+    expect(await repo.listEvaluations(member.id)).toHaveLength(1);
+    await expect(
+      repo.updateEvaluationDraft(draft.id, { ...updated, status: "draft" })
+    ).rejects.toThrow("Only drafts can be updated");
+  });
 });
 
 describe("teamTransfer", () => {

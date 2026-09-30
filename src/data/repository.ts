@@ -24,6 +24,7 @@ export interface Repository {
     input: EvaluationInput,
     createdAt?: string
   ): Promise<Evaluation>;
+  updateEvaluationDraft(id: string, input: EvaluationInput): Promise<Evaluation>;
   setEvaluationStatus(id: string, status: EvaluationStatus): Promise<void>;
   deleteEvaluation(id: string): Promise<void>;
 }

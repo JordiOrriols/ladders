@@ -61,6 +61,16 @@ describe("tokenApi", () => {
       p_comments: {},
     });
 
+    await tokenApi.updateSelfEvaluationDraft(TOKEN, "e1", input);
+    expect(rpc).toHaveBeenLastCalledWith("self_update_draft", {
+      p_token: TOKEN,
+      p_id: "e1",
+      p_status: "published",
+      p_current: { Technology: 3 },
+      p_goal: {},
+      p_comments: {},
+    });
+
     await tokenApi.submitPeerEvaluation(TOKEN, input);
     expect(rpc).toHaveBeenLastCalledWith(
       "peer_submit",
@@ -89,6 +99,10 @@ describe("token stores", () => {
     const snapshot = await store.load();
     expect(snapshot?.profile.name).toBe("Ada");
     expect(snapshot?.evaluations).toHaveLength(1);
+
+    rpc.mockResolvedValueOnce({ data: row, error: null });
+    const updated = await store.updateDraft?.("e1", input);
+    expect(updated?.id).toBe("e1");
 
     rpc.mockResolvedValue({ data: null, error: null });
     await store.setStatus("e1", "published");
