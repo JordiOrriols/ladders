@@ -1,11 +1,9 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import type { User } from "@supabase/supabase-js";
-import { createLocalRepository } from "./localRepository";
 import type { Repository } from "./repository";
 import { supabase } from "./supabaseClient";
 import { createSupabaseRepository } from "./supabaseRepository";
-import { migrateLocalTeam } from "./teamTransfer";
 
 type DataContextValue = {
   /** False when the build has no backend configured. */
@@ -14,15 +12,13 @@ type DataContextValue = {
   /** True until the session is restored and any pending migration finished. */
   loading: boolean;
   passwordRecovery: boolean;
-  repository: Repository;
+  repository: Repository | null;
   signIn(email: string, password: string): Promise<void>;
   signUp(email: string, password: string): Promise<{ needsConfirmation: boolean }>;
   requestPasswordReset(email: string): Promise<void>;
   updatePassword(password: string): Promise<void>;
   signOut(): Promise<void>;
 };
-
-const localRepository = createLocalRepository();
 
 const DataContext = createContext<DataContextValue | null>(null);
 
@@ -37,14 +33,6 @@ export function DataProvider({ children }: { children: ReactNode }) {
     let active = true;
 
     const apply = async (next: User | null) => {
-      if (next) {
-        setLoading(true);
-        try {
-          await migrateLocalTeam(createSupabaseRepository(client), next.id);
-        } catch (error) {
-          console.error("Failed to migrate local data", error);
-        }
-      }
       if (!active) return;
       setUser(next);
       setLoading(false);
@@ -72,7 +60,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       user,
       loading,
       passwordRecovery,
-      repository: client && user ? createSupabaseRepository(client) : localRepository,
+      repository: client && user ? createSupabaseRepository(client) : null,
       async signIn(email, password) {
         if (!client) return;
         const { error } = await client.auth.signInWithPassword({ email, password });
@@ -115,7 +103,7 @@ const fallback: DataContextValue = {
   user: null,
   loading: false,
   passwordRecovery: false,
-  repository: localRepository,
+  repository: null,
   signIn: async () => {},
   signUp: async () => ({ needsConfirmation: false }),
   requestPasswordReset: async () => {},

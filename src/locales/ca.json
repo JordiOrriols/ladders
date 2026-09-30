@@ -14,15 +14,13 @@
     "delete": "Eliminar",
     "close": "Tancar",
     "clear": "Netejar",
-    "exportTeam": "Exportar Equip",
     "shareLink": "Compartir Enllaç",
     "current": "Actual",
     "currentPlus": "Actual +",
     "goal": "Objectiu",
     "goalPlus": "Objectiu +",
     "publish": "Publicar",
-    "submit": "Enviar",
-    "importTeam": "Importar Equip"
+    "submit": "Enviar"
   },
   "forms": {
     "addTeamMember": "Afegir Membre de l'Equip",
@@ -226,16 +224,13 @@
     "linkCopied": "¡Enllaç copiat al porta-retalls!",
     "shareLinkCopied": "¡Enllaç d'autoevaluació copiat al porta-retalls!",
     "failedToCopyLink": "Error en copiar l'enllaç",
-    "teamExported": "¡Equip exportat correctament!",
     "memberDeleted": "¡Membre eliminat correctament!",
     "published": "Versió publicada.",
     "nameRequired": "Introduïu un nom abans de desar.",
     "authorRequired": "Introduïu el vostre nom abans d'enviar.",
     "saveFailed": "No s'ha pogut desar. Torneu-ho a provar.",
     "publishDraftFirst": "Deseu un esborrany abans de publicar.",
-    "saveMemberFirst": "Deseu primer el membre.",
-    "teamImported": "Equip importat correctament!",
-    "teamImportFailed": "No s'ha pogut importar l'arxiu de l'equip."
+    "saveMemberFirst": "Deseu primer el membre."
   },
   "influenceScope": "Guia d'abast: un squad és un equip multifuncional (front, back, QA); diversos squads formen una tribu o àrea; l'empresa és tota l'organització tècnica; la comunitat és fora de l'empresa.",
   "series": {

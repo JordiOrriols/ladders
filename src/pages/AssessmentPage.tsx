@@ -36,6 +36,7 @@ function useRouteStore(): StoreState {
     if (token) return null;
     if (loading) return { error: "loading" };
     if (pathname.startsWith("/member")) {
+      if (!repository) return { error: "notFound" };
       return { store: createManagerStore(repository, id && id !== "new" ? id : null) };
     }
     return { error: "notFound" };
@@ -121,7 +122,7 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
   };
 
   const handleEnableView = async () => {
-    if (!editor.memberId) return;
+    if (!editor.memberId || !repository) return;
     try {
       editor.setMember(await repository.updateMember(editor.memberId, { viewEnabled: true }));
     } catch (error) {
@@ -174,7 +175,7 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
           <>
             {autosaveStatus}
             {isManager &&
-            repository.kind === "remote" &&
+            repository &&
             editor.member?.selfToken &&
             editor.member.peerToken &&
             editor.member.viewToken ? (

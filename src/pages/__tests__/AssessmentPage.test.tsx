@@ -7,7 +7,15 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import i18n from "../../i18n";
 import AssessmentPage from "../AssessmentPage";
 import ViewPage from "../ViewPage";
-import { createLocalRepository } from "@/data/localRepository";
+import { createInMemoryRepository } from "@/data/__tests__/inMemoryRepository";
+import type { Repository } from "@/data/repository";
+
+const { dataState } = vi.hoisted(() => ({
+  dataState: { repository: null as Repository | null },
+}));
+vi.mock("@/data/DataProvider", () => ({
+  useData: () => ({ repository: dataState.repository, loading: false, user: { id: "user" } }),
+}));
 
 const renderAt = (path: string) =>
   render(
@@ -25,7 +33,7 @@ const renderAt = (path: string) =>
 
 describe("AssessmentPage", () => {
   beforeEach(() => {
-    localStorage.clear();
+    dataState.repository = createInMemoryRepository();
     vi.spyOn(window, "alert").mockImplementation(() => {});
   });
 
@@ -38,7 +46,7 @@ describe("AssessmentPage", () => {
     await waitFor(() => expect(screen.getByRole("button", { name: "Publish" })).toBeEnabled());
 
     await waitFor(async () => {
-      const repo = createLocalRepository();
+      const repo = dataState.repository!;
       const [member] = await repo.listMembers();
       expect(member?.name).toBe("Ada");
       expect(await repo.listEvaluations(member!.id)).toHaveLength(1);

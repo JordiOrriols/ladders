@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { buildShareLink, copyToClipboard, importJsonFromFile } from "../sharing";
+import { buildShareLink, copyToClipboard } from "../sharing";
 
 describe("sharing helpers", () => {
   const originalLocation = window.location;
@@ -32,24 +32,5 @@ describe("sharing helpers", () => {
     navigator.clipboard = { writeText };
     await copyToClipboard("hello");
     expect(writeText).toHaveBeenCalledWith("hello");
-  });
-
-  it("imports and validates JSON from file", async () => {
-    const file = new File([JSON.stringify({ foo: "bar" })], "data.json", {
-      type: "application/json",
-    });
-    const validator = (value: unknown): value is { foo: string } =>
-      !!value && typeof (value as { foo?: unknown }).foo === "string";
-    const data = await importJsonFromFile(file, validator);
-    expect(data.foo).toBe("bar");
-  });
-
-  it("throws on invalid JSON shape", async () => {
-    const file = new File([JSON.stringify({ foo: 123 })], "data.json", {
-      type: "application/json",
-    });
-    const validator = (value: unknown): value is { foo: string } =>
-      !!value && typeof (value as { foo?: unknown }).foo === "string";
-    await expect(importJsonFromFile(file, validator)).rejects.toThrow("Invalid JSON shape");
   });
 });

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { act, renderHook, waitFor } from "@testing-library/react";
-import { createLocalRepository } from "@/data/localRepository";
+import { createInMemoryRepository } from "@/data/__tests__/inMemoryRepository";
 import { createManagerStore, createPeerTokenStore } from "@/data/evaluationStore";
 import type { EvaluationStore } from "@/data/evaluationStore";
 import { useEvaluationEditor } from "../useEvaluationEditor";
@@ -15,7 +15,7 @@ describe("useEvaluationEditor", () => {
   beforeEach(() => localStorage.clear());
 
   it("creates one draft, updates it in place, and publishes the same version", async () => {
-    const repo = createLocalRepository();
+    const repo = createInMemoryRepository();
     const store = createManagerStore(repo, null);
     const { result } = await renderEditor(store);
 
@@ -63,7 +63,7 @@ describe("useEvaluationEditor", () => {
   });
 
   it("creates a new draft only after published content changes", async () => {
-    const repo = createLocalRepository();
+    const repo = createInMemoryRepository();
     const member = await repo.createMember({ name: "Bo", role: "", templateId: null });
     const published = await repo.createEvaluation(member.id, "manager", {
       status: "published",
@@ -85,7 +85,7 @@ describe("useEvaluationEditor", () => {
   });
 
   it("saves profile-only changes without creating a version", async () => {
-    const repo = createLocalRepository();
+    const repo = createInMemoryRepository();
     const member = await repo.createMember({ name: "Bo", role: "Dev", templateId: null });
     await repo.createEvaluation(member.id, "manager", {
       status: "published",
@@ -107,7 +107,7 @@ describe("useEvaluationEditor", () => {
   });
 
   it("loads a selected version into the form and deletes versions", async () => {
-    const repo = createLocalRepository();
+    const repo = createInMemoryRepository();
     const member = await repo.createMember({ name: "Bo", role: "", templateId: null });
     const base = { authorName: null, goalLevels: {}, comments: {} };
     const old = await repo.createEvaluation(

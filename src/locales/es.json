@@ -14,15 +14,13 @@
     "delete": "Eliminar",
     "close": "Cerrar",
     "clear": "Limpiar",
-    "exportTeam": "Exportar Equipo",
     "shareLink": "Compartir Enlace",
     "current": "Actual",
     "currentPlus": "Actual +",
     "goal": "Objetivo",
     "goalPlus": "Objetivo +",
     "publish": "Publicar",
-    "submit": "Enviar",
-    "importTeam": "Importar Equipo"
+    "submit": "Enviar"
   },
   "forms": {
     "addTeamMember": "Añadir Miembro del Equipo",
@@ -226,16 +224,13 @@
     "linkCopied": "¡Enlace copiado al portapapeles!",
     "shareLinkCopied": "¡Enlace de autoevaluación copiado al portapapeles!",
     "failedToCopyLink": "Error al copiar el enlace",
-    "teamExported": "¡Equipo exportado correctamente!",
     "memberDeleted": "¡Miembro eliminado correctamente!",
     "published": "Versión publicada.",
     "nameRequired": "Introduzca un nombre antes de guardar.",
     "authorRequired": "Introduzca su nombre antes de enviar.",
     "saveFailed": "No se pudo guardar. Inténtelo de nuevo.",
     "publishDraftFirst": "Guarde un borrador antes de publicar.",
-    "saveMemberFirst": "Guarde primero el miembro.",
-    "teamImported": "¡Equipo importado correctamente!",
-    "teamImportFailed": "No se pudo importar el archivo del equipo."
+    "saveMemberFirst": "Guarde primero el miembro."
   },
   "influenceScope": "Guía de alcance: un squad es un equipo multifuncional (front, back, QA); varios squads forman una tribu o área; la empresa es toda la organización técnica; la comunidad está fuera de la empresa.",
   "series": {

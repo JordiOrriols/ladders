@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import type { Evaluation, TeamMember } from "../types";
 import { Header } from "../components/molecules/Header";
 import { ConfirmDialog } from "../components/molecules/ConfirmDialog";
@@ -9,20 +8,18 @@ import { MainTabs } from "../components/organisms/MainTabs";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 import { useData } from "@/data/DataProvider";
 import { toMemberSummary } from "@/data/evaluations";
-import { buildTeamExport, importTeamData, parseTeamFile } from "@/data/teamTransfer";
-import { exportJson, importJsonFromFile } from "@/utils/sharing";
 
 type TeamState = { members: TeamMember[]; evaluations: Evaluation[] };
 
 export default function Home() {
-  const { t } = useTranslation();
   const navigate = useNavigate();
-  const { repository, loading, user } = useData();
+  const { repository, loading } = useData();
   const [team, setTeam] = useState<TeamState>({ members: [], evaluations: [] });
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [showReference, setShowReference] = useState(false);
 
   const reload = useCallback(async () => {
+    if (!repository) return;
     const [members, evaluations] = await Promise.all([
       repository.listMembers(),
       repository.listEvaluations(),
@@ -41,26 +38,10 @@ export default function Home() {
   );
 
   const handleDeleteMember = async (id: string) => {
+    if (!repository) return;
     setDeleteId(null);
     await repository.deleteMember(id);
     await reload();
-  };
-
-  const handleExportTeam = async () => {
-    exportJson("team-export", await buildTeamExport(repository));
-  };
-
-  const handleImportTeam = async (file: File) => {
-    try {
-      const data = parseTeamFile(await importJsonFromFile(file));
-      if (!data) throw new Error("Invalid team file");
-      await importTeamData(repository, data);
-      await reload();
-      alert(t("alerts.teamImported"));
-    } catch (error) {
-      console.error("Failed to import team", error);
-      alert(t("alerts.teamImportFailed"));
-    }
   };
 
   const openMember = (id: string) => navigate(`/member/${id}`);
@@ -83,12 +64,6 @@ export default function Home() {
             onEditMember={(member) => openMember(member.id)}
             onDeleteMember={(id) => setDeleteId(id)}
             onSelectMember={(member) => openMember(member.id)}
-            {...(user
-              ? {
-                  onExportTeam: () => void handleExportTeam(),
-                  onImportTeam: (file: File) => void handleImportTeam(file),
-                }
-              : {})}
           />
         </ErrorBoundary>
       </main>

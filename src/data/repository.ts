@@ -10,7 +10,7 @@ import type {
 export type MemberPatch = Partial<MemberProfile> & { viewEnabled?: boolean };
 
 export interface Repository {
-  readonly kind: "local" | "remote";
+  readonly kind: "remote";
   listMembers(): Promise<TeamMember[]>;
   getMember(id: string): Promise<TeamMember | null>;
   createMember(profile: MemberProfile): Promise<TeamMember>;

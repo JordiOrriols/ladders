@@ -1,11 +1,10 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
 import { I18nextProvider } from "react-i18next";
 import i18n from "../../../i18n";
 import type { Evaluation, Member } from "@/types";
-import { TeamTab } from "../TeamTab";
 import { IndividualTab } from "../IndividualTab";
 
 const renderWithI18n = (ui: React.ReactElement) =>
@@ -29,46 +28,6 @@ const evaluations: Evaluation[] = [
     createdAt: "2026-05-01T00:00:00.000Z",
   },
 ];
-
-describe("TeamTab import/export", () => {
-  beforeEach(() => vi.clearAllMocks());
-
-  it("delegates export and import to the parent", async () => {
-    const onExportTeam = vi.fn();
-    const onImportTeam = vi.fn();
-    renderWithI18n(
-      <TeamTab
-        members={members}
-        onAddMember={vi.fn()}
-        onEditMember={vi.fn()}
-        onDeleteMember={vi.fn()}
-        onSelectMember={vi.fn()}
-        onExportTeam={onExportTeam}
-        onImportTeam={onImportTeam}
-      />
-    );
-    await userEvent.click(screen.getByTestId("export-team-button"));
-    expect(onExportTeam).toHaveBeenCalled();
-
-    const file = new File(["{}"], "team.json", { type: "application/json" });
-    fireEvent.change(screen.getByTestId("import-team-input"), { target: { files: [file] } });
-    expect(onImportTeam).toHaveBeenCalledWith(file);
-  });
-
-  it("offers import on the empty state", () => {
-    renderWithI18n(
-      <TeamTab
-        members={[]}
-        onAddMember={vi.fn()}
-        onEditMember={vi.fn()}
-        onDeleteMember={vi.fn()}
-        onSelectMember={vi.fn()}
-        onImportTeam={vi.fn()}
-      />
-    );
-    expect(screen.getByTestId("import-team-button")).toBeInTheDocument();
-  });
-});
 
 describe("IndividualTab", () => {
   it("selects the first member without showing version history", async () => {

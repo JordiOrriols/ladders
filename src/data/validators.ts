@@ -31,23 +31,3 @@ export const isTeamMember = (value: unknown): value is TeamMember =>
   isOptionalString(value["templateId"]) &&
   typeof value["viewEnabled"] === "boolean" &&
   typeof value["createdAt"] === "string";
-
-export type LegacyMember = {
-  id: string;
-  name: string;
-  role?: string;
-  currentLevels: LevelMap;
-  goalLevels: LevelMap;
-  comments?: CommentMap;
-  selfAssessmentLevels?: LevelMap;
-};
-
-const isLegacyMember = (value: unknown): value is LegacyMember =>
-  isRecord(value) &&
-  typeof value["id"] === "string" &&
-  typeof value["name"] === "string" &&
-  isLevelMap(value["currentLevels"]) &&
-  isLevelMap(value["goalLevels"]);
-
-export const isLegacyMemberList = (value: unknown): value is LegacyMember[] =>
-  Array.isArray(value) && value.every(isLegacyMember);

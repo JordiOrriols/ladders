@@ -14,8 +14,6 @@ interface MainTabsProps {
   onEditMember: (member: Member) => void;
   onDeleteMember: (id: string) => void;
   onSelectMember: (member: Member) => void;
-  onExportTeam?: () => void;
-  onImportTeam?: (file: File) => void;
 }
 
 export function MainTabs({
@@ -25,8 +23,6 @@ export function MainTabs({
   onEditMember,
   onDeleteMember,
   onSelectMember,
-  onExportTeam,
-  onImportTeam,
 }: MainTabsProps) {
   const { t } = useTranslation();
 
@@ -59,8 +55,6 @@ export function MainTabs({
             onEditMember={onEditMember}
             onDeleteMember={onDeleteMember}
             onSelectMember={onSelectMember}
-            {...(onExportTeam ? { onExportTeam } : {})}
-            {...(onImportTeam ? { onImportTeam } : {})}
           />
         </ErrorBoundary>
       </TabsContent>

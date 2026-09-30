@@ -6,7 +6,15 @@ import { I18nextProvider } from "react-i18next";
 import { BrowserRouter } from "react-router-dom";
 import i18n from "../../i18n";
 import Home from "../home";
-import { createLocalRepository } from "@/data/localRepository";
+import { createInMemoryRepository } from "@/data/__tests__/inMemoryRepository";
+import type { Repository } from "@/data/repository";
+
+const { dataState } = vi.hoisted(() => ({
+  dataState: { repository: null as Repository | null },
+}));
+vi.mock("@/data/DataProvider", () => ({
+  useData: () => ({ repository: dataState.repository, loading: false, user: { id: "user" } }),
+}));
 
 const renderWithProviders = (component: React.ReactElement) => {
   return render(
@@ -18,7 +26,7 @@ const renderWithProviders = (component: React.ReactElement) => {
 
 describe("Home Page", () => {
   beforeEach(() => {
-    localStorage.clear();
+    dataState.repository = createInMemoryRepository();
     vi.clearAllMocks();
   });
 
@@ -41,9 +49,8 @@ describe("Home Page", () => {
     }
   });
 
-  it("hides team import and export while anonymous", async () => {
-    const repo = createLocalRepository();
-    await repo.createMember({ name: "Ada", role: "Engineer", templateId: null });
+  it("does not render team import or export controls", async () => {
+    await dataState.repository!.createMember({ name: "Ada", role: "Engineer", templateId: null });
     renderWithProviders(<Home />);
 
     await screen.findAllByText("Ada");

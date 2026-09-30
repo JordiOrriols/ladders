@@ -7,11 +7,10 @@ import i18n from "@/i18n";
 import { Header } from "@/components/molecules/Header";
 import { DataProvider, useData } from "../DataProvider";
 
-const { auth, state, migrate } = vi.hoisted(() => {
+const { auth, state } = vi.hoisted(() => {
   const state: { listener?: (event: string, session: unknown) => void } = {};
   return {
     state,
-    migrate: vi.fn(async () => true),
     auth: {
       getSession: vi.fn(async () => ({ data: { session: null } })),
       onAuthStateChange: vi.fn((cb: (event: string, session: unknown) => void) => {
@@ -28,13 +27,11 @@ const { auth, state, migrate } = vi.hoisted(() => {
 });
 
 vi.mock("../supabaseClient", () => ({ supabase: { auth } }));
-vi.mock("../teamTransfer", () => ({ migrateLocalTeam: migrate }));
-
 function RepoKind() {
   const { repository, loading, passwordRecovery, requestPasswordReset, updatePassword } = useData();
   return (
     <div>
-      <span data-testid="repo">{loading ? "loading" : repository.kind}</span>
+      <span data-testid="repo">{loading ? "loading" : (repository?.kind ?? "none")}</span>
       <span data-testid="recovery">{String(passwordRecovery)}</span>
       <button onClick={() => void requestPasswordReset("a@b.co")}>Request reset</button>
       <button onClick={() => void updatePassword("new-password")}>Update password</button>
@@ -58,9 +55,9 @@ describe("DataProvider + login", () => {
     vi.clearAllMocks();
   });
 
-  it("uses local storage until signed in, then the remote repository", async () => {
+  it("has no repository until signed in, then uses the remote repository", async () => {
     renderApp();
-    await waitFor(() => expect(screen.getByTestId("repo")).toHaveTextContent("local"));
+    await waitFor(() => expect(screen.getByTestId("repo")).toHaveTextContent("none"));
 
     await userEvent.click(screen.getByTestId("sign-in-button"));
     await userEvent.type(screen.getByLabelText("Email"), "a@b.co");
@@ -73,7 +70,6 @@ describe("DataProvider + login", () => {
 
     await act(async () => state.listener?.("SIGNED_IN", { user: { id: "u1", email: "a@b.co" } }));
     await waitFor(() => expect(screen.getByTestId("repo")).toHaveTextContent("remote"));
-    expect(migrate).toHaveBeenCalledWith(expect.anything(), "u1");
 
     await userEvent.click(screen.getByTestId("sign-out-button"));
     expect(auth.signOut).toHaveBeenCalled();
