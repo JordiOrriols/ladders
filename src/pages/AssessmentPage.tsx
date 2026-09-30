@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Download, Save, Send } from "lucide-react";
+import { Check, Download, LoaderCircle, Send, TriangleAlert } from "lucide-react";
 import { AssessmentFormColumn } from "@/components/organisms/AssessmentFormColumn";
 import { AssessmentHeader } from "@/components/organisms/AssessmentHeader";
 import { AssessmentPreview } from "@/components/organisms/AssessmentPreview";
@@ -23,7 +23,6 @@ import { findTemplate } from "@/data/ladderTemplates";
 import { buildRadarSeries } from "@/data/radarSeries";
 import { isValidToken, resolveToken } from "@/data/tokenApi";
 import { EditorValidationError, useEvaluationEditor } from "@/hooks/useEvaluationEditor";
-import type { EvaluationStatus } from "@/types";
 import { PageMessage } from "./PageMessage";
 
 type StoreState = { store: EvaluationStore } | { error: "notFound" | "loading" };
@@ -108,10 +107,10 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
 
   if (editor.loadState !== "ready") return <PageMessage kind={editor.loadState} />;
 
-  const handleSave = async (status: EvaluationStatus) => {
+  const handleSave = async () => {
     try {
-      await editor.save(status);
-      if (!isPeer) alert(t(status === "published" ? "alerts.published" : "alerts.draftSaved"));
+      await editor.save("published");
+      if (!isPeer) alert(t("alerts.published"));
     } catch (error) {
       if (error instanceof EditorValidationError) {
         alert(t(`alerts.${error.message}`));
@@ -147,6 +146,25 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
     ? []
     : ((t(`${mode}.howToUseItems`, { returnObjects: true }) as unknown as string[]) ?? []);
 
+  const autosaveStatus =
+    !isPeer && editor.autosaveState !== "idle" ? (
+      <span
+        className={`hidden items-center gap-1 text-xs sm:inline-flex ${
+          editor.autosaveState === "error" ? "text-red-600" : "text-slate-500"
+        }`}
+        role="status"
+      >
+        {editor.autosaveState === "saving" ? (
+          <LoaderCircle className="h-3.5 w-3.5 animate-spin" />
+        ) : editor.autosaveState === "error" ? (
+          <TriangleAlert className="h-3.5 w-3.5" />
+        ) : (
+          <Check className="h-3.5 w-3.5" />
+        )}
+        {t(`autosave.${editor.autosaveState}`)}
+      </span>
+    ) : null;
+
   return (
     <div className="min-h-screen bg-slate-50">
       <AssessmentHeader
@@ -154,13 +172,16 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
         title={t(`${mode}.title`, { name: editor.profile.name })}
         subtitle={t(`${mode}.subtitle`)}
         extraActions={
-          isManager &&
-          repository.kind === "remote" &&
-          editor.member?.selfToken &&
-          editor.member.peerToken &&
-          editor.member.viewToken ? (
-            <ShareAction member={editor.member} onEnableView={handleEnableView} />
-          ) : null
+          <>
+            {autosaveStatus}
+            {isManager &&
+            repository.kind === "remote" &&
+            editor.member?.selfToken &&
+            editor.member.peerToken &&
+            editor.member.viewToken ? (
+              <ShareAction member={editor.member} onEnableView={handleEnableView} />
+            ) : null}
+          </>
         }
         actions={[
           ...(!isManager && !isPeer
@@ -182,39 +203,25 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
                   label: t("buttons.submit"),
                   icon: <Send className="w-4 h-4" />,
                   disabled: editor.saving,
-                  onClick: () => void handleSave("published"),
+                  onClick: () => void handleSave(),
                   eventId: `${mode}_publish`,
                 },
               ]
             : [
                 {
-                  type: "split" as const,
+                  type: "button" as const,
+                  variant: "default" as const,
                   label: t("buttons.publish"),
                   icon: <Send className="w-4 h-4" />,
                   disabled: !editor.canPublish,
-                  onClick: () => void handleSave("published"),
+                  onClick: () => void handleSave(),
                   eventId: `${mode}_publish`,
-                  menuLabel: t("buttons.moreSaveOptions"),
-                  items: [
-                    {
-                      label: t("buttons.saveDraft"),
-                      icon: <Save className="w-4 h-4" />,
-                      disabled: !editor.canSaveDraft,
-                      onSelect: () => void handleSave("draft"),
-                      eventId: `${mode}_save_draft`,
-                    },
-                  ],
                 },
               ]),
         ]}
       />
 
       <main className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {editor.dirty && (
-          <p className="mb-4 text-xs text-amber-700" role="status">
-            {t("versions.unsaved")}
-          </p>
-        )}
         <div
           className={`grid gap-6 ${
             store.showHistory || isManager ? "xl:grid-cols-[260px_1fr_1fr]" : "lg:grid-cols-2"
@@ -228,11 +235,7 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
                 compareIds={editor.compareIds}
                 onSelect={editor.selectVersion}
                 onToggleCompare={editor.toggleCompare}
-                {...(editor.canStartNewVersion ? { onNew: editor.startNewVersion } : {})}
-                isNewSelected={editor.editingId === null}
-                onSetStatus={(e, s) => void editor.setVersionStatus(e, s)}
                 onDelete={(e) => void editor.deleteVersion(e)}
-                canChangeStatus={editor.canChangeVersionStatus}
                 canDelete={store.canDelete}
               />
             </div>

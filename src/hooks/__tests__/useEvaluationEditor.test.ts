@@ -120,7 +120,7 @@ describe("useEvaluationEditor", () => {
       { ...base, status: "published", currentLevels: { Technology: 1 } },
       "2026-01-01T00:00:00.000Z"
     );
-    await repo.createEvaluation(
+    const draft = await repo.createEvaluation(
       member.id,
       "manager",
       { ...base, status: "draft", currentLevels: { Technology: 4 } },
@@ -145,7 +145,7 @@ describe("useEvaluationEditor", () => {
 
     await act(async () => result.current.deleteVersion(old));
     expect(result.current.evaluations.map((e) => e.id)).not.toContain(old.id);
-    expect(result.current.editingId).toBeNull();
+    expect(result.current.editingId).toBe(draft.id);
   });
 
   it("keeps anonymous self-assessments on the device with history", async () => {

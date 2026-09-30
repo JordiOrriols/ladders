@@ -19,8 +19,6 @@
     "currentPlus": "Current +",
     "goal": "Goal",
     "goalPlus": "Goal +",
-    "saveDraft": "Save draft",
-    "moreSaveOptions": "More save options",
     "publish": "Publish",
     "submit": "Submit",
     "export": "Export",
@@ -194,7 +192,7 @@
   },
   "memberAssessment": {
     "title": "Team Member Assessment",
-    "subtitle": "Each save creates a new version in the member's history",
+    "subtitle": "Draft changes are saved automatically; publish when the evaluation is ready",
     "personalInfo": "Personal Information",
     "competencies": "Competencies",
     "preview": "{{name}} Preview",
@@ -216,8 +214,8 @@
     "howToUse": "How to use",
     "howToUseItems": [
       "Set your current level for each competency",
-      "Save a draft to keep working later, or publish it to share it",
-      "Each save creates a new version so you can track your progress",
+      "Your draft is saved automatically as you work",
+      "Publish when the assessment is ready to become a version",
       "Use the seniority template to compare with the expected level"
     ],
     "clearConfirmTitle": "Clear all assessment data?",
@@ -231,13 +229,10 @@
     "teamExported": "Team exported successfully!",
     "memberDeleted": "Member deleted successfully!",
     "published": "Version published.",
-    "draftSaved": "Draft saved.",
     "nameRequired": "Please enter a name before saving.",
     "authorRequired": "Please enter your name before submitting.",
     "saveFailed": "Could not save. Please try again.",
-    "noChanges": "There are no changes to save.",
     "publishDraftFirst": "Save a draft before publishing.",
-    "draftAlreadyExists": "Finish or delete the existing draft first.",
     "saveMemberFirst": "Save the member first.",
     "teamImported": "Team imported successfully!",
     "teamImportFailed": "Could not import the team file."
@@ -247,17 +242,18 @@
     "current": "Current",
     "goal": "Goal"
   },
+  "autosave": {
+    "saving": "Saving...",
+    "saved": "Draft saved",
+    "error": "Could not save"
+  },
   "versions": {
     "title": "Versions",
     "filter": "Filter versions by author",
-    "new": "New version",
     "empty": "No versions saved yet",
     "compare": "Show on chart",
-    "publish": "Publish",
-    "unpublish": "Move back to draft",
     "deleteTitle": "Delete this version?",
     "deleteDescription": "This version will be permanently removed from the history.",
-    "unsaved": "Unsaved changes. Save a draft or publish to create a new version.",
     "kind": {
       "manager": "Manager",
       "self": "Self",

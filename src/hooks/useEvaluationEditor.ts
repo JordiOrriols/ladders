@@ -252,10 +252,15 @@ export function useEvaluationEditor(store: EvaluationStore) {
     async (evaluation: Evaluation) => {
       await store.remove(evaluation.id);
       if (draftRef.current?.id === evaluation.id) draftRef.current = null;
-      setEvaluations((prev) => prev.filter((item) => item.id !== evaluation.id));
-      if (editingId === evaluation.id) setEditingId(null);
+      const remaining = evaluations.filter((item) => item.id !== evaluation.id);
+      setEvaluations(remaining);
+      if (editingId === evaluation.id) {
+        const next = latestOf(remaining, store.kind);
+        setEditingId(next?.id ?? null);
+        setForm(formFrom(next));
+      }
     },
-    [editingId, store]
+    [editingId, evaluations, store]
   );
 
   const updateForm = useCallback((patch: (prev: FormState) => FormState) => setForm(patch), []);
@@ -327,8 +332,6 @@ export function useEvaluationEditor(store: EvaluationStore) {
     contentChanged,
     profileChanged,
     autosaveState,
-    canSaveDraft: false,
-    canStartNewVersion: false,
     canPublish:
       !saving && (store.kind === "peer" || (!!draft && autosaveState === "saved" && !dirty)),
     saving,
@@ -348,11 +351,8 @@ export function useEvaluationEditor(store: EvaluationStore) {
     handleCommentChange,
     toggleVertical,
     selectVersion,
-    startNewVersion: () => {},
     toggleCompare: selection.toggleCompare,
     save,
-    setVersionStatus: async () => {},
-    canChangeVersionStatus: () => false,
     deleteVersion,
     exportFile,
     reload: load,

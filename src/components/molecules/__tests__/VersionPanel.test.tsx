@@ -56,8 +56,7 @@ describe("VersionPanel", () => {
     expect(onSelect).toHaveBeenCalledWith("p2");
   });
 
-  it("publishes and deletes after confirmation", async () => {
-    const onSetStatus = vi.fn();
+  it("deletes after confirmation without exposing status actions", async () => {
     const onDelete = vi.fn();
     renderWithI18n(
       <VersionPanel
@@ -66,14 +65,11 @@ describe("VersionPanel", () => {
         compareIds={[]}
         onSelect={vi.fn()}
         onToggleCompare={vi.fn()}
-        onSetStatus={onSetStatus}
         onDelete={onDelete}
-        canChangeStatus={() => true}
         canDelete={() => true}
       />
     );
-    await userEvent.click(screen.getByRole("button", { name: "Publish" }));
-    expect(onSetStatus).toHaveBeenCalledWith(list[1], "published");
+    expect(screen.queryByRole("button", { name: "Publish" })).not.toBeInTheDocument();
 
     await userEvent.click(screen.getByRole("button", { name: "Delete" }));
     expect(screen.getByText("Delete this version?")).toBeInTheDocument();

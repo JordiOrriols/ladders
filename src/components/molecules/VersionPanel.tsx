@@ -1,9 +1,9 @@
 import React, { useMemo, useState } from "react";
-import { Eye, EyeOff, Plus, Send, Trash2, Undo2 } from "lucide-react";
+import { Eye, EyeOff, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { versionLabel } from "@/data/evaluations";
 import { evaluationAuthor } from "@/data/radarSeries";
-import type { Evaluation, EvaluationStatus } from "@/types";
+import type { Evaluation } from "@/types";
 import { ConfirmDialog } from "./ConfirmDialog";
 
 type Props = {
@@ -12,12 +12,7 @@ type Props = {
   compareIds: string[];
   onSelect: (id: string) => void;
   onToggleCompare: (id: string) => void;
-  /** When provided, shows a "new version" entry that is active when nothing is selected. */
-  onNew?: () => void;
-  isNewSelected?: boolean;
-  onSetStatus?: (evaluation: Evaluation, status: EvaluationStatus) => void;
   onDelete?: (evaluation: Evaluation) => void;
-  canChangeStatus?: (evaluation: Evaluation) => boolean;
   canDelete?: (evaluation: Evaluation) => boolean;
 };
 
@@ -29,11 +24,7 @@ export function VersionPanel({
   compareIds,
   onSelect,
   onToggleCompare,
-  onNew,
-  isNewSelected = false,
-  onSetStatus,
   onDelete,
-  canChangeStatus = () => false,
   canDelete = () => false,
 }: Props) {
   const { t, i18n } = useTranslation();
@@ -86,27 +77,11 @@ export function VersionPanel({
       )}
 
       <ol className="space-y-1 max-h-[60vh] overflow-y-auto">
-        {onNew && (
-          <li>
-            <button
-              type="button"
-              onClick={onNew}
-              className={`w-full flex items-center gap-2 text-left text-sm px-3 py-2 rounded-lg border ${
-                isNewSelected
-                  ? "border-emerald-400 bg-emerald-50 text-emerald-800"
-                  : "border-dashed border-slate-300 text-slate-600 hover:bg-slate-50"
-              }`}
-            >
-              <Plus className="w-4 h-4" />
-              {t("versions.new")}
-            </button>
-          </li>
-        )}
-        {visible.length === 0 && !onNew && (
+        {visible.length === 0 && (
           <li className="text-xs text-slate-500 px-1">{t("versions.empty")}</li>
         )}
         {visible.map((evaluation) => {
-          const isSelected = !isNewSelected && evaluation.id === selectedId;
+          const isSelected = evaluation.id === selectedId;
           const isCompared = compareIds.includes(evaluation.id);
           const published = evaluation.status === "published";
           return (
@@ -150,17 +125,6 @@ export function VersionPanel({
                 >
                   {isCompared ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
                 </button>
-                {onSetStatus && canChangeStatus(evaluation) && (
-                  <button
-                    type="button"
-                    onClick={() => onSetStatus(evaluation, published ? "draft" : "published")}
-                    title={t(published ? "versions.unpublish" : "versions.publish")}
-                    aria-label={t(published ? "versions.unpublish" : "versions.publish")}
-                    className="p-1 rounded text-slate-500 hover:bg-slate-100"
-                  >
-                    {published ? <Undo2 className="w-4 h-4" /> : <Send className="w-4 h-4" />}
-                  </button>
-                )}
                 {onDelete && canDelete(evaluation) && (
                   <button
                     type="button"

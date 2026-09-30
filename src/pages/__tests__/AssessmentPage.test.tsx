@@ -36,8 +36,7 @@ describe("AssessmentPage", () => {
     await userEvent.type(nameInput, "Ada");
     await userEvent.click(screen.getAllByRole("button", { name: "Current" })[0]!);
     expect(screen.getByRole("button", { name: "Publish" })).toBeDisabled();
-    await userEvent.click(screen.getByRole("button", { name: "More save options" }));
-    await userEvent.click(screen.getByRole("menuitem", { name: "Save draft" }));
+    await waitFor(() => expect(screen.getByRole("button", { name: "Publish" })).toBeEnabled());
 
     await waitFor(async () => {
       const repo = createLocalRepository();
@@ -53,8 +52,8 @@ describe("AssessmentPage", () => {
     expect(await screen.findByTestId("version-panel")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /Export/ })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Publish" })).toBeDisabled();
-    await userEvent.click(screen.getByRole("button", { name: "More save options" }));
-    expect(screen.getByRole("menuitem", { name: "Save draft" })).toHaveAttribute("data-disabled");
+    expect(screen.queryByRole("button", { name: "More save options" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "New version" })).not.toBeInTheDocument();
   });
 
   it("exports the current self-assessment history without offering import", async () => {

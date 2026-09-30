@@ -20,8 +20,6 @@
     "currentPlus": "Actual +",
     "goal": "Objectiu",
     "goalPlus": "Objectiu +",
-    "saveDraft": "Desar esborrany",
-    "moreSaveOptions": "Més opcions de desament",
     "publish": "Publicar",
     "submit": "Enviar",
     "export": "Exportar",
@@ -195,7 +193,7 @@
   },
   "memberAssessment": {
     "title": "Avaluació de Membre de l'Equip",
-    "subtitle": "Cada desament crea una nova versió a l'historial del membre",
+    "subtitle": "Els canvis de l'esborrany es desen automàticament; publiqueu-lo quan estigui llest",
     "personalInfo": "Informació Personal",
     "competencies": "Competències",
     "preview": "Vista Prèvia {{name}}",
@@ -217,8 +215,8 @@
     "howToUse": "Com usar",
     "howToUseItems": [
       "Establiu el vostre nivell actual per a cada competència",
-      "Deseu un esborrany per continuar més tard, o publiqueu-lo per compartir-lo",
-      "Cada desament crea una nova versió per seguir el vostre progrés",
+      "L'esborrany es desa automàticament mentre treballeu",
+      "Publiqueu quan l'avaluació estigui llesta per convertir-se en una versió",
       "Useu la plantilla de seniority per comparar amb el nivell esperat"
     ],
     "clearConfirmTitle": "¿Netejar totes les dades d'avaluació?",
@@ -232,13 +230,10 @@
     "teamExported": "¡Equip exportat correctament!",
     "memberDeleted": "¡Membre eliminat correctament!",
     "published": "Versió publicada.",
-    "draftSaved": "Esborrany desat.",
     "nameRequired": "Introduïu un nom abans de desar.",
     "authorRequired": "Introduïu el vostre nom abans d'enviar.",
     "saveFailed": "No s'ha pogut desar. Torneu-ho a provar.",
-    "noChanges": "No hi ha canvis per desar.",
     "publishDraftFirst": "Deseu un esborrany abans de publicar.",
-    "draftAlreadyExists": "Acabeu o elimineu l'esborrany existent primer.",
     "saveMemberFirst": "Deseu primer el membre.",
     "teamImported": "Equip importat correctament!",
     "teamImportFailed": "No s'ha pogut importar l'arxiu de l'equip."
@@ -248,17 +243,18 @@
     "current": "Actual",
     "goal": "Objectiu"
   },
+  "autosave": {
+    "saving": "Desant...",
+    "saved": "Esborrany desat",
+    "error": "No s'ha pogut desar"
+  },
   "versions": {
     "title": "Versions",
     "filter": "Filtrar versions per autor",
-    "new": "Nova versió",
     "empty": "Encara no hi ha versions desades",
     "compare": "Mostrar al gràfic",
-    "publish": "Publicar",
-    "unpublish": "Tornar a esborrany",
     "deleteTitle": "Eliminar aquesta versió?",
     "deleteDescription": "Aquesta versió s'eliminarà permanentment de l'historial.",
-    "unsaved": "Canvis sense desar. Deseu un esborrany o publiqueu per crear una nova versió.",
     "kind": {
       "manager": "Manager",
       "self": "Autoavaluació",

@@ -20,8 +20,6 @@
     "currentPlus": "Actual +",
     "goal": "Objetivo",
     "goalPlus": "Objetivo +",
-    "saveDraft": "Guardar borrador",
-    "moreSaveOptions": "Más opciones de guardado",
     "publish": "Publicar",
     "submit": "Enviar",
     "export": "Exportar",
@@ -195,7 +193,7 @@
   },
   "memberAssessment": {
     "title": "Evaluación de Miembro del Equipo",
-    "subtitle": "Cada guardado crea una nueva versión en el historial del miembro",
+    "subtitle": "Los cambios del borrador se guardan automáticamente; publíquelo cuando esté listo",
     "personalInfo": "Información Personal",
     "competencies": "Competencias",
     "preview": "Vista Previa {{name}}",
@@ -217,8 +215,8 @@
     "howToUse": "Cómo usar",
     "howToUseItems": [
       "Establezca su nivel actual para cada competencia",
-      "Guarde un borrador para continuar más tarde, o publíquelo para compartirlo",
-      "Cada guardado crea una nueva versión para seguir su progreso",
+      "El borrador se guarda automáticamente mientras trabaja",
+      "Publique cuando la evaluación esté lista para convertirse en una versión",
       "Use la plantilla de seniority para comparar con el nivel esperado"
     ],
     "clearConfirmTitle": "¿Limpiar todos los datos de evaluación?",
@@ -232,13 +230,10 @@
     "teamExported": "¡Equipo exportado correctamente!",
     "memberDeleted": "¡Miembro eliminado correctamente!",
     "published": "Versión publicada.",
-    "draftSaved": "Borrador guardado.",
     "nameRequired": "Introduzca un nombre antes de guardar.",
     "authorRequired": "Introduzca su nombre antes de enviar.",
     "saveFailed": "No se pudo guardar. Inténtelo de nuevo.",
-    "noChanges": "No hay cambios que guardar.",
     "publishDraftFirst": "Guarde un borrador antes de publicar.",
-    "draftAlreadyExists": "Termine o elimine el borrador existente primero.",
     "saveMemberFirst": "Guarde primero el miembro.",
     "teamImported": "¡Equipo importado correctamente!",
     "teamImportFailed": "No se pudo importar el archivo del equipo."
@@ -248,17 +243,18 @@
     "current": "Actual",
     "goal": "Objetivo"
   },
+  "autosave": {
+    "saving": "Guardando...",
+    "saved": "Borrador guardado",
+    "error": "No se pudo guardar"
+  },
   "versions": {
     "title": "Versiones",
     "filter": "Filtrar versiones por autor",
-    "new": "Nueva versión",
     "empty": "Aún no hay versiones guardadas",
     "compare": "Mostrar en el gráfico",
-    "publish": "Publicar",
-    "unpublish": "Volver a borrador",
     "deleteTitle": "¿Eliminar esta versión?",
     "deleteDescription": "Esta versión se eliminará permanentemente del historial.",
-    "unsaved": "Cambios sin guardar. Guarde un borrador o publique para crear una nueva versión.",
     "kind": {
       "manager": "Manager",
       "self": "Autoevaluación",
