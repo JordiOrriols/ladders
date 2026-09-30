@@ -1,7 +1,7 @@
 import React from "react";
 import { User, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import RadarChart from "./radarChart";
+import RadarChart, { SERIES_COLORS } from "./radarChart";
 
 interface Member {
   id: string;
@@ -76,9 +76,33 @@ export default function MemberCard({ member, onEdit, onDelete, onClick }: Member
 
       <div className="flex justify-center">
         <RadarChart
-          currentLevels={member.currentLevels}
-          goalLevels={member.goalLevels}
-          selfAssessmentLevels={member.selfAssessmentLevels}
+          series={[
+            {
+              id: "goal",
+              label: "Goal",
+              levels: member.goalLevels,
+              color: SERIES_COLORS.goal,
+              dashed: true,
+            },
+            ...(member.selfAssessmentLevels
+              ? [
+                  {
+                    id: "self",
+                    label: "Self Assessment",
+                    levels: member.selfAssessmentLevels,
+                    color: SERIES_COLORS.self,
+                    dashed: true,
+                  },
+                ]
+              : []),
+            {
+              id: "current",
+              label: "Current",
+              levels: member.currentLevels,
+              color: SERIES_COLORS.current,
+              primary: true,
+            },
+          ]}
           size={180}
           showLabels={false}
           showLegend={false}

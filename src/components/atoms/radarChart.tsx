@@ -25,14 +25,10 @@ export const SERIES_COLORS = {
 };
 
 type RadarChartProps = {
-  series?: RadarSeries[];
-  currentLevels?: LevelMap;
-  goalLevels?: LevelMap;
-  selfAssessmentLevels?: LevelMap | undefined;
+  series: RadarSeries[];
   size?: number;
   showLabels?: boolean;
   showLegend?: boolean;
-  hideGoal?: boolean;
   className?: string;
 };
 
@@ -41,67 +37,21 @@ function hexToRgba(hex: string, alpha: number) {
   return `rgba(${(value >> 16) & 255}, ${(value >> 8) & 255}, ${value & 255}, ${alpha})`;
 }
 
-function legacySeries(
-  currentLevels: LevelMap,
-  goalLevels: LevelMap,
-  selfAssessmentLevels: LevelMap,
-  hideGoal: boolean
-): RadarSeries[] {
-  const list: RadarSeries[] = [];
-  if (!hideGoal) {
-    list.push({
-      id: "goal",
-      label: "Goal",
-      levels: goalLevels,
-      color: SERIES_COLORS.goal,
-      dashed: true,
-      fill: 0.12,
-    });
-  }
-  list.push({
-    id: "self",
-    label: "Self Assessment",
-    levels: selfAssessmentLevels,
-    color: SERIES_COLORS.self,
-    dashed: true,
-    fill: 0.1,
-  });
-  list.push({
-    id: "current",
-    label: "Current",
-    levels: currentLevels,
-    color: SERIES_COLORS.current,
-    fill: 0.18,
-    primary: true,
-  });
-  return list;
-}
-
 const hasData = (levels: LevelMap) => Object.values(levels).some((v) => v > 0);
 
 function RadarChart({
   series,
-  currentLevels = {},
-  goalLevels = {},
-  selfAssessmentLevels = {},
   size = 300,
   showLabels = true,
   showLegend = true,
-  hideGoal = false,
   className = "",
 }: RadarChartProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const center = size / 2;
   const maxRadius = size / 2 - (showLabels ? 50 : 20);
 
-  const allSeries = useMemo(
-    () => series ?? legacySeries(currentLevels, goalLevels, selfAssessmentLevels, hideGoal),
-    [series, currentLevels, goalLevels, selfAssessmentLevels, hideGoal]
-  );
-  const visibleSeries = allSeries.filter((s) => hasData(s.levels));
-  const legendSeries = series
-    ? visibleSeries
-    : allSeries.filter((s) => s.primary || hasData(s.levels));
+  const visibleSeries = series.filter((item) => hasData(item.levels));
+  const legendSeries = visibleSeries;
 
   const downloadAsImage = useCallback(() => {
     if (!svgRef.current) return;

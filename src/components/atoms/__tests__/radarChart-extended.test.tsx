@@ -11,30 +11,36 @@ describe("RadarChart Extended Tests", () => {
     Process: 2,
     Influence: 3,
   };
+  const series = [{ id: "current", label: "Current", levels, color: "#10b981", primary: true }];
 
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it("should render with current levels only", () => {
-    const { container } = render(
-      <RadarChart currentLevels={levels} goalLevels={{}} selfAssessmentLevels={{}} size={300} />
-    );
+    const { container } = render(<RadarChart series={series} size={300} />);
     expect(container.querySelector("svg")).toBeTruthy();
   });
 
   it("should render with goal levels", () => {
     const { container } = render(
       <RadarChart
-        currentLevels={levels}
-        goalLevels={{
-          Technology: 4,
-          System: 3,
-          People: 5,
-          Process: 3,
-          Influence: 4,
-        }}
-        selfAssessmentLevels={{}}
+        series={[
+          ...series,
+          {
+            id: "goal",
+            label: "Goal",
+            levels: {
+              Technology: 4,
+              System: 3,
+              People: 5,
+              Process: 3,
+              Influence: 4,
+            },
+            color: "#fbbf24",
+            dashed: true,
+          },
+        ]}
         size={300}
       />
     );
@@ -43,7 +49,10 @@ describe("RadarChart Extended Tests", () => {
 
   it("should render with self assessment levels", () => {
     const { container } = render(
-      <RadarChart currentLevels={levels} goalLevels={{}} selfAssessmentLevels={levels} size={300} />
+      <RadarChart
+        series={[...series, { id: "self", label: "Self", levels, color: "#c084fc" }]}
+        size={300}
+      />
     );
     expect(container.querySelector("svg")).toBeTruthy();
   });
@@ -51,50 +60,19 @@ describe("RadarChart Extended Tests", () => {
   it("should render with different sizes", () => {
     const sizes = [200, 300, 400, 500];
     sizes.forEach((size) => {
-      const { container } = render(
-        <RadarChart currentLevels={levels} goalLevels={{}} selfAssessmentLevels={{}} size={size} />
-      );
+      const { container } = render(<RadarChart series={series} size={size} />);
       expect(container.querySelector("svg")).toBeTruthy();
     });
   });
 
-  it("should render with hideGoal true", () => {
-    const { container } = render(
-      <RadarChart
-        currentLevels={levels}
-        goalLevels={{
-          Technology: 4,
-          System: 3,
-          People: 5,
-          Process: 3,
-          Influence: 4,
-        }}
-        selfAssessmentLevels={{}}
-        size={300}
-        hideGoal={true}
-      />
-    );
-    expect(container.querySelector("svg")).toBeTruthy();
-  });
-
   it("should show legend when enabled", () => {
-    render(
-      <RadarChart
-        currentLevels={levels}
-        goalLevels={{}}
-        selfAssessmentLevels={{}}
-        size={300}
-        showLegend={true}
-      />
-    );
+    render(<RadarChart series={series} size={300} showLegend />);
     const currentText = screen.queryByText("Current");
     expect(currentText || document.body).toBeTruthy();
   });
 
   it("should render download button", () => {
-    const { container } = render(
-      <RadarChart currentLevels={levels} goalLevels={{}} selfAssessmentLevels={{}} size={300} />
-    );
+    const { container } = render(<RadarChart series={series} size={300} />);
     const downloadBtn = screen.queryByRole("button");
     if (downloadBtn) {
       expect(downloadBtn).toBeTruthy();
@@ -112,9 +90,7 @@ describe("RadarChart Extended Tests", () => {
 
     const { container } = render(
       <RadarChart
-        currentLevels={allLevels}
-        goalLevels={allLevels}
-        selfAssessmentLevels={allLevels}
+        series={[{ id: "all", label: "All", levels: allLevels, color: "#10b981" }]}
         size={300}
       />
     );
@@ -122,15 +98,7 @@ describe("RadarChart Extended Tests", () => {
   });
 
   it("should render without labels", () => {
-    const { container } = render(
-      <RadarChart
-        currentLevels={levels}
-        goalLevels={{}}
-        selfAssessmentLevels={{}}
-        size={300}
-        showLabels={false}
-      />
-    );
+    const { container } = render(<RadarChart series={series} size={300} showLabels={false} />);
     expect(container.querySelector("svg")).toBeTruthy();
   });
 });
