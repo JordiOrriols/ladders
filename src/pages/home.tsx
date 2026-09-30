@@ -17,7 +17,7 @@ type TeamState = { members: TeamMember[]; evaluations: Evaluation[] };
 export default function Home() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { repository, loading } = useData();
+  const { repository, loading, user } = useData();
   const [team, setTeam] = useState<TeamState>({ members: [], evaluations: [] });
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [showReference, setShowReference] = useState(false);
@@ -83,8 +83,12 @@ export default function Home() {
             onEditMember={(member) => openMember(member.id)}
             onDeleteMember={(id) => setDeleteId(id)}
             onSelectMember={(member) => openMember(member.id)}
-            onExportTeam={() => void handleExportTeam()}
-            onImportTeam={(file) => void handleImportTeam(file)}
+            {...(user
+              ? {
+                  onExportTeam: () => void handleExportTeam(),
+                  onImportTeam: (file: File) => void handleImportTeam(file),
+                }
+              : {})}
           />
         </ErrorBoundary>
       </main>
