@@ -14,9 +14,7 @@ type DataContextValue = {
   /** True until the session is restored and any pending migration finished. */
   loading: boolean;
   passwordRecovery: boolean;
-  anonymousMode: boolean;
   repository: Repository;
-  continueAnonymously(): void;
   signIn(email: string, password: string): Promise<void>;
   signUp(email: string, password: string): Promise<{ needsConfirmation: boolean }>;
   requestPasswordReset(email: string): Promise<void>;
@@ -25,7 +23,6 @@ type DataContextValue = {
 };
 
 const localRepository = createLocalRepository();
-export const ANONYMOUS_MODE_KEY = "ladders-anonymous-mode";
 
 const DataContext = createContext<DataContextValue | null>(null);
 
@@ -33,9 +30,6 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(!!supabase);
   const [passwordRecovery, setPasswordRecovery] = useState(false);
-  const [anonymousMode, setAnonymousMode] = useState(
-    () => localStorage.getItem(ANONYMOUS_MODE_KEY) === "true"
-  );
 
   useEffect(() => {
     if (!supabase) return;
@@ -78,12 +72,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       user,
       loading,
       passwordRecovery,
-      anonymousMode,
       repository: client && user ? createSupabaseRepository(client) : localRepository,
-      continueAnonymously() {
-        localStorage.setItem(ANONYMOUS_MODE_KEY, "true");
-        setAnonymousMode(true);
-      },
       async signIn(email, password) {
         if (!client) return;
         const { error } = await client.auth.signInWithPassword({ email, password });
@@ -116,7 +105,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
         await client?.auth.signOut();
       },
     };
-  }, [user, loading, passwordRecovery, anonymousMode]);
+  }, [user, loading, passwordRecovery]);
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
 }
@@ -126,9 +115,7 @@ const fallback: DataContextValue = {
   user: null,
   loading: false,
   passwordRecovery: false,
-  anonymousMode: true,
   repository: localRepository,
-  continueAnonymously: () => {},
   signIn: async () => {},
   signUp: async () => ({ needsConfirmation: false }),
   requestPasswordReset: async () => {},

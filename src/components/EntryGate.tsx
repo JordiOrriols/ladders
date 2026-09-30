@@ -6,7 +6,7 @@ import { WelcomePage } from "@/pages/WelcomePage";
 
 export function EntryGate({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
-  const { user, loading, anonymousMode } = useData();
+  const { user, loading } = useData();
   const isSharedRoute = pathname.startsWith("/e/") || pathname.startsWith("/v/");
 
   if (loading && !isSharedRoute) {
@@ -17,6 +17,6 @@ export function EntryGate({ children }: { children: ReactNode }) {
     );
   }
 
-  if (!isSharedRoute && !user && !anonymousMode) return <WelcomePage />;
+  if (!isSharedRoute && !user) return <WelcomePage />;
   return children;
 }

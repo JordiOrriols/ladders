@@ -313,12 +313,9 @@
   "welcome": {
     "eyebrow": "Engineering Ladder",
     "title": "How do you want to start?",
-    "description": "Sign in to keep your team protected and available across devices, or continue anonymously with data stored only in this browser.",
+    "description": "Sign in to keep your team protected and available across devices.",
     "accountTitle": "Use an account",
     "accountDescription": "Save your team in the database and create permanent links for self and peer evaluations.",
-    "anonymousTitle": "Start anonymously",
-    "anonymousDescription": "Try the assessment without an account. Your information stays in this browser's local storage.",
-    "anonymousAction": "Continue anonymously",
     "authUnavailable": "Account access is not configured for this deployment."
   },
   "auth": {

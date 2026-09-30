@@ -11,9 +11,7 @@ const { dataState } = vi.hoisted(() => ({
   dataState: {
     user: null as { id: string } | null,
     loading: false,
-    anonymousMode: false,
     authEnabled: true,
-    continueAnonymously: vi.fn(),
     signIn: vi.fn(),
     signUp: vi.fn(),
   },
@@ -37,17 +35,14 @@ describe("EntryGate", () => {
   beforeEach(() => {
     dataState.user = null;
     dataState.loading = false;
-    dataState.anonymousMode = false;
     dataState.authEnabled = true;
     vi.clearAllMocks();
   });
 
-  it("offers account or anonymous access on the first owned route", async () => {
+  it("offers account access on an owned route", () => {
     renderGate();
     expect(screen.getByRole("heading", { name: "How do you want to start?" })).toBeInTheDocument();
-
-    await userEvent.click(screen.getByRole("button", { name: "Continue anonymously" }));
-    expect(dataState.continueAnonymously).toHaveBeenCalledOnce();
+    expect(screen.queryByRole("button", { name: "Continue anonymously" })).not.toBeInTheDocument();
   });
 
   it("opens account creation directly in sign-up mode", async () => {
@@ -56,22 +51,9 @@ describe("EntryGate", () => {
     expect(screen.getByRole("heading", { name: "Create an account" })).toBeInTheDocument();
   });
 
-  it("bypasses the welcome page for remembered anonymous and authenticated users", () => {
-    dataState.anonymousMode = true;
-    const { rerender } = renderGate();
-    expect(screen.getByText("Owned application")).toBeInTheDocument();
-
-    dataState.anonymousMode = false;
+  it("bypasses the welcome page for authenticated users", () => {
     dataState.user = { id: "u1" };
-    rerender(
-      <MemoryRouter>
-        <I18nextProvider i18n={i18n}>
-          <EntryGate>
-            <p>Owned application</p>
-          </EntryGate>
-        </I18nextProvider>
-      </MemoryRouter>
-    );
+    renderGate();
     expect(screen.getByText("Owned application")).toBeInTheDocument();
   });
 
