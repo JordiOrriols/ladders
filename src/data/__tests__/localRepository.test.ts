@@ -21,11 +21,13 @@ describe("localRepository", () => {
     expect(members[0]?.name).toBe("Ada");
     expect(evaluations.map((e) => e.kind).sort()).toEqual(["manager", "self"]);
     expect(evaluations.find((e) => e.kind === "manager")?.goalLevels).toEqual({ Technology: 3 });
+    expect(JSON.parse(localStorage.getItem(TEAM_STORAGE_KEY)!).version).toBe(2);
   });
 
   it("migrates unversioned legacy arrays", () => {
     localStorage.setItem(TEAM_STORAGE_KEY, JSON.stringify([legacyMember]));
     expect(loadLocalTeam().members).toHaveLength(1);
+    expect(JSON.parse(localStorage.getItem(TEAM_STORAGE_KEY)!).version).toBe(2);
   });
 
   it("keeps every save as a new version and cascades member deletes", async () => {

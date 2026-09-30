@@ -68,11 +68,19 @@ export function loadLocalTeam(): LocalTeamData {
     TEAM_STORAGE_KEY,
     isLocalTeamData,
     TEAM_STORAGE_VERSION,
-    (data, version) => (version === 1 && isLegacyMemberList(data) ? fromLegacyMembers(data) : null)
+    (data, version) => {
+      if (version !== 1 || !isLegacyMemberList(data)) return null;
+      const migrated = fromLegacyMembers(data);
+      saveToStorage(TEAM_STORAGE_KEY, migrated, TEAM_STORAGE_VERSION);
+      return migrated;
+    }
   );
   if (current) return current;
   const legacy = loadFromStorage(TEAM_STORAGE_KEY, isLegacyMemberList, 1);
-  return legacy ? fromLegacyMembers(legacy) : { members: [], evaluations: [] };
+  if (!legacy) return { members: [], evaluations: [] };
+  const migrated = fromLegacyMembers(legacy);
+  saveToStorage(TEAM_STORAGE_KEY, migrated, TEAM_STORAGE_VERSION);
+  return migrated;
 }
 
 function write(data: LocalTeamData) {
