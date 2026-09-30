@@ -26,4 +26,18 @@ describe("MainTabs", () => {
     // Should contain tab buttons
     expect(container).toBeTruthy();
   });
+
+  it("opens the individual tab by default", () => {
+    renderWithI18n(
+      <MainTabs
+        members={[]}
+        onAddMember={() => {}}
+        onEditMember={() => {}}
+        onDeleteMember={() => {}}
+        onSelectMember={() => {}}
+      />
+    );
+    expect(screen.getByTestId("tab-individual")).toHaveAttribute("data-state", "active");
+    expect(screen.getByTestId("tab-team")).toHaveAttribute("data-state", "inactive");
+  });
 });

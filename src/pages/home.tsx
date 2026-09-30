@@ -1,101 +1,98 @@
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import type { Member } from "../types";
+import { useTranslation } from "react-i18next";
+import type { Evaluation, TeamMember } from "../types";
 import { Header } from "../components/molecules/Header";
-import { DeleteMemberDialog } from "../components/molecules/DeleteMemberDialog";
+import { ConfirmDialog } from "../components/molecules/ConfirmDialog";
 import { ReferenceModal } from "../components/molecules/ReferenceModal";
 import { MainTabs } from "../components/organisms/MainTabs";
 import { ErrorBoundary } from "../components/ErrorBoundary";
-import { loadFromStorage, saveToStorageDebounced } from "@/utils/storage";
+import { useData } from "@/data/DataProvider";
+import { toMemberSummary } from "@/data/evaluations";
+import { buildTeamExport, importTeamData, parseTeamFile } from "@/data/teamTransfer";
+import { exportJson, importJsonFromFile } from "@/utils/sharing";
 
-const STORAGE_KEY = "engineering-ladder-data";
-const STORAGE_VERSION = 1;
-
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  !!value && typeof value === "object" && !Array.isArray(value);
-
-const isLevelMap = (value: unknown): value is Record<string, number> => {
-  if (!isRecord(value)) return false;
-  return Object.values(value).every((v) => typeof v === "number");
-};
-
-const isMember = (value: unknown): value is Member => {
-  if (!isRecord(value)) return false;
-  return (
-    typeof value["id"] === "string" &&
-    typeof value["name"] === "string" &&
-    isLevelMap(value["currentLevels"]) &&
-    isLevelMap(value["goalLevels"])
-  );
-};
-
-const isMemberList = (value: unknown): value is Member[] =>
-  Array.isArray(value) && value.every(isMember);
+type TeamState = { members: TeamMember[]; evaluations: Evaluation[] };
 
 export default function Home() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
-  const [members, setMembers] = useState<Member[]>([]);
-  const [selectedMember, setSelectedMember] = useState<Member | null>(null);
+  const { repository, loading } = useData();
+  const [team, setTeam] = useState<TeamState>({ members: [], evaluations: [] });
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [showReference, setShowReference] = useState(false);
 
-  // Load from localStorage on mount
-  useEffect(() => {
-    const loaded = loadFromStorage<Member[]>(STORAGE_KEY, isMemberList, STORAGE_VERSION);
-    if (loaded) setMembers(loaded);
-  }, []);
+  const reload = useCallback(async () => {
+    const [members, evaluations] = await Promise.all([
+      repository.listMembers(),
+      repository.listEvaluations(),
+    ]);
+    setTeam({ members, evaluations });
+  }, [repository]);
 
-  // Save to localStorage whenever members change (debounced to reduce churn)
   useEffect(() => {
-    saveToStorageDebounced(STORAGE_KEY, members, STORAGE_VERSION);
-  }, [members]);
+    if (loading) return;
+    reload().catch((error) => console.error("Failed to load team", error));
+  }, [loading, reload]);
 
-  const handleEditMember = (member: Member) => {
-    navigate(`/MemberAssessment?id=${member.id}`);
+  const summaries = useMemo(
+    () => team.members.map((m) => toMemberSummary(m, team.evaluations)),
+    [team]
+  );
+
+  const handleDeleteMember = async (id: string) => {
+    setDeleteId(null);
+    await repository.deleteMember(id);
+    await reload();
   };
 
-  const handleDeleteMember = (id: string) => {
-    setMembers((prev) => {
-      const updated = prev.filter((m) => m.id !== id);
-      saveToStorageDebounced(STORAGE_KEY, updated, STORAGE_VERSION);
-      return updated;
-    });
-    setDeleteId(null);
-    if (selectedMember?.id === id) {
-      setSelectedMember(null);
+  const handleExportTeam = async () => {
+    exportJson("team-export", await buildTeamExport(repository));
+  };
+
+  const handleImportTeam = async (file: File) => {
+    try {
+      const data = parseTeamFile(await importJsonFromFile(file));
+      if (!data) throw new Error("Invalid team file");
+      await importTeamData(repository, data);
+      await reload();
+      alert(t("alerts.teamImported"));
+    } catch (error) {
+      console.error("Failed to import team", error);
+      alert(t("alerts.teamImportFailed"));
     }
   };
 
-  const handleMemberClick = (member: Member) => {
-    setSelectedMember(member);
-  };
+  const openMember = (id: string) => navigate(`/member/${id}`);
 
   return (
     <div className="min-h-screen bg-slate-50" data-testid="main-content">
       <ErrorBoundary componentName="Header">
         <Header
-          onAddMember={() => navigate("/MemberAssessment")}
+          onAddMember={() => navigate("/member/new")}
           onShowReference={() => setShowReference(true)}
         />
       </ErrorBoundary>
 
-      {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" data-testid="main-area">
         <ErrorBoundary componentName="MainTabs">
           <MainTabs
-            members={members}
-            onAddMember={() => navigate("/MemberAssessment")}
-            onEditMember={handleEditMember}
+            members={summaries}
+            evaluations={team.evaluations}
+            onAddMember={() => navigate("/member/new")}
+            onEditMember={(member) => openMember(member.id)}
             onDeleteMember={(id) => setDeleteId(id)}
-            onSelectMember={handleMemberClick}
+            onSelectMember={(member) => openMember(member.id)}
+            onExportTeam={() => void handleExportTeam()}
+            onImportTeam={(file) => void handleImportTeam(file)}
           />
         </ErrorBoundary>
       </main>
 
-      <ErrorBoundary componentName="DeleteMemberDialog">
-        <DeleteMemberDialog
+      <ErrorBoundary componentName="ConfirmDialog">
+        <ConfirmDialog
           isOpen={!!deleteId}
-          onConfirm={() => deleteId && handleDeleteMember(deleteId)}
+          onConfirm={() => deleteId && void handleDeleteMember(deleteId)}
           onCancel={() => setDeleteId(null)}
         />
       </ErrorBoundary>

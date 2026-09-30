@@ -60,6 +60,18 @@ const verticalBgColors = {
   Influence: "bg-pink-50 border-pink-200",
 };
 
+/** Concrete example for a level, when the locale provides one. */
+export function LevelExample({ vertical, level }: { vertical: string; level: number }) {
+  const { t } = useTranslation();
+  const example = t(`levels.${vertical}.${level}.example`, { defaultValue: "" });
+  if (!example) return null;
+  return (
+    <p className="text-xs text-slate-500 italic mt-1">
+      {t("forms.example")}: {example}
+    </p>
+  );
+}
+
 export default function LevelSelector({
   vertical,
   currentLevel,
@@ -210,6 +222,7 @@ export default function LevelSelector({
                   <p className="text-xs text-slate-500 mt-1">
                     {t(`levels.${vertical}.${level.level}.description`)}
                   </p>
+                  <LevelExample vertical={vertical} level={level.level} />
                 </div>
                 <div className="flex gap-1 shrink-0">
                   <Button

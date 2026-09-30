@@ -20,7 +20,13 @@
     "current": "Actual",
     "currentPlus": "Actual +",
     "goal": "Objetivo",
-    "goalPlus": "Objetivo +"
+    "goalPlus": "Objetivo +",
+    "saveDraft": "Guardar borrador",
+    "publish": "Publicar",
+    "submit": "Enviar",
+    "import": "Importar",
+    "export": "Exportar",
+    "importTeam": "Importar Equipo"
   },
   "forms": {
     "addTeamMember": "Añadir Miembro del Equipo",
@@ -33,7 +39,8 @@
     "commentsPlaceholder": "Añadir notas para esta competencia",
     "rolePlaceholder": "p.ej. Ingeniero Senior",
     "namePlaceholder": "Introduce tu nombre",
-    "memberNamePlaceholder": "Introduce el nombre del miembro"
+    "memberNamePlaceholder": "Introduce el nombre del miembro",
+    "example": "Ejemplo"
   },
   "validation": {
     "importSuccess": "Autoevaluación importada correctamente",
@@ -154,17 +161,31 @@
       }
     },
     "Influence": {
-      "1": { "name": "Subsistema", "description": "Tiene impacto en uno o más subsistemas" },
+      "1": {
+        "name": "Subsistema",
+        "description": "Tiene impacto en uno o más subsistemas",
+        "example": "Un área dentro de un squad: la UI de checkout en un squad de front, la API de pagos en un squad de back o la suite E2E como QA."
+      },
       "2": {
         "name": "Equipo",
-        "description": "Tiene impacto en todo el equipo, no solo en partes específicas"
+        "description": "Tiene impacto en todo el equipo, no solo en partes específicas",
+        "example": "Todo el squad (front, back y QA juntos): define estándares de revisión, el pipeline de despliegue o la estrategia de testing del squad."
       },
       "3": {
         "name": "Múltiples Equipos",
-        "description": "Tiene impacto no solo en su equipo sino también en otros equipos"
+        "description": "Tiene impacto no solo en su equipo sino también en otros equipos",
+        "example": "Varios squads de una tribu o área: un design system compartido, una API de plataforma usada por otros squads o una estrategia de QA entre squads."
       },
-      "4": { "name": "Empresa", "description": "Tiene impacto en toda la organización técnica" },
-      "5": { "name": "Comunidad", "description": "Tiene impacto en la comunidad tecnológica" }
+      "4": {
+        "name": "Empresa",
+        "description": "Tiene impacto en toda la organización técnica",
+        "example": "Todos los equipos de la empresa: estándares de ingeniería globales, un guild de arquitectura o el proceso de contratación."
+      },
+      "5": {
+        "name": "Comunidad",
+        "description": "Tiene impacto en la comunidad tecnológica",
+        "example": "Fuera de la empresa: mantiene proyectos open source, da charlas en conferencias o publica contenido muy utilizado."
+      }
     }
   },
   "competencyLabels": {
@@ -175,7 +196,7 @@
   },
   "memberAssessment": {
     "title": "Evaluación de Miembro del Equipo",
-    "subtitle": "Editor de página completa que coincide con Autoevaluación",
+    "subtitle": "Cada guardado crea una nueva versión en el historial del miembro",
     "personalInfo": "Información Personal",
     "competencies": "Competencias",
     "preview": "Vista Previa {{name}}",
@@ -199,9 +220,9 @@
     "howToUse": "Cómo usar",
     "howToUseItems": [
       "Establezca su nivel actual para cada competencia",
-      "Establezca sus niveles de objetivo para crecimiento futuro",
-      "Todos los cambios se guardan automáticamente",
-      "Exporte su evaluación como JSON para compartir con su gerente"
+      "Guarde un borrador para continuar más tarde, o publíquelo para compartirlo",
+      "Cada guardado crea una nueva versión para seguir su progreso",
+      "Use la plantilla de seniority para comparar con el nivel esperado"
     ],
     "clearConfirmTitle": "¿Limpiar todos los datos de evaluación?",
     "clearConfirmDesc": "Esto eliminará todos sus datos de evaluación incluido nombre, rol y todos los niveles de competencia. Esta acción no se puede deshacer.",
@@ -215,7 +236,123 @@
     "noSelfAssessmentFound": "No hay autoevaluación en este dispositivo.",
     "failedToImportSelfAssessment": "No se pudieron importar los datos de autoevaluación.",
     "teamExported": "¡Equipo exportado correctamente!",
-    "memberDeleted": "¡Miembro eliminado correctamente!"
+    "memberDeleted": "¡Miembro eliminado correctamente!",
+    "published": "Versión publicada.",
+    "draftSaved": "Borrador guardado.",
+    "nameRequired": "Introduzca un nombre antes de guardar.",
+    "authorRequired": "Introduzca su nombre antes de enviar.",
+    "saveFailed": "No se pudo guardar. Inténtelo de nuevo.",
+    "saveMemberFirst": "Guarde primero el miembro.",
+    "teamImported": "¡Equipo importado correctamente!",
+    "teamImportFailed": "No se pudo importar el archivo del equipo."
+  },
+  "influenceScope": "Guía de alcance: un squad es un equipo multifuncional (front, back, QA); varios squads forman una tribu o área; la empresa es toda la organización técnica; la comunidad está fuera de la empresa.",
+  "series": {
+    "current": "Actual",
+    "goal": "Objetivo"
+  },
+  "versions": {
+    "title": "Versiones",
+    "filter": "Filtrar versiones por autor",
+    "new": "Nueva versión",
+    "empty": "Aún no hay versiones guardadas",
+    "compare": "Mostrar en el gráfico",
+    "publish": "Publicar",
+    "unpublish": "Volver a borrador",
+    "deleteTitle": "¿Eliminar esta versión?",
+    "deleteDescription": "Esta versión se eliminará permanentemente del historial.",
+    "unsaved": "Cambios sin guardar. Guarde un borrador o publique para crear una nueva versión.",
+    "kind": {
+      "manager": "Manager",
+      "self": "Autoevaluación",
+      "peer": "Compañero"
+    },
+    "status": {
+      "draft": "Borrador",
+      "published": "Publicada"
+    }
+  },
+  "templates": {
+    "title": "Plantilla de seniority",
+    "none": "Sin plantilla",
+    "whatItMeans": "Qué significa este nivel",
+    "seriesLabel": "{{id}} esperado",
+    "tracks": {
+      "developer": "Desarrollador",
+      "techLead": "Tech Lead",
+      "engineeringManager": "Engineering Manager"
+    },
+    "summaries": {
+      "D1": "Aprende el stack y entrega funcionalidades y correcciones acotadas, siguiendo los procesos del equipo.",
+      "D2": "Diseña funcionalidades medianas, apoya proactivamente al equipo y refuerza sus procesos.",
+      "D3": "Referente en algunas tecnologías; cuestiona los procesos y tiene impacto en todo el equipo.",
+      "D4": "Introduce nuevas tecnologías, es responsable de la operación en producción y mentoriza a otros.",
+      "D5": "Domina todo el stack, evoluciona la arquitectura y tiene impacto en varios equipos.",
+      "D6": "Crea tecnologías muy utilizadas y lidera la excelencia técnica en la empresa.",
+      "D7": "Trabajo técnico con impacto en la comunidad tecnológica.",
+      "TL4": "Responsable del sistema en producción, coordina al equipo y ajusta sus procesos.",
+      "TL5": "Evoluciona la arquitectura y define los procesos del equipo; impacto en todo el equipo.",
+      "TL6": "Domina el stack y lidera la excelencia técnica en varios equipos.",
+      "TL7": "Lidera la dirección técnica con impacto en toda la organización.",
+      "EM5": "Gestiona la carrera, el desempeño y la felicidad del equipo, y su operación.",
+      "EM6": "Gestiona el equipo, evoluciona la arquitectura y define procesos según su madurez.",
+      "EM7": "Gestiona con impacto más allá del equipo, en varios equipos."
+    }
+  },
+  "share": {
+    "title": "Enlaces permanentes",
+    "loginRequired": "Inicie sesión y guarde el miembro para obtener enlaces permanentes.",
+    "copy": "Copiar enlace",
+    "self": {
+      "label": "Autoevaluación",
+      "hint": "La persona guarda sus propias versiones directamente aquí. Sin necesidad de login."
+    },
+    "peer": {
+      "label": "Evaluación de compañeros",
+      "hint": "Cualquiera con este enlace puede enviar una evaluación; usted la revisa y la publica."
+    },
+    "view": {
+      "label": "Ver mi evaluación",
+      "hint": "Solo lectura: sus versiones publicadas, las de compañeros publicadas y sus autoevaluaciones.",
+      "enable": "Activado"
+    }
+  },
+  "auth": {
+    "signIn": "Iniciar sesión",
+    "signUp": "Crear cuenta",
+    "signOut": "Cerrar sesión",
+    "signInTitle": "Iniciar sesión",
+    "signUpTitle": "Crear una cuenta",
+    "description": "Guarde su equipo de forma segura y obtenga enlaces permanentes. Los datos de este dispositivo se suben a una cuenta nueva vacía.",
+    "email": "Email",
+    "password": "Contraseña",
+    "checkEmail": "Revise su email para confirmar la cuenta.",
+    "switchToSignUp": "¿No tiene cuenta? Cree una",
+    "switchToSignIn": "¿Ya tiene cuenta? Inicie sesión"
+  },
+  "pageMessage": {
+    "loading": "Cargando...",
+    "notFound": "Este enlace no es válido o ya no está disponible.",
+    "error": "Algo salió mal al cargar.",
+    "thanks": "¡Gracias! Su evaluación se ha enviado.",
+    "home": "Ir al inicio"
+  },
+  "peerAssessment": {
+    "title": "Evaluar a {{name}}",
+    "subtitle": "Su evaluación se revisará antes de publicarse",
+    "personalInfo": "A quién evalúa",
+    "competencies": "Competencias",
+    "preview": "Vista Previa {{name}}",
+    "yourName": "Su nombre",
+    "another": "Enviar otra evaluación",
+    "howToUseItems": [
+      "Introduzca su nombre para que el manager sepa quién evaluó",
+      "Indique el nivel que observa en cada competencia",
+      "Añada comentarios con ejemplos concretos"
+    ]
+  },
+  "viewPage": {
+    "title": "{{name}} · Evaluación"
   },
   "labels": {
     "teamOverview": "Descripción General del Equipo",

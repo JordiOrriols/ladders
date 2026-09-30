@@ -1,5 +1,5 @@
-import React from "react";
-import { Download } from "lucide-react";
+import React, { useRef } from "react";
+import { Download, Upload } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { Member } from "../../types";
 import MemberCard from "../atoms/memberCard";
@@ -12,6 +12,8 @@ interface TeamTabProps {
   onEditMember: (member: Member) => void;
   onDeleteMember: (id: string) => void;
   onSelectMember: (member: Member) => void;
+  onExportTeam?: () => void;
+  onImportTeam?: (file: File) => void;
 }
 
 export function TeamTab({
@@ -20,41 +22,50 @@ export function TeamTab({
   onEditMember,
   onDeleteMember,
   onSelectMember,
+  onExportTeam,
+  onImportTeam,
 }: TeamTabProps) {
   const { t } = useTranslation();
-
-  const handleExportTeam = () => {
-    const data = {
-      teamName: "Engineering Team",
-      exportedAt: new Date().toISOString(),
-      totalMembers: members?.length || 0,
-      members: (members || []).map((member) => ({
-        id: member.id,
-        name: member.name,
-        role: member.role,
-        currentLevels: member.currentLevels,
-        goalLevels: member.goalLevels,
-        selfAssessmentLevels: member.selfAssessmentLevels,
-      })),
-    };
-
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `team-export-${Date.now()}.json`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleMemberSelect = (member: Member) => {
     onSelectMember(member);
   };
 
+  const importInput = onImportTeam && (
+    <input
+      ref={fileInputRef}
+      type="file"
+      accept="application/json"
+      className="hidden"
+      data-testid="import-team-input"
+      onChange={(event) => {
+        const file = event.target.files?.[0];
+        if (file) onImportTeam(file);
+        event.target.value = "";
+      }}
+    />
+  );
+  const importButton = onImportTeam && (
+    <Button
+      eventId="team_import"
+      variant="outline"
+      onClick={() => fileInputRef.current?.click()}
+      data-testid="import-team-button"
+    >
+      <Upload className="w-4 h-4 mr-2" />
+      {t("buttons.importTeam")}
+    </Button>
+  );
+
   if (!members || members.length === 0) {
-    return <EmptyTeamState onAddMember={onAddMember} />;
+    return (
+      <div className="space-y-4">
+        <EmptyTeamState onAddMember={onAddMember} />
+        {importInput}
+        {importButton && <div className="flex justify-center">{importButton}</div>}
+      </div>
+    );
   }
 
   return (
@@ -68,15 +79,21 @@ export function TeamTab({
             {members.length} {members.length !== 1 ? t("labels.members") : t("labels.member")}
           </p>
         </div>
-        <Button
-          eventId="team_export"
-          onClick={handleExportTeam}
-          variant="outline"
-          data-testid="export-team-button"
-        >
-          <Download className="w-4 h-4 mr-2" />
-          {t("buttons.exportTeam")}
-        </Button>
+        <div className="flex gap-2">
+          {importInput}
+          {importButton}
+          {onExportTeam && (
+            <Button
+              eventId="team_export"
+              onClick={onExportTeam}
+              variant="outline"
+              data-testid="export-team-button"
+            >
+              <Download className="w-4 h-4 mr-2" />
+              {t("buttons.exportTeam")}
+            </Button>
+          )}
+        </div>
       </div>
 
       <div

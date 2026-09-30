@@ -1,6 +1,7 @@
 import React from "react";
 import type { ReactNode } from "react";
 import RadarChart from "@/components/atoms/radarChart";
+import type { RadarSeries } from "@/components/atoms/radarChart";
 
 type PreviewMetric = {
   label: string;
@@ -18,10 +19,7 @@ type PreviewVerticalStat = {
 type Props = {
   title: string;
   radar: {
-    currentLevels: Record<string, number>;
-    goalLevels?: Record<string, number>;
-    selfAssessmentLevels?: Record<string, number>;
-    hideGoal?: boolean;
+    series: RadarSeries[];
     size?: number;
   };
   metrics: PreviewMetric[];
@@ -33,6 +31,7 @@ type Props = {
     selfLabel?: string;
     arrow?: ReactNode;
   };
+  children?: ReactNode;
 };
 
 const toneStyles: Record<PreviewMetric["tone"], string> = {
@@ -41,7 +40,14 @@ const toneStyles: Record<PreviewMetric["tone"], string> = {
   single: "bg-slate-50 border-slate-200 text-slate-700",
 };
 
-export function AssessmentPreview({ title, radar, metrics, verticalStats, labels }: Props) {
+export function AssessmentPreview({
+  title,
+  radar,
+  metrics,
+  verticalStats,
+  labels,
+  children,
+}: Props) {
   const arrow = labels.arrow ?? <span className="text-slate-400">→</span>;
 
   return (
@@ -50,14 +56,10 @@ export function AssessmentPreview({ title, radar, metrics, verticalStats, labels
         <h2 className="text-lg font-semibold text-slate-800 mb-6 text-center">{title}</h2>
 
         <div className="flex justify-center mb-8">
-          <RadarChart
-            currentLevels={radar.currentLevels}
-            goalLevels={radar.goalLevels}
-            selfAssessmentLevels={radar.selfAssessmentLevels}
-            hideGoal={radar.hideGoal}
-            size={radar.size ?? 350}
-          />
+          <RadarChart series={radar.series} size={radar.size ?? 350} />
         </div>
+
+        {children && <div className="mb-6 space-y-4">{children}</div>}
 
         <div className={`grid gap-4 ${metrics.length > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
           {metrics.map((metric, idx) => (

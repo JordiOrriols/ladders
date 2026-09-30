@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "../ui/button";
-import { VERTICALS, LEVELS } from "../atoms/levelSelector";
+import { VERTICALS, LEVELS, LevelExample } from "../atoms/levelSelector";
 
 interface ReferenceModalProps {
   isOpen: boolean;
@@ -25,6 +25,9 @@ export function ReferenceModal({ isOpen, onClose }: ReferenceModalProps) {
           {VERTICALS.map((vertical) => (
             <div key={vertical}>
               <h3 className="font-semibold text-lg text-slate-800 mb-3">{vertical}</h3>
+              {vertical === "Influence" && (
+                <p className="text-sm text-slate-500 mb-3">{t("influenceScope")}</p>
+              )}
               <div className="space-y-2">
                 {LEVELS.map((level) => (
                   <div key={level} className="p-3 bg-slate-50 rounded-lg">
@@ -39,6 +42,7 @@ export function ReferenceModal({ isOpen, onClose }: ReferenceModalProps) {
                     <p className="text-sm text-slate-600">
                       {t(`levels.${vertical}.${level}.description`)}
                     </p>
+                    <LevelExample vertical={vertical} level={level} />
                   </div>
                 ))}
               </div>

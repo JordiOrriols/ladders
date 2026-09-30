@@ -11,26 +11,38 @@ import {
   AlertDialogTitle,
 } from "../ui/alert-dialog";
 
-interface DeleteMemberDialogProps {
+interface ConfirmDialogProps {
   isOpen: boolean;
   onConfirm: () => void;
   onCancel: () => void;
+  title?: string;
+  description?: string;
+  confirmLabel?: string;
 }
 
-export function DeleteMemberDialog({ isOpen, onConfirm, onCancel }: DeleteMemberDialogProps) {
+export function ConfirmDialog({
+  isOpen,
+  onConfirm,
+  onCancel,
+  title,
+  description,
+  confirmLabel,
+}: ConfirmDialogProps) {
   const { t } = useTranslation();
 
   return (
-    <AlertDialog open={isOpen} onOpenChange={onCancel}>
+    <AlertDialog open={isOpen} onOpenChange={(open) => !open && onCancel()}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{t("deleteDialog.title")}</AlertDialogTitle>
-          <AlertDialogDescription>{t("deleteDialog.description")}</AlertDialogDescription>
+          <AlertDialogTitle>{title ?? t("deleteDialog.title")}</AlertDialogTitle>
+          <AlertDialogDescription>
+            {description ?? t("deleteDialog.description")}
+          </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>{t("buttons.cancel")}</AlertDialogCancel>
           <AlertDialogAction onClick={onConfirm} className="bg-red-500 hover:bg-red-600">
-            {t("buttons.delete")}
+            {confirmLabel ?? t("buttons.delete")}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

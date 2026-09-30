@@ -1,4 +1,5 @@
 import React from "react";
+import type { ReactNode } from "react";
 import LevelSelector, { VERTICALS } from "@/components/atoms/levelSelector";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -37,6 +38,8 @@ type Props = {
   hideGoal?: boolean;
   selfAssessmentLevels?: LevelMap;
   howTo?: HowTo;
+  readOnlyProfile?: boolean;
+  profileExtra?: ReactNode;
 };
 
 export function AssessmentFormColumn({
@@ -56,6 +59,8 @@ export function AssessmentFormColumn({
   hideGoal = false,
   selfAssessmentLevels,
   howTo,
+  readOnlyProfile = false,
+  profileExtra,
 }: Props) {
   return (
     <div className="space-y-6">
@@ -67,6 +72,7 @@ export function AssessmentFormColumn({
             <Input
               id="name"
               value={name}
+              readOnly={readOnlyProfile}
               onChange={(e) => onNameChange(e.target.value)}
               placeholder={labels.namePlaceholder}
               className="mt-1"
@@ -77,11 +83,13 @@ export function AssessmentFormColumn({
             <Input
               id="role"
               value={role}
+              readOnly={readOnlyProfile}
               onChange={(e) => onRoleChange(e.target.value)}
               placeholder={labels.rolePlaceholder}
               className="mt-1"
             />
           </div>
+          {profileExtra}
         </div>
       </div>
 

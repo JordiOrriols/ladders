@@ -1,7 +1,9 @@
-import React from "react";
-import { Plus, Info, LayoutGrid, Globe } from "lucide-react";
+import React, { useState } from "react";
+import { Plus, Info, LayoutGrid, Globe, LogIn, LogOut } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useData } from "@/data/DataProvider";
 import { Button } from "../ui/button";
+import { LoginDialog } from "./LoginDialog";
 
 interface HeaderProps {
   onAddMember: () => void;
@@ -10,6 +12,8 @@ interface HeaderProps {
 
 export function Header({ onAddMember, onShowReference }: HeaderProps) {
   const { t, i18n } = useTranslation();
+  const { authEnabled, user, signOut } = useData();
+  const [showLogin, setShowLogin] = useState(false);
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
@@ -90,9 +94,35 @@ export function Header({ onAddMember, onShowReference }: HeaderProps) {
               <Plus className="w-4 h-4 mr-2" />
               {t("header.addMember")}
             </Button>
+            {authEnabled &&
+              (user ? (
+                <Button
+                  eventId="header_sign_out"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => void signOut()}
+                  title={user.email ?? ""}
+                  data-testid="sign-out-button"
+                >
+                  <LogOut className="w-4 h-4 mr-1" />
+                  <span className="hidden md:inline">{t("auth.signOut")}</span>
+                </Button>
+              ) : (
+                <Button
+                  eventId="header_sign_in"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowLogin(true)}
+                  data-testid="sign-in-button"
+                >
+                  <LogIn className="w-4 h-4 mr-1" />
+                  {t("auth.signIn")}
+                </Button>
+              ))}
           </div>
         </div>
       </div>
+      <LoginDialog isOpen={showLogin} onClose={() => setShowLogin(false)} />
     </header>
   );
 }

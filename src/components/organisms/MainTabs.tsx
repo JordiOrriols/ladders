@@ -1,7 +1,7 @@
 import React from "react";
 import { Users, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import type { Member } from "../../types";
+import type { Evaluation, Member } from "../../types";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "../ui/tabs";
 import { TeamTab } from "./TeamTab";
 import { IndividualTab } from "./IndividualTab";
@@ -9,18 +9,24 @@ import { ErrorBoundary } from "../ErrorBoundary";
 
 interface MainTabsProps {
   members: Member[];
+  evaluations?: Evaluation[];
   onAddMember: () => void;
   onEditMember: (member: Member) => void;
   onDeleteMember: (id: string) => void;
   onSelectMember: (member: Member) => void;
+  onExportTeam?: () => void;
+  onImportTeam?: (file: File) => void;
 }
 
 export function MainTabs({
   members,
+  evaluations = [],
   onAddMember,
   onEditMember,
   onDeleteMember,
   onSelectMember,
+  onExportTeam,
+  onImportTeam,
 }: MainTabsProps) {
   const { t } = useTranslation();
 
@@ -53,13 +59,20 @@ export function MainTabs({
             onEditMember={onEditMember}
             onDeleteMember={onDeleteMember}
             onSelectMember={onSelectMember}
+            {...(onExportTeam ? { onExportTeam } : {})}
+            {...(onImportTeam ? { onImportTeam } : {})}
           />
         </ErrorBoundary>
       </TabsContent>
 
       <TabsContent value="individual" className="mt-6">
         <ErrorBoundary componentName="IndividualTab">
-          <IndividualTab members={members} onAddMember={onAddMember} onEditMember={onEditMember} />
+          <IndividualTab
+            members={members}
+            evaluations={evaluations}
+            onAddMember={onAddMember}
+            onEditMember={onEditMember}
+          />
         </ErrorBoundary>
       </TabsContent>
     </Tabs>

@@ -6,6 +6,8 @@ interface CompetencyDetailsProps {
   currentLevel: number;
   goalLevel: number;
   selfAssessmentLevel: number;
+  expectedLevel?: number;
+  expectedLabel?: string;
 }
 
 export function CompetencyDetailsCard({
@@ -13,6 +15,8 @@ export function CompetencyDetailsCard({
   currentLevel,
   goalLevel,
   selfAssessmentLevel,
+  expectedLevel = 0,
+  expectedLabel,
 }: CompetencyDetailsProps) {
   const { t } = useTranslation();
 
@@ -41,6 +45,14 @@ export function CompetencyDetailsCard({
             <div className="w-2 h-2 rounded-full bg-purple-500" />
             <span className="text-slate-600">
               Self L{selfAssessmentLevel}: {t(`levels.${vertical}.${selfAssessmentLevel}.name`)}
+            </span>
+          </div>
+        )}
+        {expectedLevel > 0 && (
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full border border-dashed border-slate-500" />
+            <span className="text-slate-600">
+              {expectedLabel} L{expectedLevel}: {t(`levels.${vertical}.${expectedLevel}.name`)}
             </span>
           </div>
         )}

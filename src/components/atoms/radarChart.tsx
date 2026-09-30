@@ -3,8 +3,84 @@ import { Download } from "lucide-react";
 import { Button } from "../ui/button";
 import { VERTICALS, LEVELS } from "./levelSelector";
 import { downloadRadarImage } from "../../utils/downloadRadarImage";
+import type { LevelMap } from "@/types";
+
+export type RadarSeries = {
+  id: string;
+  label: string;
+  levels: LevelMap;
+  color: string;
+  dashed?: boolean;
+  /** Fill opacity, 0 draws only the outline. */
+  fill?: number;
+  /** Primary series get thicker strokes and larger points. */
+  primary?: boolean;
+};
+
+export const SERIES_COLORS = {
+  current: "#10b981",
+  goal: "#fbbf24",
+  self: "#c084fc",
+  template: "#64748b",
+};
+
+type RadarChartProps = {
+  series?: RadarSeries[];
+  currentLevels?: LevelMap;
+  goalLevels?: LevelMap;
+  selfAssessmentLevels?: LevelMap | undefined;
+  size?: number;
+  showLabels?: boolean;
+  showLegend?: boolean;
+  hideGoal?: boolean;
+  className?: string;
+};
+
+function hexToRgba(hex: string, alpha: number) {
+  const value = parseInt(hex.slice(1), 16);
+  return `rgba(${(value >> 16) & 255}, ${(value >> 8) & 255}, ${value & 255}, ${alpha})`;
+}
+
+function legacySeries(
+  currentLevels: LevelMap,
+  goalLevels: LevelMap,
+  selfAssessmentLevels: LevelMap,
+  hideGoal: boolean
+): RadarSeries[] {
+  const list: RadarSeries[] = [];
+  if (!hideGoal) {
+    list.push({
+      id: "goal",
+      label: "Goal",
+      levels: goalLevels,
+      color: SERIES_COLORS.goal,
+      dashed: true,
+      fill: 0.12,
+    });
+  }
+  list.push({
+    id: "self",
+    label: "Self Assessment",
+    levels: selfAssessmentLevels,
+    color: SERIES_COLORS.self,
+    dashed: true,
+    fill: 0.1,
+  });
+  list.push({
+    id: "current",
+    label: "Current",
+    levels: currentLevels,
+    color: SERIES_COLORS.current,
+    fill: 0.18,
+    primary: true,
+  });
+  return list;
+}
+
+const hasData = (levels: LevelMap) => Object.values(levels).some((v) => v > 0);
 
 function RadarChart({
+  series,
   currentLevels = {},
   goalLevels = {},
   selfAssessmentLevels = {},
@@ -13,20 +89,26 @@ function RadarChart({
   showLegend = true,
   hideGoal = false,
   className = "",
-}) {
+}: RadarChartProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const center = size / 2;
   const maxRadius = size / 2 - (showLabels ? 50 : 20);
 
-  // Hide goal levels when hideGoal is true
-  const displayGoalLevels = hideGoal ? {} : goalLevels;
+  const allSeries = useMemo(
+    () => series ?? legacySeries(currentLevels, goalLevels, selfAssessmentLevels, hideGoal),
+    [series, currentLevels, goalLevels, selfAssessmentLevels, hideGoal]
+  );
+  const visibleSeries = allSeries.filter((s) => hasData(s.levels));
+  const legendSeries = series
+    ? visibleSeries
+    : allSeries.filter((s) => s.primary || hasData(s.levels));
 
   const downloadAsImage = useCallback(() => {
     if (!svgRef.current) return;
     downloadRadarImage(svgRef.current, size);
   }, [size]);
 
-  const getPoint = (verticalIndex, level) => {
+  const getPoint = (verticalIndex: number, level: number) => {
     const angle = (Math.PI * 2 * verticalIndex) / VERTICALS.length - Math.PI / 2;
     const radius = (level / LEVELS.length) * maxRadius;
     return {
@@ -63,23 +145,13 @@ function RadarChart({
     });
   }, [size]);
 
-  const currentPath = useMemo(() => {
-    const points = VERTICALS.map((v, i) => getPoint(i, currentLevels[v] || 0));
-    if (points.every((p) => p.x === center && p.y === center)) return null;
-    return points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ") + " Z";
-  }, [currentLevels, size]);
+  const toPath = (levels: LevelMap) =>
+    VERTICALS.map((v, i) => getPoint(i, levels[v] || 0))
+      .map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`)
+      .join(" ") + " Z";
 
-  const goalPath = useMemo(() => {
-    const points = VERTICALS.map((v, i) => getPoint(i, displayGoalLevels[v] || 0));
-    if (points.every((p) => p.x === center && p.y === center)) return null;
-    return points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ") + " Z";
-  }, [displayGoalLevels, size]);
-
-  const selfAssessmentPath = useMemo(() => {
-    const points = VERTICALS.map((v, i) => getPoint(i, selfAssessmentLevels[v] || 0));
-    if (points.every((p) => p.x === center && p.y === center)) return null;
-    return points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ") + " Z";
-  }, [selfAssessmentLevels, size]);
+  // Primary series are drawn last so they stay on top.
+  const drawOrder = [...visibleSeries].sort((a, b) => Number(!!a.primary) - Number(!!b.primary));
 
   return (
     <div className={`flex flex-col items-center relative ${className}`}>
@@ -119,106 +191,44 @@ function RadarChart({
           <line key={i} {...line} stroke="#9ca3af" strokeWidth="1.2" opacity="0.6" />
         ))}
 
-        {/* Goal area - with enhanced styling */}
-        {goalPath && (
+        {drawOrder.map((s) => (
           <path
-            d={goalPath}
-            fill="rgba(245, 158, 11, 0.12)"
-            stroke="#fbbf24"
-            strokeWidth="2.5"
-            strokeDasharray="6 4"
-            opacity="0.85"
+            key={`area-${s.id}`}
+            data-series={s.id}
+            d={toPath(s.levels)}
+            fill={s.fill ? hexToRgba(s.color, s.fill) : "none"}
+            stroke={s.color}
+            strokeWidth={s.primary ? "3" : "2.5"}
+            strokeDasharray={s.dashed ? "6 4" : undefined}
+            opacity={s.primary ? "0.95" : "0.85"}
           />
+        ))}
+
+        {drawOrder.map((s) =>
+          VERTICALS.map((v, i) => {
+            const level = s.levels[v] || 0;
+            if (level === 0) return null;
+            const point = getPoint(i, level);
+            return (
+              <g key={`${s.id}-${i}`}>
+                <circle
+                  cx={point.x}
+                  cy={point.y}
+                  r={s.primary ? "7" : "6"}
+                  fill={hexToRgba(s.color, 0.15)}
+                />
+                <circle
+                  cx={point.x}
+                  cy={point.y}
+                  r={s.primary ? "5.5" : "4.5"}
+                  fill={s.color}
+                  stroke="white"
+                  strokeWidth={s.primary ? "2.5" : "2"}
+                />
+              </g>
+            );
+          })
         )}
-
-        {/* Self Assessment area - with enhanced styling */}
-        {selfAssessmentPath && (
-          <path
-            d={selfAssessmentPath}
-            fill="rgba(168, 85, 247, 0.1)"
-            stroke="#c084fc"
-            strokeWidth="2.5"
-            strokeDasharray="4 2"
-            opacity="0.8"
-          />
-        )}
-
-        {/* Current area - more prominent */}
-        {currentPath && (
-          <path
-            d={currentPath}
-            fill="rgba(16, 185, 129, 0.18)"
-            stroke="#10b981"
-            strokeWidth="3"
-            opacity="0.95"
-          />
-        )}
-
-        {/* Current points - with enhanced styling */}
-        {VERTICALS.map((v, i) => {
-          const level = currentLevels[v] || 0;
-          if (level === 0) return null;
-          const point = getPoint(i, level);
-          return (
-            <g key={`current-${i}`}>
-              {/* Soft shadow/glow effect */}
-              <circle cx={point.x} cy={point.y} r="7" fill="rgba(16, 185, 129, 0.15)" />
-              {/* Main point */}
-              <circle
-                cx={point.x}
-                cy={point.y}
-                r="5.5"
-                fill="#10b981"
-                stroke="white"
-                strokeWidth="2.5"
-              />
-            </g>
-          );
-        })}
-
-        {/* Goal points - with enhanced styling */}
-        {VERTICALS.map((v, i) => {
-          const level = goalLevels[v] || 0;
-          if (level === 0) return null;
-          const point = getPoint(i, level);
-          return (
-            <g key={`goal-${i}`}>
-              {/* Soft shadow/glow effect */}
-              <circle cx={point.x} cy={point.y} r="6" fill="rgba(251, 191, 36, 0.1)" />
-              {/* Main point */}
-              <circle
-                cx={point.x}
-                cy={point.y}
-                r="4.5"
-                fill="#fbbf24"
-                stroke="white"
-                strokeWidth="2"
-              />
-            </g>
-          );
-        })}
-
-        {/* Self Assessment points - with enhanced styling */}
-        {VERTICALS.map((v, i) => {
-          const level = selfAssessmentLevels[v] || 0;
-          if (level === 0) return null;
-          const point = getPoint(i, level);
-          return (
-            <g key={`self-${i}`}>
-              {/* Soft shadow/glow effect */}
-              <circle cx={point.x} cy={point.y} r="6" fill="rgba(192, 132, 252, 0.1)" />
-              {/* Main point */}
-              <circle
-                cx={point.x}
-                cy={point.y}
-                r="4.5"
-                fill="#c084fc"
-                stroke="white"
-                strokeWidth="2"
-              />
-            </g>
-          );
-        })}
 
         {/* Labels */}
         {showLabels &&
@@ -286,24 +296,17 @@ function RadarChart({
           })}
       </svg>
 
-      {showLegend && (
-        <div className="flex gap-6 mt-4">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-emerald-500" />
-            <span className="text-xs text-slate-600">Current</span>
-          </div>
-          {!hideGoal && (
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-amber-500" />
-              <span className="text-xs text-slate-600">Goal</span>
+      {showLegend && legendSeries.length > 0 && (
+        <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 mt-4">
+          {legendSeries.map((s) => (
+            <div key={s.id} className="flex items-center gap-2">
+              <div
+                className={`w-3 h-3 rounded-full ${s.dashed ? "border-2 border-dashed" : ""}`}
+                style={s.dashed ? { borderColor: s.color } : { backgroundColor: s.color }}
+              />
+              <span className="text-xs text-slate-600">{s.label}</span>
             </div>
-          )}
-          {Object.keys(selfAssessmentLevels).length > 0 && (
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-purple-500" />
-              <span className="text-xs text-slate-600">Self Assessment</span>
-            </div>
-          )}
+          ))}
         </div>
       )}
     </div>

@@ -67,4 +67,24 @@ describe("RadarChart", () => {
     expect(container1.querySelector("svg")).toBeTruthy();
     expect(container2.querySelector("svg")).toBeTruthy();
   });
+
+  it("draws any number of series and only lists those with data in the legend", () => {
+    const { container } = render(
+      <RadarChart
+        series={[
+          { id: "a", label: "Peer A", levels: { Technology: 2 }, color: "#6366f1", dashed: true },
+          { id: "b", label: "Peer B", levels: { Technology: 3 }, color: "#0ea5e9" },
+          { id: "c", label: "Empty", levels: {}, color: "#ef4444" },
+          { id: "d", label: "Me", levels: { People: 4 }, color: "#10b981", primary: true },
+        ]}
+      />
+    );
+    expect(container.querySelectorAll("path[data-series]")).toHaveLength(3);
+    expect(screen.getByText("Peer A")).toBeTruthy();
+    expect(screen.queryByText("Empty")).toBeNull();
+    const order = [...container.querySelectorAll("path[data-series]")].map((p) =>
+      p.getAttribute("data-series")
+    );
+    expect(order.at(-1)).toBe("d");
+  });
 });

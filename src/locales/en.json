@@ -19,7 +19,13 @@
     "current": "Current",
     "currentPlus": "Current +",
     "goal": "Goal",
-    "goalPlus": "Goal +"
+    "goalPlus": "Goal +",
+    "saveDraft": "Save draft",
+    "publish": "Publish",
+    "submit": "Submit",
+    "import": "Import",
+    "export": "Export",
+    "importTeam": "Import Team"
   },
   "forms": {
     "addTeamMember": "Add Team Member",
@@ -32,7 +38,8 @@
     "commentsPlaceholder": "Add notes for this competency",
     "rolePlaceholder": "e.g. Senior Engineer",
     "namePlaceholder": "Enter your name",
-    "memberNamePlaceholder": "Enter member name"
+    "memberNamePlaceholder": "Enter member name",
+    "example": "Example"
   },
   "validation": {
     "importSuccess": "Self assessment imported successfully",
@@ -153,17 +160,31 @@
       }
     },
     "Influence": {
-      "1": { "name": "Subsystem", "description": "Makes an impact on one or more subsystems" },
+      "1": {
+        "name": "Subsystem",
+        "description": "Makes an impact on one or more subsystems",
+        "example": "One area inside a squad: the checkout UI in a frontend squad, the payments API in a backend squad, or the E2E suite as QA."
+      },
       "2": {
         "name": "Team",
-        "description": "Makes an impact on the whole team, not just on specific parts of it"
+        "description": "Makes an impact on the whole team, not just on specific parts of it",
+        "example": "The whole squad (front, back and QA together): sets review standards, the release pipeline or the testing strategy for the squad."
       },
       "3": {
         "name": "Multiple Teams",
-        "description": "Makes an impact not only on their team but also on other teams"
+        "description": "Makes an impact not only on their team but also on other teams",
+        "example": "Several squads of a tribe or area: a shared design system, a platform API used by other squads, or a QA strategy across squads."
       },
-      "4": { "name": "Company", "description": "Makes an impact on the whole tech organization" },
-      "5": { "name": "Community", "description": "Makes an impact on the tech community" }
+      "4": {
+        "name": "Company",
+        "description": "Makes an impact on the whole tech organization",
+        "example": "All teams across the company: engineering-wide standards, an architecture guild, or the hiring process."
+      },
+      "5": {
+        "name": "Community",
+        "description": "Makes an impact on the tech community",
+        "example": "Outside the company: maintains open-source projects, speaks at conferences or publishes widely used content."
+      }
     }
   },
   "competencyLabels": {
@@ -174,7 +195,7 @@
   },
   "memberAssessment": {
     "title": "Team Member Assessment",
-    "subtitle": "Full-page editor matching Self Assessment",
+    "subtitle": "Each save creates a new version in the member's history",
     "personalInfo": "Personal Information",
     "competencies": "Competencies",
     "preview": "{{name}} Preview",
@@ -198,9 +219,9 @@
     "howToUse": "How to use",
     "howToUseItems": [
       "Set your current level for each competency",
-      "Set your goal levels for future growth",
-      "All changes are saved automatically",
-      "Export your assessment as JSON to share with your manager"
+      "Save a draft to keep working later, or publish it to share it",
+      "Each save creates a new version so you can track your progress",
+      "Use the seniority template to compare with the expected level"
     ],
     "clearConfirmTitle": "Clear all assessment data?",
     "clearConfirmDesc": "This will remove all your assessment data including name, role, and all competency levels. This action cannot be undone.",
@@ -214,7 +235,123 @@
     "noSelfAssessmentFound": "No self-assessment found on this device.",
     "failedToImportSelfAssessment": "Could not import self-assessment data.",
     "teamExported": "Team exported successfully!",
-    "memberDeleted": "Member deleted successfully!"
+    "memberDeleted": "Member deleted successfully!",
+    "published": "Version published.",
+    "draftSaved": "Draft saved.",
+    "nameRequired": "Please enter a name before saving.",
+    "authorRequired": "Please enter your name before submitting.",
+    "saveFailed": "Could not save. Please try again.",
+    "saveMemberFirst": "Save the member first.",
+    "teamImported": "Team imported successfully!",
+    "teamImportFailed": "Could not import the team file."
+  },
+  "influenceScope": "Scope guide: a squad is one cross-functional team (front, back, QA); several squads form a tribe or area; the company is the whole tech organization; the community is outside the company.",
+  "series": {
+    "current": "Current",
+    "goal": "Goal"
+  },
+  "versions": {
+    "title": "Versions",
+    "filter": "Filter versions by author",
+    "new": "New version",
+    "empty": "No versions saved yet",
+    "compare": "Show on chart",
+    "publish": "Publish",
+    "unpublish": "Move back to draft",
+    "deleteTitle": "Delete this version?",
+    "deleteDescription": "This version will be permanently removed from the history.",
+    "unsaved": "Unsaved changes. Save a draft or publish to create a new version.",
+    "kind": {
+      "manager": "Manager",
+      "self": "Self",
+      "peer": "Peer"
+    },
+    "status": {
+      "draft": "Draft",
+      "published": "Published"
+    }
+  },
+  "templates": {
+    "title": "Seniority template",
+    "none": "No template",
+    "whatItMeans": "What this level means",
+    "seriesLabel": "{{id}} expected",
+    "tracks": {
+      "developer": "Developer",
+      "techLead": "Tech Lead",
+      "engineeringManager": "Engineering Manager"
+    },
+    "summaries": {
+      "D1": "Learns the stack and delivers well-scoped features and fixes, following the team processes.",
+      "D2": "Designs medium-sized features, proactively supports teammates and enforces the team processes.",
+      "D3": "Go-to person for some technologies; challenges the processes and impacts the whole team.",
+      "D4": "Introduces new technologies, owns production operation and mentors others.",
+      "D5": "Masters the whole stack, evolves the architecture and impacts multiple teams.",
+      "D6": "Creates widely used technologies and leads technical excellence across the company.",
+      "D7": "Technical work with impact on the wider tech community.",
+      "TL4": "Owns the system in production, coordinates the team and adjusts its processes.",
+      "TL5": "Evolves the architecture and defines the team processes; impacts the whole team.",
+      "TL6": "Masters the stack and leads technical excellence across multiple teams.",
+      "TL7": "Leads technical direction with impact on the whole tech organization.",
+      "EM5": "Manages careers, performance and happiness of the team while owning its operation.",
+      "EM6": "Manages the team, evolves the architecture and defines processes for its maturity.",
+      "EM7": "Manages with impact beyond the team, across multiple teams."
+    }
+  },
+  "share": {
+    "title": "Permanent links",
+    "loginRequired": "Sign in and save the member to get permanent sharing links.",
+    "copy": "Copy link",
+    "self": {
+      "label": "Self-evaluation",
+      "hint": "The person saves their own versions directly here. No login needed."
+    },
+    "peer": {
+      "label": "Peer evaluation",
+      "hint": "Anyone with this link can submit an evaluation; you review and publish it."
+    },
+    "view": {
+      "label": "View my evaluation",
+      "hint": "Read-only: your published versions, published peer versions and their self versions.",
+      "enable": "Enabled"
+    }
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "signUp": "Create account",
+    "signOut": "Sign out",
+    "signInTitle": "Sign in",
+    "signUpTitle": "Create an account",
+    "description": "Save your team securely and get permanent sharing links. Data on this device is uploaded to a new empty account.",
+    "email": "Email",
+    "password": "Password",
+    "checkEmail": "Check your email to confirm your account.",
+    "switchToSignUp": "No account? Create one",
+    "switchToSignIn": "Already have an account? Sign in"
+  },
+  "pageMessage": {
+    "loading": "Loading...",
+    "notFound": "This link is not valid or is no longer available.",
+    "error": "Something went wrong while loading.",
+    "thanks": "Thanks! Your evaluation has been sent.",
+    "home": "Go to home"
+  },
+  "peerAssessment": {
+    "title": "Evaluate {{name}}",
+    "subtitle": "Your evaluation will be reviewed before it is published",
+    "personalInfo": "Who you are evaluating",
+    "competencies": "Competencies",
+    "preview": "{{name}} Preview",
+    "yourName": "Your name",
+    "another": "Submit another evaluation",
+    "howToUseItems": [
+      "Enter your name so the manager knows who evaluated",
+      "Set the level you observe for each competency",
+      "Add comments with concrete examples"
+    ]
+  },
+  "viewPage": {
+    "title": "{{name}} · Evaluation"
   },
   "labels": {
     "teamOverview": "Team Overview",
