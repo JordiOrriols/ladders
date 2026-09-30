@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { VERTICALS } from "@/components/atoms/levelSelector";
 import { byNewest, computeAverage, latestOf } from "@/data/evaluations";
 import type { EvaluationStore } from "@/data/evaluationStore";
@@ -15,9 +15,11 @@ import { useVersionSelection } from "./useVersionSelection";
 
 type FormState = { currentLevels: LevelMap; goalLevels: LevelMap; comments: CommentMap };
 type LoadState = "loading" | "ready" | "notFound" | "error";
+export type AutosaveState = "idle" | "saving" | "saved" | "error";
 
 const EMPTY_FORM: FormState = { currentLevels: {}, goalLevels: {}, comments: {} };
 const EMPTY_PROFILE: MemberProfile = { name: "", role: "", templateId: null };
+const AUTOSAVE_DELAY = 500;
 
 const formFrom = (evaluation: Evaluation | undefined): FormState =>
   evaluation
@@ -62,6 +64,13 @@ export function useEvaluationEditor(store: EvaluationStore) {
   const [expandedVertical, setExpandedVertical] = useState<string | null>(VERTICALS[0] ?? null);
   const [saving, setSaving] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [autosaveState, setAutosaveState] = useState<AutosaveState>("idle");
+
+  const draftRef = useRef<Evaluation | null>(null);
+  const latestRef = useRef({ form: EMPTY_FORM, profile: EMPTY_PROFILE });
+  const savedProfileRef = useRef<MemberProfile>(EMPTY_PROFILE);
+  const queueRef = useRef<Promise<void>>(Promise.resolve());
+  const timerRef = useRef<number | null>(null);
 
   const selection = useVersionSelection(evaluations, store.kind);
 
@@ -73,16 +82,21 @@ export function useEvaluationEditor(store: EvaluationStore) {
         setLoadState("notFound");
         return;
       }
-      setProfile(snapshot.profile);
-      setSavedProfile(snapshot.profile);
-      setMember(snapshot.member ?? null);
-      setEvaluations(snapshot.evaluations);
       const latest = latestOf(snapshot.evaluations, store.kind);
       const draft = snapshot.evaluations.find(
         (evaluation) => evaluation.kind === store.kind && evaluation.status === "draft"
       );
-      setForm(formFrom(draft ?? latest));
-      setEditingId(draft?.id ?? null);
+      const initialForm = formFrom(draft ?? latest);
+      setProfile(snapshot.profile);
+      setSavedProfile(snapshot.profile);
+      savedProfileRef.current = snapshot.profile;
+      setMember(snapshot.member ?? null);
+      setEvaluations(snapshot.evaluations);
+      setForm(initialForm);
+      setEditingId(draft?.id ?? latest?.id ?? null);
+      draftRef.current = draft ?? null;
+      latestRef.current = { form: initialForm, profile: snapshot.profile };
+      setAutosaveState(draft ? "saved" : "idle");
       setLoadState("ready");
     } catch (error) {
       console.error("Failed to load evaluations", error);
@@ -90,9 +104,7 @@ export function useEvaluationEditor(store: EvaluationStore) {
     }
   }, [store]);
 
-  useEffect(() => {
-    void load();
-  }, [load]);
+  useEffect(() => void load(), [load]);
 
   const selectedEvaluation = useMemo(
     () => evaluations.find((evaluation) => evaluation.id === editingId),
@@ -102,10 +114,13 @@ export function useEvaluationEditor(store: EvaluationStore) {
   const contentChanged = !sameForm(form, formFrom(baselineEvaluation));
   const profileChanged = !sameProfile(normalizedProfile(profile), savedProfile);
   const dirty = contentChanged || profileChanged;
-  const existingDraft = evaluations.find(
+  const draft = evaluations.find(
     (evaluation) => evaluation.kind === store.kind && evaluation.status === "draft"
   );
-  const hasBlockingDraft = !!existingDraft && existingDraft.id !== selectedEvaluation?.id;
+
+  useEffect(() => {
+    latestRef.current = { form, profile };
+  }, [form, profile]);
 
   useEffect(() => {
     if (!dirty) return;
@@ -114,8 +129,144 @@ export function useEvaluationEditor(store: EvaluationStore) {
     return () => window.removeEventListener("beforeunload", warn);
   }, [dirty]);
 
-  const updateForm = useCallback((patch: (prev: FormState) => FormState) => setForm(patch), []);
+  const persistLatest = useCallback(async () => {
+    if (store.kind === "peer" || loadState !== "ready") return;
+    const snapshot = latestRef.current;
+    const nextProfile = normalizedProfile(snapshot.profile);
+    if (store.editableProfile && !nextProfile.name) return;
 
+    setAutosaveState("saving");
+    try {
+      if (store.editableProfile && !sameProfile(nextProfile, savedProfileRef.current)) {
+        await store.saveProfile(nextProfile);
+        savedProfileRef.current = nextProfile;
+        setSavedProfile(nextProfile);
+        setProfile(nextProfile);
+      }
+      const source = draftRef.current ?? baselineEvaluation;
+      if (!sameForm(snapshot.form, formFrom(source))) {
+        const input = {
+          status: "draft" as const,
+          authorName: store.kind === "self" ? nextProfile.name : null,
+          ...snapshot.form,
+        };
+        const saved = draftRef.current
+          ? await store.updateDraft!(draftRef.current.id, input)
+          : await store.create(input);
+        draftRef.current = saved;
+        setEvaluations((prev) => [saved, ...prev.filter((item) => item.id !== saved.id)]);
+        setEditingId(saved.id);
+      }
+      setAutosaveState("saved");
+    } catch (error) {
+      console.error("Failed to autosave draft", error);
+      setAutosaveState("error");
+    }
+  }, [baselineEvaluation, loadState, store]);
+
+  const enqueueAutosave = useCallback(() => {
+    queueRef.current = queueRef.current.then(persistLatest);
+    return queueRef.current;
+  }, [persistLatest]);
+
+  useEffect(() => {
+    if (store.kind === "peer" || loadState !== "ready" || !dirty) return;
+    if (timerRef.current) window.clearTimeout(timerRef.current);
+    setAutosaveState("idle");
+    timerRef.current = window.setTimeout(() => {
+      timerRef.current = null;
+      void enqueueAutosave();
+    }, AUTOSAVE_DELAY);
+    return () => {
+      if (timerRef.current) window.clearTimeout(timerRef.current);
+    };
+  }, [dirty, enqueueAutosave, form, loadState, profile, store.kind]);
+
+  const flushAutosave = useCallback(async () => {
+    if (timerRef.current) {
+      window.clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+    await enqueueAutosave();
+  }, [enqueueAutosave]);
+
+  const save = useCallback(
+    async (status: EvaluationStatus) => {
+      if (store.editableProfile && !profile.name.trim()) {
+        throw new EditorValidationError("nameRequired");
+      }
+      if (store.kind === "peer" && !authorName.trim()) {
+        throw new EditorValidationError("authorRequired");
+      }
+
+      setSaving(true);
+      try {
+        if (store.kind !== "peer") {
+          await flushAutosave();
+          const currentDraft = draftRef.current;
+          if (!currentDraft || autosaveState === "error") {
+            throw new EditorValidationError("publishDraftFirst");
+          }
+          await store.setStatus(currentDraft.id, "published");
+          const published = { ...currentDraft, status: "published" as const };
+          draftRef.current = null;
+          setEvaluations((prev) =>
+            prev.map((evaluation) => (evaluation.id === currentDraft.id ? published : evaluation))
+          );
+          setEditingId(published.id);
+          setAutosaveState("saved");
+          return published;
+        }
+
+        const submittedEvaluation = await store.create({
+          status,
+          authorName: authorName.trim(),
+          ...form,
+        });
+        setSubmitted(true);
+        setForm(EMPTY_FORM);
+        return submittedEvaluation;
+      } finally {
+        setSaving(false);
+      }
+    },
+    [authorName, autosaveState, flushAutosave, form, profile.name, store]
+  );
+
+  /** Own-kind versions load into the form; other kinds toggle on the radar. */
+  const selectVersion = useCallback(
+    (id: string) => {
+      const evaluation = evaluations.find((item) => item.id === id);
+      if (!evaluation) return;
+      if (evaluation.kind !== store.kind) {
+        selection.toggleCompare(id);
+        return;
+      }
+      setEditingId(id);
+      setForm(formFrom(evaluation));
+    },
+    [evaluations, selection, store.kind]
+  );
+
+  const deleteVersion = useCallback(
+    async (evaluation: Evaluation) => {
+      await store.remove(evaluation.id);
+      if (draftRef.current?.id === evaluation.id) draftRef.current = null;
+      setEvaluations((prev) => prev.filter((item) => item.id !== evaluation.id));
+      if (editingId === evaluation.id) setEditingId(null);
+    },
+    [editingId, store]
+  );
+
+  const updateForm = useCallback((patch: (prev: FormState) => FormState) => setForm(patch), []);
+  const updateProfile = useCallback(
+    (patch: Partial<MemberProfile>) => setProfile((prev) => ({ ...prev, ...patch })),
+    []
+  );
+  const toggleVertical = useCallback(
+    (vertical: string) => setExpandedVertical((prev) => (prev === vertical ? null : vertical)),
+    []
+  );
   const handleCurrentChange = useCallback(
     (vertical: string, level: number) =>
       updateForm((prev) => ({
@@ -134,171 +285,24 @@ export function useEvaluationEditor(store: EvaluationStore) {
       updateForm((prev) => ({ ...prev, comments: { ...prev.comments, [vertical]: value } })),
     [updateForm]
   );
-  const updateProfile = useCallback((patch: Partial<MemberProfile>) => {
-    setProfile((prev) => ({ ...prev, ...patch }));
-  }, []);
-  const toggleVertical = useCallback(
-    (vertical: string) => setExpandedVertical((prev) => (prev === vertical ? null : vertical)),
-    []
-  );
-
-  /** Own-kind versions load into the form; other kinds toggle on the radar. */
-  const selectVersion = useCallback(
-    (id: string) => {
-      const evaluation = evaluations.find((e) => e.id === id);
-      if (!evaluation) return;
-      if (evaluation.kind !== store.kind) {
-        selection.toggleCompare(id);
-        return;
-      }
-      setEditingId(id);
-      setForm(formFrom(evaluation));
-    },
-    [evaluations, selection, store.kind]
-  );
-
-  const startNewVersion = useCallback(() => {
-    const draft = evaluations.find(
-      (evaluation) => evaluation.kind === store.kind && evaluation.status === "draft"
-    );
-    setEditingId(draft?.id ?? null);
-    setForm(formFrom(draft ?? latestOf(evaluations, store.kind)));
-  }, [evaluations, store.kind]);
-
-  const save = useCallback(
-    async (status: EvaluationStatus) => {
-      if (store.editableProfile && !profile.name.trim()) {
-        throw new EditorValidationError("nameRequired");
-      }
-      if (store.kind === "peer" && !authorName.trim()) {
-        throw new EditorValidationError("authorRequired");
-      }
-      if (store.kind !== "peer" && !contentChanged && !profileChanged) {
-        if (!(selectedEvaluation?.status === "draft" && status === "published")) {
-          throw new EditorValidationError("noChanges");
-        }
-      }
-      if (
-        store.kind !== "peer" &&
-        status === "published" &&
-        selectedEvaluation?.status !== "draft"
-      ) {
-        throw new EditorValidationError("publishDraftFirst");
-      }
-      if (status === "draft" && hasBlockingDraft) {
-        throw new EditorValidationError("draftAlreadyExists");
-      }
-      setSaving(true);
-      try {
-        const nextProfile = normalizedProfile(profile);
-        if (store.editableProfile) {
-          await store.saveProfile(nextProfile);
-          setProfile(nextProfile);
-          setSavedProfile(nextProfile);
-        }
-        if (store.kind !== "peer" && !contentChanged) {
-          if (selectedEvaluation?.status === "draft" && status === "published") {
-            await store.setStatus(selectedEvaluation.id, "published");
-            const published = { ...selectedEvaluation, status: "published" as const };
-            setEvaluations((prev) =>
-              prev.map((evaluation) =>
-                evaluation.id === selectedEvaluation.id ? published : evaluation
-              )
-            );
-            return published;
-          }
-          return selectedEvaluation ?? null;
-        }
-        const input = {
-          status,
-          authorName:
-            store.kind === "peer"
-              ? authorName.trim()
-              : store.kind === "self"
-                ? nextProfile.name
-                : null,
-          ...form,
-        };
-        const saved =
-          selectedEvaluation?.status === "draft" && store.updateDraft
-            ? await store.updateDraft(selectedEvaluation.id, input)
-            : await store.create(input);
-        if (store.kind === "peer") {
-          setSubmitted(true);
-          setForm(EMPTY_FORM);
-          return saved;
-        }
-        setEvaluations((prev) => [saved, ...prev.filter((e) => e.id !== saved.id)]);
-        setEditingId(saved.id);
-        return saved;
-      } finally {
-        setSaving(false);
-      }
-    },
-    [
-      authorName,
-      contentChanged,
-      form,
-      hasBlockingDraft,
-      profile,
-      profileChanged,
-      selectedEvaluation,
-      store,
-    ]
-  );
-
-  const setVersionStatus = useCallback(
-    async (evaluation: Evaluation, status: EvaluationStatus) => {
-      const hasOtherDraft = evaluations.some(
-        (other) =>
-          other.id !== evaluation.id && other.kind === evaluation.kind && other.status === "draft"
-      );
-      if (status === "draft" && evaluation.kind !== "peer" && hasOtherDraft) {
-        throw new EditorValidationError("draftAlreadyExists");
-      }
-      await store.setStatus(evaluation.id, status);
-      setEvaluations((prev) => prev.map((e) => (e.id === evaluation.id ? { ...e, status } : e)));
-    },
-    [evaluations, store]
-  );
-
-  const canChangeVersionStatus = useCallback(
-    (evaluation: Evaluation) => {
-      if (!store.canChangeStatus(evaluation)) return false;
-      if (evaluation.status === "draft") return true;
-      return !evaluations.some(
-        (other) =>
-          other.id !== evaluation.id && other.kind === evaluation.kind && other.status === "draft"
-      );
-    },
-    [evaluations, store]
-  );
-
-  const deleteVersion = useCallback(
-    async (evaluation: Evaluation) => {
-      await store.remove(evaluation.id);
-      setEvaluations((prev) => prev.filter((e) => e.id !== evaluation.id));
-      if (editingId === evaluation.id) setEditingId(null);
-    },
-    [editingId, store]
-  );
 
   const exportFile = useCallback(() => {
-    const own = evaluations.filter((e) => e.kind === store.kind).sort(byNewest);
+    const own = evaluations.filter((evaluation) => evaluation.kind === store.kind).sort(byNewest);
     exportJson(`assessment-${profile.name.replace(/\s+/g, "-") || "unnamed"}`, {
-      name: profile.name,
-      role: profile.role,
-      ...form,
+      version: 2,
+      profile,
       evaluations: own,
       exportedAt: new Date().toISOString(),
     });
-  }, [evaluations, form, profile, store.kind]);
+  }, [evaluations, profile, store.kind]);
 
   const compare = useMemo(
-    () => selection.sorted.filter((e) => selection.compareIds.includes(e.id) && e.id !== editingId),
+    () =>
+      selection.sorted.filter(
+        (item) => selection.compareIds.includes(item.id) && item.id !== editingId
+      ),
     [selection.sorted, selection.compareIds, editingId]
   );
-
   const verticalStats = useMemo(
     () =>
       VERTICALS.map((vertical) => ({
@@ -322,9 +326,11 @@ export function useEvaluationEditor(store: EvaluationStore) {
     dirty,
     contentChanged,
     profileChanged,
-    canSaveDraft: !saving && !hasBlockingDraft && (contentChanged || profileChanged),
-    canPublish: !saving && (store.kind === "peer" || selectedEvaluation?.status === "draft"),
-    canStartNewVersion: !existingDraft,
+    autosaveState,
+    canSaveDraft: false,
+    canStartNewVersion: false,
+    canPublish:
+      !saving && (store.kind === "peer" || (!!draft && autosaveState === "saved" && !dirty)),
     saving,
     submitted,
     compare,
@@ -342,11 +348,11 @@ export function useEvaluationEditor(store: EvaluationStore) {
     handleCommentChange,
     toggleVertical,
     selectVersion,
-    startNewVersion,
+    startNewVersion: () => {},
     toggleCompare: selection.toggleCompare,
     save,
-    setVersionStatus,
-    canChangeVersionStatus,
+    setVersionStatus: async () => {},
+    canChangeVersionStatus: () => false,
     deleteVersion,
     exportFile,
     reload: load,

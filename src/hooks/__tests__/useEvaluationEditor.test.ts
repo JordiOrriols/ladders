@@ -7,7 +7,7 @@ import {
   createPeerTokenStore,
 } from "@/data/evaluationStore";
 import type { EvaluationStore } from "@/data/evaluationStore";
-import { EditorValidationError, useEvaluationEditor } from "../useEvaluationEditor";
+import { useEvaluationEditor } from "../useEvaluationEditor";
 
 const renderEditor = async (store: EvaluationStore) => {
   const hook = renderHook(() => useEvaluationEditor(store));
@@ -23,8 +23,6 @@ describe("useEvaluationEditor", () => {
     const store = createManagerStore(repo, null);
     const { result } = await renderEditor(store);
 
-    await expect(result.current.save("draft")).rejects.toBeInstanceOf(EditorValidationError);
-
     act(() => {
       result.current.setName("Ada");
       result.current.setTemplateId("D2");
@@ -32,16 +30,13 @@ describe("useEvaluationEditor", () => {
     });
     expect(result.current.dirty).toBe(true);
 
-    await act(async () => {
-      await result.current.save("draft");
-    });
+    await waitFor(() => expect(result.current.autosaveState).toBe("saved"));
     const draftId = result.current.editingId;
     expect(result.current.canPublish).toBe(true);
 
     act(() => result.current.handleCurrentChange("Technology", 3));
-    await act(async () => {
-      await result.current.save("draft");
-    });
+    await waitFor(() => expect(result.current.form.currentLevels.Technology).toBe(3));
+    await waitFor(() => expect(result.current.autosaveState).toBe("saved"));
     expect(result.current.editingId).toBe(draftId);
     expect(result.current.evaluations).toHaveLength(1);
 
@@ -60,6 +55,15 @@ describe("useEvaluationEditor", () => {
     });
     expect(result.current.canPublish).toBe(false);
     expect(result.current.dirty).toBe(false);
+
+    act(() => result.current.handleCurrentChange("Technology", 4));
+    await waitFor(() => expect(result.current.autosaveState).toBe("saved"));
+    const branchedVersions = await repo.listEvaluations(memberId);
+    expect(branchedVersions).toHaveLength(2);
+    expect(branchedVersions.find((version) => version.id === draftId)?.status).toBe("published");
+    expect(result.current.evaluations.filter((version) => version.status === "draft")).toHaveLength(
+      1
+    );
   });
 
   it("creates a new draft only after published content changes", async () => {
@@ -74,21 +78,14 @@ describe("useEvaluationEditor", () => {
     });
     const { result } = await renderEditor(createManagerStore(repo, member.id));
 
-    expect(result.current.canSaveDraft).toBe(false);
     expect(result.current.canPublish).toBe(false);
-    await expect(result.current.save("draft")).rejects.toThrow("noChanges");
-
     act(() => result.current.handleCurrentChange("Technology", 3));
-    expect(result.current.canSaveDraft).toBe(true);
-    await act(async () => {
-      await result.current.save("draft");
-    });
+    await waitFor(() => expect(result.current.autosaveState).toBe("saved"));
 
     const versions = await repo.listEvaluations(member.id);
     expect(versions).toHaveLength(2);
     expect(versions.find((evaluation) => evaluation.id === published.id)?.status).toBe("published");
     expect(result.current.editingId).not.toBe(published.id);
-    expect(result.current.canStartNewVersion).toBe(false);
   });
 
   it("saves profile-only changes without creating a version", async () => {
@@ -106,9 +103,7 @@ describe("useEvaluationEditor", () => {
     act(() => result.current.setRole("Staff Engineer"));
     expect(result.current.profileChanged).toBe(true);
     expect(result.current.contentChanged).toBe(false);
-    await act(async () => {
-      await result.current.save("draft");
-    });
+    await waitFor(() => expect(result.current.autosaveState).toBe("saved"));
 
     expect((await repo.getMember(member.id))?.role).toBe("Staff Engineer");
     expect(await repo.listEvaluations(member.id)).toHaveLength(1);
@@ -148,7 +143,6 @@ describe("useEvaluationEditor", () => {
     act(() => result.current.selectVersion(self.id));
     expect(result.current.compareIds).toEqual([]);
 
-    expect(result.current.canChangeVersionStatus(old)).toBe(false);
     await act(async () => result.current.deleteVersion(old));
     expect(result.current.evaluations.map((e) => e.id)).not.toContain(old.id);
     expect(result.current.editingId).toBeNull();
@@ -160,9 +154,7 @@ describe("useEvaluationEditor", () => {
       result.current.setName("Me");
       result.current.handleCurrentChange("People", 2);
     });
-    await act(async () => {
-      await result.current.save("draft");
-    });
+    await waitFor(() => expect(result.current.autosaveState).toBe("saved"));
 
     const reloaded = await renderEditor(createLocalSelfStore());
     expect(reloaded.result.current.profile.name).toBe("Me");
