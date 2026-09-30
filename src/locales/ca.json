@@ -331,6 +331,12 @@
     "description": "Deseu el vostre equip de forma segura i obtingueu enllaços permanents. Les dades d'aquest dispositiu es pugen a un compte nou buit.",
     "email": "Email",
     "password": "Contrasenya",
+    "forgotPassword": "Heu oblidat la contrasenya?",
+    "forgotPasswordTitle": "Restablir la contrasenya",
+    "forgotPasswordDescription": "Introduïu el vostre email i us enviarem un enllaç segur per restablir-la.",
+    "sendResetEmail": "Enviar email de recuperació",
+    "passwordResetSent": "Reviseu el vostre email per continuar amb el canvi de contrasenya.",
+    "backToSignIn": "Tornar a iniciar sessió",
     "checkEmail": "Reviseu el vostre email per confirmar el compte.",
     "switchToSignUp": "No teniu compte? Creeu-ne un",
     "switchToSignIn": "Ja teniu compte? Inicieu sessió"

@@ -330,6 +330,12 @@
     "description": "Save your team securely and get permanent sharing links. Data on this device is uploaded to a new empty account.",
     "email": "Email",
     "password": "Password",
+    "forgotPassword": "Forgot password?",
+    "forgotPasswordTitle": "Reset your password",
+    "forgotPasswordDescription": "Enter your email address and we'll send you a secure reset link.",
+    "sendResetEmail": "Send reset email",
+    "passwordResetSent": "Check your email for password reset instructions.",
+    "backToSignIn": "Back to sign in",
     "checkEmail": "Check your email to confirm your account.",
     "switchToSignUp": "No account? Create one",
     "switchToSignIn": "Already have an account? Sign in"
