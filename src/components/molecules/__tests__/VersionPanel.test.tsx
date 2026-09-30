@@ -4,10 +4,9 @@ import userEvent from "@testing-library/user-event";
 import React from "react";
 import { I18nextProvider } from "react-i18next";
 import i18n from "../../../i18n";
-import type { Evaluation, TeamMember } from "@/types";
+import type { Evaluation } from "@/types";
 import { VersionPanel } from "../VersionPanel";
 import { TemplatePanel } from "../TemplatePanel";
-import { ShareLinksCard } from "../ShareLinksCard";
 
 const renderWithI18n = (ui: React.ReactElement) =>
   render(<I18nextProvider i18n={i18n}>{ui}</I18nextProvider>);
@@ -102,48 +101,5 @@ describe("TemplatePanel", () => {
   it("renders nothing read-only without a template", () => {
     const { container } = renderWithI18n(<TemplatePanel templateId={null} />);
     expect(container).toBeEmptyDOMElement();
-  });
-});
-
-describe("ShareLinksCard", () => {
-  const member: TeamMember = {
-    id: "m",
-    name: "Ada",
-    role: "",
-    templateId: null,
-    selfToken: "11111111-1111-4111-8111-111111111111",
-    peerToken: "22222222-2222-4222-8222-222222222222",
-    viewToken: "33333333-3333-4333-8333-333333333333",
-    viewEnabled: false,
-    createdAt: "",
-  };
-
-  it("asks to sign in when the member has no tokens", () => {
-    renderWithI18n(<ShareLinksCard member={null} onToggleView={vi.fn()} />);
-    expect(screen.getByTestId("share-links-unavailable")).toBeInTheDocument();
-  });
-
-  it("shows permanent links and toggles the view link", async () => {
-    const onToggleView = vi.fn();
-    renderWithI18n(<ShareLinksCard member={member} onToggleView={onToggleView} />);
-    expect((screen.getByLabelText("Self-evaluation") as HTMLInputElement).value).toContain(
-      `#/e/${member.selfToken}`
-    );
-    expect((screen.getByLabelText("View my evaluation") as HTMLInputElement).value).toContain(
-      `#/v/${member.viewToken}`
-    );
-    await userEvent.click(screen.getByRole("checkbox"));
-    expect(onToggleView).toHaveBeenCalledWith(true);
-  });
-
-  it("copies an enabled link", async () => {
-    const writeText = vi.fn().mockResolvedValue(undefined);
-    Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
-    const alertSpy = vi.spyOn(window, "alert").mockImplementation(() => {});
-    renderWithI18n(<ShareLinksCard member={member} onToggleView={vi.fn()} />);
-    await userEvent.click(screen.getAllByRole("button", { name: "Copy link" })[0]!);
-    expect(writeText).toHaveBeenCalledWith(expect.stringContaining(member.selfToken!));
-    expect(alertSpy).toHaveBeenCalled();
-    expect(screen.getAllByRole("button", { name: "Copy link" })[2]).toBeDisabled();
   });
 });

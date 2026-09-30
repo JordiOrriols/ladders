@@ -301,6 +301,8 @@
   },
   "share": {
     "title": "Enllaços permanents",
+    "action": "Compartir",
+    "menuLabel": "Triar un enllaç per compartir",
     "loginRequired": "Inicieu sessió i deseu el membre per obtenir enllaços permanents.",
     "copy": "Copiar enllaç",
     "self": {

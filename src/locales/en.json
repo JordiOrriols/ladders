@@ -300,6 +300,8 @@
   },
   "share": {
     "title": "Permanent links",
+    "action": "Share",
+    "menuLabel": "Choose a sharing link",
     "loginRequired": "Sign in and save the member to get permanent sharing links.",
     "copy": "Copy link",
     "self": {

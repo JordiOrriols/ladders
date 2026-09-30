@@ -42,7 +42,7 @@ describe("AssessmentPage", () => {
       expect(member?.name).toBe("Ada");
       expect(await repo.listEvaluations(member!.id)).toHaveLength(1);
     });
-    expect(screen.getByTestId("share-links-unavailable")).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Share" })).not.toBeInTheDocument();
   });
 
   it("renders the anonymous self-assessment with history and file actions", async () => {

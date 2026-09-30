@@ -301,6 +301,8 @@
   },
   "share": {
     "title": "Enlaces permanentes",
+    "action": "Compartir",
+    "menuLabel": "Elegir un enlace para compartir",
     "loginRequired": "Inicie sesión y guarde el miembro para obtener enlaces permanentes.",
     "copy": "Copiar enlace",
     "self": {

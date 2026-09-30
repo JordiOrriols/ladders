@@ -5,7 +5,7 @@ import { Download, FileUp, Save, Send } from "lucide-react";
 import { AssessmentFormColumn } from "@/components/organisms/AssessmentFormColumn";
 import { AssessmentHeader } from "@/components/organisms/AssessmentHeader";
 import { AssessmentPreview } from "@/components/organisms/AssessmentPreview";
-import { ShareLinksCard } from "@/components/molecules/ShareLinksCard";
+import { ShareAction } from "@/components/molecules/ShareAction";
 import { TemplatePanel } from "@/components/molecules/TemplatePanel";
 import { VersionPanel } from "@/components/molecules/VersionPanel";
 import { Button } from "@/components/ui/button";
@@ -140,13 +140,13 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
     }
   };
 
-  const handleToggleView = async (enabled: boolean) => {
+  const handleEnableView = async () => {
     if (!editor.memberId) return;
     try {
-      editor.setMember(await repository.updateMember(editor.memberId, { viewEnabled: enabled }));
+      editor.setMember(await repository.updateMember(editor.memberId, { viewEnabled: true }));
     } catch (error) {
       console.error("Failed to update view link", error);
-      alert(t("alerts.saveFailed"));
+      throw error;
     }
   };
 
@@ -172,6 +172,15 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
         {...(isManager ? { onBack: () => navigate("/") } : {})}
         title={t(`${mode}.title`, { name: editor.profile.name })}
         subtitle={t(`${mode}.subtitle`)}
+        extraActions={
+          isManager &&
+          repository.kind === "remote" &&
+          editor.member?.selfToken &&
+          editor.member.peerToken &&
+          editor.member.viewToken ? (
+            <ShareAction member={editor.member} onEnableView={handleEnableView} />
+          ) : null
+        }
         actions={[
           ...(canUseFiles
             ? [
@@ -228,26 +237,21 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
             store.showHistory || isManager ? "xl:grid-cols-[260px_1fr_1fr]" : "lg:grid-cols-2"
           }`}
         >
-          {(store.showHistory || isManager) && (
+          {store.showHistory && (
             <div className="space-y-4">
-              {store.showHistory && (
-                <VersionPanel
-                  evaluations={editor.evaluations}
-                  selectedId={editor.editingId}
-                  compareIds={editor.compareIds}
-                  onSelect={editor.selectVersion}
-                  onToggleCompare={editor.toggleCompare}
-                  onNew={editor.startNewVersion}
-                  isNewSelected={editor.editingId === null}
-                  onSetStatus={(e, s) => void editor.setVersionStatus(e, s)}
-                  onDelete={(e) => void editor.deleteVersion(e)}
-                  canChangeStatus={store.canChangeStatus}
-                  canDelete={store.canDelete}
-                />
-              )}
-              {isManager && (
-                <ShareLinksCard member={editor.member} onToggleView={handleToggleView} />
-              )}
+              <VersionPanel
+                evaluations={editor.evaluations}
+                selectedId={editor.editingId}
+                compareIds={editor.compareIds}
+                onSelect={editor.selectVersion}
+                onToggleCompare={editor.toggleCompare}
+                onNew={editor.startNewVersion}
+                isNewSelected={editor.editingId === null}
+                onSetStatus={(e, s) => void editor.setVersionStatus(e, s)}
+                onDelete={(e) => void editor.deleteVersion(e)}
+                canChangeStatus={store.canChangeStatus}
+                canDelete={store.canDelete}
+              />
             </div>
           )}
 

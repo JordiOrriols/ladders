@@ -33,9 +33,17 @@ type Props = {
   onBack?: () => void;
   leadingAdornment?: LeadingAdornment;
   actions: HeaderAction[];
+  extraActions?: ReactNode;
 };
 
-export function AssessmentHeader({ title, subtitle, onBack, leadingAdornment, actions }: Props) {
+export function AssessmentHeader({
+  title,
+  subtitle,
+  onBack,
+  leadingAdornment,
+  actions,
+  extraActions,
+}: Props) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleFileChange = useCallback(
@@ -79,6 +87,7 @@ export function AssessmentHeader({ title, subtitle, onBack, leadingAdornment, ac
           </div>
 
           <div className="flex items-center gap-2">
+            {extraActions}
             {actions.map((action, idx) => {
               if (action.type === "button") {
                 return (
