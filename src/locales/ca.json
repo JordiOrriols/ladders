@@ -14,7 +14,6 @@
     "delete": "Eliminar",
     "close": "Tancar",
     "clear": "Netejar",
-    "importAssessment": "Importar Autoevaluació",
     "exportTeam": "Exportar Equip",
     "shareLink": "Compartir Enllaç",
     "current": "Actual",
@@ -25,7 +24,6 @@
     "moreSaveOptions": "Més opcions de desament",
     "publish": "Publicar",
     "submit": "Enviar",
-    "import": "Importar",
     "export": "Exportar",
     "importTeam": "Importar Equip"
   },
@@ -204,9 +202,7 @@
     "member": "Membre",
     "currentAverage": "Mitjana Actual",
     "goalAverage": "Mitjana d'Objectiu",
-    "competencyLevels": "Nivells de Competència",
-    "importSelfAssessment": "Importar Autoevaluació",
-    "shareSelfAssessment": "Compartir Autoevaluació"
+    "competencyLevels": "Nivells de Competència"
   },
   "selfAssessment": {
     "title": "Autoevaluació",
@@ -233,9 +229,6 @@
     "linkCopied": "¡Enllaç copiat al porta-retalls!",
     "shareLinkCopied": "¡Enllaç d'autoevaluació copiat al porta-retalls!",
     "failedToCopyLink": "Error en copiar l'enllaç",
-    "importSelfAssessmentSuccess": "Nivells d'autoevaluació importats.",
-    "noSelfAssessmentFound": "No hi ha autoevaluació en aquest dispositiu.",
-    "failedToImportSelfAssessment": "No es van poder importar les dades d'autoevaluació.",
     "teamExported": "¡Equip exportat correctament!",
     "memberDeleted": "¡Membre eliminat correctament!",
     "published": "Versió publicada.",

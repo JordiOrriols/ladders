@@ -1,13 +1,5 @@
 import { VERTICALS } from "@/components/atoms/levelSelector";
-import type {
-  Evaluation,
-  EvaluationInput,
-  EvaluationKind,
-  LevelMap,
-  Member,
-  TeamMember,
-} from "@/types";
-import type { AssessmentFile } from "./validators";
+import type { Evaluation, EvaluationKind, LevelMap, Member, TeamMember } from "@/types";
 
 export function newId(): string {
   if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
@@ -70,32 +62,4 @@ export function versionLabel(evaluation: Evaluation, all: Evaluation[], locale: 
     ? { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }
     : { month: "long", year: "numeric" };
   return new Intl.DateTimeFormat(locale, options).format(date);
-}
-
-/** Converts an exported assessment file (legacy single or with history) into evaluation inputs. */
-export function inputsFromAssessmentFile(
-  file: AssessmentFile
-): Array<EvaluationInput & { createdAt?: string }> {
-  if (file.evaluations && file.evaluations.length > 0) {
-    return file.evaluations.map(
-      ({ status, authorName, currentLevels, goalLevels, comments, createdAt }) => ({
-        status,
-        authorName,
-        currentLevels,
-        goalLevels,
-        comments,
-        createdAt,
-      })
-    );
-  }
-  if (!file.currentLevels || !hasLevels(file.currentLevels)) return [];
-  return [
-    {
-      status: "published",
-      authorName: file.name ?? null,
-      currentLevels: file.currentLevels,
-      goalLevels: file.goalLevels ?? {},
-      comments: file.comments ?? {},
-    },
-  ];
 }

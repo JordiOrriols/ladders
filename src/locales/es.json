@@ -14,7 +14,6 @@
     "delete": "Eliminar",
     "close": "Cerrar",
     "clear": "Limpiar",
-    "importAssessment": "Importar Autoevaluación",
     "exportTeam": "Exportar Equipo",
     "shareLink": "Compartir Enlace",
     "current": "Actual",
@@ -25,7 +24,6 @@
     "moreSaveOptions": "Más opciones de guardado",
     "publish": "Publicar",
     "submit": "Enviar",
-    "import": "Importar",
     "export": "Exportar",
     "importTeam": "Importar Equipo"
   },
@@ -204,9 +202,7 @@
     "member": "Miembro",
     "currentAverage": "Promedio Actual",
     "goalAverage": "Promedio de Objetivo",
-    "competencyLevels": "Niveles de Competencia",
-    "importSelfAssessment": "Importar Autoevaluación",
-    "shareSelfAssessment": "Compartir Autoevaluación"
+    "competencyLevels": "Niveles de Competencia"
   },
   "selfAssessment": {
     "title": "Autoevaluación",
@@ -233,9 +229,6 @@
     "linkCopied": "¡Enlace copiado al portapapeles!",
     "shareLinkCopied": "¡Enlace de autoevaluación copiado al portapapeles!",
     "failedToCopyLink": "Error al copiar el enlace",
-    "importSelfAssessmentSuccess": "Niveles de autoevaluación importados.",
-    "noSelfAssessmentFound": "No hay autoevaluación en este dispositivo.",
-    "failedToImportSelfAssessment": "No se pudieron importar los datos de autoevaluación.",
     "teamExported": "¡Equipo exportado correctamente!",
     "memberDeleted": "¡Miembro eliminado correctamente!",
     "published": "Versión publicada.",

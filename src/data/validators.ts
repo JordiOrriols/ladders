@@ -51,26 +51,3 @@ const isLegacyMember = (value: unknown): value is LegacyMember =>
 
 export const isLegacyMemberList = (value: unknown): value is LegacyMember[] =>
   Array.isArray(value) && value.every(isLegacyMember);
-
-/** Single self-assessment as exported by earlier versions of the app. */
-export type AssessmentFile = {
-  name?: string;
-  role?: string;
-  currentLevels?: LevelMap;
-  goalLevels?: LevelMap;
-  comments?: CommentMap;
-  evaluations?: Evaluation[];
-};
-
-export const isAssessmentFile = (value: unknown): value is AssessmentFile => {
-  if (!isRecord(value)) return false;
-  const { name, role, currentLevels, goalLevels, comments, evaluations } = value;
-  return (
-    (name === undefined || typeof name === "string") &&
-    (role === undefined || typeof role === "string") &&
-    (currentLevels === undefined || isLevelMap(currentLevels)) &&
-    (goalLevels === undefined || isLevelMap(goalLevels)) &&
-    (comments === undefined || isCommentMap(comments)) &&
-    (evaluations === undefined || (Array.isArray(evaluations) && evaluations.every(isEvaluation)))
-  );
-};

@@ -4,7 +4,7 @@ import esLocale from "@/locales/es.json";
 import caLocale from "@/locales/ca.json";
 import { VERTICALS } from "@/components/atoms/levelSelector";
 import type { Evaluation } from "@/types";
-import { inputsFromAssessmentFile, latestOf, toMemberSummary, versionLabel } from "../evaluations";
+import { latestOf, toMemberSummary, versionLabel } from "../evaluations";
 import { LADDER_TEMPLATES, findTemplate } from "../ladderTemplates";
 
 const evaluation = (overrides: Partial<Evaluation>): Evaluation => ({
@@ -70,13 +70,6 @@ describe("summaries and imports", () => {
     ];
     expect(latestOf(list, "self")?.id).toBe("a");
     expect(latestOf(list, "self", true)?.id).toBe("b");
-  });
-
-  it("reads legacy single assessment files", () => {
-    const inputs = inputsFromAssessmentFile({ name: "Ada", currentLevels: { Technology: 2 } });
-    expect(inputs).toHaveLength(1);
-    expect(inputs[0]?.status).toBe("published");
-    expect(inputsFromAssessmentFile({ name: "Ada" })).toHaveLength(0);
   });
 });
 

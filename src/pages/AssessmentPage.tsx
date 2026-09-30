@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Download, FileUp, Save, Send } from "lucide-react";
+import { Download, Save, Send } from "lucide-react";
 import { AssessmentFormColumn } from "@/components/organisms/AssessmentFormColumn";
 import { AssessmentHeader } from "@/components/organisms/AssessmentHeader";
 import { AssessmentPreview } from "@/components/organisms/AssessmentPreview";
@@ -122,24 +122,6 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
     }
   };
 
-  const handleImport = async (file: File) => {
-    try {
-      const count = await editor.importFile(file);
-      alert(
-        count > 0 ? t("alerts.importSelfAssessmentSuccess") : t("alerts.noSelfAssessmentFound")
-      );
-    } catch (error) {
-      console.error("Failed to import", error);
-      alert(
-        t(
-          isManager && !editor.memberId
-            ? "alerts.saveMemberFirst"
-            : "alerts.failedToImportSelfAssessment"
-        )
-      );
-    }
-  };
-
   const handleEnableView = async () => {
     if (!editor.memberId) return;
     try {
@@ -164,7 +146,6 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
   const howToItems = isManager
     ? []
     : ((t(`${mode}.howToUseItems`, { returnObjects: true }) as unknown as string[]) ?? []);
-  const canUseFiles = !!store.importSelf;
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -182,18 +163,7 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
           ) : null
         }
         actions={[
-          ...(canUseFiles
-            ? [
-                {
-                  type: "file" as const,
-                  label: t(isManager ? "memberAssessment.importSelfAssessment" : "buttons.import"),
-                  icon: <FileUp className="w-4 h-4" />,
-                  onFile: handleImport,
-                  eventId: `${mode}_import`,
-                },
-              ]
-            : []),
-          ...(canUseFiles && !isManager
+          ...(!isManager && !isPeer
             ? [
                 {
                   type: "button" as const,

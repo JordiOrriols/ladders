@@ -57,21 +57,12 @@ describe("AssessmentPage", () => {
     expect(screen.getByRole("menuitem", { name: "Save draft" })).toHaveAttribute("data-disabled");
   });
 
-  it("imports a legacy self-assessment file as a version and exports the history", async () => {
+  it("exports the current self-assessment history without offering import", async () => {
     const createObjectURL = vi.fn(() => "blob:x");
     Object.assign(URL, { createObjectURL, revokeObjectURL: vi.fn() });
-    const { container } = renderAt("/assessment");
+    renderAt("/assessment");
     await screen.findByTestId("version-panel");
-
-    const file = new File(
-      [JSON.stringify({ name: "Ada", role: "Dev", currentLevels: { Technology: 3 } })],
-      "a.json",
-      { type: "application/json" }
-    );
-    await userEvent.upload(container.querySelector('input[type="file"]') as HTMLInputElement, file);
-    await waitFor(() => expect(screen.getByLabelText("Name")).toHaveValue("Ada"));
-    expect(screen.getByRole("button", { name: "Publish" })).toBeInTheDocument();
-
+    expect(screen.queryByRole("button", { name: "Import" })).not.toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: /Export/ }));
     expect(createObjectURL).toHaveBeenCalled();
   });

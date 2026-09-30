@@ -33,8 +33,6 @@ export interface EvaluationStore {
   remove(id: string): Promise<void>;
   canChangeStatus(evaluation: Evaluation): boolean;
   canDelete(evaluation: Evaluation): boolean;
-  /** Adds self-assessment versions coming from an exported JSON file. */
-  importSelf?(inputs: Array<EvaluationInput & { createdAt?: string }>): Promise<void>;
 }
 
 export function createManagerStore(repo: Repository, initialMemberId: string | null) {
@@ -72,12 +70,6 @@ export function createManagerStore(repo: Repository, initialMemberId: string | n
     // Self versions belong to the evaluated person; the owner can only hide them by deleting.
     canChangeStatus: (evaluation) => evaluation.kind !== "self",
     canDelete: () => true,
-    async importSelf(inputs) {
-      if (!memberId) throw new Error("Save the member first");
-      for (const { createdAt, ...input } of inputs) {
-        await repo.createEvaluation(memberId, "self", input, createdAt);
-      }
-    },
   };
   return store;
 }
@@ -231,9 +223,5 @@ export function createLocalSelfStore(): EvaluationStore {
     },
     canChangeStatus: () => true,
     canDelete: () => true,
-    async importSelf(inputs) {
-      const imported = inputs.map(({ createdAt, ...input }) => build(input, createdAt));
-      updateLocalSelf((data) => ({ ...data, evaluations: [...data.evaluations, ...imported] }));
-    },
   };
 }

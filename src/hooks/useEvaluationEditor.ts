@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { VERTICALS } from "@/components/atoms/levelSelector";
-import { byNewest, computeAverage, inputsFromAssessmentFile, latestOf } from "@/data/evaluations";
+import { byNewest, computeAverage, latestOf } from "@/data/evaluations";
 import type { EvaluationStore } from "@/data/evaluationStore";
-import { isAssessmentFile } from "@/data/validators";
 import type {
   CommentMap,
   Evaluation,
@@ -11,7 +10,7 @@ import type {
   MemberProfile,
   TeamMember,
 } from "@/types";
-import { exportJson, importJsonFromFile } from "@/utils/sharing";
+import { exportJson } from "@/utils/sharing";
 import { useVersionSelection } from "./useVersionSelection";
 
 type FormState = { currentLevels: LevelMap; goalLevels: LevelMap; comments: CommentMap };
@@ -284,21 +283,6 @@ export function useEvaluationEditor(store: EvaluationStore) {
     [editingId, store]
   );
 
-  const importFile = useCallback(
-    async (file: File) => {
-      if (!store.importSelf) return 0;
-      const data = await importJsonFromFile(file, isAssessmentFile);
-      const inputs = inputsFromAssessmentFile(data);
-      await store.importSelf(inputs);
-      if (store.kind === "self" && !profile.name && data.name) {
-        await store.saveProfile({ ...profile, name: data.name, role: data.role ?? profile.role });
-      }
-      await load();
-      return inputs.length;
-    },
-    [load, profile, store]
-  );
-
   const exportFile = useCallback(() => {
     const own = evaluations.filter((e) => e.kind === store.kind).sort(byNewest);
     exportJson(`assessment-${profile.name.replace(/\s+/g, "-") || "unnamed"}`, {
@@ -364,7 +348,6 @@ export function useEvaluationEditor(store: EvaluationStore) {
     setVersionStatus,
     canChangeVersionStatus,
     deleteVersion,
-    importFile,
     exportFile,
     reload: load,
   };
