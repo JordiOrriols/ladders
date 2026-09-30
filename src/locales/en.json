@@ -236,6 +236,9 @@
     "current": "Current",
     "goal": "Goal"
   },
+  "comments": {
+    "title": "Comments"
+  },
   "autosave": {
     "saving": "Saving...",
     "saved": "Draft saved",

@@ -54,6 +54,17 @@ describe("AssessmentPage", () => {
     expect(screen.queryByRole("button", { name: "Share" })).not.toBeInTheDocument();
   });
 
+  it("shows manager comments below competency levels", async () => {
+    renderAt("/member/new");
+    await userEvent.type(await screen.findByLabelText("Name"), "Ada");
+    await userEvent.type(
+      screen.getByPlaceholderText("Add notes for this competency"),
+      "Strong architecture decisions"
+    );
+
+    expect(screen.getByTestId("comment-groups")).toHaveTextContent("Strong architecture decisions");
+  });
+
   it("shows not found for a missing member or invalid token", async () => {
     renderAt("/member/does-not-exist");
     expect(await screen.findByText(/not valid/)).toBeInTheDocument();

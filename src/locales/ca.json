@@ -237,6 +237,9 @@
     "current": "Actual",
     "goal": "Objectiu"
   },
+  "comments": {
+    "title": "Comentaris"
+  },
   "autosave": {
     "saving": "Desant...",
     "saved": "Esborrany desat",

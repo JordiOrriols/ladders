@@ -1,14 +1,16 @@
 import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import RadarChart from "@/components/atoms/radarChart";
+import { SERIES_COLORS } from "@/components/atoms/radarChart";
 import { VERTICALS } from "@/components/atoms/levelSelector";
 import { CompetencyDetailsCard } from "@/components/molecules/CompetencyDetailsCard";
+import { CommentGroups } from "@/components/molecules/CommentGroups";
 import { TemplatePanel } from "@/components/molecules/TemplatePanel";
 import { VersionPanel } from "@/components/molecules/VersionPanel";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { latestOf, versionLabel } from "@/data/evaluations";
 import { findTemplate } from "@/data/ladderTemplates";
-import { buildRadarSeries, evaluationAuthor } from "@/data/radarSeries";
+import { buildRadarSeries, comparisonColor, evaluationAuthor } from "@/data/radarSeries";
 import { useVersionSelection } from "@/hooks/useVersionSelection";
 import type { Evaluation } from "@/types";
 
@@ -46,6 +48,32 @@ export function EvaluationViewer({ evaluations, templateId, showVersionPanel = t
       }),
     [selected, compare, sorted, template, t, i18n.language]
   );
+  const commentGroups = [
+    ...(selected
+      ? [
+          {
+            id: selected.id,
+            label: `${evaluationAuthor(selected, t)} · ${versionLabel(
+              selected,
+              sorted,
+              i18n.language
+            )}`,
+            color: SERIES_COLORS.current,
+            comments: selected.comments,
+          },
+        ]
+      : []),
+    ...compare.map((evaluation) => ({
+      id: evaluation.id,
+      label: `${evaluationAuthor(evaluation, t)} · ${versionLabel(
+        evaluation,
+        sorted,
+        i18n.language
+      )}`,
+      color: comparisonColor(evaluation),
+      comments: evaluation.comments,
+    })),
+  ];
 
   return (
     <div
@@ -74,7 +102,7 @@ export function EvaluationViewer({ evaluations, templateId, showVersionPanel = t
         </div>
         <TemplatePanel templateId={templateId} />
         <div className="space-y-4">
-          <h3 className="font-semibold text-slate-800">{t("memberDetails.competencyDetails")}</h3>
+          <h3 className="font-semibold text-slate-800">{t("memberAssessment.competencyLevels")}</h3>
           <div className="grid sm:grid-cols-2 gap-4">
             {VERTICALS.map((vertical) => (
               <CompetencyDetailsCard
@@ -89,6 +117,7 @@ export function EvaluationViewer({ evaluations, templateId, showVersionPanel = t
             ))}
           </div>
         </div>
+        <CommentGroups groups={commentGroups} />
       </div>
     </div>
   );

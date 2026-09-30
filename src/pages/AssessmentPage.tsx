@@ -6,6 +6,7 @@ import { AssessmentFormColumn } from "@/components/organisms/AssessmentFormColum
 import { AssessmentHeader } from "@/components/organisms/AssessmentHeader";
 import { AssessmentPreview } from "@/components/organisms/AssessmentPreview";
 import { ShareAction } from "@/components/molecules/ShareAction";
+import { CommentGroups } from "@/components/molecules/CommentGroups";
 import { TemplatePanel } from "@/components/molecules/TemplatePanel";
 import { VersionPanel } from "@/components/molecules/VersionPanel";
 import { Button } from "@/components/ui/button";
@@ -19,7 +20,9 @@ import {
 } from "@/data/evaluationStore";
 import type { EvaluationStore } from "@/data/evaluationStore";
 import { findTemplate } from "@/data/ladderTemplates";
-import { buildRadarSeries } from "@/data/radarSeries";
+import { versionLabel } from "@/data/evaluations";
+import { buildRadarSeries, comparisonColor, evaluationAuthor } from "@/data/radarSeries";
+import { SERIES_COLORS } from "@/components/atoms/radarChart";
 import { isValidToken, resolveToken } from "@/data/tokenApi";
 import { EditorValidationError, useEvaluationEditor } from "@/hooks/useEvaluationEditor";
 import { PageMessage } from "./PageMessage";
@@ -145,6 +148,26 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
   const howToItems = isManager
     ? []
     : ((t(`${mode}.howToUseItems`, { returnObjects: true }) as unknown as string[]) ?? []);
+  const commentGroups = isManager
+    ? [
+        {
+          id: "manager-current",
+          label: t("versions.kind.manager"),
+          color: SERIES_COLORS.current,
+          comments: editor.form.comments,
+        },
+        ...editor.compare.map((evaluation) => ({
+          id: evaluation.id,
+          label: `${evaluationAuthor(evaluation, t)} · ${versionLabel(
+            evaluation,
+            editor.evaluations,
+            i18n.language
+          )}`,
+          color: comparisonColor(evaluation),
+          comments: evaluation.comments,
+        })),
+      ]
+    : [];
 
   const autosaveStatus =
     !isPeer && editor.autosaveState !== "idle" ? (
@@ -305,6 +328,7 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
               currentLabel: "L",
               goalLabel: "L",
             }}
+            comments={isManager ? <CommentGroups groups={commentGroups} /> : null}
           >
             <TemplatePanel templateId={editor.profile.templateId} onChange={editor.setTemplateId} />
           </AssessmentPreview>

@@ -237,6 +237,9 @@
     "current": "Actual",
     "goal": "Objetivo"
   },
+  "comments": {
+    "title": "Comentarios"
+  },
   "autosave": {
     "saving": "Guardando...",
     "saved": "Borrador guardado",

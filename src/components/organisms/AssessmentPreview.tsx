@@ -32,6 +32,7 @@ type Props = {
     arrow?: ReactNode;
   };
   children?: ReactNode;
+  comments?: ReactNode;
 };
 
 const toneStyles: Record<PreviewMetric["tone"], string> = {
@@ -47,6 +48,7 @@ export function AssessmentPreview({
   verticalStats,
   labels,
   children,
+  comments,
 }: Props) {
   const arrow = labels.arrow ?? <span className="text-slate-400">→</span>;
 
@@ -106,6 +108,7 @@ export function AssessmentPreview({
             </div>
           ))}
         </div>
+        {comments && <div className="mt-6 border-t border-slate-200 pt-6">{comments}</div>}
       </div>
     </div>
   );
