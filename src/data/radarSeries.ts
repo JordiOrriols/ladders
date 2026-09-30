@@ -5,18 +5,27 @@ import type { Evaluation, LevelMap } from "@/types";
 import { versionLabel } from "./evaluations";
 import type { LadderTemplate } from "./ladderTemplates";
 
-const COMPARE_PALETTE = [
-  "#6366f1",
-  "#0ea5e9",
-  "#ec4899",
-  "#f97316",
-  "#14b8a6",
-  "#84cc16",
-  "#ef4444",
-  "#a855f7",
-];
+const PEER_PALETTE = ["#6366f1", "#0ea5e9", "#ec4899", "#f97316", "#14b8a6", "#ef4444"];
+
+const MANAGER_COMPARE_PALETTE = ["#2563eb", "#0891b2", "#db2777", "#ea580c"];
 
 type Translator = TFunction<"translation">;
+
+function stablePaletteColor(identity: string, palette: string[]): string {
+  let hash = 0;
+  for (const character of identity.toLocaleLowerCase()) {
+    hash = (hash * 31 + character.codePointAt(0)!) >>> 0;
+  }
+  return palette[hash % palette.length]!;
+}
+
+export function comparisonColor(evaluation: Evaluation): string {
+  if (evaluation.kind === "self") return SERIES_COLORS.self;
+  if (evaluation.kind === "peer") {
+    return stablePaletteColor(evaluation.authorName?.trim() || evaluation.id, PEER_PALETTE);
+  }
+  return stablePaletteColor(evaluation.id, MANAGER_COMPARE_PALETTE);
+}
 
 export function evaluationAuthor(evaluation: Evaluation, t: Translator): string {
   const kind = t(`versions.kind.${evaluation.kind}`);
@@ -52,15 +61,12 @@ export function buildRadarSeries({
       dashed: true,
     });
   }
-  compare.forEach((evaluation, index) => {
+  compare.forEach((evaluation) => {
     series.push({
       id: `compare-${evaluation.id}`,
       label: `${evaluationAuthor(evaluation, t)} · ${versionLabel(evaluation, all, locale)}`,
       levels: evaluation.currentLevels,
-      color:
-        evaluation.kind === "self"
-          ? SERIES_COLORS.self
-          : (COMPARE_PALETTE[index % COMPARE_PALETTE.length] ?? SERIES_COLORS.self),
+      color: comparisonColor(evaluation),
       dashed: true,
       fill: 0.06,
     });
