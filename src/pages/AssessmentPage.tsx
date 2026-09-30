@@ -83,7 +83,7 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
   const isManager = store.kind === "manager";
   const isPeer = store.kind === "peer";
   const hideGoal = !isManager;
-  const template = findTemplate(editor.profile.templateId);
+  const template = isManager ? findTemplate(editor.profile.templateId) : undefined;
 
   useEffect(() => {
     if (isManager && routeId === "new" && editor.memberId && editor.editingId) {
@@ -330,7 +330,12 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
             }}
             comments={isManager ? <CommentGroups groups={commentGroups} /> : null}
           >
-            <TemplatePanel templateId={editor.profile.templateId} onChange={editor.setTemplateId} />
+            {isManager && (
+              <TemplatePanel
+                templateId={editor.profile.templateId}
+                onChange={editor.setTemplateId}
+              />
+            )}
           </AssessmentPreview>
         </div>
       </main>
