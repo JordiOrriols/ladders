@@ -20,6 +20,8 @@ const { auth, state, migrate } = vi.hoisted(() => {
       }),
       signInWithPassword: vi.fn(async () => ({ error: null })),
       signUp: vi.fn(async () => ({ data: { session: null }, error: null })),
+      resetPasswordForEmail: vi.fn(async () => ({ data: {}, error: null })),
+      updateUser: vi.fn(async () => ({ data: { user: null }, error: null })),
       signOut: vi.fn(async () => ({ error: null })),
     },
   };
@@ -29,12 +31,23 @@ vi.mock("../supabaseClient", () => ({ supabase: { auth } }));
 vi.mock("../teamTransfer", () => ({ migrateLocalTeam: migrate }));
 
 function RepoKind() {
-  const { repository, loading, anonymousMode, continueAnonymously } = useData();
+  const {
+    repository,
+    loading,
+    passwordRecovery,
+    anonymousMode,
+    continueAnonymously,
+    requestPasswordReset,
+    updatePassword,
+  } = useData();
   return (
     <div>
       <span data-testid="repo">{loading ? "loading" : repository.kind}</span>
       <span data-testid="anonymous">{String(anonymousMode)}</span>
+      <span data-testid="recovery">{String(passwordRecovery)}</span>
       <button onClick={continueAnonymously}>Anonymous</button>
+      <button onClick={() => void requestPasswordReset("a@b.co")}>Request reset</button>
+      <button onClick={() => void updatePassword("new-password")}>Update password</button>
     </div>
   );
 }
@@ -98,5 +111,25 @@ describe("DataProvider + login", () => {
     } as never);
     await userEvent.click(screen.getByRole("button", { name: "Create account" }));
     expect(await screen.findByRole("alert")).toHaveTextContent("Weak password");
+  });
+
+  it("requests a reset email with the deployment base URL", async () => {
+    renderApp();
+    await userEvent.click(await screen.findByRole("button", { name: "Request reset" }));
+    expect(auth.resetPasswordForEmail).toHaveBeenCalledWith("a@b.co", {
+      redirectTo: `${window.location.origin}${window.location.pathname}`,
+    });
+  });
+
+  it("opens recovery on the Supabase event and updates the password", async () => {
+    renderApp();
+    await act(async () =>
+      state.listener?.("PASSWORD_RECOVERY", { user: { id: "u1", email: "a@b.co" } })
+    );
+    await waitFor(() => expect(screen.getByTestId("recovery")).toHaveTextContent("true"));
+
+    await userEvent.click(screen.getByRole("button", { name: "Update password" }));
+    expect(auth.updateUser).toHaveBeenCalledWith({ password: "new-password" });
+    await waitFor(() => expect(screen.getByTestId("recovery")).toHaveTextContent("false"));
   });
 });

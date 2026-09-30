@@ -13,11 +13,14 @@ type DataContextValue = {
   user: User | null;
   /** True until the session is restored and any pending migration finished. */
   loading: boolean;
+  passwordRecovery: boolean;
   anonymousMode: boolean;
   repository: Repository;
   continueAnonymously(): void;
   signIn(email: string, password: string): Promise<void>;
   signUp(email: string, password: string): Promise<{ needsConfirmation: boolean }>;
+  requestPasswordReset(email: string): Promise<void>;
+  updatePassword(password: string): Promise<void>;
   signOut(): Promise<void>;
 };
 
@@ -29,6 +32,7 @@ const DataContext = createContext<DataContextValue | null>(null);
 export function DataProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(!!supabase);
+  const [passwordRecovery, setPasswordRecovery] = useState(false);
   const [anonymousMode, setAnonymousMode] = useState(
     () => localStorage.getItem(ANONYMOUS_MODE_KEY) === "true"
   );
@@ -54,7 +58,10 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
     client.auth.getSession().then(({ data }) => apply(data.session?.user ?? null));
     const { data } = client.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_IN" || event === "SIGNED_OUT") {
+      if (event === "PASSWORD_RECOVERY") {
+        setPasswordRecovery(true);
+        void apply(session?.user ?? null);
+      } else if (event === "SIGNED_IN" || event === "SIGNED_OUT") {
         void apply(session?.user ?? null);
       }
     });
@@ -70,6 +77,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       authEnabled: !!client,
       user,
       loading,
+      passwordRecovery,
       anonymousMode,
       repository: client && user ? createSupabaseRepository(client) : localRepository,
       continueAnonymously() {
@@ -91,11 +99,24 @@ export function DataProvider({ children }: { children: ReactNode }) {
         if (error) throw new Error(error.message);
         return { needsConfirmation: !data.session };
       },
+      async requestPasswordReset(email) {
+        if (!client) return;
+        const { error } = await client.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}${window.location.pathname}`,
+        });
+        if (error) throw new Error(error.message);
+      },
+      async updatePassword(password) {
+        if (!client) return;
+        const { error } = await client.auth.updateUser({ password });
+        if (error) throw new Error(error.message);
+        setPasswordRecovery(false);
+      },
       async signOut() {
         await client?.auth.signOut();
       },
     };
-  }, [user, loading, anonymousMode]);
+  }, [user, loading, passwordRecovery, anonymousMode]);
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
 }
@@ -104,11 +125,14 @@ const fallback: DataContextValue = {
   authEnabled: false,
   user: null,
   loading: false,
+  passwordRecovery: false,
   anonymousMode: true,
   repository: localRepository,
   continueAnonymously: () => {},
   signIn: async () => {},
   signUp: async () => ({ needsConfirmation: false }),
+  requestPasswordReset: async () => {},
+  updatePassword: async () => {},
   signOut: async () => {},
 };
 
