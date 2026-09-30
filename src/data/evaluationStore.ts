@@ -6,11 +6,9 @@ import type {
   MemberProfile,
   TeamMember,
 } from "@/types";
-import { loadFromStorage, saveToStorage } from "@/utils/storage";
 import { newId } from "./evaluations";
 import type { Repository } from "./repository";
 import * as tokenApi from "./tokenApi";
-import { isEvaluation, isRecord } from "./validators";
 
 export type StoreSnapshot = {
   profile: MemberProfile;
@@ -127,101 +125,5 @@ export function createPeerTokenStore(token: string): EvaluationStore {
     async remove() {},
     canChangeStatus: () => false,
     canDelete: () => false,
-  };
-}
-
-export const SELF_STORAGE_KEY = "self-assessment-data";
-const SELF_STORAGE_VERSION = 2;
-const LOCAL_SELF_ID = "local-self";
-
-type LocalSelfData = MemberProfile & { evaluations: Evaluation[] };
-
-const isLocalSelfData = (value: unknown): value is LocalSelfData =>
-  isRecord(value) &&
-  typeof value["name"] === "string" &&
-  typeof value["role"] === "string" &&
-  Array.isArray(value["evaluations"]) &&
-  value["evaluations"].every(isEvaluation);
-
-function loadLocalSelf(): LocalSelfData {
-  return (
-    loadFromStorage<LocalSelfData>(SELF_STORAGE_KEY, isLocalSelfData, SELF_STORAGE_VERSION) ?? {
-      name: "",
-      role: "",
-      templateId: null,
-      evaluations: [],
-    }
-  );
-}
-
-function updateLocalSelf(mutator: (data: LocalSelfData) => LocalSelfData) {
-  saveToStorage(SELF_STORAGE_KEY, mutator(loadLocalSelf()), SELF_STORAGE_VERSION);
-}
-
-/** Anonymous self-assessment kept on this device only. */
-export function createLocalSelfStore(): EvaluationStore {
-  const build = (input: EvaluationInput, createdAt?: string): Evaluation => ({
-    ...input,
-    id: newId(),
-    memberId: LOCAL_SELF_ID,
-    kind: "self",
-    createdAt: createdAt ?? new Date().toISOString(),
-  });
-  return {
-    kind: "self",
-    editableProfile: true,
-    showHistory: true,
-    memberId: () => null,
-    async load() {
-      const { evaluations, ...profile } = loadLocalSelf();
-      return { profile, evaluations };
-    },
-    async saveProfile(profile) {
-      updateLocalSelf((data) => ({ ...data, ...profile }));
-    },
-    async create(input) {
-      const existingDraft = loadLocalSelf().evaluations.some(
-        (evaluation) => evaluation.kind === "self" && evaluation.status === "draft"
-      );
-      if (input.status === "draft" && existingDraft) throw new Error("A draft already exists");
-      const evaluation = build(input);
-      updateLocalSelf((data) => ({ ...data, evaluations: [...data.evaluations, evaluation] }));
-      return evaluation;
-    },
-    async updateDraft(id, input) {
-      let updated: Evaluation | undefined;
-      updateLocalSelf((data) => ({
-        ...data,
-        evaluations: data.evaluations.map((evaluation) => {
-          if (evaluation.id !== id) return evaluation;
-          if (evaluation.status !== "draft") throw new Error("Only drafts can be updated");
-          updated = { ...evaluation, ...input, authorName: evaluation.authorName };
-          return updated;
-        }),
-      }));
-      if (!updated) throw new Error("Evaluation not found");
-      return updated;
-    },
-    async setStatus(id, status) {
-      const data = loadLocalSelf();
-      if (
-        status === "draft" &&
-        data.evaluations.some((evaluation) => evaluation.id !== id && evaluation.status === "draft")
-      ) {
-        throw new Error("A draft already exists");
-      }
-      updateLocalSelf((data) => ({
-        ...data,
-        evaluations: data.evaluations.map((e) => (e.id === id ? { ...e, status } : e)),
-      }));
-    },
-    async remove(id) {
-      updateLocalSelf((data) => ({
-        ...data,
-        evaluations: data.evaluations.filter((e) => e.id !== id),
-      }));
-    },
-    canChangeStatus: () => true,
-    canDelete: () => true,
   };
 }

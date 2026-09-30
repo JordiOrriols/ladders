@@ -22,8 +22,8 @@ describe("sharing helpers", () => {
   });
 
   it("builds a hash-based share link", () => {
-    const url = buildShareLink("assessment");
-    expect(url).toBe("https://example.com/app/index.html#/assessment");
+    const url = buildShareLink("e/11111111-1111-4111-8111-111111111111");
+    expect(url).toBe("https://example.com/app/index.html#/e/11111111-1111-4111-8111-111111111111");
   });
 
   it("copies to clipboard when available", async () => {

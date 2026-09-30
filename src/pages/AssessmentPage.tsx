@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Check, Download, LoaderCircle, Send, TriangleAlert } from "lucide-react";
+import { Check, LoaderCircle, Send, TriangleAlert } from "lucide-react";
 import { AssessmentFormColumn } from "@/components/organisms/AssessmentFormColumn";
 import { AssessmentHeader } from "@/components/organisms/AssessmentHeader";
 import { AssessmentPreview } from "@/components/organisms/AssessmentPreview";
@@ -13,7 +13,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useData } from "@/data/DataProvider";
 import {
-  createLocalSelfStore,
   createManagerStore,
   createPeerTokenStore,
   createSelfTokenStore,
@@ -39,7 +38,7 @@ function useRouteStore(): StoreState {
     if (pathname.startsWith("/member")) {
       return { store: createManagerStore(repository, id && id !== "new" ? id : null) };
     }
-    return { store: createLocalSelfStore() };
+    return { error: "notFound" };
   }, [id, token, pathname, repository, loading]);
 
   useEffect(() => {
@@ -184,17 +183,6 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
           </>
         }
         actions={[
-          ...(!isManager && !isPeer
-            ? [
-                {
-                  type: "button" as const,
-                  label: t("buttons.export"),
-                  icon: <Download className="w-4 h-4" />,
-                  onClick: editor.exportFile,
-                  eventId: `${mode}_export`,
-                },
-              ]
-            : []),
           ...(isPeer
             ? [
                 {

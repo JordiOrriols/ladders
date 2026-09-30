@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { VERTICALS } from "@/components/atoms/levelSelector";
-import { byNewest, computeAverage, latestOf } from "@/data/evaluations";
+import { computeAverage, latestOf } from "@/data/evaluations";
 import type { EvaluationStore } from "@/data/evaluationStore";
 import type {
   CommentMap,
@@ -10,7 +10,6 @@ import type {
   MemberProfile,
   TeamMember,
 } from "@/types";
-import { exportJson } from "@/utils/sharing";
 import { useVersionSelection } from "./useVersionSelection";
 
 type FormState = { currentLevels: LevelMap; goalLevels: LevelMap; comments: CommentMap };
@@ -291,16 +290,6 @@ export function useEvaluationEditor(store: EvaluationStore) {
     [updateForm]
   );
 
-  const exportFile = useCallback(() => {
-    const own = evaluations.filter((evaluation) => evaluation.kind === store.kind).sort(byNewest);
-    exportJson(`assessment-${profile.name.replace(/\s+/g, "-") || "unnamed"}`, {
-      version: 2,
-      profile,
-      evaluations: own,
-      exportedAt: new Date().toISOString(),
-    });
-  }, [evaluations, profile, store.kind]);
-
   const compare = useMemo(
     () =>
       selection.sorted.filter(
@@ -354,7 +343,6 @@ export function useEvaluationEditor(store: EvaluationStore) {
     toggleCompare: selection.toggleCompare,
     save,
     deleteVersion,
-    exportFile,
     reload: load,
   };
 }

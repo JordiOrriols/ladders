@@ -1,11 +1,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { createLocalRepository } from "@/data/localRepository";
-import {
-  createLocalSelfStore,
-  createManagerStore,
-  createPeerTokenStore,
-} from "@/data/evaluationStore";
+import { createManagerStore, createPeerTokenStore } from "@/data/evaluationStore";
 import type { EvaluationStore } from "@/data/evaluationStore";
 import { useEvaluationEditor } from "../useEvaluationEditor";
 
@@ -146,40 +142,6 @@ describe("useEvaluationEditor", () => {
     await act(async () => result.current.deleteVersion(old));
     expect(result.current.evaluations.map((e) => e.id)).not.toContain(old.id);
     expect(result.current.editingId).toBe(draft.id);
-  });
-
-  it("keeps anonymous self-assessments on the device with history", async () => {
-    const { result } = await renderEditor(createLocalSelfStore());
-    act(() => {
-      result.current.setName("Me");
-      result.current.handleCurrentChange("People", 2);
-    });
-    await waitFor(() => expect(result.current.autosaveState).toBe("saved"));
-
-    const reloaded = await renderEditor(createLocalSelfStore());
-    expect(reloaded.result.current.profile.name).toBe("Me");
-    expect(reloaded.result.current.evaluations).toHaveLength(1);
-    expect(reloaded.result.current.evaluations[0]?.kind).toBe("self");
-  });
-
-  it("ignores legacy self-assessment storage", async () => {
-    localStorage.setItem(
-      "self-assessment-data",
-      JSON.stringify({
-        version: 1,
-        data: {
-          name: "Old",
-          role: "Dev",
-          currentLevels: { Technology: 2 },
-          goalLevels: {},
-          comments: {},
-        },
-      })
-    );
-    const { result } = await renderEditor(createLocalSelfStore());
-    expect(result.current.profile.name).toBe("");
-    expect(result.current.evaluations).toHaveLength(0);
-    expect(result.current.form.currentLevels).toEqual({});
   });
 
   it("reports not found for unknown peer links", async () => {

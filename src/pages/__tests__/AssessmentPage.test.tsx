@@ -18,7 +18,6 @@ const renderAt = (path: string) =>
           <Route path="/member/:id" element={<AssessmentPage />} />
           <Route path="/e/:token" element={<AssessmentPage />} />
           <Route path="/v/:token" element={<ViewPage />} />
-          <Route path="/assessment" element={<AssessmentPage />} />
         </Routes>
       </I18nextProvider>
     </MemoryRouter>
@@ -45,25 +44,6 @@ describe("AssessmentPage", () => {
       expect(await repo.listEvaluations(member!.id)).toHaveLength(1);
     });
     expect(screen.queryByRole("button", { name: "Share" })).not.toBeInTheDocument();
-  });
-
-  it("renders the anonymous self-assessment with history and file actions", async () => {
-    renderAt("/assessment");
-    expect(await screen.findByTestId("version-panel")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /Export/ })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Publish" })).toBeDisabled();
-    expect(screen.queryByRole("button", { name: "More save options" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "New version" })).not.toBeInTheDocument();
-  });
-
-  it("exports the current self-assessment history without offering import", async () => {
-    const createObjectURL = vi.fn(() => "blob:x");
-    Object.assign(URL, { createObjectURL, revokeObjectURL: vi.fn() });
-    renderAt("/assessment");
-    await screen.findByTestId("version-panel");
-    expect(screen.queryByRole("button", { name: "Import" })).not.toBeInTheDocument();
-    await userEvent.click(screen.getByRole("button", { name: /Export/ }));
-    expect(createObjectURL).toHaveBeenCalled();
   });
 
   it("shows not found for a missing member or invalid token", async () => {
