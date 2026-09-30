@@ -323,6 +323,7 @@
     "description": "Deseu el vostre equip de forma segura i obtingueu enllaços permanents. Les dades d'aquest dispositiu es pugen a un compte nou buit.",
     "email": "Email",
     "password": "Contrasenya",
+    "continueWithGitHub": "Continuar amb GitHub",
     "forgotPassword": "Heu oblidat la contrasenya?",
     "forgotPasswordTitle": "Restablir la contrasenya",
     "forgotPasswordDescription": "Introduïu el vostre email i us enviarem un enllaç segur per restablir-la.",

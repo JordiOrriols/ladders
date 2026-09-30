@@ -6,9 +6,12 @@ import { I18nextProvider } from "react-i18next";
 import i18n from "@/i18n";
 import { LoginDialog } from "../LoginDialog";
 
-const { requestPasswordReset } = vi.hoisted(() => ({ requestPasswordReset: vi.fn() }));
+const { requestPasswordReset, signInWithGitHub } = vi.hoisted(() => ({
+  requestPasswordReset: vi.fn(),
+  signInWithGitHub: vi.fn(),
+}));
 vi.mock("@/data/DataProvider", () => ({
-  useData: () => ({ signIn: vi.fn(), signUp: vi.fn(), requestPasswordReset }),
+  useData: () => ({ signIn: vi.fn(), signInWithGitHub, signUp: vi.fn(), requestPasswordReset }),
 }));
 
 const renderDialog = () =>
@@ -19,7 +22,17 @@ const renderDialog = () =>
   );
 
 describe("LoginDialog password reset", () => {
-  beforeEach(() => requestPasswordReset.mockReset());
+  beforeEach(() => {
+    requestPasswordReset.mockReset();
+    signInWithGitHub.mockReset();
+  });
+
+  it("starts GitHub OAuth", async () => {
+    signInWithGitHub.mockResolvedValue(undefined);
+    renderDialog();
+    await userEvent.click(screen.getByRole("button", { name: "Continue with GitHub" }));
+    expect(signInWithGitHub).toHaveBeenCalledOnce();
+  });
 
   it("requests a reset email without asking for a password", async () => {
     requestPasswordReset.mockResolvedValue(undefined);

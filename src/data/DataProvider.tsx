@@ -14,6 +14,7 @@ type DataContextValue = {
   passwordRecovery: boolean;
   repository: Repository | null;
   signIn(email: string, password: string): Promise<void>;
+  signInWithGitHub(): Promise<void>;
   signUp(email: string, password: string): Promise<{ needsConfirmation: boolean }>;
   requestPasswordReset(email: string): Promise<void>;
   updatePassword(password: string): Promise<void>;
@@ -66,6 +67,14 @@ export function DataProvider({ children }: { children: ReactNode }) {
         const { error } = await client.auth.signInWithPassword({ email, password });
         if (error) throw new Error(error.message);
       },
+      async signInWithGitHub() {
+        if (!client) return;
+        const { error } = await client.auth.signInWithOAuth({
+          provider: "github",
+          options: { redirectTo: `${window.location.origin}${window.location.pathname}` },
+        });
+        if (error) throw new Error(error.message);
+      },
       async signUp(email, password) {
         if (!client) return { needsConfirmation: false };
         const { data, error } = await client.auth.signUp({
@@ -105,6 +114,7 @@ const fallback: DataContextValue = {
   passwordRecovery: false,
   repository: null,
   signIn: async () => {},
+  signInWithGitHub: async () => {},
   signUp: async () => ({ needsConfirmation: false }),
   requestPasswordReset: async () => {},
   updatePassword: async () => {},

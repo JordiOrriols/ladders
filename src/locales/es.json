@@ -323,6 +323,7 @@
     "description": "Guarde su equipo de forma segura y obtenga enlaces permanentes. Los datos de este dispositivo se suben a una cuenta nueva vacía.",
     "email": "Email",
     "password": "Contraseña",
+    "continueWithGitHub": "Continuar con GitHub",
     "forgotPassword": "¿Ha olvidado la contraseña?",
     "forgotPasswordTitle": "Restablecer la contraseña",
     "forgotPasswordDescription": "Introduzca su email y le enviaremos un enlace seguro para restablecerla.",

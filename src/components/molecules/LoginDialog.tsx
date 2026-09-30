@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Github } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useData } from "@/data/DataProvider";
 import { Button } from "../ui/button";
@@ -24,7 +25,7 @@ type AuthMode = "signIn" | "signUp" | "forgotPassword";
 
 export function LoginDialog({ isOpen, onClose, initialMode = "signIn" }: Props) {
   const { t } = useTranslation();
-  const { signIn, signUp, requestPasswordReset } = useData();
+  const { signIn, signInWithGitHub, signUp, requestPasswordReset } = useData();
   const [mode, setMode] = useState<AuthMode>(initialMode);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -71,6 +72,18 @@ export function LoginDialog({ isOpen, onClose, initialMode = "signIn" }: Props) 
     }
   };
 
+  const handleGitHub = async () => {
+    setError(null);
+    setInfo(null);
+    setBusy(true);
+    try {
+      await signInWithGitHub();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
+      setBusy(false);
+    }
+  };
+
   return (
     <AlertDialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <AlertDialogContent>
@@ -89,6 +102,19 @@ export function LoginDialog({ isOpen, onClose, initialMode = "signIn" }: Props) 
               {t(mode === "forgotPassword" ? "auth.forgotPasswordDescription" : "auth.description")}
             </AlertDialogDescription>
           </AlertDialogHeader>
+          {mode !== "forgotPassword" && (
+            <Button
+              eventId="auth_github"
+              type="button"
+              variant="outline"
+              disabled={busy}
+              onClick={() => void handleGitHub()}
+              className="w-full"
+            >
+              <Github className="h-4 w-4" />
+              {t("auth.continueWithGitHub")}
+            </Button>
+          )}
           <div className="space-y-3">
             <div>
               <Label htmlFor="login-email">{t("auth.email")}</Label>

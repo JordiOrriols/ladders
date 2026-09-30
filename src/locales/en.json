@@ -322,6 +322,7 @@
     "description": "Save your team securely and get permanent sharing links. Data on this device is uploaded to a new empty account.",
     "email": "Email",
     "password": "Password",
+    "continueWithGitHub": "Continue with GitHub",
     "forgotPassword": "Forgot password?",
     "forgotPasswordTitle": "Reset your password",
     "forgotPasswordDescription": "Enter your email address and we'll send you a secure reset link.",

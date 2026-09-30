@@ -18,6 +18,7 @@ const { auth, state } = vi.hoisted(() => {
         return { data: { subscription: { unsubscribe: vi.fn() } } };
       }),
       signInWithPassword: vi.fn(async () => ({ error: null })),
+      signInWithOAuth: vi.fn(async () => ({ data: { provider: "github" }, error: null })),
       signUp: vi.fn(async () => ({ data: { session: null }, error: null })),
       resetPasswordForEmail: vi.fn(async () => ({ data: {}, error: null })),
       updateUser: vi.fn(async () => ({ data: { user: null }, error: null })),
@@ -28,13 +29,21 @@ const { auth, state } = vi.hoisted(() => {
 
 vi.mock("../supabaseClient", () => ({ supabase: { auth } }));
 function RepoKind() {
-  const { repository, loading, passwordRecovery, requestPasswordReset, updatePassword } = useData();
+  const {
+    repository,
+    loading,
+    passwordRecovery,
+    requestPasswordReset,
+    updatePassword,
+    signInWithGitHub,
+  } = useData();
   return (
     <div>
       <span data-testid="repo">{loading ? "loading" : (repository?.kind ?? "none")}</span>
       <span data-testid="recovery">{String(passwordRecovery)}</span>
       <button onClick={() => void requestPasswordReset("a@b.co")}>Request reset</button>
       <button onClick={() => void updatePassword("new-password")}>Update password</button>
+      <button onClick={() => void signInWithGitHub()}>GitHub</button>
     </div>
   );
 }
@@ -97,6 +106,15 @@ describe("DataProvider + login", () => {
     await userEvent.click(await screen.findByRole("button", { name: "Request reset" }));
     expect(auth.resetPasswordForEmail).toHaveBeenCalledWith("a@b.co", {
       redirectTo: `${window.location.origin}${window.location.pathname}`,
+    });
+  });
+
+  it("starts GitHub OAuth with the deployment base URL", async () => {
+    renderApp();
+    await userEvent.click(await screen.findByRole("button", { name: "GitHub" }));
+    expect(auth.signInWithOAuth).toHaveBeenCalledWith({
+      provider: "github",
+      options: { redirectTo: `${window.location.origin}${window.location.pathname}` },
     });
   });
 

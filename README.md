@@ -58,6 +58,13 @@ In Supabase Dashboard under **Authentication → URL Configuration**:
 
 Email/password authentication must be enabled. Password-reset emails redirect to the application base URL, where Supabase restores the PKCE recovery session.
 
+To enable GitHub login:
+
+1. Create a GitHub OAuth App.
+2. Set its callback URL to `https://<project-ref>.supabase.co/auth/v1/callback`.
+3. In Supabase Dashboard under **Authentication → Providers → GitHub**, enable GitHub and enter the OAuth App client ID and secret.
+4. Keep the application base URL in Supabase's redirect allow-list.
+
 ## Local Supabase
 
 To run the complete stack locally:
