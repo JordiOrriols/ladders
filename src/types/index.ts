@@ -3,10 +3,31 @@ export type CommentMap = Record<string, string>;
 
 export type EvaluationKind = "manager" | "self" | "peer";
 export type EvaluationStatus = "draft" | "published";
+export type TeamAccess = "owner" | "editor" | "viewer";
+export type SharedTeamAccess = Exclude<TeamAccess, "owner">;
+
+export interface Team {
+  id: string;
+  ownerId: string;
+  name: string;
+  isDefault: boolean;
+  access: TeamAccess;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TeamShare {
+  teamId: string;
+  userId: string;
+  email: string;
+  access: SharedTeamAccess;
+  sharedAt: string;
+}
 
 /** Summary used by team views; levels come from the latest manager and self versions. */
 export interface Member {
   id: string;
+  teamId: string;
   name: string;
   role?: string;
   currentLevels: LevelMap;
@@ -19,6 +40,7 @@ export interface Member {
 
 export interface TeamMember {
   id: string;
+  teamId: string;
   name: string;
   role: string;
   templateId: string | null;

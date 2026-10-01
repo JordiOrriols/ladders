@@ -7,6 +7,10 @@ type Response = { data: unknown; error: { message: string } | null };
 /** Minimal chainable stand-in for the PostgREST query builder. */
 function fakeClient(queue: Response[]) {
   const calls: unknown[][] = [];
+  const rpc = vi.fn((name: string, args?: Record<string, unknown>) => {
+    calls.push(["rpc", name, args]);
+    return Promise.resolve(queue.shift() ?? { data: null, error: null });
+  });
   const from = vi.fn((table: string) => {
     const builder: Record<string, unknown> = {};
     for (const method of ["select", "insert", "update", "delete", "eq", "order"]) {
@@ -20,11 +24,12 @@ function fakeClient(queue: Response[]) {
       Promise.resolve(queue.shift() ?? { data: null, error: null }).then(resolve, reject);
     return builder;
   });
-  return { client: { from } as unknown as SupabaseClient, calls };
+  return { client: { from, rpc } as unknown as SupabaseClient, calls };
 }
 
 const memberRow = {
   id: "m1",
+  team_id: "t1",
   name: "Ada",
   role: null,
   template_id: "D3",
@@ -33,6 +38,16 @@ const memberRow = {
   view_token: "v",
   view_enabled: true,
   created_at: "2026-01-01",
+};
+
+const teamRow = {
+  id: "t1",
+  owner_id: "u1",
+  name: "Platform",
+  is_default: false,
+  access_level: "owner",
+  created_at: "2026-01-01",
+  updated_at: "2026-01-01",
 };
 
 const evaluationRow = {
@@ -53,11 +68,42 @@ describe("supabaseRepository", () => {
     const [member] = await createSupabaseRepository(client).listMembers();
     expect(member).toMatchObject({
       id: "m1",
+      teamId: "t1",
       role: "",
       templateId: "D3",
       selfToken: "s",
       viewEnabled: true,
     });
+  });
+
+  it("lists accessible teams and maps access", async () => {
+    const { client, calls } = fakeClient([{ data: [teamRow], error: null }]);
+    const teams = await createSupabaseRepository(client).listTeams();
+    expect(teams[0]).toMatchObject({ id: "t1", ownerId: "u1", access: "owner" });
+    expect(calls).toContainEqual(["rpc", "list_accessible_teams", undefined]);
+  });
+
+  it("shares teams and moves members through RPCs", async () => {
+    const { client, calls } = fakeClient([
+      { data: null, error: null },
+      { data: null, error: null },
+      { data: memberRow, error: null },
+    ]);
+    const repo = createSupabaseRepository(client);
+    await repo.shareTeamByEmail("t1", "ada@example.com", "editor");
+    await repo.updateTeamShare("t1", "u2", "viewer");
+    const moved = await repo.moveMember("m1", "t1");
+    expect(moved.teamId).toBe("t1");
+    expect(calls).toContainEqual([
+      "rpc",
+      "share_team_by_email",
+      { p_team_id: "t1", p_email: "ada@example.com", p_access: "editor" },
+    ]);
+    expect(calls).toContainEqual([
+      "rpc",
+      "update_team_share",
+      { p_team_id: "t1", p_user_id: "u2", p_access: "viewer" },
+    ]);
   });
 
   it("returns null for a missing member and throws on errors", async () => {

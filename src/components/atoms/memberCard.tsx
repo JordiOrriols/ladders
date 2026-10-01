@@ -1,16 +1,8 @@
 import React from "react";
 import { User, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import type { Member } from "@/types";
 import RadarChart, { SERIES_COLORS } from "./radarChart";
-
-interface Member {
-  id: string;
-  name: string;
-  role?: string;
-  currentLevels: Record<string, number>;
-  goalLevels: Record<string, number>;
-  selfAssessmentLevels?: Record<string, number>;
-}
 
 interface MemberCardProps {
   member: Member;

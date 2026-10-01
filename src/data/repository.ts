@@ -4,6 +4,9 @@ import type {
   EvaluationKind,
   EvaluationStatus,
   MemberProfile,
+  SharedTeamAccess,
+  Team,
+  TeamShare,
   TeamMember,
 } from "@/types";
 
@@ -11,9 +14,18 @@ export type MemberPatch = Partial<MemberProfile> & { viewEnabled?: boolean };
 
 export interface Repository {
   readonly kind: "remote";
-  listMembers(): Promise<TeamMember[]>;
+  listTeams(): Promise<Team[]>;
+  createTeam(name: string): Promise<Team>;
+  updateTeam(id: string, name: string): Promise<Team>;
+  deleteTeam(id: string): Promise<void>;
+  listTeamShares(teamId: string): Promise<TeamShare[]>;
+  shareTeamByEmail(teamId: string, email: string, access: SharedTeamAccess): Promise<void>;
+  updateTeamShare(teamId: string, userId: string, access: SharedTeamAccess): Promise<void>;
+  removeTeamShare(teamId: string, userId: string): Promise<void>;
+  moveMember(memberId: string, teamId: string): Promise<TeamMember>;
+  listMembers(teamId?: string): Promise<TeamMember[]>;
   getMember(id: string): Promise<TeamMember | null>;
-  createMember(profile: MemberProfile): Promise<TeamMember>;
+  createMember(profile: MemberProfile, teamId?: string): Promise<TeamMember>;
   updateMember(id: string, patch: MemberPatch): Promise<TeamMember>;
   deleteMember(id: string): Promise<void>;
   /** All evaluations visible to the owner, optionally scoped to one member. */

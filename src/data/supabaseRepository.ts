@@ -1,9 +1,17 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Evaluation, EvaluationInput, TeamMember } from "@/types";
+import type {
+  Evaluation,
+  EvaluationInput,
+  SharedTeamAccess,
+  Team,
+  TeamMember,
+  TeamShare,
+} from "@/types";
 import type { MemberPatch, Repository } from "./repository";
 
 export type MemberRow = {
   id: string;
+  team_id: string;
   name: string;
   role: string | null;
   template_id: string | null;
@@ -12,6 +20,24 @@ export type MemberRow = {
   view_token: string;
   view_enabled: boolean;
   created_at: string;
+};
+
+type TeamRow = {
+  id: string;
+  owner_id: string;
+  name: string;
+  is_default: boolean;
+  access_level?: Team["access"];
+  created_at: string;
+  updated_at: string;
+};
+
+type TeamShareRow = {
+  team_id: string;
+  user_id: string;
+  email: string;
+  access_level: SharedTeamAccess;
+  shared_at: string;
 };
 
 export type EvaluationRow = {
@@ -27,12 +53,14 @@ export type EvaluationRow = {
 };
 
 const MEMBER_COLUMNS =
-  "id,name,role,template_id,self_token,peer_token,view_token,view_enabled,created_at";
+  "id,team_id,name,role,template_id,self_token,peer_token,view_token,view_enabled,created_at";
+const TEAM_COLUMNS = "id,owner_id,name,is_default,created_at,updated_at";
 const EVALUATION_COLUMNS =
   "id,member_id,kind,status,author_name,current_levels,goal_levels,comments,created_at";
 
 const toMember = (row: MemberRow): TeamMember => ({
   id: row.id,
+  teamId: row.team_id,
   name: row.name,
   role: row.role ?? "",
   templateId: row.template_id,
@@ -41,6 +69,24 @@ const toMember = (row: MemberRow): TeamMember => ({
   viewToken: row.view_token,
   viewEnabled: row.view_enabled,
   createdAt: row.created_at,
+});
+
+const toTeam = (row: TeamRow): Team => ({
+  id: row.id,
+  ownerId: row.owner_id,
+  name: row.name,
+  isDefault: row.is_default,
+  access: row.access_level ?? "owner",
+  createdAt: row.created_at,
+  updatedAt: row.updated_at,
+});
+
+const toTeamShare = (row: TeamShareRow): TeamShare => ({
+  teamId: row.team_id,
+  userId: row.user_id,
+  email: row.email,
+  access: row.access_level,
+  sharedAt: row.shared_at,
 });
 
 export const toEvaluation = (row: EvaluationRow): Evaluation => ({
@@ -81,10 +127,73 @@ function unwrap<T>({ data, error }: { data: T | null; error: { message: string }
 export function createSupabaseRepository(client: SupabaseClient): Repository {
   return {
     kind: "remote",
-    async listMembers() {
-      const rows = unwrap<MemberRow[]>(
-        await client.from("members").select(MEMBER_COLUMNS).order("created_at")
+    async listTeams() {
+      const rows = unwrap<TeamRow[]>(await client.rpc("list_accessible_teams"));
+      return rows.map(toTeam);
+    },
+    async createTeam(name) {
+      const row = unwrap<TeamRow>(
+        await client.from("teams").insert({ name }).select(TEAM_COLUMNS).single<TeamRow>()
       );
+      return toTeam(row);
+    },
+    async updateTeam(id, name) {
+      const row = unwrap<TeamRow>(
+        await client
+          .from("teams")
+          .update({ name })
+          .eq("id", id)
+          .select(TEAM_COLUMNS)
+          .single<TeamRow>()
+      );
+      return toTeam(row);
+    },
+    async deleteTeam(id) {
+      const { error } = await client.from("teams").delete().eq("id", id);
+      if (error) throw new Error(error.message);
+    },
+    async listTeamShares(teamId) {
+      const rows = unwrap<TeamShareRow[]>(
+        await client.rpc("list_team_shares", { p_team_id: teamId })
+      );
+      return rows.map(toTeamShare);
+    },
+    async shareTeamByEmail(teamId, email, access) {
+      const { error } = await client.rpc("share_team_by_email", {
+        p_team_id: teamId,
+        p_email: email,
+        p_access: access,
+      });
+      if (error) throw new Error(error.message);
+    },
+    async updateTeamShare(teamId, userId, access) {
+      const { error } = await client.rpc("update_team_share", {
+        p_team_id: teamId,
+        p_user_id: userId,
+        p_access: access,
+      });
+      if (error) throw new Error(error.message);
+    },
+    async removeTeamShare(teamId, userId) {
+      const { error } = await client.rpc("remove_team_share", {
+        p_team_id: teamId,
+        p_user_id: userId,
+      });
+      if (error) throw new Error(error.message);
+    },
+    async moveMember(memberId, teamId) {
+      const row = unwrap<MemberRow>(
+        await client.rpc("move_member_to_team", {
+          p_member_id: memberId,
+          p_team_id: teamId,
+        })
+      );
+      return toMember(row);
+    },
+    async listMembers(teamId) {
+      let query = client.from("members").select(MEMBER_COLUMNS);
+      if (teamId) query = query.eq("team_id", teamId);
+      const rows = unwrap<MemberRow[]>(await query.order("created_at"));
       return rows.map(toMember);
     },
     async getMember(id) {
@@ -96,11 +205,16 @@ export function createSupabaseRepository(client: SupabaseClient): Repository {
       if (error) throw new Error(error.message);
       return data ? toMember(data) : null;
     },
-    async createMember(profile) {
+    async createMember(profile, teamId) {
       const row = unwrap<MemberRow>(
         await client
           .from("members")
-          .insert({ name: profile.name, role: profile.role, template_id: profile.templateId })
+          .insert({
+            name: profile.name,
+            role: profile.role,
+            template_id: profile.templateId,
+            ...(teamId ? { team_id: teamId } : {}),
+          })
           .select(MEMBER_COLUMNS)
           .single<MemberRow>()
       );

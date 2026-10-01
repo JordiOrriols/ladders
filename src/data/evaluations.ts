@@ -32,6 +32,7 @@ export function toMemberSummary(member: TeamMember, evaluations: Evaluation[]): 
   const self = latestOf(own, "self", true);
   return {
     id: member.id,
+    teamId: member.teamId,
     name: member.name,
     role: member.role,
     templateId: member.templateId,
