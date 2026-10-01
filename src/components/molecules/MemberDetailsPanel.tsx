@@ -43,9 +43,11 @@ function MemberDetailsPanelComponent({
           <h2 className="text-2xl font-semibold text-slate-800">{member.name}</h2>
           {member.role && <p className="text-slate-500">{member.role}</p>}
         </div>
-        {!readOnly && <Button eventId="member_details_edit" variant="outline" onClick={handleEditClick}>
-          {t("buttons.edit")}
-        </Button>}
+        {!readOnly && (
+          <Button eventId="member_details_edit" variant="outline" onClick={handleEditClick}>
+            {t("buttons.edit")}
+          </Button>
+        )}
       </div>
 
       <EvaluationViewer

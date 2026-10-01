@@ -59,10 +59,28 @@ describe("TeamTab", () => {
     renderWithI18n(
       <TeamTab
         teams={[
-          { id: "team-1", ownerId: "owner", name: "Platform", isDefault: true, access: "owner", createdAt: "", updatedAt: "" },
-          { id: "team-2", ownerId: "owner", name: "Product", isDefault: false, access: "owner", createdAt: "", updatedAt: "" },
+          {
+            id: "team-1",
+            ownerId: "owner",
+            name: "Platform",
+            isDefault: true,
+            access: "owner",
+            createdAt: "",
+            updatedAt: "",
+          },
+          {
+            id: "team-2",
+            ownerId: "owner",
+            name: "Product",
+            isDefault: false,
+            access: "owner",
+            createdAt: "",
+            updatedAt: "",
+          },
         ]}
-        members={[{ id: "member-1", teamId: "team-1", name: "Ada", currentLevels: {}, goalLevels: {} }]}
+        members={[
+          { id: "member-1", teamId: "team-1", name: "Ada", currentLevels: {}, goalLevels: {} },
+        ]}
         onAddMember={vi.fn()}
         onEditMember={vi.fn()}
         onDeleteMember={vi.fn()}
@@ -84,10 +102,28 @@ describe("TeamTab", () => {
     renderWithI18n(
       <TeamTab
         teams={[
-          { id: "team-1", ownerId: "owner", name: "Platform", isDefault: true, access: "owner", createdAt: "", updatedAt: "" },
-          { id: "team-2", ownerId: "owner", name: "Product", isDefault: false, access: "owner", createdAt: "", updatedAt: "" },
+          {
+            id: "team-1",
+            ownerId: "owner",
+            name: "Platform",
+            isDefault: true,
+            access: "owner",
+            createdAt: "",
+            updatedAt: "",
+          },
+          {
+            id: "team-2",
+            ownerId: "owner",
+            name: "Product",
+            isDefault: false,
+            access: "owner",
+            createdAt: "",
+            updatedAt: "",
+          },
         ]}
-        members={[{ id: "member-1", teamId: "team-1", name: "Ada", currentLevels: {}, goalLevels: {} }]}
+        members={[
+          { id: "member-1", teamId: "team-1", name: "Ada", currentLevels: {}, goalLevels: {} },
+        ]}
         onAddMember={vi.fn()}
         onEditMember={vi.fn()}
         onDeleteMember={vi.fn()}

@@ -48,7 +48,9 @@ export function SmartGoalsPanel({ memberId, repository, readOnly = false }: Prop
     repository
       .listGoals(memberId)
       .then((nextGoals) => active && setGoals(nextGoals))
-      .catch((reason) => active && setError(reason instanceof Error ? reason.message : String(reason)))
+      .catch(
+        (reason) => active && setError(reason instanceof Error ? reason.message : String(reason))
+      )
       .finally(() => active && setLoading(false));
     return () => {
       active = false;
@@ -119,10 +121,17 @@ export function SmartGoalsPanel({ memberId, repository, readOnly = false }: Prop
         <p className="mt-1 text-sm text-slate-500">{t("smartGoals.description")}</p>
       </div>
 
-      {error && <p role="alert" className="text-sm text-red-600">{error}</p>}
+      {error && (
+        <p role="alert" className="text-sm text-red-600">
+          {error}
+        </p>
+      )}
 
       {!readOnly && (
-        <form onSubmit={addGoal} className="space-y-4 rounded-xl border border-slate-200 bg-white p-5">
+        <form
+          onSubmit={addGoal}
+          className="space-y-4 rounded-xl border border-slate-200 bg-white p-5"
+        >
           <div className="grid gap-4 md:grid-cols-[1fr_180px]">
             <div>
               <Label htmlFor="new-goal-title">{t("smartGoals.goalTitle")}</Label>
@@ -211,7 +220,9 @@ export function SmartGoalsPanel({ memberId, repository, readOnly = false }: Prop
                   </div>
                 </div>
                 <div className="mt-4">
-                  <Label htmlFor={`goal-description-${goal.id}`}>{t("smartGoals.goalDescription")}</Label>
+                  <Label htmlFor={`goal-description-${goal.id}`}>
+                    {t("smartGoals.goalDescription")}
+                  </Label>
                   <textarea
                     id={`goal-description-${goal.id}`}
                     value={goal.description}

@@ -61,7 +61,10 @@ describe("team dialogs", () => {
     await userEvent.click(screen.getByRole("button", { name: "Share" }));
     expect(onShare).toHaveBeenCalledWith("grace@example.com", "editor");
 
-    await userEvent.selectOptions(screen.getByLabelText("Permission for ada@example.com"), "editor");
+    await userEvent.selectOptions(
+      screen.getByLabelText("Permission for ada@example.com"),
+      "editor"
+    );
     expect(onChangeAccess).toHaveBeenCalledWith("user-2", "editor");
 
     await userEvent.click(screen.getByRole("button", { name: "Remove ada@example.com" }));

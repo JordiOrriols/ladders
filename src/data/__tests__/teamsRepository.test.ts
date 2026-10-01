@@ -38,7 +38,10 @@ describe("team repository contract", () => {
       comments: "",
     });
 
-    expect((await repo.listGoals(member.id))[0]).toMatchObject({ id: goal.id, title: "Improve onboarding" });
+    expect((await repo.listGoals(member.id))[0]).toMatchObject({
+      id: goal.id,
+      title: "Improve onboarding",
+    });
     await repo.updateGoal(goal.id, { ...goal, progress: 50 });
     expect((await repo.listGoals(member.id))[0]?.progress).toBe(50);
     await repo.deleteGoal(goal.id);

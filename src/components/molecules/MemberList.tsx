@@ -35,44 +35,47 @@ function MemberListComponent({
             const team = teams.find((candidate) => candidate.id === member.teamId);
             const previousTeamId = members[index - 1]?.teamId;
             return (
-            <React.Fragment key={member.id}>
-            {team && team.id !== previousTeamId && (
-              <h4 className="px-1 pt-3 text-xs font-semibold uppercase text-slate-400">
-                {team.name}
-              </h4>
-            )}
-            <button
-              onClick={() => handleMemberClick(member)}
-              data-testid={`member-card-${member.id}`}
-              className={`w-full p-4 rounded-xl border text-left transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
-                selectedMemberId === member.id
-                  ? "bg-indigo-50 border-indigo-200"
-                  : "bg-white border-slate-200 hover:border-slate-300"
-              }`}
-              aria-selected={selectedMemberId === member.id}
-              aria-label={`${member.name}${member.role ? `, ${member.role}` : ""}`}
-            >
-              <div className="flex items-center gap-3">
-                <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
-                    selectedMemberId === member.id ? "bg-indigo-100" : "bg-slate-100"
+              <React.Fragment key={member.id}>
+                {team && team.id !== previousTeamId && (
+                  <h4 className="px-1 pt-3 text-xs font-semibold uppercase text-slate-400">
+                    {team.name}
+                  </h4>
+                )}
+                <button
+                  onClick={() => handleMemberClick(member)}
+                  data-testid={`member-card-${member.id}`}
+                  className={`w-full p-4 rounded-xl border text-left transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
+                    selectedMemberId === member.id
+                      ? "bg-indigo-50 border-indigo-200"
+                      : "bg-white border-slate-200 hover:border-slate-300"
                   }`}
-                  aria-hidden="true"
+                  aria-selected={selectedMemberId === member.id}
+                  aria-label={`${member.name}${member.role ? `, ${member.role}` : ""}`}
                 >
-                  <User
-                    className={`w-5 h-5 ${
-                      selectedMemberId === member.id ? "text-indigo-600" : "text-slate-500"
-                    }`}
-                  />
-                </div>
-                <div className="min-w-0">
-                  <p className="font-medium text-slate-800 truncate">{member.name}</p>
-                  {member.role && <p className="text-xs text-slate-500 truncate">{member.role}</p>}
-                </div>
-              </div>
-            </button>
-            </React.Fragment>
-          )})}
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
+                        selectedMemberId === member.id ? "bg-indigo-100" : "bg-slate-100"
+                      }`}
+                      aria-hidden="true"
+                    >
+                      <User
+                        className={`w-5 h-5 ${
+                          selectedMemberId === member.id ? "text-indigo-600" : "text-slate-500"
+                        }`}
+                      />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="font-medium text-slate-800 truncate">{member.name}</p>
+                      {member.role && (
+                        <p className="text-xs text-slate-500 truncate">{member.role}</p>
+                      )}
+                    </div>
+                  </div>
+                </button>
+              </React.Fragment>
+            );
+          })}
           <button
             type="button"
             onClick={() => onAddMember(teams.find((team) => team.access !== "viewer")?.id)}

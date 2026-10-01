@@ -60,26 +60,26 @@ export default function MemberCard({
           </div>
         </div>
         {!readOnly && (
-        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button
-            eventId="member_card_edit"
-            size="icon"
-            variant="ghost"
-            className="h-8 w-8"
-            onClick={handleEditClick}
-          >
-            <Pencil className="w-4 h-4 text-slate-400" />
-          </Button>
-          <Button
-            eventId="member_card_delete"
-            size="icon"
-            variant="ghost"
-            className="h-8 w-8"
-            onClick={handleDeleteClick}
-          >
-            <Trash2 className="w-4 h-4 text-slate-400 hover:text-red-500" />
-          </Button>
-        </div>
+          <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <Button
+              eventId="member_card_edit"
+              size="icon"
+              variant="ghost"
+              className="h-8 w-8"
+              onClick={handleEditClick}
+            >
+              <Pencil className="w-4 h-4 text-slate-400" />
+            </Button>
+            <Button
+              eventId="member_card_delete"
+              size="icon"
+              variant="ghost"
+              className="h-8 w-8"
+              onClick={handleDeleteClick}
+            >
+              <Trash2 className="w-4 h-4 text-slate-400 hover:text-red-500" />
+            </Button>
+          </div>
         )}
       </div>
 

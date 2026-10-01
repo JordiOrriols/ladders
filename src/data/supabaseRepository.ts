@@ -168,9 +168,7 @@ export function createSupabaseRepository(client: SupabaseClient): Repository {
       return rows.map(toTeam);
     },
     async createTeam(name) {
-      const row = unwrap<TeamRow>(
-        await client.rpc("create_team", { p_name: name })
-      );
+      const row = unwrap<TeamRow>(await client.rpc("create_team", { p_name: name }));
       return toTeam(row);
     },
     async updateTeam(id, name) {

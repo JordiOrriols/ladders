@@ -249,110 +249,110 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
           )}
 
           <TabsContent value="evaluation">
-          <div
-            className={`grid gap-6 ${
-              store.showHistory || isManager ? "xl:grid-cols-[260px_1fr_1fr]" : "lg:grid-cols-2"
-            }`}
-          >
-          {store.showHistory && (
-            <div className="space-y-4">
-              <VersionPanel
-                evaluations={editor.evaluations}
-                selectedId={editor.editingId}
-                compareIds={editor.compareIds}
-                onSelect={editor.selectVersion}
-                onToggleCompare={editor.toggleCompare}
-                onDelete={(e) => void editor.deleteVersion(e)}
-                canDelete={store.canDelete}
-              />
-            </div>
-          )}
-
-          <AssessmentFormColumn
-            name={editor.profile.name}
-            role={editor.profile.role}
-            currentLevels={editor.form.currentLevels}
-            goalLevels={editor.form.goalLevels}
-            comments={editor.form.comments}
-            expandedVertical={editor.expandedVertical}
-            onNameChange={editor.setName}
-            onRoleChange={editor.setRole}
-            onCurrentChange={editor.handleCurrentChange}
-            onGoalChange={editor.handleGoalChange}
-            onCommentChange={editor.handleCommentChange}
-            onToggleVertical={editor.toggleVertical}
-            readOnlyProfile={!store.editableProfile}
-            hideGoal={hideGoal}
-            labels={{
-              personalTitle: t(`${mode}.personalInfo`),
-              competenciesTitle: t(`${mode}.competencies`),
-              nameLabel: t("forms.name"),
-              roleLabel: t("forms.role"),
-              namePlaceholder: t(
-                isManager ? "forms.memberNamePlaceholder" : "forms.namePlaceholder"
-              ),
-              rolePlaceholder: t("forms.rolePlaceholder"),
-            }}
-            {...(howToItems.length > 0
-              ? { howTo: { title: t("selfAssessment.howToUse"), items: howToItems } }
-              : {})}
-            profileExtra={
-              isPeer ? (
-                <div>
-                  <Label htmlFor="author-name">{t("peerAssessment.yourName")}</Label>
-                  <Input
-                    id="author-name"
-                    value={editor.authorName}
-                    required
-                    maxLength={120}
-                    onChange={(e) => editor.setAuthorName(e.target.value)}
-                    placeholder={t("forms.namePlaceholder")}
-                    className="mt-1"
+            <div
+              className={`grid gap-6 ${
+                store.showHistory || isManager ? "xl:grid-cols-[260px_1fr_1fr]" : "lg:grid-cols-2"
+              }`}
+            >
+              {store.showHistory && (
+                <div className="space-y-4">
+                  <VersionPanel
+                    evaluations={editor.evaluations}
+                    selectedId={editor.editingId}
+                    compareIds={editor.compareIds}
+                    onSelect={editor.selectVersion}
+                    onToggleCompare={editor.toggleCompare}
+                    onDelete={(e) => void editor.deleteVersion(e)}
+                    canDelete={store.canDelete}
                   />
                 </div>
-              ) : null
-            }
-          />
+              )}
 
-          <AssessmentPreview
-            title={t(`${mode}.preview`, {
-              name: editor.profile.name || t("memberAssessment.member"),
-            })}
-            radar={{ series, size: 350 }}
-            metrics={[
-              {
-                label: t("memberAssessment.currentAverage"),
-                value: editor.currentAverage.toFixed(1),
-                tone: "current",
-              },
-              ...(hideGoal
-                ? []
-                : [
-                    {
-                      label: t("memberAssessment.goalAverage"),
-                      value: editor.goalAverage.toFixed(1),
-                      tone: "goal" as const,
-                    },
-                  ]),
-            ]}
-            verticalStats={editor.verticalStats.map(({ vertical, current, goal }) =>
-              hideGoal ? { vertical, current } : { vertical, current, goal }
-            )}
-            labels={{
-              sectionTitle: t("memberAssessment.competencyLevels"),
-              currentLabel: "L",
-              goalLabel: "L",
-            }}
-            comments={isManager ? <CommentGroups groups={commentGroups} /> : null}
-          >
-            {isManager && (
-              <TemplatePanel
-                templateId={editor.profile.templateId}
-                onChange={editor.setTemplateId}
+              <AssessmentFormColumn
+                name={editor.profile.name}
+                role={editor.profile.role}
+                currentLevels={editor.form.currentLevels}
+                goalLevels={editor.form.goalLevels}
+                comments={editor.form.comments}
+                expandedVertical={editor.expandedVertical}
+                onNameChange={editor.setName}
+                onRoleChange={editor.setRole}
+                onCurrentChange={editor.handleCurrentChange}
+                onGoalChange={editor.handleGoalChange}
+                onCommentChange={editor.handleCommentChange}
+                onToggleVertical={editor.toggleVertical}
+                readOnlyProfile={!store.editableProfile}
+                hideGoal={hideGoal}
+                labels={{
+                  personalTitle: t(`${mode}.personalInfo`),
+                  competenciesTitle: t(`${mode}.competencies`),
+                  nameLabel: t("forms.name"),
+                  roleLabel: t("forms.role"),
+                  namePlaceholder: t(
+                    isManager ? "forms.memberNamePlaceholder" : "forms.namePlaceholder"
+                  ),
+                  rolePlaceholder: t("forms.rolePlaceholder"),
+                }}
+                {...(howToItems.length > 0
+                  ? { howTo: { title: t("selfAssessment.howToUse"), items: howToItems } }
+                  : {})}
+                profileExtra={
+                  isPeer ? (
+                    <div>
+                      <Label htmlFor="author-name">{t("peerAssessment.yourName")}</Label>
+                      <Input
+                        id="author-name"
+                        value={editor.authorName}
+                        required
+                        maxLength={120}
+                        onChange={(e) => editor.setAuthorName(e.target.value)}
+                        placeholder={t("forms.namePlaceholder")}
+                        className="mt-1"
+                      />
+                    </div>
+                  ) : null
+                }
               />
-            )}
-          </AssessmentPreview>
-          </div>
+
+              <AssessmentPreview
+                title={t(`${mode}.preview`, {
+                  name: editor.profile.name || t("memberAssessment.member"),
+                })}
+                radar={{ series, size: 350 }}
+                metrics={[
+                  {
+                    label: t("memberAssessment.currentAverage"),
+                    value: editor.currentAverage.toFixed(1),
+                    tone: "current",
+                  },
+                  ...(hideGoal
+                    ? []
+                    : [
+                        {
+                          label: t("memberAssessment.goalAverage"),
+                          value: editor.goalAverage.toFixed(1),
+                          tone: "goal" as const,
+                        },
+                      ]),
+                ]}
+                verticalStats={editor.verticalStats.map(({ vertical, current, goal }) =>
+                  hideGoal ? { vertical, current } : { vertical, current, goal }
+                )}
+                labels={{
+                  sectionTitle: t("memberAssessment.competencyLevels"),
+                  currentLabel: "L",
+                  goalLabel: "L",
+                }}
+                comments={isManager ? <CommentGroups groups={commentGroups} /> : null}
+              >
+                {isManager && (
+                  <TemplatePanel
+                    templateId={editor.profile.templateId}
+                    onChange={editor.setTemplateId}
+                  />
+                )}
+              </AssessmentPreview>
+            </div>
           </TabsContent>
           {isManager && (
             <TabsContent value="goals">

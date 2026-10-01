@@ -101,7 +101,13 @@ export function createInMemoryRepository(): Repository {
     },
     async createGoal(memberId: string, input: SmartGoalInput) {
       const now = new Date().toISOString();
-      const goal: SmartGoal = { id: id("goal"), memberId, ...input, createdAt: now, updatedAt: now };
+      const goal: SmartGoal = {
+        id: id("goal"),
+        memberId,
+        ...input,
+        createdAt: now,
+        updatedAt: now,
+      };
       goals = [...goals, goal];
       return goal;
     },
