@@ -11,7 +11,7 @@ const repository = createInMemoryRepository();
 vi.mock("@/data/DataProvider", () => ({ useData: () => ({ repository }) }));
 
 describe("MemberDetailsPanel SMART goals", () => {
-  it("shows goals read-only for view-only access", async () => {
+  it("always shows goals as read-only text", async () => {
     const member = await repository.createMember({ name: "Ada", role: "Dev", templateId: null });
     await repository.createGoal(member.id, {
       title: "Lead onboarding",
@@ -26,17 +26,17 @@ describe("MemberDetailsPanel SMART goals", () => {
         <MemberDetailsPanel
           member={{ ...member, currentLevels: {}, goalLevels: {} }}
           onEdit={vi.fn()}
-          readOnly
         />
       </I18nextProvider>
     );
 
     await userEvent.click(screen.getByRole("tab", { name: "SMART Goals" }));
 
-    expect(await screen.findByDisplayValue("Lead onboarding")).toBeDisabled();
-    expect(screen.getByDisplayValue("On track")).toBeDisabled();
+    expect(await screen.findByText("Lead onboarding")).toBeInTheDocument();
+    expect(screen.getByText("On track")).toBeInTheDocument();
+    expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "60");
+    expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Add goal" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Save changes" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "Edit" })).not.toBeInTheDocument();
   });
 });

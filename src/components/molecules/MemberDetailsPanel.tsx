@@ -73,7 +73,7 @@ function MemberDetailsPanelComponent({
           />
         </TabsContent>
         <TabsContent value="goals">
-          <SmartGoalsPanel store={goalStore} readOnly={readOnly} />
+          <SmartGoalsPanel store={goalStore} readOnly />
         </TabsContent>
       </Tabs>
     </div>

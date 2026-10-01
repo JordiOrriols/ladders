@@ -179,6 +179,64 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
         <div className="space-y-4">
           {goals.map((goal) => {
             const remaining = daysRemaining(goal.dueDate);
+            const remainingLabel =
+              remaining === null
+                ? t("smartGoals.noDate")
+                : remaining < 0
+                  ? t("smartGoals.overdue", { days: Math.abs(remaining) })
+                  : t("smartGoals.daysRemaining", { days: remaining });
+            if (readOnly) {
+              return (
+                <article
+                  key={goal.id}
+                  className="rounded-xl border border-slate-200 bg-white p-5"
+                  data-testid="goal-read"
+                >
+                  <div className="flex flex-wrap items-start justify-between gap-2">
+                    <h3 className="font-semibold text-slate-800">{goal.title}</h3>
+                    <span className="flex items-center gap-1 text-xs text-slate-500">
+                      <CalendarDays className="h-4 w-4" />
+                      {goal.dueDate && `${goal.dueDate} · `}
+                      {remainingLabel}
+                    </span>
+                  </div>
+                  {goal.description && (
+                    <p className="mt-2 whitespace-pre-line text-sm text-slate-600">
+                      {goal.description}
+                    </p>
+                  )}
+                  <div className="mt-4 flex items-center gap-3">
+                    <span className="shrink-0 text-xs font-medium text-slate-500">
+                      {t("smartGoals.progress")}
+                    </span>
+                    <div
+                      role="progressbar"
+                      aria-label={t("smartGoals.progress")}
+                      aria-valuemin={0}
+                      aria-valuemax={100}
+                      aria-valuenow={goal.progress}
+                      className="h-2 min-w-0 flex-1 overflow-hidden rounded-full bg-slate-100"
+                    >
+                      <div
+                        className="h-full rounded-full bg-indigo-500"
+                        style={{ width: `${goal.progress}%` }}
+                      />
+                    </div>
+                    <span className="w-12 text-right text-sm font-medium">{goal.progress}%</span>
+                  </div>
+                  {goal.comments && (
+                    <div className="mt-4 rounded-lg bg-slate-50 p-3">
+                      <p className="text-xs font-medium text-slate-500">
+                        {t("smartGoals.comments")}
+                      </p>
+                      <p className="mt-1 whitespace-pre-line text-sm text-slate-700">
+                        {goal.comments}
+                      </p>
+                    </div>
+                  )}
+                </article>
+              );
+            }
             return (
               <article key={goal.id} className="rounded-xl border border-slate-200 bg-white p-5">
                 <div className="grid gap-4 md:grid-cols-[1fr_180px]">
@@ -263,11 +321,7 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
                 </div>
                 <div className="mt-3 flex items-center gap-2 text-xs text-slate-500">
                   <CalendarDays className="h-4 w-4" />
-                  {remaining === null
-                    ? t("smartGoals.noDate")
-                    : remaining < 0
-                      ? t("smartGoals.overdue", { days: Math.abs(remaining) })
-                      : t("smartGoals.daysRemaining", { days: remaining })}
+                  {remainingLabel}
                 </div>
                 <div className="mt-4">
                   <Label htmlFor={`goal-comments-${goal.id}`}>{t("smartGoals.comments")}</Label>
