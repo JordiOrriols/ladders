@@ -45,6 +45,21 @@
     "team": "Equipo",
     "individual": "Individual"
   },
+  "teams": {
+    "create": "Crear equipo",
+    "createTitle": "Crear un equipo",
+    "createDescription": "Agrupe a las personas que trabajan juntas y gestione el acceso por separado.",
+    "name": "Nombre del equipo",
+    "share": "Compartir",
+    "shareTitle": "Compartir {{name}}",
+    "shareDescription": "Añada una cuenta existente por email y elija acceso de lectura o edición.",
+    "permission": "Permiso",
+    "permissionFor": "Permiso para {{email}}",
+    "viewer": "Ver",
+    "editor": "Editar",
+    "noShares": "Este equipo todavía no se ha compartido.",
+    "removeShare": "Eliminar a {{email}}"
+  },
   "teamView": {
     "empty": "Sin miembros del equipo todavía",
     "emptyDescription": "Añada su primer miembro del equipo para comenzar a rastrear competencias",

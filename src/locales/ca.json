@@ -45,6 +45,21 @@
     "team": "Equip",
     "individual": "Individual"
   },
+  "teams": {
+    "create": "Crear equip",
+    "createTitle": "Crear un equip",
+    "createDescription": "Agrupeu les persones que treballen juntes i gestioneu l'accés per separat.",
+    "name": "Nom de l'equip",
+    "share": "Compartir",
+    "shareTitle": "Compartir {{name}}",
+    "shareDescription": "Afegiu un compte existent per email i trieu accés de lectura o edició.",
+    "permission": "Permís",
+    "permissionFor": "Permís per a {{email}}",
+    "viewer": "Veure",
+    "editor": "Editar",
+    "noShares": "Aquest equip encara no s'ha compartit.",
+    "removeShare": "Eliminar {{email}}"
+  },
   "teamView": {
     "empty": "Sense membres de l'equip encara",
     "emptyDescription": "Afegiu el vostre primer membre de l'equip per comenzar a rastrejar competències",

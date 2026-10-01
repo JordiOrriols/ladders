@@ -44,6 +44,21 @@
     "team": "Team",
     "individual": "Individual"
   },
+  "teams": {
+    "create": "Create team",
+    "createTitle": "Create a team",
+    "createDescription": "Group members who work together and manage access separately.",
+    "name": "Team name",
+    "share": "Share",
+    "shareTitle": "Share {{name}}",
+    "shareDescription": "Add an existing account by email and choose read-only or edit access.",
+    "permission": "Permission",
+    "permissionFor": "Permission for {{email}}",
+    "viewer": "View",
+    "editor": "Edit",
+    "noShares": "This team has not been shared yet.",
+    "removeShare": "Remove {{email}}"
+  },
   "teamView": {
     "empty": "No team members yet",
     "emptyDescription": "Add your first team member to start tracking competencies",
