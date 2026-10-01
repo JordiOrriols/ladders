@@ -42,7 +42,7 @@ type TeamShareRow = {
   shared_at: string;
 };
 
-type SmartGoalRow = {
+export type SmartGoalRow = {
   id: string;
   member_id: string;
   title: string;
@@ -105,7 +105,7 @@ const toTeamShare = (row: TeamShareRow): TeamShare => ({
   sharedAt: row.shared_at,
 });
 
-const toGoal = (row: SmartGoalRow): SmartGoal => ({
+export const toGoal = (row: SmartGoalRow): SmartGoal => ({
   id: row.id,
   memberId: row.member_id,
   title: row.title,

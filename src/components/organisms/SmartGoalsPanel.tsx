@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { CalendarDays, Check, Plus, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { SmartGoal, SmartGoalInput } from "@/types";
-import type { Repository } from "@/data/repository";
+import type { GoalStore } from "@/data/goalStore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,12 +22,11 @@ function daysRemaining(dueDate: string | null) {
 }
 
 interface Props {
-  memberId: string | null;
-  repository: Repository | null;
+  store: GoalStore | null;
   readOnly?: boolean;
 }
 
-export function SmartGoalsPanel({ memberId, repository, readOnly = false }: Props) {
+export function SmartGoalsPanel({ store, readOnly = false }: Props) {
   const { t } = useTranslation();
   const [goals, setGoals] = useState<SmartGoal[]>([]);
   const [draft, setDraft] = useState<SmartGoalInput>(emptyGoal);
@@ -37,7 +36,7 @@ export function SmartGoalsPanel({ memberId, repository, readOnly = false }: Prop
 
   useEffect(() => {
     let active = true;
-    if (!memberId || !repository) {
+    if (!store) {
       setGoals([]);
       setLoading(false);
       return () => {
@@ -45,8 +44,8 @@ export function SmartGoalsPanel({ memberId, repository, readOnly = false }: Prop
       };
     }
     setLoading(true);
-    repository
-      .listGoals(memberId)
+    store
+      .list()
       .then((nextGoals) => active && setGoals(nextGoals))
       .catch(
         (reason) => active && setError(reason instanceof Error ? reason.message : String(reason))
@@ -55,15 +54,15 @@ export function SmartGoalsPanel({ memberId, repository, readOnly = false }: Prop
     return () => {
       active = false;
     };
-  }, [memberId, repository]);
+  }, [store]);
 
   const addGoal = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!memberId || !repository || !draft.title.trim()) return;
+    if (!store || !draft.title.trim()) return;
     setSaving(true);
     setError(null);
     try {
-      const goal = await repository.createGoal(memberId, {
+      const goal = await store.create({
         ...draft,
         title: draft.title.trim(),
         dueDate: draft.dueDate || null,
@@ -78,11 +77,11 @@ export function SmartGoalsPanel({ memberId, repository, readOnly = false }: Prop
   };
 
   const updateGoal = async (goal: SmartGoal) => {
-    if (!repository) return;
+    if (!store) return;
     setSaving(true);
     setError(null);
     try {
-      const updated = await repository.updateGoal(goal.id, {
+      const updated = await store.update(goal.id, {
         title: goal.title.trim(),
         description: goal.description,
         dueDate: goal.dueDate || null,
@@ -98,10 +97,10 @@ export function SmartGoalsPanel({ memberId, repository, readOnly = false }: Prop
   };
 
   const removeGoal = async (goalId: string) => {
-    if (!repository) return;
+    if (!store) return;
     setSaving(true);
     try {
-      await repository.deleteGoal(goalId);
+      await store.remove(goalId);
       setGoals((current) => current.filter((goal) => goal.id !== goalId));
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : String(reason));

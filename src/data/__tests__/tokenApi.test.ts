@@ -28,6 +28,38 @@ const input = {
 describe("tokenApi", () => {
   beforeEach(() => rpc.mockReset());
 
+  it("manages SMART goals through token RPCs", async () => {
+    const goalRow = {
+      id: "g1",
+      member_id: "m1",
+      title: "Mentor",
+      description: "",
+      due_date: null,
+      progress: 20,
+      comments: "",
+      created_at: "2026-01-02",
+      updated_at: "2026-01-02",
+    };
+    const goal = { title: "Mentor", description: "", dueDate: null, progress: 20, comments: "" };
+    rpc.mockResolvedValue({ data: goalRow, error: null });
+    expect(await tokenApi.createTokenGoal(TOKEN, goal)).toMatchObject({ memberId: "m1" });
+    expect(rpc).toHaveBeenLastCalledWith("token_goal_create", {
+      p_token: TOKEN,
+      p_title: "Mentor",
+      p_description: "",
+      p_due_date: null,
+      p_progress: 20,
+      p_comments: "",
+    });
+    await tokenApi.updateTokenGoal(TOKEN, "g1", goal);
+    expect(rpc).toHaveBeenLastCalledWith(
+      "token_goal_update",
+      expect.objectContaining({ p_id: "g1" })
+    );
+    rpc.mockResolvedValueOnce({ data: [goalRow], error: null });
+    expect(await tokenApi.listTokenGoals(TOKEN)).toHaveLength(1);
+  });
+
   it("validates token format before calling the backend", async () => {
     expect(tokenApi.isValidToken(TOKEN)).toBe(true);
     expect(tokenApi.isValidToken("abc")).toBe(false);

@@ -1,7 +1,13 @@
-import type { Evaluation, EvaluationInput, EvaluationStatus } from "@/types";
+import type {
+  Evaluation,
+  EvaluationInput,
+  EvaluationStatus,
+  SmartGoal,
+  SmartGoalInput,
+} from "@/types";
 import { supabase } from "./supabaseClient";
-import { toEvaluation, toEvaluationPayload } from "./supabaseRepository";
-import type { EvaluationRow } from "./supabaseRepository";
+import { toEvaluation, toEvaluationPayload, toGoal } from "./supabaseRepository";
+import type { EvaluationRow, SmartGoalRow } from "./supabaseRepository";
 
 export type LinkKind = "self" | "peer" | "view";
 
@@ -107,4 +113,37 @@ export async function submitPeerEvaluation(token: string, input: EvaluationInput
 export async function getPublicView(token: string): Promise<Evaluation[]> {
   const rows = await rpc<EvaluationRow[]>("public_view", { p_token: token });
   return rows.map(toEvaluation);
+}
+
+const goalArgs = (input: SmartGoalInput) => ({
+  p_title: input.title,
+  p_description: input.description,
+  p_due_date: input.dueDate,
+  p_progress: input.progress,
+  p_comments: input.comments,
+});
+
+export async function listTokenGoals(token: string): Promise<SmartGoal[]> {
+  const rows = await rpc<SmartGoalRow[]>("token_goals_list", { p_token: token });
+  return rows.map(toGoal);
+}
+
+export async function createTokenGoal(token: string, input: SmartGoalInput): Promise<SmartGoal> {
+  return toGoal(
+    await rpc<SmartGoalRow>("token_goal_create", { p_token: token, ...goalArgs(input) })
+  );
+}
+
+export async function updateTokenGoal(
+  token: string,
+  id: string,
+  input: SmartGoalInput
+): Promise<SmartGoal> {
+  return toGoal(
+    await rpc<SmartGoalRow>("token_goal_update", { p_token: token, p_id: id, ...goalArgs(input) })
+  );
+}
+
+export async function deleteTokenGoal(token: string, id: string) {
+  await rpc<null>("token_goal_delete", { p_token: token, p_id: id });
 }

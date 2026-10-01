@@ -6,6 +6,7 @@ import { I18nextProvider } from "react-i18next";
 import i18n from "@/i18n";
 import { SmartGoalsPanel } from "../SmartGoalsPanel";
 import { createInMemoryRepository } from "@/data/__tests__/inMemoryRepository";
+import { createRepositoryGoalStore } from "@/data/goalStore";
 
 describe("SmartGoalsPanel", () => {
   it("creates and updates a SMART goal", async () => {
@@ -13,7 +14,7 @@ describe("SmartGoalsPanel", () => {
     const member = await repository.createMember({ name: "Ada", role: "Dev", templateId: null });
     render(
       <I18nextProvider i18n={i18n}>
-        <SmartGoalsPanel memberId={member.id} repository={repository} />
+        <SmartGoalsPanel store={createRepositoryGoalStore(repository, member.id)} />
       </I18nextProvider>
     );
 

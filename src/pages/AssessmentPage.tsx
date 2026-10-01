@@ -25,6 +25,7 @@ import { versionLabel } from "@/data/evaluations";
 import { buildRadarSeries, comparisonColor, evaluationAuthor } from "@/data/radarSeries";
 import { SERIES_COLORS } from "@/components/atoms/radarChart";
 import { isValidToken, resolveToken } from "@/data/tokenApi";
+import { createRepositoryGoalStore, createTokenGoalStore, type GoalStore } from "@/data/goalStore";
 import { EditorValidationError, useEvaluationEditor } from "@/hooks/useEvaluationEditor";
 import { PageMessage } from "./PageMessage";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -83,13 +84,23 @@ export default function AssessmentPage() {
 function AssessmentEditor({ store }: { store: EvaluationStore }) {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const { id: routeId } = useParams();
+  const { id: routeId, token } = useParams();
   const { repository } = useData();
   const editor = useEvaluationEditor(store);
   const isManager = store.kind === "manager";
   const isPeer = store.kind === "peer";
   const hideGoal = !isManager;
   const template = isManager ? findTemplate(editor.profile.templateId) : undefined;
+
+  const goalStore = useMemo<GoalStore | null>(() => {
+    if (isManager) {
+      return repository && editor.memberId
+        ? createRepositoryGoalStore(repository, editor.memberId)
+        : null;
+    }
+    return store.kind === "self" && token ? createTokenGoalStore(token) : null;
+  }, [isManager, repository, editor.memberId, store.kind, token]);
+  const showGoals = !isPeer;
 
   useEffect(() => {
     if (isManager && routeId === "new" && editor.memberId && editor.editingId) {
@@ -241,7 +252,7 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
 
       <main className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs defaultValue="evaluation" className="space-y-6">
-          {isManager && (
+          {showGoals && (
             <TabsList className="bg-white border border-slate-200">
               <TabsTrigger value="evaluation">{t("memberAssessment.evaluationTab")}</TabsTrigger>
               <TabsTrigger value="goals">{t("smartGoals.tab")}</TabsTrigger>
@@ -354,9 +365,9 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
               </AssessmentPreview>
             </div>
           </TabsContent>
-          {isManager && (
+          {showGoals && (
             <TabsContent value="goals">
-              <SmartGoalsPanel memberId={editor.memberId} repository={repository} />
+              <SmartGoalsPanel store={goalStore} />
             </TabsContent>
           )}
         </Tabs>

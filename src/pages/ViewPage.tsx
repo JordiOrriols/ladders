@@ -1,7 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { EvaluationViewer } from "@/components/organisms/EvaluationViewer";
+import { SmartGoalsPanel } from "@/components/organisms/SmartGoalsPanel";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { createTokenGoalStore } from "@/data/goalStore";
 import { getPublicView, isValidToken, resolveToken } from "@/data/tokenApi";
 import type { TokenInfo } from "@/data/tokenApi";
 import type { Evaluation } from "@/types";
@@ -16,6 +19,10 @@ export default function ViewPage() {
   const { token } = useParams();
   const { t } = useTranslation();
   const [state, setState] = useState<ViewState>({ kind: "loading" });
+  const goalStore = useMemo(
+    () => (state.kind === "ready" && token ? createTokenGoalStore(token) : null),
+    [state.kind, token]
+  );
 
   useEffect(() => {
     if (!isValidToken(token)) {
@@ -51,9 +58,23 @@ export default function ViewPage() {
         </div>
       </header>
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-2xl border border-slate-200 p-6">
-          <EvaluationViewer evaluations={state.evaluations} templateId={state.info.templateId} />
-        </div>
+        <Tabs defaultValue="evaluation" className="space-y-6">
+          <TabsList className="bg-white border border-slate-200">
+            <TabsTrigger value="evaluation">{t("memberAssessment.evaluationTab")}</TabsTrigger>
+            <TabsTrigger value="goals">{t("smartGoals.tab")}</TabsTrigger>
+          </TabsList>
+          <TabsContent value="evaluation">
+            <div className="bg-white rounded-2xl border border-slate-200 p-6">
+              <EvaluationViewer
+                evaluations={state.evaluations}
+                templateId={state.info.templateId}
+              />
+            </div>
+          </TabsContent>
+          <TabsContent value="goals">
+            <SmartGoalsPanel store={goalStore} />
+          </TabsContent>
+        </Tabs>
       </main>
     </div>
   );
