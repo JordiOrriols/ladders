@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
 import { I18nextProvider } from "react-i18next";
@@ -47,5 +47,35 @@ describe("TeamTab", () => {
     );
     await userEvent.click(screen.getByTestId("add-member-tile"));
     expect(onAddMember).toHaveBeenCalledOnce();
+  });
+
+  it("moves a member when dragged into another team", () => {
+    const onMoveMember = vi.fn();
+    const dataTransfer = {
+      effectAllowed: "",
+      setData: vi.fn(),
+      getData: vi.fn(() => "member-1"),
+    };
+    renderWithI18n(
+      <TeamTab
+        teams={[
+          { id: "team-1", ownerId: "owner", name: "Platform", isDefault: true, access: "owner", createdAt: "", updatedAt: "" },
+          { id: "team-2", ownerId: "owner", name: "Product", isDefault: false, access: "owner", createdAt: "", updatedAt: "" },
+        ]}
+        members={[{ id: "member-1", teamId: "team-1", name: "Ada", currentLevels: {}, goalLevels: {} }]}
+        onAddMember={vi.fn()}
+        onEditMember={vi.fn()}
+        onDeleteMember={vi.fn()}
+        onSelectMember={vi.fn()}
+        onMoveMember={onMoveMember}
+      />
+    );
+
+    fireEvent.dragStart(screen.getByTestId("member-card-member-1"), { dataTransfer });
+    const productSection = screen.getByRole("heading", { name: "Product" }).closest("section");
+    expect(productSection).not.toBeNull();
+    fireEvent.drop(productSection!, { dataTransfer });
+
+    expect(onMoveMember).toHaveBeenCalledWith("member-1", "team-2");
   });
 });

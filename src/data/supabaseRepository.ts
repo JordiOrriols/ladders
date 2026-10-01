@@ -3,6 +3,8 @@ import type {
   Evaluation,
   EvaluationInput,
   SharedTeamAccess,
+  SmartGoal,
+  SmartGoalInput,
   Team,
   TeamMember,
   TeamShare,
@@ -40,6 +42,18 @@ type TeamShareRow = {
   shared_at: string;
 };
 
+type SmartGoalRow = {
+  id: string;
+  member_id: string;
+  title: string;
+  description: string;
+  due_date: string | null;
+  progress: number;
+  comments: string;
+  created_at: string;
+  updated_at: string;
+};
+
 export type EvaluationRow = {
   id: string;
   member_id: string;
@@ -57,6 +71,8 @@ const MEMBER_COLUMNS =
 const TEAM_COLUMNS = "id,owner_id,name,is_default,created_at,updated_at";
 const EVALUATION_COLUMNS =
   "id,member_id,kind,status,author_name,current_levels,goal_levels,comments,created_at";
+const GOAL_COLUMNS =
+  "id,member_id,title,description,due_date,progress,comments,created_at,updated_at";
 
 const toMember = (row: MemberRow): TeamMember => ({
   id: row.id,
@@ -87,6 +103,26 @@ const toTeamShare = (row: TeamShareRow): TeamShare => ({
   email: row.email,
   access: row.access_level,
   sharedAt: row.shared_at,
+});
+
+const toGoal = (row: SmartGoalRow): SmartGoal => ({
+  id: row.id,
+  memberId: row.member_id,
+  title: row.title,
+  description: row.description,
+  dueDate: row.due_date,
+  progress: row.progress,
+  comments: row.comments,
+  createdAt: row.created_at,
+  updatedAt: row.updated_at,
+});
+
+const toGoalPayload = (input: SmartGoalInput) => ({
+  title: input.title,
+  description: input.description,
+  due_date: input.dueDate,
+  progress: input.progress,
+  comments: input.comments,
 });
 
 export const toEvaluation = (row: EvaluationRow): Evaluation => ({
@@ -189,6 +225,41 @@ export function createSupabaseRepository(client: SupabaseClient): Repository {
         })
       );
       return toMember(row);
+    },
+    async listGoals(memberId) {
+      const rows = unwrap<SmartGoalRow[]>(
+        await client
+          .from("smart_goals")
+          .select(GOAL_COLUMNS)
+          .eq("member_id", memberId)
+          .order("created_at")
+      );
+      return rows.map(toGoal);
+    },
+    async createGoal(memberId, input) {
+      const row = unwrap<SmartGoalRow>(
+        await client
+          .from("smart_goals")
+          .insert({ ...toGoalPayload(input), member_id: memberId })
+          .select(GOAL_COLUMNS)
+          .single<SmartGoalRow>()
+      );
+      return toGoal(row);
+    },
+    async updateGoal(id, input) {
+      const row = unwrap<SmartGoalRow>(
+        await client
+          .from("smart_goals")
+          .update(toGoalPayload(input))
+          .eq("id", id)
+          .select(GOAL_COLUMNS)
+          .single<SmartGoalRow>()
+      );
+      return toGoal(row);
+    },
+    async deleteGoal(id) {
+      const { error } = await client.from("smart_goals").delete().eq("id", id);
+      if (error) throw new Error(error.message);
     },
     async listMembers(teamId) {
       let query = client.from("members").select(MEMBER_COLUMNS);

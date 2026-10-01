@@ -5,6 +5,8 @@ import type {
   EvaluationStatus,
   MemberProfile,
   SharedTeamAccess,
+  SmartGoal,
+  SmartGoalInput,
   Team,
   TeamMember,
   TeamShare,
@@ -28,6 +30,7 @@ export function createInMemoryRepository(): Repository {
   let shares: TeamShare[] = [];
   let members: TeamMember[] = [];
   let evaluations: Evaluation[] = [];
+  let goals: SmartGoal[] = [];
 
   return {
     kind: "remote",
@@ -93,6 +96,25 @@ export function createInMemoryRepository(): Repository {
       members = members.map((member) => (member.id === memberId ? updated : member));
       return updated;
     },
+    async listGoals(memberId: string) {
+      return goals.filter((goal) => goal.memberId === memberId);
+    },
+    async createGoal(memberId: string, input: SmartGoalInput) {
+      const now = new Date().toISOString();
+      const goal: SmartGoal = { id: id("goal"), memberId, ...input, createdAt: now, updatedAt: now };
+      goals = [...goals, goal];
+      return goal;
+    },
+    async updateGoal(goalId: string, input: SmartGoalInput) {
+      const current = goals.find((goal) => goal.id === goalId);
+      if (!current) throw new Error("Goal not found");
+      const updated = { ...current, ...input, updatedAt: new Date().toISOString() };
+      goals = goals.map((goal) => (goal.id === goalId ? updated : goal));
+      return updated;
+    },
+    async deleteGoal(goalId: string) {
+      goals = goals.filter((goal) => goal.id !== goalId);
+    },
     async listMembers() {
       return members;
     },
@@ -123,6 +145,7 @@ export function createInMemoryRepository(): Repository {
     async deleteMember(memberId: string) {
       members = members.filter((member) => member.id !== memberId);
       evaluations = evaluations.filter((evaluation) => evaluation.memberId !== memberId);
+      goals = goals.filter((goal) => goal.memberId !== memberId);
     },
     async listEvaluations(memberId?: string) {
       return memberId

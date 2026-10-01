@@ -10,6 +10,8 @@ interface MemberCardProps {
   onDelete: (id: string) => void;
   onClick?: () => void;
   readOnly?: boolean;
+  draggable?: boolean;
+  onDragStart?: (event: React.DragEvent<HTMLDivElement>) => void;
 }
 
 export default function MemberCard({
@@ -18,6 +20,8 @@ export default function MemberCard({
   onDelete,
   onClick,
   readOnly = false,
+  draggable = false,
+  onDragStart,
 }: MemberCardProps) {
   const handleEditClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -36,6 +40,8 @@ export default function MemberCard({
       }`}
       onClick={onClick}
       data-testid={`member-card-${member.id}`}
+      draggable={draggable}
+      onDragStart={onDragStart}
     >
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">

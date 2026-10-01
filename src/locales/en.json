@@ -212,7 +212,26 @@
     "member": "Member",
     "currentAverage": "Current Average",
     "goalAverage": "Goal Average",
-    "competencyLevels": "Competency Levels"
+    "competencyLevels": "Competency Levels",
+    "evaluationTab": "Evaluation"
+  },
+  "smartGoals": {
+    "tab": "SMART Goals",
+    "title": "SMART Goals",
+    "description": "Turn growth priorities into clear, trackable commitments.",
+    "goalTitle": "Title",
+    "titlePlaceholder": "What outcome will you achieve?",
+    "goalDescription": "Description",
+    "dueDate": "Target date",
+    "progress": "Progress",
+    "comments": "Comments",
+    "add": "Add goal",
+    "save": "Save changes",
+    "delete": "Delete goal",
+    "empty": "No goals yet.",
+    "noDate": "No target date",
+    "daysRemaining": "{{days}} days remaining",
+    "overdue": "{{days}} days overdue"
   },
   "selfAssessment": {
     "title": "Self Assessment",

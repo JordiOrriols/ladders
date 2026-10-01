@@ -51,6 +51,12 @@ export default function Home() {
     await reload();
   };
 
+  const handleMoveMember = async (memberId: string, teamId: string) => {
+    if (!repository) return;
+    await repository.moveMember(memberId, teamId);
+    await reload();
+  };
+
   const openMember = (id: string) => navigate(`/member/${id}`);
 
   const openNewMember = (teamId?: string) =>
@@ -91,6 +97,7 @@ export default function Home() {
             onShowReference={() => setShowReference(true)}
             onCreateTeam={() => setShowCreateTeam(true)}
             onShareTeam={(selectedTeam) => void openTeamSharing(selectedTeam)}
+            onMoveMember={(memberId, teamId) => void handleMoveMember(memberId, teamId)}
           />
         </ErrorBoundary>
       </main>

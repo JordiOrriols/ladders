@@ -5,6 +5,8 @@ import type {
   EvaluationStatus,
   MemberProfile,
   SharedTeamAccess,
+  SmartGoal,
+  SmartGoalInput,
   Team,
   TeamShare,
   TeamMember,
@@ -23,6 +25,10 @@ export interface Repository {
   updateTeamShare(teamId: string, userId: string, access: SharedTeamAccess): Promise<void>;
   removeTeamShare(teamId: string, userId: string): Promise<void>;
   moveMember(memberId: string, teamId: string): Promise<TeamMember>;
+  listGoals(memberId: string): Promise<SmartGoal[]>;
+  createGoal(memberId: string, input: SmartGoalInput): Promise<SmartGoal>;
+  updateGoal(id: string, input: SmartGoalInput): Promise<SmartGoal>;
+  deleteGoal(id: string): Promise<void>;
   listMembers(teamId?: string): Promise<TeamMember[]>;
   getMember(id: string): Promise<TeamMember | null>;
   createMember(profile: MemberProfile, teamId?: string): Promise<TeamMember>;

@@ -15,6 +15,7 @@ interface TeamTabProps {
   onSelectMember: (member: Member) => void;
   onCreateTeam?: () => void;
   onShareTeam?: (team: Team) => void;
+  onMoveMember?: (memberId: string, teamId: string) => void;
 }
 
 export function TeamTab({
@@ -26,6 +27,7 @@ export function TeamTab({
   onSelectMember,
   onCreateTeam,
   onShareTeam,
+  onMoveMember,
 }: TeamTabProps) {
   const { t } = useTranslation();
 
@@ -87,8 +89,19 @@ export function TeamTab({
         const teamMembers =
           team.id === "all" ? members : members.filter((member) => member.teamId === team.id);
         const editable = team.access !== "viewer";
+        const handleDrop = (event: React.DragEvent<HTMLElement>) => {
+          event.preventDefault();
+          const memberId = event.dataTransfer.getData("text/member-id");
+          if (memberId && team.id !== "all" && onMoveMember) onMoveMember(memberId, team.id);
+        };
         return (
-          <section key={team.id} className="space-y-3" aria-labelledby={`team-${team.id}`}>
+          <section
+            key={team.id}
+            className="space-y-3"
+            aria-labelledby={`team-${team.id}`}
+            onDragOver={(event) => event.preventDefault()}
+            onDrop={handleDrop}
+          >
             <div className="flex items-center justify-between border-b border-slate-200 pb-2">
               <div className="flex min-w-0 items-center gap-2">
                 <h3 id={`team-${team.id}`} className="truncate font-semibold text-slate-800">
@@ -124,6 +137,11 @@ export function TeamTab({
                   onEdit={onEditMember}
                   onDelete={onDeleteMember}
                   readOnly={!editable}
+                  draggable={editable && !!onMoveMember}
+                  onDragStart={(event) => {
+                    event.dataTransfer.effectAllowed = "move";
+                    event.dataTransfer.setData("text/member-id", member.id);
+                  }}
                   {...(editable ? { onClick: () => handleMemberSelect(member) } : {})}
                 />
               ))}

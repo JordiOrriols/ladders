@@ -5,6 +5,7 @@ import { Check, LoaderCircle, Send, TriangleAlert } from "lucide-react";
 import { AssessmentFormColumn } from "@/components/organisms/AssessmentFormColumn";
 import { AssessmentHeader } from "@/components/organisms/AssessmentHeader";
 import { AssessmentPreview } from "@/components/organisms/AssessmentPreview";
+import { SmartGoalsPanel } from "@/components/organisms/SmartGoalsPanel";
 import { ShareAction } from "@/components/molecules/ShareAction";
 import { CommentGroups } from "@/components/molecules/CommentGroups";
 import { TemplatePanel } from "@/components/molecules/TemplatePanel";
@@ -26,6 +27,7 @@ import { SERIES_COLORS } from "@/components/atoms/radarChart";
 import { isValidToken, resolveToken } from "@/data/tokenApi";
 import { EditorValidationError, useEvaluationEditor } from "@/hooks/useEvaluationEditor";
 import { PageMessage } from "./PageMessage";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type StoreState = { store: EvaluationStore } | { error: "notFound" | "loading" };
 
@@ -238,11 +240,20 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
       />
 
       <main className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div
-          className={`grid gap-6 ${
-            store.showHistory || isManager ? "xl:grid-cols-[260px_1fr_1fr]" : "lg:grid-cols-2"
-          }`}
-        >
+        <Tabs defaultValue="evaluation" className="space-y-6">
+          {isManager && (
+            <TabsList className="bg-white border border-slate-200">
+              <TabsTrigger value="evaluation">{t("memberAssessment.evaluationTab")}</TabsTrigger>
+              <TabsTrigger value="goals">{t("smartGoals.tab")}</TabsTrigger>
+            </TabsList>
+          )}
+
+          <TabsContent value="evaluation">
+          <div
+            className={`grid gap-6 ${
+              store.showHistory || isManager ? "xl:grid-cols-[260px_1fr_1fr]" : "lg:grid-cols-2"
+            }`}
+          >
           {store.showHistory && (
             <div className="space-y-4">
               <VersionPanel
@@ -341,7 +352,14 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
               />
             )}
           </AssessmentPreview>
-        </div>
+          </div>
+          </TabsContent>
+          {isManager && (
+            <TabsContent value="goals">
+              <SmartGoalsPanel memberId={editor.memberId} repository={repository} />
+            </TabsContent>
+          )}
+        </Tabs>
       </main>
     </div>
   );

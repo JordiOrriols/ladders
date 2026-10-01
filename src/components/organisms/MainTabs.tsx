@@ -19,6 +19,7 @@ interface MainTabsProps {
   onShowReference: () => void;
   onCreateTeam?: () => void;
   onShareTeam?: (team: Team) => void;
+  onMoveMember?: (memberId: string, teamId: string) => void;
 }
 
 export function MainTabs({
@@ -32,6 +33,7 @@ export function MainTabs({
   onShowReference,
   onCreateTeam,
   onShareTeam,
+  onMoveMember,
 }: MainTabsProps) {
   const { t } = useTranslation();
 
@@ -79,6 +81,7 @@ export function MainTabs({
             onSelectMember={onSelectMember}
             {...(onCreateTeam ? { onCreateTeam } : {})}
             {...(onShareTeam ? { onShareTeam } : {})}
+            {...(onMoveMember ? { onMoveMember } : {})}
           />
         </ErrorBoundary>
       </TabsContent>

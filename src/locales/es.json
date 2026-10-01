@@ -213,7 +213,26 @@
     "member": "Miembro",
     "currentAverage": "Promedio Actual",
     "goalAverage": "Promedio de Objetivo",
-    "competencyLevels": "Niveles de Competencia"
+    "competencyLevels": "Niveles de Competencia",
+    "evaluationTab": "Evaluación"
+  },
+  "smartGoals": {
+    "tab": "Objetivos SMART",
+    "title": "Objetivos SMART",
+    "description": "Convierte las prioridades de crecimiento en compromisos claros y medibles.",
+    "goalTitle": "Título",
+    "titlePlaceholder": "¿Qué resultado alcanzarás?",
+    "goalDescription": "Descripción",
+    "dueDate": "Fecha objetivo",
+    "progress": "Progreso",
+    "comments": "Comentarios",
+    "add": "Añadir objetivo",
+    "save": "Guardar cambios",
+    "delete": "Eliminar objetivo",
+    "empty": "Todavía no hay objetivos.",
+    "noDate": "Sin fecha objetivo",
+    "daysRemaining": "Quedan {{days}} días",
+    "overdue": "{{days}} días de retraso"
   },
   "selfAssessment": {
     "title": "Autoevaluación",

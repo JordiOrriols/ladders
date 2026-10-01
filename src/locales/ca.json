@@ -213,7 +213,26 @@
     "member": "Membre",
     "currentAverage": "Mitjana Actual",
     "goalAverage": "Mitjana d'Objectiu",
-    "competencyLevels": "Nivells de Competència"
+    "competencyLevels": "Nivells de Competència",
+    "evaluationTab": "Avaluació"
+  },
+  "smartGoals": {
+    "tab": "Objectius SMART",
+    "title": "Objectius SMART",
+    "description": "Convertiu les prioritats de creixement en compromisos clars i mesurables.",
+    "goalTitle": "Títol",
+    "titlePlaceholder": "Quin resultat assolireu?",
+    "goalDescription": "Descripció",
+    "dueDate": "Data objectiu",
+    "progress": "Progrés",
+    "comments": "Comentaris",
+    "add": "Afegir objectiu",
+    "save": "Desar canvis",
+    "delete": "Eliminar objectiu",
+    "empty": "Encara no hi ha objectius.",
+    "noDate": "Sense data objectiu",
+    "daysRemaining": "Queden {{days}} dies",
+    "overdue": "{{days}} dies de retard"
   },
   "selfAssessment": {
     "title": "Autoevaluació",

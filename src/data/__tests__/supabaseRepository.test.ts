@@ -62,6 +62,18 @@ const evaluationRow = {
   created_at: "2026-01-02",
 };
 
+const goalRow = {
+  id: "g1",
+  member_id: "m1",
+  title: "Lead a design review",
+  description: "Facilitate the next architecture review.",
+  due_date: "2026-12-01",
+  progress: 40,
+  comments: "Pair with a staff engineer.",
+  created_at: "2026-01-02",
+  updated_at: "2026-01-03",
+};
+
 describe("supabaseRepository", () => {
   it("maps member rows to camelCase", async () => {
     const { client } = fakeClient([{ data: [memberRow], error: null }]);
@@ -110,6 +122,39 @@ describe("supabaseRepository", () => {
       "rpc",
       "update_team_share",
       { p_team_id: "t1", p_user_id: "u2", p_access: "viewer" },
+    ]);
+  });
+
+  it("creates, lists, updates and deletes SMART goals", async () => {
+    const { client, calls } = fakeClient([
+      { data: goalRow, error: null },
+      { data: [goalRow], error: null },
+      { data: goalRow, error: null },
+      { data: null, error: null },
+    ]);
+    const repo = createSupabaseRepository(client);
+    const input = {
+      title: goalRow.title,
+      description: goalRow.description,
+      dueDate: goalRow.due_date,
+      progress: goalRow.progress,
+      comments: goalRow.comments,
+    };
+    expect(await repo.createGoal("m1", input)).toMatchObject({ memberId: "m1", progress: 40 });
+    expect((await repo.listGoals("m1"))[0]?.title).toBe(goalRow.title);
+    await repo.updateGoal("g1", { ...input, progress: 75 });
+    await repo.deleteGoal("g1");
+    expect(calls).toContainEqual([
+      "smart_goals",
+      "insert",
+      {
+        title: input.title,
+        description: input.description,
+        due_date: input.dueDate,
+        progress: input.progress,
+        comments: input.comments,
+        member_id: "m1",
+      },
     ]);
   });
 

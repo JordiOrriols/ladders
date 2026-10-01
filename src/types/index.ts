@@ -24,6 +24,20 @@ export interface TeamShare {
   sharedAt: string;
 }
 
+export interface SmartGoal {
+  id: string;
+  memberId: string;
+  title: string;
+  description: string;
+  dueDate: string | null;
+  progress: number;
+  comments: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type SmartGoalInput = Omit<SmartGoal, "id" | "memberId" | "createdAt" | "updatedAt">;
+
 /** Summary used by team views; levels come from the latest manager and self versions. */
 export interface Member {
   id: string;
