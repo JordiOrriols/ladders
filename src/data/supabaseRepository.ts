@@ -133,7 +133,7 @@ export function createSupabaseRepository(client: SupabaseClient): Repository {
     },
     async createTeam(name) {
       const row = unwrap<TeamRow>(
-        await client.from("teams").insert({ name }).select(TEAM_COLUMNS).single<TeamRow>()
+        await client.rpc("create_team", { p_name: name })
       );
       return toTeam(row);
     },

@@ -83,6 +83,13 @@ describe("supabaseRepository", () => {
     expect(calls).toContainEqual(["rpc", "list_accessible_teams", undefined]);
   });
 
+  it("creates teams through the authenticated RPC", async () => {
+    const { client, calls } = fakeClient([{ data: teamRow, error: null }]);
+    const team = await createSupabaseRepository(client).createTeam("Platform");
+    expect(team).toMatchObject({ id: "t1", name: "Platform", access: "owner" });
+    expect(calls).toContainEqual(["rpc", "create_team", { p_name: "Platform" }]);
+  });
+
   it("shares teams and moves members through RPCs", async () => {
     const { client, calls } = fakeClient([
       { data: null, error: null },
