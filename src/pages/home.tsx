@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import type { Evaluation, SharedTeamAccess, Team, TeamMember, TeamShare } from "../types";
 import { Header } from "../components/molecules/Header";
 import { ConfirmDialog } from "../components/molecules/ConfirmDialog";
@@ -15,9 +16,11 @@ type TeamState = { teams: Team[]; members: TeamMember[]; evaluations: Evaluation
 
 export default function Home() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { repository, loading } = useData();
   const [team, setTeam] = useState<TeamState>({ teams: [], members: [], evaluations: [] });
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [deleteTeamId, setDeleteTeamId] = useState<string | null>(null);
   const [showReference, setShowReference] = useState(false);
   const [showCreateTeam, setShowCreateTeam] = useState(false);
   const [sharedTeam, setSharedTeam] = useState<Team | null>(null);
@@ -54,6 +57,14 @@ export default function Home() {
   const handleMoveMember = async (memberId: string, teamId: string) => {
     if (!repository) return;
     await repository.moveMember(memberId, teamId);
+    await reload();
+  };
+
+  const handleDeleteTeam = async () => {
+    if (!repository || !deleteTeamId) return;
+    const teamId = deleteTeamId;
+    setDeleteTeamId(null);
+    await repository.deleteTeam(teamId);
     await reload();
   };
 
@@ -98,6 +109,7 @@ export default function Home() {
             onCreateTeam={() => setShowCreateTeam(true)}
             onShareTeam={(selectedTeam) => void openTeamSharing(selectedTeam)}
             onMoveMember={(memberId, teamId) => void handleMoveMember(memberId, teamId)}
+            onDeleteTeam={(selectedTeam) => setDeleteTeamId(selectedTeam.id)}
           />
         </ErrorBoundary>
       </main>
@@ -109,6 +121,15 @@ export default function Home() {
           onCancel={() => setDeleteId(null)}
         />
       </ErrorBoundary>
+
+      <ConfirmDialog
+        isOpen={!!deleteTeamId}
+        onConfirm={() => void handleDeleteTeam()}
+        onCancel={() => setDeleteTeamId(null)}
+        title={t("teams.deleteTitle")}
+        description={t("teams.deleteDescription")}
+        confirmLabel={t("teams.delete")}
+      />
 
       <ErrorBoundary componentName="ReferenceModal">
         <ReferenceModal isOpen={showReference} onClose={() => setShowReference(false)} />

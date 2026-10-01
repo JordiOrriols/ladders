@@ -57,7 +57,11 @@
     "viewer": "View",
     "editor": "Edit",
     "noShares": "This team has not been shared yet.",
-    "removeShare": "Remove {{email}}"
+    "removeShare": "Remove {{email}}",
+    "delete": "Delete team",
+    "deleteAria": "Delete {{name}}",
+    "deleteTitle": "Delete empty team?",
+    "deleteDescription": "This permanently deletes the empty team and cannot be undone."
   },
   "teamView": {
     "empty": "No team members yet",

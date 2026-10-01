@@ -20,6 +20,7 @@ interface MainTabsProps {
   onCreateTeam?: () => void;
   onShareTeam?: (team: Team) => void;
   onMoveMember?: (memberId: string, teamId: string) => void;
+  onDeleteTeam?: (team: Team) => void;
 }
 
 export function MainTabs({
@@ -34,6 +35,7 @@ export function MainTabs({
   onCreateTeam,
   onShareTeam,
   onMoveMember,
+  onDeleteTeam,
 }: MainTabsProps) {
   const { t } = useTranslation();
 
@@ -82,6 +84,7 @@ export function MainTabs({
             {...(onCreateTeam ? { onCreateTeam } : {})}
             {...(onShareTeam ? { onShareTeam } : {})}
             {...(onMoveMember ? { onMoveMember } : {})}
+            {...(onDeleteTeam ? { onDeleteTeam } : {})}
           />
         </ErrorBoundary>
       </TabsContent>

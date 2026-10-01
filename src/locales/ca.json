@@ -58,7 +58,11 @@
     "viewer": "Veure",
     "editor": "Editar",
     "noShares": "Aquest equip encara no s'ha compartit.",
-    "removeShare": "Eliminar {{email}}"
+    "removeShare": "Eliminar {{email}}",
+    "delete": "Eliminar equip",
+    "deleteAria": "Eliminar {{name}}",
+    "deleteTitle": "Eliminar l'equip buit?",
+    "deleteDescription": "Això elimina permanentment l'equip buit i no es pot desfer."
   },
   "teamView": {
     "empty": "Sense membres de l'equip encara",

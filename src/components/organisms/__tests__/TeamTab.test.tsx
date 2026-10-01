@@ -78,4 +78,28 @@ describe("TeamTab", () => {
 
     expect(onMoveMember).toHaveBeenCalledWith("member-1", "team-2");
   });
+
+  it("shows delete beside sharing only for an empty non-default team", async () => {
+    const onDeleteTeam = vi.fn();
+    renderWithI18n(
+      <TeamTab
+        teams={[
+          { id: "team-1", ownerId: "owner", name: "Platform", isDefault: true, access: "owner", createdAt: "", updatedAt: "" },
+          { id: "team-2", ownerId: "owner", name: "Product", isDefault: false, access: "owner", createdAt: "", updatedAt: "" },
+        ]}
+        members={[{ id: "member-1", teamId: "team-1", name: "Ada", currentLevels: {}, goalLevels: {} }]}
+        onAddMember={vi.fn()}
+        onEditMember={vi.fn()}
+        onDeleteMember={vi.fn()}
+        onSelectMember={vi.fn()}
+        onShareTeam={vi.fn()}
+        onDeleteTeam={onDeleteTeam}
+      />
+    );
+
+    expect(screen.getByRole("button", { name: "Delete Product" })).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Delete Product" }));
+    expect(onDeleteTeam).toHaveBeenCalledWith(expect.objectContaining({ id: "team-2" }));
+    expect(screen.queryByRole("button", { name: "Delete Platform" })).not.toBeInTheDocument();
+  });
 });

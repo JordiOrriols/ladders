@@ -58,7 +58,11 @@
     "viewer": "Ver",
     "editor": "Editar",
     "noShares": "Este equipo todavía no se ha compartido.",
-    "removeShare": "Eliminar a {{email}}"
+    "removeShare": "Eliminar a {{email}}",
+    "delete": "Eliminar equipo",
+    "deleteAria": "Eliminar {{name}}",
+    "deleteTitle": "¿Eliminar equipo vacío?",
+    "deleteDescription": "Esto elimina permanentemente el equipo vacío y no se puede deshacer."
   },
   "teamView": {
     "empty": "Sin miembros del equipo todavía",

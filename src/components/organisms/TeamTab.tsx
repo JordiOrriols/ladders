@@ -1,5 +1,5 @@
 import React from "react";
-import { Plus, Share2 } from "lucide-react";
+import { Plus, Share2, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { Member, Team } from "../../types";
 import MemberCard from "../atoms/memberCard";
@@ -16,6 +16,7 @@ interface TeamTabProps {
   onCreateTeam?: () => void;
   onShareTeam?: (team: Team) => void;
   onMoveMember?: (memberId: string, teamId: string) => void;
+  onDeleteTeam?: (team: Team) => void;
 }
 
 export function TeamTab({
@@ -28,6 +29,7 @@ export function TeamTab({
   onCreateTeam,
   onShareTeam,
   onMoveMember,
+  onDeleteTeam,
 }: TeamTabProps) {
   const { t } = useTranslation();
 
@@ -114,16 +116,31 @@ export function TeamTab({
                   <span className="text-xs text-slate-500">{t(`teams.${team.access}`)}</span>
                 )}
               </div>
-              {team.access === "owner" && onShareTeam && team.id !== "all" && (
-                <Button
-                  eventId="team_share_open"
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onShareTeam(team)}
-                >
-                  <Share2 className="h-4 w-4" />
-                  {t("teams.share")}
-                </Button>
+              {team.access === "owner" && team.id !== "all" && (
+                <div className="flex items-center gap-1">
+                  {onShareTeam && (
+                    <Button
+                      eventId="team_share_open"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onShareTeam(team)}
+                    >
+                      <Share2 className="h-4 w-4" />
+                      {t("teams.share")}
+                    </Button>
+                  )}
+                  {onDeleteTeam && teamMembers.length === 0 && !team.isDefault && (
+                    <Button
+                      eventId="team_delete_open"
+                      variant="ghost"
+                      size="icon-sm"
+                      aria-label={t("teams.deleteAria", { name: team.name })}
+                      onClick={() => onDeleteTeam(team)}
+                    >
+                      <Trash2 className="h-4 w-4 text-red-500" />
+                    </Button>
+                  )}
+                </div>
               )}
             </div>
             <div
