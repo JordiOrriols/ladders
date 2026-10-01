@@ -1,16 +1,11 @@
 import React, { useState } from "react";
-import { Plus, Info, LayoutGrid, Globe, LogIn, LogOut } from "lucide-react";
+import { LayoutGrid, Globe, LogIn, LogOut } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useData } from "@/data/DataProvider";
 import { Button } from "../ui/button";
 import { LoginDialog } from "./LoginDialog";
 
-interface HeaderProps {
-  onAddMember: () => void;
-  onShowReference: () => void;
-}
-
-export function Header({ onAddMember, onShowReference }: HeaderProps) {
+export function Header() {
   const { t, i18n } = useTranslation();
   const { authEnabled, user, signOut } = useData();
   const [showLogin, setShowLogin] = useState(false);
@@ -75,25 +70,6 @@ export function Header({ onAddMember, onShowReference }: HeaderProps) {
               </Button>
             </div>
 
-            <Button
-              eventId="header_show_reference"
-              variant="outline"
-              size="sm"
-              onClick={onShowReference}
-              className="hidden sm:flex"
-              data-testid="reference-button"
-            >
-              <Info className="w-4 h-4 mr-2" />
-              {t("header.reference")}
-            </Button>
-            <Button
-              eventId="header_add_member"
-              onClick={onAddMember}
-              data-testid="add-member-button"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              {t("header.addMember")}
-            </Button>
             {authEnabled &&
               (user ? (
                 <Button

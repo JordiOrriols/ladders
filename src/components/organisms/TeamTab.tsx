@@ -1,4 +1,5 @@
 import React from "react";
+import { Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { Member } from "../../types";
 import MemberCard from "../atoms/memberCard";
@@ -55,6 +56,19 @@ export function TeamTab({
             onClick={() => handleMemberSelect(member)}
           />
         ))}
+        <button
+          type="button"
+          onClick={onAddMember}
+          data-testid="add-member-tile"
+          className="min-h-[300px] rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-slate-600 transition-all hover:border-indigo-300 hover:bg-indigo-50/40 hover:text-indigo-700 hover:shadow-lg"
+        >
+          <span className="flex h-full flex-col items-center justify-center gap-3">
+            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
+              <Plus className="h-6 w-6" />
+            </span>
+            <span className="font-medium">{t("header.addMember")}</span>
+          </span>
+        </button>
       </div>
     </div>
   );

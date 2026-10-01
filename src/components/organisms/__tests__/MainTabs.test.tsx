@@ -1,5 +1,6 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import React from "react";
 import { I18nextProvider } from "react-i18next";
 import i18n from "../../../i18n";
@@ -35,9 +36,26 @@ describe("MainTabs", () => {
         onEditMember={() => {}}
         onDeleteMember={() => {}}
         onSelectMember={() => {}}
+        onShowReference={() => {}}
       />
     );
     expect(screen.getByTestId("tab-individual")).toHaveAttribute("data-state", "active");
     expect(screen.getByTestId("tab-team")).toHaveAttribute("data-state", "inactive");
+  });
+
+  it("shows Reference opposite the tabs", async () => {
+    const onShowReference = vi.fn();
+    renderWithI18n(
+      <MainTabs
+        members={[]}
+        onAddMember={vi.fn()}
+        onEditMember={vi.fn()}
+        onDeleteMember={vi.fn()}
+        onSelectMember={vi.fn()}
+        onShowReference={onShowReference}
+      />
+    );
+    await userEvent.click(screen.getByTestId("reference-button"));
+    expect(onShowReference).toHaveBeenCalledOnce();
   });
 });

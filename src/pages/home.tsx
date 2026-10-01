@@ -49,10 +49,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-slate-50" data-testid="main-content">
       <ErrorBoundary componentName="Header">
-        <Header
-          onAddMember={() => navigate("/member/new")}
-          onShowReference={() => setShowReference(true)}
-        />
+        <Header />
       </ErrorBoundary>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" data-testid="main-area">
@@ -64,6 +61,7 @@ export default function Home() {
             onEditMember={(member) => openMember(member.id)}
             onDeleteMember={(id) => setDeleteId(id)}
             onSelectMember={(member) => openMember(member.id)}
+            onShowReference={() => setShowReference(true)}
           />
         </ErrorBoundary>
       </main>

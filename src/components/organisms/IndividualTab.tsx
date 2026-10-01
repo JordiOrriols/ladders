@@ -33,6 +33,7 @@ export function IndividualTab({
           members={members}
           selectedMemberId={selectedMember?.id}
           onSelectMember={(member) => setSelectedId(member.id)}
+          onAddMember={onAddMember}
         />
       </ErrorBoundary>
       <div className="lg:col-span-3">

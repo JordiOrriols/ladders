@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { User } from "lucide-react";
+import { Plus, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { Member } from "../../types";
 
@@ -7,9 +7,15 @@ interface MemberListProps {
   members: Member[];
   selectedMemberId?: string | undefined;
   onSelectMember: (member: Member) => void;
+  onAddMember: () => void;
 }
 
-function MemberListComponent({ members, selectedMemberId, onSelectMember }: MemberListProps) {
+function MemberListComponent({
+  members,
+  selectedMemberId,
+  onSelectMember,
+  onAddMember,
+}: MemberListProps) {
   const { t } = useTranslation();
 
   const handleMemberClick = (member: Member) => {
@@ -56,6 +62,19 @@ function MemberListComponent({ members, selectedMemberId, onSelectMember }: Memb
               </div>
             </button>
           ))}
+          <button
+            type="button"
+            onClick={onAddMember}
+            data-testid="add-member-row"
+            className="w-full rounded-xl border border-dashed border-slate-300 bg-white p-4 text-left transition-all hover:border-indigo-300 hover:bg-indigo-50/40"
+          >
+            <span className="flex items-center gap-3">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-500">
+                <Plus className="h-5 w-5" />
+              </span>
+              <span className="font-medium text-slate-700">{t("header.addMember")}</span>
+            </span>
+          </button>
         </div>
       </nav>
     </div>

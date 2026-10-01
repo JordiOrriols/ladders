@@ -29,6 +29,7 @@ const mockMembers = [
 
 describe("MemberList", () => {
   const mockOnSelectMember = vi.fn();
+  const mockOnAddMember = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -40,6 +41,7 @@ describe("MemberList", () => {
         members={mockMembers}
         selectedMemberId={null}
         onSelectMember={mockOnSelectMember}
+        onAddMember={mockOnAddMember}
       />
     );
     expect(screen.getByText("John Doe")).toBeTruthy();
@@ -52,6 +54,7 @@ describe("MemberList", () => {
         members={mockMembers}
         selectedMemberId={null}
         onSelectMember={mockOnSelectMember}
+        onAddMember={mockOnAddMember}
       />
     );
     expect(screen.getByText("Senior Engineer")).toBeTruthy();
@@ -60,7 +63,12 @@ describe("MemberList", () => {
 
   it("should highlight selected member", () => {
     renderWithI18n(
-      <MemberList members={mockMembers} selectedMemberId="1" onSelectMember={mockOnSelectMember} />
+      <MemberList
+        members={mockMembers}
+        selectedMemberId="1"
+        onSelectMember={mockOnSelectMember}
+        onAddMember={mockOnAddMember}
+      />
     );
 
     const buttons = screen.getAllByRole("button");
@@ -69,7 +77,12 @@ describe("MemberList", () => {
 
   it("should render empty list", () => {
     renderWithI18n(
-      <MemberList members={[]} selectedMemberId={null} onSelectMember={mockOnSelectMember} />
+      <MemberList
+        members={[]}
+        selectedMemberId={null}
+        onSelectMember={mockOnSelectMember}
+        onAddMember={mockOnAddMember}
+      />
     );
     // No members should be rendered
     expect(screen.queryByText("John Doe")).toBeNull();
@@ -82,6 +95,7 @@ describe("MemberList", () => {
         members={mockMembers}
         selectedMemberId={null}
         onSelectMember={mockOnSelectMember}
+        onAddMember={mockOnAddMember}
       />
     );
 
@@ -89,5 +103,18 @@ describe("MemberList", () => {
     await user.click(button);
 
     expect(mockOnSelectMember).toHaveBeenCalledWith(mockMembers[0]);
+  });
+
+  it("renders an Add Member row", async () => {
+    renderWithI18n(
+      <MemberList
+        members={mockMembers}
+        selectedMemberId={null}
+        onSelectMember={mockOnSelectMember}
+        onAddMember={mockOnAddMember}
+      />
+    );
+    await userEvent.click(screen.getByTestId("add-member-row"));
+    expect(mockOnAddMember).toHaveBeenCalledOnce();
   });
 });
