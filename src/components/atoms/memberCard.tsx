@@ -9,9 +9,16 @@ interface MemberCardProps {
   onEdit: (member: Member) => void;
   onDelete: (id: string) => void;
   onClick?: () => void;
+  readOnly?: boolean;
 }
 
-export default function MemberCard({ member, onEdit, onDelete, onClick }: MemberCardProps) {
+export default function MemberCard({
+  member,
+  onEdit,
+  onDelete,
+  onClick,
+  readOnly = false,
+}: MemberCardProps) {
   const handleEditClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     onEdit(member);
@@ -24,7 +31,9 @@ export default function MemberCard({ member, onEdit, onDelete, onClick }: Member
 
   return (
     <div
-      className="bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-lg hover:border-slate-300 transition-all cursor-pointer group"
+      className={`bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-lg hover:border-slate-300 transition-all group ${
+        onClick ? "cursor-pointer" : ""
+      }`}
       onClick={onClick}
       data-testid={`member-card-${member.id}`}
     >
@@ -44,6 +53,7 @@ export default function MemberCard({ member, onEdit, onDelete, onClick }: Member
             )}
           </div>
         </div>
+        {!readOnly && (
         <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
           <Button
             eventId="member_card_edit"
@@ -64,6 +74,7 @@ export default function MemberCard({ member, onEdit, onDelete, onClick }: Member
             <Trash2 className="w-4 h-4 text-slate-400 hover:text-red-500" />
           </Button>
         </div>
+        )}
       </div>
 
       <div className="flex justify-center">

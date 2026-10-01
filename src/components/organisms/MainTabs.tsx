@@ -1,7 +1,7 @@
 import React from "react";
 import { Info, Users, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import type { Evaluation, Member } from "../../types";
+import type { Evaluation, Member, Team } from "../../types";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "../ui/tabs";
 import { TeamTab } from "./TeamTab";
 import { IndividualTab } from "./IndividualTab";
@@ -9,16 +9,20 @@ import { ErrorBoundary } from "../ErrorBoundary";
 import { Button } from "../ui/button";
 
 interface MainTabsProps {
+  teams?: Team[];
   members: Member[];
   evaluations?: Evaluation[];
-  onAddMember: () => void;
+  onAddMember: (teamId?: string) => void;
   onEditMember: (member: Member) => void;
   onDeleteMember: (id: string) => void;
   onSelectMember: (member: Member) => void;
   onShowReference: () => void;
+  onCreateTeam?: () => void;
+  onShareTeam?: (team: Team) => void;
 }
 
 export function MainTabs({
+  teams = [],
   members,
   evaluations = [],
   onAddMember,
@@ -26,6 +30,8 @@ export function MainTabs({
   onDeleteMember,
   onSelectMember,
   onShowReference,
+  onCreateTeam,
+  onShareTeam,
 }: MainTabsProps) {
   const { t } = useTranslation();
 
@@ -65,11 +71,14 @@ export function MainTabs({
       <TabsContent value="team" className="mt-6">
         <ErrorBoundary componentName="TeamTab">
           <TeamTab
+            teams={teams}
             members={members}
             onAddMember={onAddMember}
             onEditMember={onEditMember}
             onDeleteMember={onDeleteMember}
             onSelectMember={onSelectMember}
+            {...(onCreateTeam ? { onCreateTeam } : {})}
+            {...(onShareTeam ? { onShareTeam } : {})}
           />
         </ErrorBoundary>
       </TabsContent>
@@ -77,6 +86,7 @@ export function MainTabs({
       <TabsContent value="individual" className="mt-6">
         <ErrorBoundary componentName="IndividualTab">
           <IndividualTab
+            teams={teams}
             members={members}
             evaluations={evaluations}
             onAddMember={onAddMember}

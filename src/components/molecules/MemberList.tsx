@@ -1,16 +1,18 @@
 import React, { memo } from "react";
 import { Plus, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import type { Member } from "../../types";
+import type { Member, Team } from "../../types";
 
 interface MemberListProps {
+  teams?: Team[];
   members: Member[];
   selectedMemberId?: string | undefined;
   onSelectMember: (member: Member) => void;
-  onAddMember: () => void;
+  onAddMember: (teamId?: string) => void;
 }
 
 function MemberListComponent({
+  teams = [],
   members,
   selectedMemberId,
   onSelectMember,
@@ -29,9 +31,17 @@ function MemberListComponent({
       </h3>
       <nav aria-labelledby="member-list-heading">
         <div className="space-y-2">
-          {members.map((member) => (
+          {members.map((member, index) => {
+            const team = teams.find((candidate) => candidate.id === member.teamId);
+            const previousTeamId = members[index - 1]?.teamId;
+            return (
+            <React.Fragment key={member.id}>
+            {team && team.id !== previousTeamId && (
+              <h4 className="px-1 pt-3 text-xs font-semibold uppercase text-slate-400">
+                {team.name}
+              </h4>
+            )}
             <button
-              key={member.id}
               onClick={() => handleMemberClick(member)}
               data-testid={`member-card-${member.id}`}
               className={`w-full p-4 rounded-xl border text-left transition-all focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
@@ -61,10 +71,11 @@ function MemberListComponent({
                 </div>
               </div>
             </button>
-          ))}
+            </React.Fragment>
+          )})}
           <button
             type="button"
-            onClick={onAddMember}
+            onClick={() => onAddMember(teams.find((team) => team.access !== "viewer")?.id)}
             data-testid="add-member-row"
             className="w-full rounded-xl border border-dashed border-slate-300 bg-white p-4 text-left transition-all hover:border-indigo-300 hover:bg-indigo-50/40"
           >

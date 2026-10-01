@@ -1,18 +1,20 @@
 import React, { useState } from "react";
-import type { Evaluation, Member } from "../../types";
+import type { Evaluation, Member, Team } from "../../types";
 import { EmptyIndividualState } from "../molecules/EmptyIndividualState";
 import { MemberList } from "../molecules/MemberList";
 import { MemberDetailsPanel } from "../molecules/MemberDetailsPanel";
 import { ErrorBoundary } from "../ErrorBoundary";
 
 interface IndividualTabProps {
+  teams?: Team[];
   members: Member[];
   evaluations?: Evaluation[];
-  onAddMember: () => void;
+  onAddMember: (teamId?: string) => void;
   onEditMember: (member: Member) => void;
 }
 
 export function IndividualTab({
+  teams = [],
   members,
   evaluations = [],
   onAddMember,
@@ -30,6 +32,7 @@ export function IndividualTab({
     <div className="grid lg:grid-cols-4 gap-6">
       <ErrorBoundary componentName="MemberList">
         <MemberList
+          teams={teams}
           members={members}
           selectedMemberId={selectedMember?.id}
           onSelectMember={(member) => setSelectedId(member.id)}
@@ -42,6 +45,7 @@ export function IndividualTab({
             member={selectedMember}
             evaluations={evaluations}
             onEdit={onEditMember}
+            readOnly={teams.find((team) => team.id === selectedMember?.teamId)?.access === "viewer"}
           />
         </ErrorBoundary>
       </div>

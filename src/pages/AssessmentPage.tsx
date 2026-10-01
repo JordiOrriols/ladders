@@ -32,6 +32,7 @@ type StoreState = { store: EvaluationStore } | { error: "notFound" | "loading" }
 function useRouteStore(): StoreState {
   const { id, token } = useParams();
   const { pathname } = useLocation();
+  const { search } = useLocation();
   const { repository, loading } = useData();
   const [tokenStore, setTokenStore] = useState<StoreState>({ error: "loading" });
 
@@ -40,10 +41,13 @@ function useRouteStore(): StoreState {
     if (loading) return { error: "loading" };
     if (pathname.startsWith("/member")) {
       if (!repository) return { error: "notFound" };
-      return { store: createManagerStore(repository, id && id !== "new" ? id : null) };
+      const teamId = new URLSearchParams(search).get("team") ?? undefined;
+      return {
+        store: createManagerStore(repository, id && id !== "new" ? id : null, teamId),
+      };
     }
     return { error: "notFound" };
-  }, [id, token, pathname, repository, loading]);
+  }, [id, token, pathname, search, repository, loading]);
 
   useEffect(() => {
     if (!token) return;

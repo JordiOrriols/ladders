@@ -33,7 +33,11 @@ export interface EvaluationStore {
   canDelete(evaluation: Evaluation): boolean;
 }
 
-export function createManagerStore(repo: Repository, initialMemberId: string | null) {
+export function createManagerStore(
+  repo: Repository,
+  initialMemberId: string | null,
+  initialTeamId?: string
+) {
   let memberId = initialMemberId;
   const store: EvaluationStore = {
     kind: "manager",
@@ -55,7 +59,11 @@ export function createManagerStore(repo: Repository, initialMemberId: string | n
       if (memberId) {
         await repo.updateMember(memberId, profile);
       } else {
-        memberId = (await repo.createMember(profile)).id;
+        memberId = (
+          await (initialTeamId
+            ? repo.createMember(profile, initialTeamId)
+            : repo.createMember(profile))
+        ).id;
       }
     },
     async create(input) {

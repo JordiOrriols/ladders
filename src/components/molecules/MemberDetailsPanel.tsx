@@ -10,12 +10,14 @@ interface MemberDetailsPanelProps {
   evaluations?: Evaluation[];
   onEdit: (member: Member) => void;
   onClose?: () => void;
+  readOnly?: boolean;
 }
 
 function MemberDetailsPanelComponent({
   member,
   evaluations = [],
   onEdit,
+  readOnly = false,
 }: MemberDetailsPanelProps) {
   const { t } = useTranslation();
 
@@ -41,9 +43,9 @@ function MemberDetailsPanelComponent({
           <h2 className="text-2xl font-semibold text-slate-800">{member.name}</h2>
           {member.role && <p className="text-slate-500">{member.role}</p>}
         </div>
-        <Button eventId="member_details_edit" variant="outline" onClick={handleEditClick}>
+        {!readOnly && <Button eventId="member_details_edit" variant="outline" onClick={handleEditClick}>
           {t("buttons.edit")}
-        </Button>
+        </Button>}
       </div>
 
       <EvaluationViewer
