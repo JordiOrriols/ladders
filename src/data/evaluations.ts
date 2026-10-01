@@ -20,10 +20,6 @@ export function latestOf(
     .sort(byNewest)[0];
 }
 
-export function hasLevels(levels: LevelMap): boolean {
-  return Object.values(levels).some((value) => value > 0);
-}
-
 export function computeAverage(levels: LevelMap): number {
   if (Object.keys(levels).length === 0) return 0;
   const total = Object.values(levels).reduce((sum, value) => sum + value, 0);
