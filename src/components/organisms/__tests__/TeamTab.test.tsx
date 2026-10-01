@@ -45,8 +45,40 @@ describe("TeamTab", () => {
         onSelectMember={vi.fn()}
       />
     );
-    await userEvent.click(screen.getByTestId("add-member-tile"));
+    await userEvent.click(screen.getByTestId("add-member-button"));
     expect(onAddMember).toHaveBeenCalledOnce();
+  });
+
+  it("adds members to and renames a specific team from its header", async () => {
+    const onAddMember = vi.fn();
+    const onRenameTeam = vi.fn();
+    renderWithI18n(
+      <TeamTab
+        teams={[
+          {
+            id: "team-2",
+            ownerId: "owner",
+            name: "Product",
+            isDefault: false,
+            access: "owner",
+            createdAt: "",
+            updatedAt: "",
+          },
+        ]}
+        members={[
+          { id: "member-1", teamId: "team-2", name: "Ada", currentLevels: {}, goalLevels: {} },
+        ]}
+        onAddMember={onAddMember}
+        onEditMember={vi.fn()}
+        onDeleteMember={vi.fn()}
+        onSelectMember={vi.fn()}
+        onRenameTeam={onRenameTeam}
+      />
+    );
+    await userEvent.click(screen.getByRole("button", { name: "Add member to Product" }));
+    expect(onAddMember).toHaveBeenCalledWith("team-2");
+    await userEvent.click(screen.getByRole("button", { name: "Rename Product" }));
+    expect(onRenameTeam).toHaveBeenCalledWith(expect.objectContaining({ id: "team-2" }));
   });
 
   it("moves a member when dragged into another team", () => {

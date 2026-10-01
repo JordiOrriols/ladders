@@ -1,5 +1,5 @@
 import React from "react";
-import { Plus, Share2, Trash2 } from "lucide-react";
+import { Pencil, Plus, Share2, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { Member, Team } from "../../types";
 import MemberCard from "../atoms/memberCard";
@@ -17,6 +17,7 @@ interface TeamTabProps {
   onShareTeam?: (team: Team) => void;
   onMoveMember?: (memberId: string, teamId: string) => void;
   onDeleteTeam?: (team: Team) => void;
+  onRenameTeam?: (team: Team) => void;
 }
 
 export function TeamTab({
@@ -30,6 +31,7 @@ export function TeamTab({
   onShareTeam,
   onMoveMember,
   onDeleteTeam,
+  onRenameTeam,
 }: TeamTabProps) {
   const { t } = useTranslation();
 
@@ -116,68 +118,86 @@ export function TeamTab({
                   <span className="text-xs text-slate-500">{t(`teams.${team.access}`)}</span>
                 )}
               </div>
-              {team.access === "owner" && team.id !== "all" && (
-                <div className="flex items-center gap-1">
-                  {onShareTeam && (
-                    <Button
-                      eventId="team_share_open"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onShareTeam(team)}
-                    >
-                      <Share2 className="h-4 w-4" />
-                      {t("teams.share")}
-                    </Button>
-                  )}
-                  {onDeleteTeam && teamMembers.length === 0 && !team.isDefault && (
-                    <Button
-                      eventId="team_delete_open"
-                      variant="ghost"
-                      size="icon-sm"
-                      aria-label={t("teams.deleteAria", { name: team.name })}
-                      onClick={() => onDeleteTeam(team)}
-                    >
-                      <Trash2 className="h-4 w-4 text-red-500" />
-                    </Button>
-                  )}
-                </div>
-              )}
+              <div className="flex items-center gap-1">
+                {editable && (
+                  <Button
+                    eventId="team_add_member"
+                    variant="ghost"
+                    size="sm"
+                    data-testid="add-member-button"
+                    aria-label={t("teams.addMemberTo", { name: team.name })}
+                    onClick={() => onAddMember(team.id === "all" ? undefined : team.id)}
+                  >
+                    <Plus className="h-4 w-4" />
+                    {t("header.addMember")}
+                  </Button>
+                )}
+                {team.access === "owner" && team.id !== "all" && (
+                  <>
+                    {onRenameTeam && (
+                      <Button
+                        eventId="team_rename_open"
+                        variant="ghost"
+                        size="sm"
+                        aria-label={t("teams.renameAria", { name: team.name })}
+                        onClick={() => onRenameTeam(team)}
+                      >
+                        <Pencil className="h-4 w-4" />
+                        {t("teams.rename")}
+                      </Button>
+                    )}
+                    {onShareTeam && (
+                      <Button
+                        eventId="team_share_open"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onShareTeam(team)}
+                      >
+                        <Share2 className="h-4 w-4" />
+                        {t("teams.share")}
+                      </Button>
+                    )}
+                    {onDeleteTeam && teamMembers.length === 0 && !team.isDefault && (
+                      <Button
+                        eventId="team_delete_open"
+                        variant="ghost"
+                        size="icon-sm"
+                        aria-label={t("teams.deleteAria", { name: team.name })}
+                        onClick={() => onDeleteTeam(team)}
+                      >
+                        <Trash2 className="h-4 w-4 text-red-500" />
+                      </Button>
+                    )}
+                  </>
+                )}
+              </div>
             </div>
-            <div
-              className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-              data-testid="team-grid"
-            >
-              {teamMembers.map((member) => (
-                <MemberCard
-                  key={member.id}
-                  member={member}
-                  onEdit={onEditMember}
-                  onDelete={onDeleteMember}
-                  readOnly={!editable}
-                  draggable={editable && !!onMoveMember}
-                  onDragStart={(event) => {
-                    event.dataTransfer.effectAllowed = "move";
-                    event.dataTransfer.setData("text/member-id", member.id);
-                  }}
-                  {...(editable ? { onClick: () => handleMemberSelect(member) } : {})}
-                />
-              ))}
-              {editable && (
-                <button
-                  type="button"
-                  onClick={() => onAddMember(team.id === "all" ? undefined : team.id)}
-                  data-testid="add-member-tile"
-                  className="min-h-[300px] rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-slate-600 transition-all hover:border-indigo-300 hover:bg-indigo-50/40 hover:text-indigo-700 hover:shadow-lg"
-                >
-                  <span className="flex h-full flex-col items-center justify-center gap-3">
-                    <span className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
-                      <Plus className="h-6 w-6" />
-                    </span>
-                    <span className="font-medium">{t("header.addMember")}</span>
-                  </span>
-                </button>
-              )}
-            </div>
+            {teamMembers.length === 0 ? (
+              <p className="rounded-xl border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500">
+                {t("teams.emptyTeam")}
+              </p>
+            ) : (
+              <div
+                className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                data-testid="team-grid"
+              >
+                {teamMembers.map((member) => (
+                  <MemberCard
+                    key={member.id}
+                    member={member}
+                    onEdit={onEditMember}
+                    onDelete={onDeleteMember}
+                    readOnly={!editable}
+                    draggable={editable && !!onMoveMember}
+                    onDragStart={(event) => {
+                      event.dataTransfer.effectAllowed = "move";
+                      event.dataTransfer.setData("text/member-id", member.id);
+                    }}
+                    {...(editable ? { onClick: () => handleMemberSelect(member) } : {})}
+                  />
+                ))}
+              </div>
+            )}
           </section>
         );
       })}

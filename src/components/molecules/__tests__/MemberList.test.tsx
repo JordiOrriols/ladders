@@ -117,4 +117,35 @@ describe("MemberList", () => {
     await userEvent.click(screen.getByTestId("add-member-row"));
     expect(mockOnAddMember).toHaveBeenCalledOnce();
   });
+
+  it("groups members under one heading per team with a team add button", async () => {
+    const team = (id: string, name: string) => ({
+      id,
+      ownerId: "o",
+      name,
+      isDefault: false,
+      access: "owner" as const,
+      createdAt: "",
+      updatedAt: "",
+    });
+    renderWithI18n(
+      <MemberList
+        teams={[team("a", "Alpha"), team("b", "Beta")]}
+        members={[
+          { ...mockMembers[0]!, teamId: "a" },
+          { ...mockMembers[1]!, teamId: "b" },
+          { id: "3", name: "Third", teamId: "a", currentLevels: {}, goalLevels: {} },
+        ]}
+        selectedMemberId={null}
+        onSelectMember={mockOnSelectMember}
+        onAddMember={mockOnAddMember}
+      />
+    );
+    expect(screen.getAllByText("Alpha")).toHaveLength(1);
+    const alpha = screen.getByRole("region", { name: "Alpha" });
+    expect(alpha.textContent).toContain("John Doe");
+    expect(alpha.textContent).toContain("Third");
+    await userEvent.click(screen.getByRole("button", { name: "Add member to Beta" }));
+    expect(mockOnAddMember).toHaveBeenCalledWith("b");
+  });
 });

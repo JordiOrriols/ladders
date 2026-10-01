@@ -17,19 +17,22 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   onCreate: (name: string) => Promise<void>;
+  /** When set, the dialog renames a team instead of creating one. */
+  initialName?: string;
 }
 
-export function CreateTeamDialog({ isOpen, onClose, onCreate }: Props) {
+export function CreateTeamDialog({ isOpen, onClose, onCreate, initialName }: Props) {
   const { t } = useTranslation();
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const renaming = initialName !== undefined;
 
   useEffect(() => {
     if (!isOpen) return;
-    setName("");
+    setName(initialName ?? "");
     setError(null);
-  }, [isOpen]);
+  }, [isOpen, initialName]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -52,8 +55,12 @@ export function CreateTeamDialog({ isOpen, onClose, onCreate }: Props) {
       <AlertDialogContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <AlertDialogHeader>
-            <AlertDialogTitle>{t("teams.createTitle")}</AlertDialogTitle>
-            <AlertDialogDescription>{t("teams.createDescription")}</AlertDialogDescription>
+            <AlertDialogTitle>
+              {t(renaming ? "teams.renameTitle" : "teams.createTitle")}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {t(renaming ? "teams.renameDescription" : "teams.createDescription")}
+            </AlertDialogDescription>
           </AlertDialogHeader>
           <div>
             <Label htmlFor="team-name">{t("teams.name")}</Label>
@@ -74,8 +81,12 @@ export function CreateTeamDialog({ isOpen, onClose, onCreate }: Props) {
           )}
           <AlertDialogFooter>
             <AlertDialogCancel type="button">{t("buttons.cancel")}</AlertDialogCancel>
-            <Button eventId="team_create" type="submit" disabled={busy || !name.trim()}>
-              {t("teams.create")}
+            <Button
+              eventId={renaming ? "team_rename" : "team_create"}
+              type="submit"
+              disabled={busy || !name.trim() || name.trim() === initialName}
+            >
+              {t(renaming ? "teams.rename" : "teams.create")}
             </Button>
           </AlertDialogFooter>
         </form>

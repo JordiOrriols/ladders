@@ -40,6 +40,19 @@ describe("team dialogs", () => {
     expect(onCreate).toHaveBeenCalledWith("Platform");
   });
 
+  it("renames a team starting from its current name", async () => {
+    const onCreate = vi.fn().mockResolvedValue(undefined);
+    renderWithI18n(
+      <CreateTeamDialog isOpen initialName="Platform" onClose={vi.fn()} onCreate={onCreate} />
+    );
+    const input = screen.getByLabelText("Team name");
+    expect(input).toHaveValue("Platform");
+    await userEvent.clear(input);
+    await userEvent.type(input, "Core");
+    await userEvent.click(screen.getByRole("button", { name: "Rename" }));
+    expect(onCreate).toHaveBeenCalledWith("Core");
+  });
+
   it("shares with an existing user and manages permissions", async () => {
     const onShare = vi.fn().mockResolvedValue(undefined);
     const onChangeAccess = vi.fn().mockResolvedValue(undefined);

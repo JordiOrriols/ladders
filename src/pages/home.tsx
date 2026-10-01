@@ -23,6 +23,7 @@ export default function Home() {
   const [deleteTeamId, setDeleteTeamId] = useState<string | null>(null);
   const [showReference, setShowReference] = useState(false);
   const [showCreateTeam, setShowCreateTeam] = useState(false);
+  const [renamingTeam, setRenamingTeam] = useState<Team | null>(null);
   const [sharedTeam, setSharedTeam] = useState<Team | null>(null);
   const [shares, setShares] = useState<TeamShare[]>([]);
   const [sharesLoading, setSharesLoading] = useState(false);
@@ -110,6 +111,7 @@ export default function Home() {
             onShareTeam={(selectedTeam) => void openTeamSharing(selectedTeam)}
             onMoveMember={(memberId, teamId) => void handleMoveMember(memberId, teamId)}
             onDeleteTeam={(selectedTeam) => setDeleteTeamId(selectedTeam.id)}
+            onRenameTeam={setRenamingTeam}
           />
         </ErrorBoundary>
       </main>
@@ -141,6 +143,17 @@ export default function Home() {
         onCreate={async (name) => {
           if (!repository) return;
           await repository.createTeam(name);
+          await reload();
+        }}
+      />
+
+      <CreateTeamDialog
+        isOpen={!!renamingTeam}
+        initialName={renamingTeam?.name ?? ""}
+        onClose={() => setRenamingTeam(null)}
+        onCreate={async (name) => {
+          if (!repository || !renamingTeam) return;
+          await repository.updateTeam(renamingTeam.id, name);
           await reload();
         }}
       />
