@@ -1,9 +1,13 @@
-import React, { memo } from "react";
+import React, { memo, useMemo } from "react";
 import { User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { Evaluation, Member } from "@/types";
+import { useData } from "@/data/DataProvider";
+import { createRepositoryGoalStore } from "@/data/goalStore";
 import { Button } from "../ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { EvaluationViewer } from "../organisms/EvaluationViewer";
+import { SmartGoalsPanel } from "../organisms/SmartGoalsPanel";
 
 interface MemberDetailsPanelProps {
   member: Member | null;
@@ -20,6 +24,12 @@ function MemberDetailsPanelComponent({
   readOnly = false,
 }: MemberDetailsPanelProps) {
   const { t } = useTranslation();
+  const { repository } = useData();
+  const memberId = member?.id;
+  const goalStore = useMemo(
+    () => (repository && memberId ? createRepositoryGoalStore(repository, memberId) : null),
+    [repository, memberId]
+  );
 
   const handleEditClick = () => {
     if (member) {
@@ -50,12 +60,22 @@ function MemberDetailsPanelComponent({
         )}
       </div>
 
-      <EvaluationViewer
-        key={member.id}
-        evaluations={evaluations.filter((e) => e.memberId === member.id)}
-        templateId={member.templateId ?? null}
-        showVersionPanel={false}
-      />
+      <Tabs key={member.id} defaultValue="evaluation" className="space-y-4">
+        <TabsList className="bg-white border border-slate-200">
+          <TabsTrigger value="evaluation">{t("memberAssessment.evaluationTab")}</TabsTrigger>
+          <TabsTrigger value="goals">{t("smartGoals.tab")}</TabsTrigger>
+        </TabsList>
+        <TabsContent value="evaluation">
+          <EvaluationViewer
+            evaluations={evaluations.filter((e) => e.memberId === member.id)}
+            templateId={member.templateId ?? null}
+            showVersionPanel={false}
+          />
+        </TabsContent>
+        <TabsContent value="goals">
+          <SmartGoalsPanel store={goalStore} readOnly={readOnly} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
