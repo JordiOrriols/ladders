@@ -115,6 +115,15 @@ export async function getPublicView(token: string): Promise<Evaluation[]> {
   return rows.map(toEvaluation);
 }
 
+export async function getViewSharingLinks(token: string) {
+  const rows = await rpc<{ self_token: string; peer_token: string }[]>("view_sharing_links", {
+    p_token: token,
+  });
+  const row = rows[0];
+  if (!row) throw new Error("Invalid view link");
+  return { selfToken: row.self_token, peerToken: row.peer_token };
+}
+
 const goalArgs = (input: SmartGoalInput) => ({
   p_title: input.title,
   p_description: input.description,

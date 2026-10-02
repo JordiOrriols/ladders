@@ -44,6 +44,18 @@ describe("ShareAction", () => {
     expect(writeText).not.toHaveBeenCalledWith(expect.stringContaining(member.name));
   });
 
+  it("offers only self and peer links from a personal view", async () => {
+    render(
+      <I18nextProvider i18n={i18n}>
+        <ShareAction member={{ selfToken: member.selfToken, peerToken: member.peerToken }} />
+      </I18nextProvider>
+    );
+    await userEvent.click(screen.getByRole("button", { name: "Choose a sharing link" }));
+    expect(screen.queryByRole("menuitem", { name: "View my evaluation" })).not.toBeInTheDocument();
+    await userEvent.click(screen.getByRole("menuitem", { name: "Peer evaluation" }));
+    expect(writeText).toHaveBeenLastCalledWith(expect.stringContaining(`#/e/${member.peerToken}`));
+  });
+
   it("offers peer and public UUID links", async () => {
     const onEnableView = renderAction();
     await userEvent.click(screen.getByRole("button", { name: "Choose a sharing link" }));

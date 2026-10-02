@@ -8,8 +8,9 @@ import { SplitButton } from "./SplitButton";
 type ShareKind = "self" | "peer" | "view";
 
 type Props = {
-  member: TeamMember;
-  onEnableView: () => Promise<void>;
+  member: Pick<TeamMember, "selfToken" | "peerToken"> &
+    Partial<Pick<TeamMember, "viewToken" | "viewEnabled">>;
+  onEnableView?: () => Promise<void>;
 };
 
 export function ShareAction({ member, onEnableView }: Props) {
@@ -21,7 +22,10 @@ export function ShareAction({ member, onEnableView }: Props) {
     if (!token) return;
 
     try {
-      if (kind === "view" && !member.viewEnabled) await onEnableView();
+      if (kind === "view" && !member.viewEnabled) {
+        if (!onEnableView) return;
+        await onEnableView();
+      }
       await copyToClipboard(buildShareLink(`${kind === "view" ? "v" : "e"}/${token}`));
       alert(t("alerts.linkCopied"));
     } catch (error) {
@@ -51,12 +55,16 @@ export function ShareAction({ member, onEnableView }: Props) {
           eventId: "member_share_peer",
           onSelect: () => void copy("peer"),
         },
-        {
-          label: t("share.view.label"),
-          icon: <Eye className="h-4 w-4" />,
-          eventId: "member_share_view",
-          onSelect: () => void copy("view"),
-        },
+        ...(member.viewToken
+          ? [
+              {
+                label: t("share.view.label"),
+                icon: <Eye className="h-4 w-4" />,
+                eventId: "member_share_view",
+                onSelect: () => void copy("view"),
+              },
+            ]
+          : []),
       ]}
     />
   );
