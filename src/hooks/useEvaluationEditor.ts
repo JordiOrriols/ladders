@@ -82,18 +82,21 @@ export function useEvaluationEditor(store: EvaluationStore) {
         return;
       }
       const latest = latestOf(snapshot.evaluations, store.kind);
-      const draft = snapshot.evaluations.find(
+      const availableDraft = snapshot.evaluations.find(
         (evaluation) => evaluation.kind === store.kind && evaluation.status === "draft"
       );
-      const initialForm = formFrom(draft ?? latest);
+      const draft =
+        store.kind === "self" ? (latest?.status === "draft" ? latest : undefined) : availableDraft;
+      const initial = store.kind === "self" ? draft : (draft ?? latest);
+      const initialForm = formFrom(initial);
       setProfile(snapshot.profile);
       setSavedProfile(snapshot.profile);
       savedProfileRef.current = snapshot.profile;
       setMember(snapshot.member ?? null);
       setEvaluations(snapshot.evaluations);
       setForm(initialForm);
-      setEditingId(draft?.id ?? latest?.id ?? null);
-      draftRef.current = draft ?? null;
+      setEditingId(initial?.id ?? null);
+      draftRef.current = availableDraft ?? null;
       latestRef.current = { form: initialForm, profile: snapshot.profile };
       setAutosaveState(draft ? "saved" : "idle");
       setLoadState("ready");
@@ -109,7 +112,8 @@ export function useEvaluationEditor(store: EvaluationStore) {
     () => evaluations.find((evaluation) => evaluation.id === editingId),
     [editingId, evaluations]
   );
-  const baselineEvaluation = selectedEvaluation ?? latestOf(evaluations, store.kind);
+  const baselineEvaluation =
+    selectedEvaluation ?? (store.kind === "self" ? undefined : latestOf(evaluations, store.kind));
   const contentChanged = !sameForm(form, formFrom(baselineEvaluation));
   const profileChanged = !sameProfile(normalizedProfile(profile), savedProfile);
   const dirty = contentChanged || profileChanged;
@@ -142,7 +146,10 @@ export function useEvaluationEditor(store: EvaluationStore) {
         setSavedProfile(nextProfile);
         setProfile(nextProfile);
       }
-      const source = draftRef.current ?? baselineEvaluation;
+      const source =
+        store.kind === "self" && editingId === null
+          ? undefined
+          : (draftRef.current ?? baselineEvaluation);
       if (!sameForm(snapshot.form, formFrom(source))) {
         const input = {
           status: "draft" as const,
@@ -161,7 +168,7 @@ export function useEvaluationEditor(store: EvaluationStore) {
       console.error("Failed to autosave draft", error);
       setAutosaveState("error");
     }
-  }, [baselineEvaluation, loadState, store]);
+  }, [baselineEvaluation, editingId, loadState, store]);
 
   const enqueueAutosave = useCallback(() => {
     queueRef.current = queueRef.current.then(persistLatest);

@@ -95,7 +95,7 @@ export function createSelfTokenStore(token: string): EvaluationStore {
   return {
     kind: "self",
     editableProfile: false,
-    showHistory: true,
+    showHistory: false,
     memberId: () => null,
     async load() {
       const info = await tokenApi.resolveToken(token);

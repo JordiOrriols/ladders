@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { createInMemoryRepository } from "@/data/__tests__/inMemoryRepository";
 import { createManagerStore, createPeerTokenStore } from "@/data/evaluationStore";
@@ -13,6 +13,76 @@ const renderEditor = async (store: EvaluationStore) => {
 
 describe("useEvaluationEditor", () => {
   beforeEach(() => localStorage.clear());
+
+  it.each([false, true])(
+    "opens self blank after publishing, even with stale draft: %s",
+    async (staleDraft) => {
+      const repo = createInMemoryRepository();
+      const member = await repo.createMember({ name: "Ada", role: "Dev", templateId: null });
+      const input = {
+        authorName: "Ada",
+        currentLevels: { Technology: 4 },
+        goalLevels: {},
+        comments: { Technology: "old" },
+      };
+      if (staleDraft)
+        await repo.createEvaluation(member.id, "self", { ...input, status: "draft" }, "2026-01-01");
+      await repo.createEvaluation(
+        member.id,
+        "self",
+        { ...input, status: "published" },
+        "2026-02-01"
+      );
+      const create = vi.fn((value) => repo.createEvaluation(member.id, "self", value));
+      const store: EvaluationStore = {
+        ...createManagerStore(repo, member.id),
+        kind: "self",
+        editableProfile: false,
+        showHistory: false,
+        load: async () => ({
+          profile: { name: "Ada", role: "Dev", templateId: null },
+          evaluations: await repo.listEvaluations(member.id),
+        }),
+        create,
+      };
+      const { result } = await renderEditor(store);
+      expect(result.current.form).toEqual({ currentLevels: {}, goalLevels: {}, comments: {} });
+      expect(result.current.dirty).toBe(false);
+      expect(result.current.editingId).toBeNull();
+      expect(create).not.toHaveBeenCalled();
+      act(() => result.current.handleCurrentChange("Technology", 2));
+      await waitFor(() => expect(result.current.autosaveState).toBe("saved"));
+      expect(
+        (await repo.listEvaluations(member.id)).filter((item) => item.status === "draft")
+      ).toHaveLength(1);
+      expect(result.current.form.currentLevels).toEqual({ Technology: 2 });
+    }
+  );
+
+  it("resumes the latest self draft", async () => {
+    const repo = createInMemoryRepository();
+    const member = await repo.createMember({ name: "Ada", role: "", templateId: null });
+    const draft = await repo.createEvaluation(member.id, "self", {
+      status: "draft",
+      authorName: "Ada",
+      currentLevels: { Technology: 3 },
+      goalLevels: {},
+      comments: {},
+    });
+    const store: EvaluationStore = {
+      ...createManagerStore(repo, member.id),
+      kind: "self",
+      editableProfile: false,
+      load: async () => ({
+        profile: { name: "Ada", role: "", templateId: null },
+        evaluations: [draft],
+      }),
+    };
+    const { result } = await renderEditor(store);
+    expect(result.current.editingId).toBe(draft.id);
+    expect(result.current.form.currentLevels).toEqual({ Technology: 3 });
+    expect(result.current.dirty).toBe(false);
+  });
 
   it("creates one draft, updates it in place, and publishes the same version", async () => {
     const repo = createInMemoryRepository();
