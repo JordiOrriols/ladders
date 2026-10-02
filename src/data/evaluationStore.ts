@@ -39,6 +39,7 @@ export function createManagerStore(
   initialTeamId?: string
 ) {
   let memberId = initialMemberId;
+  let owner = false;
   const store: EvaluationStore = {
     kind: "manager",
     editableProfile: true,
@@ -48,7 +49,11 @@ export function createManagerStore(
       if (!memberId) return { profile: { name: "", role: "", templateId: null }, evaluations: [] };
       const member = await repo.getMember(memberId);
       if (!member) return null;
-      const evaluations = await repo.listEvaluations(memberId);
+      const [evaluations, teams] = await Promise.all([
+        repo.listEvaluations(memberId),
+        repo.listTeams(),
+      ]);
+      owner = teams.find((team) => team.id === member.teamId)?.access === "owner";
       return {
         profile: { name: member.name, role: member.role, templateId: member.templateId },
         evaluations,
@@ -64,6 +69,8 @@ export function createManagerStore(
             ? repo.createMember(profile, initialTeamId)
             : repo.createMember(profile))
         ).id;
+        const [member, teams] = await Promise.all([repo.getMember(memberId), repo.listTeams()]);
+        owner = teams.find((team) => team.id === member?.teamId)?.access === "owner";
       }
     },
     async create(input) {
@@ -72,10 +79,14 @@ export function createManagerStore(
     },
     updateDraft: (id, input) => repo.updateEvaluationDraft(id, input),
     setStatus: (id, status) => repo.setEvaluationStatus(id, status),
-    remove: (id) => repo.deleteEvaluation(id),
+    async remove(id) {
+      if (!owner) throw new Error("Only the team owner can delete evaluations");
+      await repo.deleteEvaluation(id);
+    },
     // Self versions belong to the evaluated person; the owner can only hide them by deleting.
     canChangeStatus: (evaluation) => evaluation.kind !== "self",
-    canDelete: () => true,
+    canDelete: (evaluation) =>
+      owner && (evaluation.kind !== "self" || evaluation.status === "published"),
   };
   return store;
 }
@@ -98,9 +109,11 @@ export function createSelfTokenStore(token: string): EvaluationStore {
     create: (input) => tokenApi.saveSelfEvaluation(token, input),
     updateDraft: (id, input) => tokenApi.updateSelfEvaluationDraft(token, id, input),
     setStatus: (id, status) => tokenApi.setSelfEvaluationStatus(token, id, status),
-    remove: (id) => tokenApi.deleteSelfEvaluation(token, id),
+    async remove() {
+      throw new Error("Personal links cannot delete evaluations");
+    },
     canChangeStatus: () => true,
-    canDelete: () => true,
+    canDelete: () => false,
   };
 }
 

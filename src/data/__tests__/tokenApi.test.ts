@@ -143,9 +143,10 @@ describe("token stores", () => {
       p_id: "e1",
       p_status: "published",
     });
-    await store.remove("e1");
-    expect(rpc).toHaveBeenLastCalledWith("self_delete", { p_token: TOKEN, p_id: "e1" });
-    expect(store.canDelete(snapshot!.evaluations[0]!)).toBe(true);
+    rpc.mockClear();
+    await expect(store.remove("e1")).rejects.toThrow("cannot delete");
+    expect(rpc).not.toHaveBeenCalled();
+    expect(store.canDelete(snapshot!.evaluations[0]!)).toBe(false);
   });
 
   it("self store rejects links of another kind", async () => {

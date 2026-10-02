@@ -33,6 +33,7 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [canDelete, setCanDelete] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -44,9 +45,13 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
       };
     }
     setLoading(true);
-    store
-      .list()
-      .then((nextGoals) => active && setGoals(nextGoals))
+    setCanDelete(false);
+    Promise.all([store.list(), store.canDelete()])
+      .then(([nextGoals, allowed]) => {
+        if (!active) return;
+        setGoals(nextGoals);
+        setCanDelete(allowed);
+      })
       .catch(
         (reason) => active && setError(reason instanceof Error ? reason.message : String(reason))
       )
@@ -97,7 +102,7 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
   };
 
   const removeGoal = async (goalId: string) => {
-    if (!store) return;
+    if (!store || !canDelete) return;
     setSaving(true);
     try {
       await store.remove(goalId);
@@ -341,17 +346,19 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
                 </div>
                 {!readOnly && (
                   <div className="mt-4 flex justify-end gap-2">
-                    <Button
-                      eventId="goal_delete"
-                      type="button"
-                      variant="ghost"
-                      size="icon-sm"
-                      aria-label={t("smartGoals.delete")}
-                      onClick={() => void removeGoal(goal.id)}
-                      disabled={saving}
-                    >
-                      <Trash2 className="h-4 w-4 text-red-500" />
-                    </Button>
+                    {canDelete && (
+                      <Button
+                        eventId="goal_delete"
+                        type="button"
+                        variant="ghost"
+                        size="icon-sm"
+                        aria-label={t("smartGoals.delete")}
+                        onClick={() => void removeGoal(goal.id)}
+                        disabled={saving}
+                      >
+                        <Trash2 className="h-4 w-4 text-red-500" />
+                      </Button>
+                    )}
                     <Button
                       eventId="goal_save"
                       type="button"

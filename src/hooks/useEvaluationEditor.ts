@@ -249,6 +249,7 @@ export function useEvaluationEditor(store: EvaluationStore) {
 
   const deleteVersion = useCallback(
     async (evaluation: Evaluation) => {
+      if (!store.canDelete(evaluation)) throw new Error("Deletion is not allowed");
       await store.remove(evaluation.id);
       if (draftRef.current?.id === evaluation.id) draftRef.current = null;
       const remaining = evaluations.filter((item) => item.id !== evaluation.id);
