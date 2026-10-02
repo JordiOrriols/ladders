@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createInMemoryRepository } from "./inMemoryRepository";
+import type { GoalComment } from "@/types";
 
 describe("team repository contract", () => {
   it("creates a default team and moves members between teams", async () => {
@@ -49,10 +50,9 @@ describe("team repository contract", () => {
       dueDate: goal.dueDate,
       progress: 50,
     });
-    expect((await repo.listGoals(member.id))[0]?.comments.map((comment) => comment.text)).toEqual([
-      "First comment",
-      "Second comment",
-    ]);
+    expect(
+      (await repo.listGoals(member.id))[0]?.comments.map((comment: GoalComment) => comment.text)
+    ).toEqual(["First comment", "Second comment"]);
     expect((await repo.listGoals(member.id))[0]?.progress).toBe(50);
     await repo.deleteGoal(goal.id);
     expect(await repo.listGoals(member.id)).toHaveLength(0);

@@ -25,7 +25,7 @@ import { versionLabel } from "@/data/evaluations";
 import { buildRadarSeries, comparisonColor, evaluationAuthor } from "@/data/radarSeries";
 import { SERIES_COLORS } from "@/components/atoms/radarChart";
 import { isValidToken, resolveToken } from "@/data/tokenApi";
-import { createRepositoryGoalStore, createTokenGoalStore, type GoalStore } from "@/data/goalStore";
+import { createRepositoryGoalStore, type GoalStore } from "@/data/goalStore";
 import { EditorValidationError, useEvaluationEditor } from "@/hooks/useEvaluationEditor";
 import { PageMessage } from "./PageMessage";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -84,7 +84,7 @@ export default function AssessmentPage() {
 function AssessmentEditor({ store }: { store: EvaluationStore }) {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const { id: routeId, token } = useParams();
+  const { id: routeId } = useParams();
   const { repository } = useData();
   const editor = useEvaluationEditor(store);
   const isManager = store.kind === "manager";
@@ -98,9 +98,9 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
         ? createRepositoryGoalStore(repository, editor.memberId)
         : null;
     }
-    return store.kind === "self" && token ? createTokenGoalStore(token) : null;
-  }, [isManager, repository, editor.memberId, store.kind, token]);
-  const showGoals = !isPeer;
+    return null;
+  }, [isManager, repository, editor.memberId]);
+  const showGoals = isManager;
 
   useEffect(() => {
     if (isManager && routeId === "new" && editor.memberId && editor.editingId) {

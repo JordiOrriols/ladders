@@ -9,6 +9,7 @@ import AssessmentPage from "../AssessmentPage";
 import ViewPage from "../ViewPage";
 import { createInMemoryRepository } from "@/data/__tests__/inMemoryRepository";
 import type { Repository } from "@/data/repository";
+import * as tokenApi from "@/data/tokenApi";
 
 const { dataState } = vi.hoisted(() => ({
   dataState: { repository: null as Repository | null },
@@ -33,8 +34,40 @@ const renderAt = (path: string) =>
 
 describe("AssessmentPage", () => {
   beforeEach(() => {
+    vi.restoreAllMocks();
     dataState.repository = createInMemoryRepository();
     vi.spyOn(window, "alert").mockImplementation(() => {});
+  });
+
+  it("shows a blank self form without goals, history or deletion after publishing", async () => {
+    vi.spyOn(tokenApi, "resolveToken").mockResolvedValue({
+      linkKind: "self",
+      name: "Ada",
+      role: "Dev",
+      templateId: null,
+    });
+    vi.spyOn(tokenApi, "listSelfEvaluations").mockResolvedValue([
+      {
+        id: "self-published",
+        memberId: "member",
+        kind: "self",
+        status: "published",
+        authorName: "Ada",
+        currentLevels: { Technology: 4 },
+        goalLevels: {},
+        comments: { Technology: "Published answer" },
+        createdAt: "2026-01-01",
+      },
+    ]);
+    const create = vi.spyOn(tokenApi, "saveSelfEvaluation");
+    renderAt("/e/11111111-1111-4111-8111-111111111111");
+    expect(await screen.findByLabelText("Name")).toHaveValue("Ada");
+    expect(screen.queryByRole("tab", { name: "SMART Goals" })).not.toBeInTheDocument();
+    expect(screen.queryByTestId("version-panel")).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Delete" })).not.toBeInTheDocument();
+    expect(screen.queryByDisplayValue("Published answer")).not.toBeInTheDocument();
+    expect(create).not.toHaveBeenCalled();
+    expect(screen.getByRole("button", { name: "Publish" })).toBeDisabled();
   });
 
   it("creates a member and its first version from /member/new", async () => {
