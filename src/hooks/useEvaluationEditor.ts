@@ -270,6 +270,16 @@ export function useEvaluationEditor(store: EvaluationStore) {
     [editingId, evaluations, store]
   );
 
+  const changeVersionStatus = async (evaluation: Evaluation, status: EvaluationStatus) => {
+    if (!store.canChangeStatus(evaluation) || evaluation.kind !== "peer") {
+      throw new Error("Status change is not allowed");
+    }
+    await store.setStatus(evaluation.id, status);
+    setEvaluations((current) =>
+      current.map((item) => (item.id === evaluation.id ? { ...item, status } : item))
+    );
+  };
+
   const updateForm = useCallback((patch: (prev: FormState) => FormState) => setForm(patch), []);
   const updateProfile = useCallback(
     (patch: Partial<MemberProfile>) => setProfile((prev) => ({ ...prev, ...patch })),
@@ -351,6 +361,7 @@ export function useEvaluationEditor(store: EvaluationStore) {
     toggleCompare: selection.toggleCompare,
     save,
     deleteVersion,
+    changeVersionStatus,
     reload: load,
   };
 }

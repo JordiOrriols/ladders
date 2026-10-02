@@ -3,7 +3,7 @@ import { Eye, EyeOff, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { versionLabel } from "@/data/evaluations";
 import { evaluationAuthor } from "@/data/radarSeries";
-import type { Evaluation } from "@/types";
+import type { Evaluation, EvaluationStatus } from "@/types";
 import { ConfirmDialog } from "./ConfirmDialog";
 
 type Props = {
@@ -14,6 +14,8 @@ type Props = {
   onToggleCompare: (id: string) => void;
   onDelete?: (evaluation: Evaluation) => void;
   canDelete?: (evaluation: Evaluation) => boolean;
+  onChangeStatus?: (evaluation: Evaluation, status: EvaluationStatus) => Promise<void>;
+  canChangeStatus?: (evaluation: Evaluation) => boolean;
 };
 
 const groupOf = (e: Evaluation) => (e.kind === "peer" ? `peer:${e.authorName ?? ""}` : e.kind);
@@ -26,10 +28,27 @@ export function VersionPanel({
   onToggleCompare,
   onDelete,
   canDelete = () => false,
+  onChangeStatus,
+  canChangeStatus = () => false,
 }: Props) {
   const { t, i18n } = useTranslation();
   const [hiddenGroups, setHiddenGroups] = useState<string[]>([]);
   const [pendingDelete, setPendingDelete] = useState<Evaluation | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const changeStatus = async (evaluation: Evaluation) => {
+    if (!onChangeStatus) return;
+    setBusyId(evaluation.id);
+    setError(null);
+    try {
+      await onChangeStatus(evaluation, evaluation.status === "draft" ? "published" : "draft");
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : String(reason));
+    } finally {
+      setBusyId(null);
+    }
+  };
 
   const groups = useMemo(() => {
     const seen = new Map<string, string>();
@@ -52,6 +71,11 @@ export function VersionPanel({
       data-testid="version-panel"
     >
       <h2 className="text-sm font-semibold text-slate-700">{t("versions.title")}</h2>
+      {error && (
+        <p role="alert" className="text-xs text-red-600">
+          {error}
+        </p>
+      )}
 
       {groups.length > 1 && (
         <div className="flex flex-wrap gap-1" role="group" aria-label={t("versions.filter")}>
@@ -134,6 +158,16 @@ export function VersionPanel({
                     className="p-1 rounded text-red-500 hover:bg-red-50 ml-auto"
                   >
                     <Trash2 className="w-4 h-4" />
+                  </button>
+                )}
+                {evaluation.kind === "peer" && onChangeStatus && canChangeStatus(evaluation) && (
+                  <button
+                    type="button"
+                    disabled={busyId !== null}
+                    onClick={() => void changeStatus(evaluation)}
+                    className="ml-auto rounded px-2 py-1 text-xs text-indigo-700 hover:bg-indigo-50 disabled:opacity-50"
+                  >
+                    {t(published ? "versions.returnToDraft" : "buttons.publish")}
                   </button>
                 )}
               </div>

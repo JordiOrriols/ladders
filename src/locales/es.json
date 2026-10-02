@@ -291,6 +291,7 @@
     "error": "No se pudo guardar"
   },
   "versions": {
+    "returnToDraft": "Volver a borrador",
     "title": "Versiones",
     "filter": "Filtrar versiones por autor",
     "empty": "Aún no hay versiones guardadas",

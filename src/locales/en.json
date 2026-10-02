@@ -290,6 +290,7 @@
     "error": "Could not save"
   },
   "versions": {
+    "returnToDraft": "Return to draft",
     "title": "Versions",
     "filter": "Filter versions by author",
     "empty": "No versions saved yet",

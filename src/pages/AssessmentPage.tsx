@@ -275,6 +275,8 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
                     onToggleCompare={editor.toggleCompare}
                     onDelete={(e) => void editor.deleteVersion(e)}
                     canDelete={store.canDelete}
+                    canChangeStatus={store.canChangeStatus}
+                    onChangeStatus={editor.changeVersionStatus}
                   />
                 </div>
               )}

@@ -40,6 +40,7 @@ export function createManagerStore(
 ) {
   let memberId = initialMemberId;
   let owner = false;
+  let canEdit = false;
   const store: EvaluationStore = {
     kind: "manager",
     editableProfile: true,
@@ -54,6 +55,7 @@ export function createManagerStore(
         repo.listTeams(),
       ]);
       owner = teams.find((team) => team.id === member.teamId)?.access === "owner";
+      canEdit = teams.some((team) => team.id === member.teamId && team.access !== "viewer");
       return {
         profile: { name: member.name, role: member.role, templateId: member.templateId },
         evaluations,
@@ -71,6 +73,7 @@ export function createManagerStore(
         ).id;
         const [member, teams] = await Promise.all([repo.getMember(memberId), repo.listTeams()]);
         owner = teams.find((team) => team.id === member?.teamId)?.access === "owner";
+        canEdit = teams.some((team) => team.id === member?.teamId && team.access !== "viewer");
       }
     },
     async create(input) {
@@ -84,7 +87,7 @@ export function createManagerStore(
       await repo.deleteEvaluation(id);
     },
     // Self versions belong to the evaluated person; the owner can only hide them by deleting.
-    canChangeStatus: (evaluation) => evaluation.kind !== "self",
+    canChangeStatus: (evaluation) => canEdit && evaluation.kind !== "self",
     canDelete: (evaluation) =>
       owner && (evaluation.kind !== "self" || evaluation.status === "published"),
   };

@@ -31,6 +31,25 @@ describe("VersionPanel", () => {
     evaluation({ id: "p2", kind: "peer", authorName: "Bob" }),
   ];
 
+  it("offers publish and return-to-draft actions for editable peer versions", async () => {
+    const onChangeStatus = vi.fn().mockResolvedValue(undefined);
+    renderWithI18n(
+      <VersionPanel
+        evaluations={list}
+        selectedId="m1"
+        compareIds={[]}
+        onSelect={vi.fn()}
+        onToggleCompare={vi.fn()}
+        canChangeStatus={() => true}
+        onChangeStatus={onChangeStatus}
+      />
+    );
+    await userEvent.click(screen.getByRole("button", { name: "Publish" }));
+    expect(onChangeStatus).toHaveBeenCalledWith(list[1], "published");
+    await userEvent.click(screen.getByRole("button", { name: "Return to draft" }));
+    expect(onChangeStatus).toHaveBeenCalledWith(list[2], "draft");
+  });
+
   it("lists versions by month, filters by author and toggles compare", async () => {
     const onToggleCompare = vi.fn();
     const onSelect = vi.fn();

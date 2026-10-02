@@ -14,6 +14,30 @@ const renderEditor = async (store: EvaluationStore) => {
 describe("useEvaluationEditor", () => {
   beforeEach(() => localStorage.clear());
 
+  it("changes peer status without changing the manager draft", async () => {
+    const repo = createInMemoryRepository();
+    const member = await repo.createMember({ name: "Ada", role: "", templateId: null });
+    const input = {
+      status: "draft" as const,
+      authorName: null,
+      currentLevels: {},
+      goalLevels: {},
+      comments: {},
+    };
+    const manager = await repo.createEvaluation(member.id, "manager", input);
+    const peer = await repo.createEvaluation(member.id, "peer", { ...input, authorName: "Peer" });
+    const { result } = await renderEditor(createManagerStore(repo, member.id));
+    await act(async () => result.current.changeVersionStatus(peer, "published"));
+    expect(result.current.evaluations.find((item) => item.id === peer.id)?.status).toBe(
+      "published"
+    );
+    expect(result.current.evaluations.find((item) => item.id === manager.id)?.status).toBe("draft");
+    await act(async () =>
+      result.current.changeVersionStatus({ ...peer, status: "published" }, "draft")
+    );
+    expect(result.current.evaluations.find((item) => item.id === peer.id)?.status).toBe("draft");
+  });
+
   it.each([false, true])(
     "opens self blank after publishing, even with stale draft: %s",
     async (staleDraft) => {

@@ -291,6 +291,7 @@
     "error": "No s'ha pogut desar"
   },
   "versions": {
+    "returnToDraft": "Tornar a esborrany",
     "title": "Versions",
     "filter": "Filtrar versions per autor",
     "empty": "Encara no hi ha versions desades",
