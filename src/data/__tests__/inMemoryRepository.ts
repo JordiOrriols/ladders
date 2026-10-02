@@ -105,6 +105,7 @@ export function createInMemoryRepository(): Repository {
         id: id("goal"),
         memberId,
         ...input,
+        comments: [],
         createdAt: now,
         updatedAt: now,
       };
@@ -114,12 +115,37 @@ export function createInMemoryRepository(): Repository {
     async updateGoal(goalId: string, input: SmartGoalInput) {
       const current = goals.find((goal) => goal.id === goalId);
       if (!current) throw new Error("Goal not found");
-      const updated = { ...current, ...input, updatedAt: new Date().toISOString() };
+      const updated = {
+        ...current,
+        title: input.title,
+        description: input.description,
+        dueDate: input.dueDate,
+        progress: input.progress,
+        updatedAt: new Date().toISOString(),
+      };
       goals = goals.map((goal) => (goal.id === goalId ? updated : goal));
       return updated;
     },
     async deleteGoal(goalId: string) {
       goals = goals.filter((goal) => goal.id !== goalId);
+    },
+    async appendGoalComment(goalId: string, text: string) {
+      const current = goals.find((goal) => goal.id === goalId);
+      if (!current || !text.trim()) throw new Error("Invalid comment");
+      const updated: SmartGoal = {
+        ...current,
+        comments: [
+          ...current.comments,
+          {
+            id: id("comment"),
+            text: text.trim(),
+            createdAt: new Date().toISOString(),
+            authorKind: "manager",
+          },
+        ],
+      };
+      goals = goals.map((goal) => (goal.id === goalId ? updated : goal));
+      return updated;
     },
     async listMembers() {
       return members;

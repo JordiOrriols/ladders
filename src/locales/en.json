@@ -226,6 +226,8 @@
     "evaluationTab": "Evaluation"
   },
   "smartGoals": {
+    "newComment": "New comment",
+    "addComment": "Add comment",
     "tab": "SMART Goals",
     "title": "SMART Goals",
     "description": "Turn growth priorities into clear, trackable commitments.",

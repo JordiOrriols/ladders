@@ -49,7 +49,7 @@ export type SmartGoalRow = {
   description: string;
   due_date: string | null;
   progress: number;
-  comments: string;
+  comments: SmartGoal["comments"];
   created_at: string;
   updated_at: string;
 };
@@ -122,7 +122,6 @@ const toGoalPayload = (input: SmartGoalInput) => ({
   description: input.description,
   due_date: input.dueDate,
   progress: input.progress,
-  comments: input.comments,
 });
 
 export const toEvaluation = (row: EvaluationRow): Evaluation => ({
@@ -258,6 +257,11 @@ export function createSupabaseRepository(client: SupabaseClient): Repository {
     async deleteGoal(id) {
       const { error } = await client.from("smart_goals").delete().eq("id", id);
       if (error) throw new Error(error.message);
+    },
+    async appendGoalComment(id, text) {
+      return toGoal(
+        unwrap<SmartGoalRow>(await client.rpc("append_goal_comment", { p_id: id, p_text: text }))
+      );
     },
     async listMembers(teamId) {
       let query = client.from("members").select(MEMBER_COLUMNS);

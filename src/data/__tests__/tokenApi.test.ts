@@ -36,26 +36,25 @@ describe("tokenApi", () => {
       description: "",
       due_date: null,
       progress: 20,
-      comments: "",
+      comments: [],
       created_at: "2026-01-02",
       updated_at: "2026-01-02",
     };
-    const goal = { title: "Mentor", description: "", dueDate: null, progress: 20, comments: "" };
     rpc.mockResolvedValue({ data: goalRow, error: null });
-    expect(await tokenApi.createTokenGoal(TOKEN, goal)).toMatchObject({ memberId: "m1" });
-    expect(rpc).toHaveBeenLastCalledWith("token_goal_create", {
-      p_token: TOKEN,
-      p_title: "Mentor",
-      p_description: "",
-      p_due_date: null,
-      p_progress: 20,
-      p_comments: "",
+    expect(await tokenApi.updateTokenGoalProgress(TOKEN, "g1", 20)).toMatchObject({
+      memberId: "m1",
     });
-    await tokenApi.updateTokenGoal(TOKEN, "g1", goal);
-    expect(rpc).toHaveBeenLastCalledWith(
-      "token_goal_update",
-      expect.objectContaining({ p_id: "g1" })
-    );
+    expect(rpc).toHaveBeenLastCalledWith("view_goal_progress", {
+      p_token: TOKEN,
+      p_id: "g1",
+      p_progress: 20,
+    });
+    await tokenApi.appendTokenGoalComment(TOKEN, "g1", "On track");
+    expect(rpc).toHaveBeenLastCalledWith("append_goal_comment", {
+      p_token: TOKEN,
+      p_id: "g1",
+      p_text: "On track",
+    });
     rpc.mockResolvedValueOnce({ data: [goalRow], error: null });
     expect(await tokenApi.listTokenGoals(TOKEN)).toHaveLength(1);
   });

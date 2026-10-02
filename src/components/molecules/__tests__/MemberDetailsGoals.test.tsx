@@ -13,13 +13,13 @@ vi.mock("@/data/DataProvider", () => ({ useData: () => ({ repository }) }));
 describe("MemberDetailsPanel SMART goals", () => {
   it("always shows goals as read-only text", async () => {
     const member = await repository.createMember({ name: "Ada", role: "Dev", templateId: null });
-    await repository.createGoal(member.id, {
+    const goal = await repository.createGoal(member.id, {
       title: "Lead onboarding",
       description: "Own the first-week plan.",
       dueDate: null,
       progress: 60,
-      comments: "On track",
     });
+    await repository.appendGoalComment(goal.id, "On track");
 
     render(
       <I18nextProvider i18n={i18n}>

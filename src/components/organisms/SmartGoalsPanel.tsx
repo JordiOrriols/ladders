@@ -12,7 +12,6 @@ const emptyGoal: SmartGoalInput = {
   description: "",
   dueDate: null,
   progress: 0,
-  comments: "",
 };
 
 function daysRemaining(dueDate: string | null) {
@@ -34,6 +33,7 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [canDelete, setCanDelete] = useState(false);
+  const [newComments, setNewComments] = useState<Record<string, string>>({});
 
   useEffect(() => {
     let active = true;
@@ -91,7 +91,6 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
         description: goal.description,
         dueDate: goal.dueDate || null,
         progress: goal.progress,
-        comments: goal.comments,
       });
       setGoals((current) => current.map((item) => (item.id === updated.id ? updated : item)));
     } catch (reason) {
@@ -114,6 +113,75 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
     }
   };
 
+  const appendComment = async (goalId: string) => {
+    const text = newComments[goalId]?.trim();
+    if (!store || readOnly || !text) return;
+    setSaving(true);
+    setError(null);
+    try {
+      const updated = await store.appendComment(goalId, text);
+      setGoals((current) =>
+        current.map((goal) => (goal.id === goalId ? { ...goal, comments: updated.comments } : goal))
+      );
+      setNewComments((current) => ({ ...current, [goalId]: "" }));
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : String(reason));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const renderComments = (goal: SmartGoal) => (
+    <div className="mt-4 space-y-3">
+      {goal.comments.length > 0 && (
+        <div>
+          <h4 className="text-xs font-medium text-slate-500">{t("smartGoals.comments")}</h4>
+          <ol className="mt-2 space-y-2">
+            {goal.comments.map((comment) => (
+              <li key={comment.id} className="border-l-2 border-slate-200 pl-3">
+                <p className="whitespace-pre-wrap break-words text-sm text-slate-700">
+                  {comment.text}
+                </p>
+                <time dateTime={comment.createdAt} className="text-xs text-slate-400">
+                  {new Date(comment.createdAt).toLocaleString()}
+                </time>
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
+      {!readOnly && (
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            void appendComment(goal.id);
+          }}
+          className="space-y-2"
+        >
+          <Label htmlFor={`new-comment-${goal.id}`}>{t("smartGoals.newComment")}</Label>
+          <textarea
+            id={`new-comment-${goal.id}`}
+            value={newComments[goal.id] ?? ""}
+            onChange={(event) =>
+              setNewComments((current) => ({ ...current, [goal.id]: event.target.value }))
+            }
+            disabled={saving}
+            maxLength={10000}
+            className="min-h-16 w-full rounded-md border border-slate-200 p-2 text-sm"
+          />
+          <Button
+            eventId="goal_comment_append"
+            type="submit"
+            disabled={saving || !newComments[goal.id]?.trim()}
+          >
+            <Plus className="h-4 w-4" />
+            {t("smartGoals.addComment")}
+          </Button>
+        </form>
+      )}
+    </div>
+  );
+
   if (loading) return <p className="text-sm text-slate-500">{t("pageMessage.loading")}</p>;
 
   return (
@@ -131,7 +199,7 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
         </p>
       )}
 
-      {!readOnly && (
+      {!readOnly && store?.mode === "manager" && (
         <form
           onSubmit={addGoal}
           className="space-y-4 rounded-xl border border-slate-200 bg-white p-5"
@@ -190,7 +258,7 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
                 : remaining < 0
                   ? t("smartGoals.overdue", { days: Math.abs(remaining) })
                   : t("smartGoals.daysRemaining", { days: remaining });
-            if (readOnly) {
+            if (readOnly || store?.mode === "member") {
               return (
                 <article
                   key={goal.id}
@@ -214,31 +282,56 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
                     <span className="shrink-0 text-xs font-medium text-slate-500">
                       {t("smartGoals.progress")}
                     </span>
-                    <div
-                      role="progressbar"
-                      aria-label={t("smartGoals.progress")}
-                      aria-valuemin={0}
-                      aria-valuemax={100}
-                      aria-valuenow={goal.progress}
-                      className="h-2 min-w-0 flex-1 overflow-hidden rounded-full bg-slate-100"
-                    >
+                    {readOnly ? (
                       <div
-                        className="h-full rounded-full bg-indigo-500"
-                        style={{ width: `${goal.progress}%` }}
+                        role="progressbar"
+                        aria-label={t("smartGoals.progress")}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        aria-valuenow={goal.progress}
+                        className="h-2 min-w-0 flex-1 overflow-hidden rounded-full bg-slate-100"
+                      >
+                        <div
+                          className="h-full rounded-full bg-indigo-500"
+                          style={{ width: `${goal.progress}%` }}
+                        />
+                      </div>
+                    ) : (
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        step="1"
+                        value={goal.progress}
+                        aria-label={t("smartGoals.progress")}
+                        disabled={saving}
+                        onChange={(event) =>
+                          setGoals((current) =>
+                            current.map((item) =>
+                              item.id === goal.id
+                                ? { ...item, progress: Number(event.target.value) }
+                                : item
+                            )
+                          )
+                        }
+                        className="min-w-0 flex-1 accent-indigo-600"
                       />
-                    </div>
+                    )}
                     <span className="w-12 text-right text-sm font-medium">{goal.progress}%</span>
                   </div>
-                  {goal.comments && (
-                    <div className="mt-4 rounded-lg bg-slate-50 p-3">
-                      <p className="text-xs font-medium text-slate-500">
-                        {t("smartGoals.comments")}
-                      </p>
-                      <p className="mt-1 whitespace-pre-line text-sm text-slate-700">
-                        {goal.comments}
-                      </p>
-                    </div>
+                  {!readOnly && (
+                    <Button
+                      eventId="goal_progress_save"
+                      type="button"
+                      className="mt-3"
+                      disabled={saving}
+                      onClick={() => void updateGoal(goal)}
+                    >
+                      <Check className="h-4 w-4" />
+                      {t("smartGoals.save")}
+                    </Button>
                   )}
+                  {renderComments(goal)}
                 </article>
               );
             }
@@ -328,22 +421,7 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
                   <CalendarDays className="h-4 w-4" />
                   {remainingLabel}
                 </div>
-                <div className="mt-4">
-                  <Label htmlFor={`goal-comments-${goal.id}`}>{t("smartGoals.comments")}</Label>
-                  <textarea
-                    id={`goal-comments-${goal.id}`}
-                    value={goal.comments}
-                    disabled={readOnly || saving}
-                    onChange={(event) =>
-                      setGoals((current) =>
-                        current.map((item) =>
-                          item.id === goal.id ? { ...item, comments: event.target.value } : item
-                        )
-                      )
-                    }
-                    className="mt-1 min-h-16 w-full rounded-md border border-slate-200 p-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-slate-50"
-                  />
-                </div>
+                {renderComments(goal)}
                 {!readOnly && (
                   <div className="mt-4 flex justify-end gap-2">
                     {canDelete && (

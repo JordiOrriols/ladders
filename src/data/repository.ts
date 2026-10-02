@@ -29,6 +29,7 @@ export interface Repository {
   createGoal(memberId: string, input: SmartGoalInput): Promise<SmartGoal>;
   updateGoal(id: string, input: SmartGoalInput): Promise<SmartGoal>;
   deleteGoal(id: string): Promise<void>;
+  appendGoalComment(id: string, text: string): Promise<SmartGoal>;
   listMembers(teamId?: string): Promise<TeamMember[]>;
   getMember(id: string): Promise<TeamMember | null>;
   createMember(profile: MemberProfile, teamId?: string): Promise<TeamMember>;

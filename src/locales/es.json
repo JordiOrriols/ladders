@@ -227,6 +227,8 @@
     "evaluationTab": "Evaluación"
   },
   "smartGoals": {
+    "newComment": "Nuevo comentario",
+    "addComment": "Añadir comentario",
     "tab": "Objetivos SMART",
     "title": "Objetivos SMART",
     "description": "Convierte las prioridades de crecimiento en compromisos claros y medibles.",

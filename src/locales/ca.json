@@ -227,6 +227,8 @@
     "evaluationTab": "Avaluació"
   },
   "smartGoals": {
+    "newComment": "Nou comentari",
+    "addComment": "Afegir comentari",
     "tab": "Objectius SMART",
     "title": "Objectius SMART",
     "description": "Convertiu les prioritats de creixement en compromisos clars i mesurables.",

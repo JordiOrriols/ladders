@@ -35,14 +35,24 @@ describe("team repository contract", () => {
       description: "Document the first-week path.",
       dueDate: null,
       progress: 0,
-      comments: "",
     });
 
     expect((await repo.listGoals(member.id))[0]).toMatchObject({
       id: goal.id,
       title: "Improve onboarding",
     });
-    await repo.updateGoal(goal.id, { ...goal, progress: 50 });
+    await repo.appendGoalComment(goal.id, "First comment");
+    await repo.appendGoalComment(goal.id, "Second comment");
+    await repo.updateGoal(goal.id, {
+      title: goal.title,
+      description: goal.description,
+      dueDate: goal.dueDate,
+      progress: 50,
+    });
+    expect((await repo.listGoals(member.id))[0]?.comments.map((comment) => comment.text)).toEqual([
+      "First comment",
+      "Second comment",
+    ]);
     expect((await repo.listGoals(member.id))[0]?.progress).toBe(50);
     await repo.deleteGoal(goal.id);
     expect(await repo.listGoals(member.id)).toHaveLength(0);

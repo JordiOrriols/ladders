@@ -31,12 +31,22 @@ export interface SmartGoal {
   description: string;
   dueDate: string | null;
   progress: number;
-  comments: string;
+  comments: GoalComment[];
   createdAt: string;
   updatedAt: string;
 }
 
-export type SmartGoalInput = Omit<SmartGoal, "id" | "memberId" | "createdAt" | "updatedAt">;
+export interface GoalComment {
+  id: string;
+  text: string;
+  createdAt: string;
+  authorKind: "manager" | "member" | "legacy";
+}
+
+export type SmartGoalInput = Omit<
+  SmartGoal,
+  "id" | "memberId" | "createdAt" | "updatedAt" | "comments"
+>;
 
 /** Summary used by team views; levels come from the latest manager and self versions. */
 export interface Member {
