@@ -154,7 +154,11 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
   if (isPeer && editor.submitted) {
     return (
       <PageMessage kind="thanks">
-        <Button eventId="peer_submit_another" onClick={() => window.location.reload()}>
+        <Button
+          eventId="peer_submit_another"
+          data-testid="peer-another"
+          onClick={() => window.location.reload()}
+        >
           {t("peerAssessment.another")}
         </Button>
       </PageMessage>
