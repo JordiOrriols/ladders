@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { CalendarDays, Check, Plus, Trash2 } from "lucide-react";
+import { CalendarDays, Check, Plus, Trash2 } from "@jordiorriols/ui/icons";
 import { useTranslation } from "react-i18next";
 import type { SmartGoal, SmartGoalInput } from "@/types";
 import type { GoalStore } from "@/data/goalStore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { ProgressIndicator } from "@jordiorriols/ui";
 
 const emptyGoal: SmartGoalInput = {
   title: "",
@@ -298,19 +299,7 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
                       {t("smartGoals.progress")}
                     </span>
                     {readOnly ? (
-                      <div
-                        role="progressbar"
-                        aria-label={t("smartGoals.progress")}
-                        aria-valuemin={0}
-                        aria-valuemax={100}
-                        aria-valuenow={goal.progress}
-                        className="h-2 min-w-0 flex-1 overflow-hidden rounded-full bg-slate-100"
-                      >
-                        <div
-                          className="h-full rounded-full bg-indigo-500"
-                          style={{ width: `${goal.progress}%` }}
-                        />
-                      </div>
+                      <ProgressIndicator value={goal.progress} label={t("smartGoals.progress")} />
                     ) : (
                       <input
                         type="range"

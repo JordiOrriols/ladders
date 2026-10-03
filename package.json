@@ -20,12 +20,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@jordiorriols/ui": "^0.2.3",
-    "@radix-ui/react-alert-dialog": "^1.1.15",
-    "@radix-ui/react-dropdown-menu": "^2.1.24",
-    "@radix-ui/react-label": "^2.1.8",
-    "@radix-ui/react-slot": "^1.2.4",
-    "@radix-ui/react-tabs": "^1.1.13",
+    "@jordiorriols/ui": "file:../ui",
     "@supabase/supabase-js": "^2.117.2",
     "@tailwindcss/vite": "^4.1.7",
     "@vitejs/plugin-react": "^4.5.0",
@@ -33,7 +28,6 @@
     "clsx": "^2.1.1",
     "i18next": "25.7.3",
     "i18next-browser-languagedetector": "8.2.0",
-    "lucide-react": "^0.511.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-error-boundary": "6.0.1",

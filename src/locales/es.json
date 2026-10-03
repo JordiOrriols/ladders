@@ -358,6 +358,11 @@
     }
   },
   "welcome": {
+    "features": {
+      "team": "Competencias del equipo",
+      "account": "Cuenta segura",
+      "sharing": "Evaluaciones compartidas"
+    },
     "eyebrow": "Escalera de Ingeniería",
     "title": "¿Cómo quiere empezar?",
     "description": "Inicie sesión para mantener su equipo protegido y disponible entre dispositivos.",

@@ -1,10 +1,11 @@
 import React, { useMemo, useState } from "react";
-import { Eye, EyeOff, Trash2 } from "lucide-react";
+import { Eye, EyeOff, Trash2 } from "@jordiorriols/ui/icons";
 import { useTranslation } from "react-i18next";
 import { versionLabel } from "@/data/evaluations";
 import { evaluationAuthor } from "@/data/radarSeries";
 import type { Evaluation, EvaluationStatus } from "@/types";
 import { ConfirmDialog } from "./ConfirmDialog";
+import { ButtonGroup, StatusBadge } from "@jordiorriols/ui";
 
 type Props = {
   evaluations: Evaluation[];
@@ -78,26 +79,15 @@ export function VersionPanel({
       )}
 
       {groups.length > 1 && (
-        <div className="flex flex-wrap gap-1" role="group" aria-label={t("versions.filter")}>
-          {groups.map(([group, label]) => {
-            const active = !hiddenGroups.includes(group);
-            return (
-              <button
-                key={group}
-                type="button"
-                aria-pressed={active}
-                onClick={() => toggleGroup(group)}
-                className={`text-xs px-2 py-0.5 rounded-full border transition-colors ${
-                  active
-                    ? "bg-indigo-50 border-indigo-300 text-indigo-700"
-                    : "bg-white border-slate-200 text-slate-400 line-through"
-                }`}
-              >
-                {label}
-              </button>
-            );
-          })}
-        </div>
+        <ButtonGroup
+          label={t("versions.filter")}
+          items={groups.map(([value, label]) => ({
+            value,
+            label,
+            selected: !hiddenGroups.includes(value),
+          }))}
+          onToggle={toggleGroup}
+        />
       )}
 
       <ol className="space-y-1 max-h-[60vh] overflow-y-auto">
@@ -133,15 +123,13 @@ export function VersionPanel({
                     {evaluationAuthor(evaluation, t)}
                   </span>
                 </button>
-                <span
-                  className={`shrink-0 text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded ${
-                    published ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-600"
-                  }`}
+                <StatusBadge
+                  positive={published}
                   data-testid="version-status"
                   data-status={evaluation.status}
                 >
                   {t(`versions.status.${evaluation.status}`)}
-                </span>
+                </StatusBadge>
               </div>
               <div className="flex items-center gap-1 mt-1">
                 <button

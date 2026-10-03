@@ -1,5 +1,5 @@
 import React from "react";
-import { Eye, Share2, UserRound, Users } from "lucide-react";
+import { Eye, Share2, UserRound, Users } from "@jordiorriols/ui/icons";
 import { useTranslation } from "react-i18next";
 import type { TeamMember } from "@/types";
 import { buildShareLink, copyToClipboard } from "@/utils/sharing";

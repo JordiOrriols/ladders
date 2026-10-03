@@ -1,6 +1,6 @@
 import React, { useCallback, useRef } from "react";
 import type { ReactNode } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "@jordiorriols/ui/icons";
 import { Button } from "@/components/ui/button";
 import { SplitButton } from "@/components/molecules/SplitButton";
 import type { SplitButtonItem } from "@/components/molecules/SplitButton";

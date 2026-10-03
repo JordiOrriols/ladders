@@ -1,5 +1,5 @@
 import React, { memo, useMemo } from "react";
-import { User } from "lucide-react";
+import { User } from "@jordiorriols/ui/icons";
 import { useTranslation } from "react-i18next";
 import type { Evaluation, Member } from "@/types";
 import { useData } from "@/data/DataProvider";
