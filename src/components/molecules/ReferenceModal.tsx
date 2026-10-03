@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "../ui/button";
 import { VERTICALS, LEVELS, LevelExample } from "../atoms/levelSelector";
@@ -10,15 +10,32 @@ interface ReferenceModalProps {
 
 export function ReferenceModal({ isOpen, onClose }: ReferenceModalProps) {
   const { t } = useTranslation();
+
+  // Escape is the expected way out of a dialog, so honour it even though the
+  // overlay is rendered by hand rather than by a dialog primitive.
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-start justify-center overflow-y-auto py-8">
+    <div
+      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-start justify-center overflow-y-auto py-8"
+      onClick={onClose}
+    >
       <div
         className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl mx-4"
         data-testid="reference-modal"
         role="dialog"
         aria-modal="true"
+        aria-label={t("reference.title")}
+        onClick={(event) => event.stopPropagation()}
       >
         <div className="flex items-center justify-between p-6 border-b border-slate-200">
           <h2 className="text-xl font-semibold text-slate-800">{t("reference.title")}</h2>
