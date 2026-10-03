@@ -43,6 +43,13 @@ export default function ViewPage() {
         else setState({ kind: "ready", info, evaluations, links });
       })
       .catch((error) => {
+        // A view link that has not been enabled yet resolves to nothing, which
+        // is a missing link rather than a failure: without this the page would
+        // report a server error for a link that simply is not shared.
+        if (error instanceof Error && /invalid view link/i.test(error.message)) {
+          setState({ kind: "notFound" });
+          return;
+        }
         console.error("Failed to load shared evaluation", error);
         if (active) setState({ kind: "error" });
       });
