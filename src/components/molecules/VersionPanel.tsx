@@ -146,6 +146,7 @@ export function VersionPanel({
               <div className="flex items-center gap-1 mt-1">
                 <button
                   type="button"
+                  data-testid="version-compare"
                   disabled={isSelected}
                   onClick={() => onToggleCompare(evaluation.id)}
                   title={t("versions.compare")}
