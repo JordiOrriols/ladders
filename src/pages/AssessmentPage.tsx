@@ -269,13 +269,15 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
           )}
 
           <TabsContent value="evaluation">
+            {/* Grid items default to min-width:auto, so a wide child widens the
+                whole track and pushes the page sideways on a phone. */}
             <div
               className={`grid gap-6 ${
                 store.showHistory || isManager ? "xl:grid-cols-[260px_1fr_1fr]" : "lg:grid-cols-2"
               }`}
             >
               {store.showHistory && (
-                <div className="space-y-4">
+                <div className="min-w-0 space-y-4">
                   <VersionPanel
                     evaluations={editor.evaluations}
                     selectedId={editor.editingId}

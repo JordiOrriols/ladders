@@ -63,8 +63,11 @@ export function AssessmentFormColumn({
   profileExtra,
 }: Props) {
   return (
-    <div className="space-y-6">
-      <div className="bg-white rounded-2xl border border-slate-200 p-6" data-testid="assessment-profile">
+    <div className="min-w-0 space-y-6">
+      <div
+        className="bg-white rounded-2xl border border-slate-200 p-6"
+        data-testid="assessment-profile"
+      >
         <h2 className="text-lg font-semibold text-slate-800 mb-4">{labels.personalTitle}</h2>
         <div className="space-y-4">
           <div>
