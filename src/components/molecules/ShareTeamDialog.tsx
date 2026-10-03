@@ -117,7 +117,7 @@ export function ShareTeamDialog({
         </form>
 
         {error && (
-          <p role="alert" className="text-sm text-red-600">
+          <p role="alert" data-testid="share-error" className="text-sm text-red-600">
             {error}
           </p>
         )}
