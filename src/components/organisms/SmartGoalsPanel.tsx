@@ -187,7 +187,7 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
   if (loading) return <p className="text-sm text-slate-500">{t("pageMessage.loading")}</p>;
 
   return (
-    <section className="space-y-6" aria-labelledby="smart-goals-title">
+    <section className="space-y-6" aria-labelledby="smart-goals-title" data-testid="goals-panel">
       <div>
         <h2 id="smart-goals-title" className="text-xl font-semibold text-slate-800">
           {t("smartGoals.title")}
