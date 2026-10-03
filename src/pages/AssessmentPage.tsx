@@ -7,6 +7,7 @@ import { AssessmentHeader } from "@/components/organisms/AssessmentHeader";
 import { AssessmentPreview } from "@/components/organisms/AssessmentPreview";
 import { SmartGoalsPanel } from "@/components/organisms/SmartGoalsPanel";
 import { ShareAction } from "@/components/molecules/ShareAction";
+import { PlanningRoleField } from "@/components/molecules/PlanningRoleField";
 import { CommentGroups } from "@/components/molecules/CommentGroups";
 import { TemplatePanel } from "@/components/molecules/TemplatePanel";
 import { VersionPanel } from "@/components/molecules/VersionPanel";
@@ -339,6 +340,11 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
                         className="mt-1"
                       />
                     </div>
+                  ) : isManager && store.editableProfile ? (
+                    <PlanningRoleField
+                      value={editor.profile.planningRole ?? null}
+                      onChange={editor.setPlanningRole}
+                    />
                   ) : null
                 }
               />

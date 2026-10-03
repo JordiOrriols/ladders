@@ -62,12 +62,51 @@ describe("AssessmentPage", () => {
     const create = vi.spyOn(tokenApi, "saveSelfEvaluation");
     renderAt("/e/11111111-1111-4111-8111-111111111111");
     expect(await screen.findByLabelText("Name")).toHaveValue("Ada");
+    expect(screen.queryByLabelText("Planning role (optional)")).not.toBeInTheDocument();
     expect(screen.queryByRole("tab", { name: "SMART Goals" })).not.toBeInTheDocument();
     expect(screen.queryByTestId("version-panel")).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Delete" })).not.toBeInTheDocument();
     expect(screen.queryByDisplayValue("Published answer")).not.toBeInTheDocument();
     expect(create).not.toHaveBeenCalled();
     expect(screen.getByRole("button", { name: "Publish" })).toBeDisabled();
+  });
+
+  it("saves the planning role separately from the job role when creating a member", async () => {
+    renderAt("/member/new");
+    await userEvent.type(await screen.findByLabelText("Name"), "Ada");
+    await userEvent.type(screen.getByLabelText("Role (optional)"), "Engineering lead");
+    await userEvent.selectOptions(screen.getByLabelText("Planning role (optional)"), "backend");
+    await waitFor(async () => {
+      expect((await dataState.repository!.listMembers())[0]).toMatchObject({
+        name: "Ada",
+        role: "Engineering lead",
+        planningRole: "backend",
+      });
+    });
+  });
+
+  it("loads and clears an existing planning role without changing other profile fields or tokens", async () => {
+    const repo = dataState.repository!;
+    const member = await repo.createMember({
+      name: "Ada",
+      role: "Engineering lead",
+      planningRole: "frontend",
+      templateId: "D3",
+    });
+    renderAt(`/member/${member.id}`);
+    expect(await screen.findByLabelText("Planning role (optional)")).toHaveValue("frontend");
+    await userEvent.selectOptions(screen.getByLabelText("Planning role (optional)"), "");
+    await waitFor(async () => {
+      expect(await repo.getMember(member.id)).toMatchObject({
+        role: member.role,
+        planningRole: null,
+        templateId: member.templateId,
+        vacationToken: member.vacationToken,
+        selfToken: member.selfToken,
+        peerToken: member.peerToken,
+        viewToken: member.viewToken,
+      });
+    });
   });
 
   it("creates a member and its first version from /member/new", async () => {

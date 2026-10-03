@@ -32,6 +32,8 @@ const memberRow = {
   team_id: "t1",
   name: "Ada",
   role: null,
+  planning_role: "backend",
+  vacation_token: "44444444-4444-4444-8444-444444444444",
   template_id: "D3",
   self_token: "s",
   peer_token: "p",
@@ -82,6 +84,8 @@ describe("supabaseRepository", () => {
       id: "m1",
       teamId: "t1",
       role: "",
+      planningRole: "backend",
+      vacationToken: memberRow.vacation_token,
       templateId: "D3",
       selfToken: "s",
       viewEnabled: true,
@@ -172,14 +176,56 @@ describe("supabaseRepository", () => {
       { data: memberRow, error: null },
     ]);
     const repo = createSupabaseRepository(client);
-    await repo.createMember({ name: "Ada", role: "Dev", templateId: "D3" });
+    await repo.createMember({
+      name: "Ada",
+      role: "Dev",
+      planningRole: "qa",
+      templateId: "D3",
+    });
     await repo.updateMember("m1", { viewEnabled: false, templateId: null });
     expect(calls).toContainEqual([
       "members",
       "insert",
-      { name: "Ada", role: "Dev", template_id: "D3" },
+      { name: "Ada", role: "Dev", planning_role: "qa", template_id: "D3" },
     ]);
     expect(calls).toContainEqual(["members", "update", { template_id: null, view_enabled: false }]);
+  });
+
+  it("defaults new members to no planning role and never writes the vacation token", async () => {
+    const { client, calls } = fakeClient([
+      { data: { ...memberRow, planning_role: null }, error: null },
+      { data: memberRow, error: null },
+      { data: { ...memberRow, planning_role: null }, error: null },
+    ]);
+    const repo = createSupabaseRepository(client);
+    const created = await repo.createMember({ name: "Ada", role: "Lead", templateId: null });
+    expect(created.planningRole).toBeNull();
+    expect(calls).toContainEqual([
+      "members",
+      "insert",
+      { name: "Ada", role: "Lead", planning_role: null, template_id: null },
+    ]);
+    await repo.updateMember("m1", { planningRole: "design" });
+    const cleared = await repo.updateMember("m1", { planningRole: null });
+    expect(cleared.vacationToken).toBe(memberRow.vacation_token);
+    expect(cleared.planningRole).toBeNull();
+    expect(calls).toContainEqual(["members", "update", { planning_role: "design" }]);
+    expect(calls).toContainEqual(["members", "update", { planning_role: null }]);
+  });
+
+  it("selects the shared planning fields for member reads", async () => {
+    const { client, calls } = fakeClient([
+      { data: [memberRow], error: null },
+      { data: memberRow, error: null },
+    ]);
+    const repo = createSupabaseRepository(client);
+    await repo.listMembers("t1");
+    expect((await repo.getMember("m1"))?.vacationToken).toBe(memberRow.vacation_token);
+    const selections = calls.filter((call) => call[0] === "members" && call[1] === "select");
+    expect(selections).toHaveLength(2);
+    for (const selection of selections) {
+      expect(selection[2]).toContain("planning_role,vacation_token");
+    }
   });
 
   it("creates, lists, updates and deletes evaluations", async () => {

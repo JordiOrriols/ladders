@@ -47,7 +47,11 @@ export function createManagerStore(
     showHistory: true,
     memberId: () => memberId,
     async load() {
-      if (!memberId) return { profile: { name: "", role: "", templateId: null }, evaluations: [] };
+      if (!memberId)
+        return {
+          profile: { name: "", role: "", planningRole: null, templateId: null },
+          evaluations: [],
+        };
       const member = await repo.getMember(memberId);
       if (!member) return null;
       const [evaluations, teams] = await Promise.all([
@@ -57,7 +61,12 @@ export function createManagerStore(
       owner = teams.find((team) => team.id === member.teamId)?.access === "owner";
       canEdit = teams.some((team) => team.id === member.teamId && team.access !== "viewer");
       return {
-        profile: { name: member.name, role: member.role, templateId: member.templateId },
+        profile: {
+          name: member.name,
+          role: member.role,
+          planningRole: member.planningRole,
+          templateId: member.templateId,
+        },
         evaluations,
         member,
       };

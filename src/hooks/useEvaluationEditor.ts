@@ -8,6 +8,7 @@ import type {
   EvaluationStatus,
   LevelMap,
   MemberProfile,
+  PlanningRole,
   TeamMember,
 } from "@/types";
 import { useVersionSelection } from "./useVersionSelection";
@@ -17,7 +18,7 @@ type LoadState = "loading" | "ready" | "notFound" | "error";
 export type AutosaveState = "idle" | "saving" | "saved" | "error";
 
 const EMPTY_FORM: FormState = { currentLevels: {}, goalLevels: {}, comments: {} };
-const EMPTY_PROFILE: MemberProfile = { name: "", role: "", templateId: null };
+const EMPTY_PROFILE: MemberProfile = { name: "", role: "", planningRole: null, templateId: null };
 const AUTOSAVE_DELAY = 500;
 
 const formFrom = (evaluation: Evaluation | undefined): FormState =>
@@ -43,10 +44,14 @@ const normalizedProfile = (profile: MemberProfile): MemberProfile => ({
   ...profile,
   name: profile.name.trim(),
   role: profile.role.trim(),
+  planningRole: profile.planningRole ?? null,
 });
 
 const sameProfile = (a: MemberProfile, b: MemberProfile) =>
-  a.name === b.name && a.role === b.role && a.templateId === b.templateId;
+  a.name === b.name &&
+  a.role === b.role &&
+  (a.planningRole ?? null) === (b.planningRole ?? null) &&
+  a.templateId === b.templateId;
 
 export class EditorValidationError extends Error {}
 
@@ -351,6 +356,7 @@ export function useEvaluationEditor(store: EvaluationStore) {
     memberId: store.memberId(),
     setName: (name: string) => updateProfile({ name }),
     setRole: (role: string) => updateProfile({ role }),
+    setPlanningRole: (planningRole: PlanningRole | null) => updateProfile({ planningRole }),
     setTemplateId: (templateId: string | null) => updateProfile({ templateId }),
     setAuthorName,
     handleCurrentChange,

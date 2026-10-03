@@ -2,6 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type {
   Evaluation,
   EvaluationInput,
+  PlanningRole,
   SharedTeamAccess,
   SmartGoal,
   SmartGoalInput,
@@ -16,6 +17,8 @@ export type MemberRow = {
   team_id: string;
   name: string;
   role: string | null;
+  planning_role: PlanningRole | null;
+  vacation_token: string;
   template_id: string | null;
   self_token: string;
   peer_token: string;
@@ -67,7 +70,7 @@ export type EvaluationRow = {
 };
 
 const MEMBER_COLUMNS =
-  "id,team_id,name,role,template_id,self_token,peer_token,view_token,view_enabled,created_at";
+  "id,team_id,name,role,planning_role,vacation_token,template_id,self_token,peer_token,view_token,view_enabled,created_at";
 const TEAM_COLUMNS = "id,owner_id,name,is_default,created_at,updated_at";
 const EVALUATION_COLUMNS =
   "id,member_id,kind,status,author_name,current_levels,goal_levels,comments,created_at";
@@ -79,6 +82,8 @@ const toMember = (row: MemberRow): TeamMember => ({
   teamId: row.team_id,
   name: row.name,
   role: row.role ?? "",
+  planningRole: row.planning_role,
+  vacationToken: row.vacation_token,
   templateId: row.template_id,
   selfToken: row.self_token,
   peerToken: row.peer_token,
@@ -148,6 +153,7 @@ function toMemberPatch(patch: MemberPatch) {
   const row: Record<string, unknown> = {};
   if (patch.name !== undefined) row["name"] = patch.name;
   if (patch.role !== undefined) row["role"] = patch.role;
+  if (patch.planningRole !== undefined) row["planning_role"] = patch.planningRole;
   if (patch.templateId !== undefined) row["template_id"] = patch.templateId;
   if (patch.viewEnabled !== undefined) row["view_enabled"] = patch.viewEnabled;
   return row;
@@ -285,6 +291,7 @@ export function createSupabaseRepository(client: SupabaseClient): Repository {
           .insert({
             name: profile.name,
             role: profile.role,
+            planning_role: profile.planningRole ?? null,
             template_id: profile.templateId,
             ...(teamId ? { team_id: teamId } : {}),
           })

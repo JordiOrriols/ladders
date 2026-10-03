@@ -53,6 +53,28 @@ VITE_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
 
 The publishable key is safe to use in the browser. Database access is protected by the Row Level Security policies in the migrations. Never put the service-role key in this application.
 
+### Shared Planner vacations
+
+Set `VITE_PLANNER_URL` to the absolute URL of your Planner deployment, including
+its pathname, and rebuild Ladders. For example, a deployment at
+`https://example.com/planner/` creates links at
+`https://example.com/planner/#/vacations/<vacationToken>`. No production host is
+assumed. Only when Ladders runs on `localhost` or `127.0.0.1`, an empty setting
+falls back to `http://127.0.0.1:5176`. Missing or invalid production configuration
+shows an actionable error rather than copying a broken link.
+
+Member creation/editing includes an optional planning role (`backend`, `frontend`,
+`design`, or `qa`), separate from the existing free-text job role. The Share menu
+includes **Vacations**, copying the member's independent permanent vacation UUID.
+Self, peer, and view links retain their existing routes and tokens.
+
+This requires the additive shared-vacations migration maintained in `../planner`
+to provide `public.members.planning_role` (nullable) and
+`public.members.vacation_token` (database-generated UUID), plus Planner's
+permissions/RPCs. Ladders reads the token but never sets or rotates it. Planner
+workspaces can link multiple Ladders teams. Deploy the shared schema only after
+approval and local RLS validation; Ladders does not apply it automatically.
+
 ## Initialize Supabase
 
 Creating a Supabase project does not create this application's tables. Apply both migrations before trying to save members or evaluations.

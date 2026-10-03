@@ -1,15 +1,20 @@
 import React from "react";
-import { Eye, Share2, UserRound, Users } from "@jordiorriols/ui/icons";
+import { Calendar, Eye, Share2, UserRound, Users } from "@jordiorriols/ui/icons";
 import { useTranslation } from "react-i18next";
 import type { TeamMember } from "@/types";
-import { buildShareLink, copyToClipboard } from "@/utils/sharing";
+import {
+  buildShareLink,
+  buildVacationLink,
+  copyToClipboard,
+  PlannerUrlError,
+} from "@/utils/sharing";
 import { SplitButton } from "./SplitButton";
 
-type ShareKind = "self" | "peer" | "view";
+type ShareKind = "self" | "peer" | "view" | "vacations";
 
 type Props = {
   member: Pick<TeamMember, "selfToken" | "peerToken"> &
-    Partial<Pick<TeamMember, "viewToken" | "viewEnabled">>;
+    Partial<Pick<TeamMember, "viewToken" | "viewEnabled" | "vacationToken">>;
   onEnableView?: () => Promise<void>;
 };
 
@@ -18,7 +23,13 @@ export function ShareAction({ member, onEnableView }: Props) {
 
   const copy = async (kind: ShareKind) => {
     const token =
-      kind === "self" ? member.selfToken : kind === "peer" ? member.peerToken : member.viewToken;
+      kind === "self"
+        ? member.selfToken
+        : kind === "peer"
+          ? member.peerToken
+          : kind === "view"
+            ? member.viewToken
+            : member.vacationToken;
     if (!token) return;
 
     try {
@@ -26,11 +37,21 @@ export function ShareAction({ member, onEnableView }: Props) {
         if (!onEnableView) return;
         await onEnableView();
       }
-      await copyToClipboard(buildShareLink(`${kind === "view" ? "v" : "e"}/${token}`));
+      await copyToClipboard(
+        kind === "vacations"
+          ? buildVacationLink(token)
+          : buildShareLink(`${kind === "view" ? "v" : "e"}/${token}`)
+      );
       alert(t("alerts.linkCopied"));
     } catch (error) {
       console.error("Failed to copy share link", error);
-      alert(t("alerts.failedToCopyLink"));
+      alert(
+        t(
+          error instanceof PlannerUrlError
+            ? "share.vacations.configurationError"
+            : "alerts.failedToCopyLink"
+        )
+      );
     }
   };
 
@@ -62,6 +83,16 @@ export function ShareAction({ member, onEnableView }: Props) {
                 icon: <Eye className="h-4 w-4" />,
                 eventId: "member_share_view",
                 onSelect: () => void copy("view"),
+              },
+            ]
+          : []),
+        ...(member.vacationToken
+          ? [
+              {
+                label: t("share.vacations.label"),
+                icon: <Calendar className="h-4 w-4" />,
+                eventId: "member_share_vacations",
+                onSelect: () => void copy("vacations"),
               },
             ]
           : []),

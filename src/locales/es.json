@@ -337,7 +337,22 @@
       "EM7": "Gestiona con impacto más allá del equipo, en varios equipos."
     }
   },
+  "planningRole": {
+    "label": "Rol de planificación (opcional)",
+    "none": "Sin asignar",
+    "hint": "Se usa para la capacidad de Planner, independientemente del rol profesional.",
+    "options": {
+      "backend": "Backend",
+      "frontend": "Frontend",
+      "design": "Diseño",
+      "qa": "QA"
+    }
+  },
   "share": {
+    "vacations": {
+      "label": "Vacaciones",
+      "configurationError": "Configura VITE_PLANNER_URL con la URL absoluta de Planner, incluida la ruta del despliegue, y vuelve a compilar Ladders."
+    },
     "title": "Enlaces permanentes",
     "action": "Compartir",
     "menuLabel": "Elegir un enlace para compartir",

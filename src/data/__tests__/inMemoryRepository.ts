@@ -158,6 +158,8 @@ export function createInMemoryRepository(): Repository {
         id: id("member"),
         teamId,
         ...profile,
+        planningRole: profile.planningRole ?? null,
+        vacationToken: id("vacation"),
         selfToken: id("self"),
         peerToken: id("peer"),
         viewToken: id("view"),
