@@ -111,6 +111,7 @@ export function VersionPanel({
           return (
             <li
               key={evaluation.id}
+              data-testid="version-row"
               className={`rounded-lg border px-3 py-2 ${
                 isSelected ? "border-indigo-400 bg-indigo-50" : "border-slate-200"
               }`}
@@ -125,7 +126,10 @@ export function VersionPanel({
                   <span className="block text-sm font-medium text-slate-800 capitalize">
                     {versionLabel(evaluation, evaluations, i18n.language)}
                   </span>
-                  <span className="block text-xs text-slate-500 truncate">
+                  <span
+                    className="block text-xs text-slate-500 truncate"
+                    data-testid="version-author"
+                  >
                     {evaluationAuthor(evaluation, t)}
                   </span>
                 </button>
