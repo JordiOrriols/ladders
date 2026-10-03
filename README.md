@@ -10,11 +10,31 @@ A React application for managing team competency assessments, evaluation history
 
 ## Application setup
 
+Build the sibling shared UI package before installing this app:
+
+```bash
+cd ../ui
+npm install
+npm run build
+cd ../ladders
+```
+
 ```bash
 npm install
 cp .env.example .env
 npm start
 ```
+
+The app consumes `file:../ui` as a packed local dependency, not a symlink into
+the library's development React. After rebuilding the library, refresh it with
+`npm install ../ui --ignore-scripts`. Vite excludes its ESM entry points from
+dependency prebundling so changed exports do not leave stale optimized modules.
+
+Shared views, official Radix primitives, icons, auth/form hooks and Umami live in
+`../ui`. Application translations, competency definitions, sharing URLs,
+repositories, access rules and database tables stay here. `index.css` imports
+the library's Tailwind tokens instead of redeclaring them. App adapters preserve
+the existing imports, callbacks and test IDs while supplying translated props.
 
 Set these values in `.env`:
 
