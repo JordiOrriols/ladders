@@ -73,7 +73,7 @@ export function ShareTeamDialog({
 
   return (
     <AlertDialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <AlertDialogContent className="max-w-2xl">
+      <AlertDialogContent className="max-w-2xl" data-testid="share-team-dialog">
         <AlertDialogHeader>
           <AlertDialogTitle>{t("teams.shareTitle", { name: team?.name ?? "" })}</AlertDialogTitle>
           <AlertDialogDescription>{t("teams.shareDescription")}</AlertDialogDescription>
@@ -84,6 +84,7 @@ export function ShareTeamDialog({
             <Label htmlFor="share-email">{t("auth.email")}</Label>
             <Input
               id="share-email"
+              data-testid="share-email-input"
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
@@ -95,6 +96,7 @@ export function ShareTeamDialog({
             <Label htmlFor="share-access">{t("teams.permission")}</Label>
             <select
               id="share-access"
+              data-testid="share-access-select"
               value={access}
               onChange={(event) => setAccess(event.target.value as SharedTeamAccess)}
               className="mt-1 h-9 w-full rounded-md border border-slate-200 bg-white px-3 text-sm"
@@ -105,6 +107,7 @@ export function ShareTeamDialog({
           </div>
           <Button
             eventId="team_share_add"
+            data-testid="share-team-submit"
             type="submit"
             disabled={busy || !email.trim()}
             className="self-end"
@@ -128,12 +131,14 @@ export function ShareTeamDialog({
             shares.map((share) => (
               <div
                 key={share.userId}
+                data-testid="share-row"
                 className="flex items-center gap-3 rounded-md border border-slate-200 px-3 py-2"
               >
                 <span className="min-w-0 flex-1 truncate text-sm text-slate-700">
                   {share.email}
                 </span>
                 <select
+                  data-testid="share-row-access"
                   aria-label={t("teams.permissionFor", { email: share.email })}
                   value={share.access}
                   disabled={busy}
@@ -149,6 +154,7 @@ export function ShareTeamDialog({
                 </select>
                 <Button
                   eventId="team_share_remove"
+                  data-testid="share-row-remove"
                   variant="ghost"
                   size="icon-sm"
                   disabled={busy}

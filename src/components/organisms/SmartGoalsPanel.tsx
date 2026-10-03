@@ -161,6 +161,7 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
           <Label htmlFor={`new-comment-${goal.id}`}>{t("smartGoals.newComment")}</Label>
           <textarea
             id={`new-comment-${goal.id}`}
+            data-testid="goal-comment-input"
             value={newComments[goal.id] ?? ""}
             onChange={(event) =>
               setNewComments((current) => ({ ...current, [goal.id]: event.target.value }))
@@ -171,6 +172,7 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
           />
           <Button
             eventId="goal_comment_append"
+            data-testid="goal-comment-submit"
             type="submit"
             disabled={saving || !newComments[goal.id]?.trim()}
           >
@@ -202,6 +204,7 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
       {!readOnly && store?.mode === "manager" && (
         <form
           onSubmit={addGoal}
+          data-testid="goal-create-form"
           className="space-y-4 rounded-xl border border-slate-200 bg-white p-5"
         >
           <div className="grid gap-4 md:grid-cols-[1fr_180px]">
@@ -209,6 +212,7 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
               <Label htmlFor="new-goal-title">{t("smartGoals.goalTitle")}</Label>
               <Input
                 id="new-goal-title"
+                data-testid="goal-title-input"
                 value={draft.title}
                 onChange={(event) => setDraft({ ...draft, title: event.target.value })}
                 placeholder={t("smartGoals.titlePlaceholder")}
@@ -221,6 +225,7 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
               <Label htmlFor="new-goal-date">{t("smartGoals.dueDate")}</Label>
               <Input
                 id="new-goal-date"
+                data-testid="goal-date-input"
                 type="date"
                 value={draft.dueDate ?? ""}
                 onChange={(event) => setDraft({ ...draft, dueDate: event.target.value || null })}
@@ -232,12 +237,18 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
             <Label htmlFor="new-goal-description">{t("smartGoals.goalDescription")}</Label>
             <textarea
               id="new-goal-description"
+              data-testid="goal-description-input"
               value={draft.description}
               onChange={(event) => setDraft({ ...draft, description: event.target.value })}
               className="mt-1 min-h-24 w-full rounded-md border border-slate-200 p-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
-          <Button eventId="goal_create" type="submit" disabled={saving || !draft.title.trim()}>
+          <Button
+            eventId="goal_create"
+            data-testid="goal-create-submit"
+            type="submit"
+            disabled={saving || !draft.title.trim()}
+          >
             <Plus className="h-4 w-4" />
             {t("smartGoals.add")}
           </Button>
@@ -322,6 +333,7 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
                   {!readOnly && (
                     <Button
                       eventId="goal_progress_save"
+                      data-testid="goal-progress-save"
                       type="button"
                       className="mt-3"
                       disabled={saving}
@@ -439,6 +451,7 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
                     )}
                     <Button
                       eventId="goal_save"
+                      data-testid="goal-save"
                       type="button"
                       onClick={() => void updateGoal(goal)}
                       disabled={saving || !goal.title.trim()}

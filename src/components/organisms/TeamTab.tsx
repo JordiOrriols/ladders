@@ -41,10 +41,15 @@ export function TeamTab({
 
   if (!members || members.length === 0) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-4" data-testid="team-tab">
         {onCreateTeam && (
           <div className="flex justify-end">
-            <Button eventId="team_create_open" variant="outline" onClick={onCreateTeam}>
+            <Button
+              eventId="team_create_open"
+              data-testid="team-create-open"
+              variant="outline"
+              onClick={onCreateTeam}
+            >
               <Plus className="h-4 w-4" />
               {t("teams.create")}
             </Button>
@@ -82,7 +87,12 @@ export function TeamTab({
           </p>
         </div>
         {onCreateTeam && (
-          <Button eventId="team_create_open" variant="outline" onClick={onCreateTeam}>
+          <Button
+            eventId="team_create_open"
+            data-testid="team-create-open"
+            variant="outline"
+            onClick={onCreateTeam}
+          >
             <Plus className="h-4 w-4" />
             {t("teams.create")}
           </Button>
@@ -100,6 +110,7 @@ export function TeamTab({
         };
         return (
           <section
+          data-testid={`team-section-${team.id}`}
             key={team.id}
             className="space-y-3"
             aria-labelledby={`team-${team.id}`}
@@ -137,6 +148,7 @@ export function TeamTab({
                     {onRenameTeam && (
                       <Button
                         eventId="team_rename_open"
+                        data-testid="team-rename-open"
                         variant="ghost"
                         size="sm"
                         aria-label={t("teams.renameAria", { name: team.name })}
@@ -149,6 +161,7 @@ export function TeamTab({
                     {onShareTeam && (
                       <Button
                         eventId="team_share_open"
+                        data-testid="team-share-open"
                         variant="ghost"
                         size="sm"
                         onClick={() => onShareTeam(team)}
@@ -160,6 +173,7 @@ export function TeamTab({
                     {onDeleteTeam && teamMembers.length === 0 && !team.isDefault && (
                       <Button
                         eventId="team_delete_open"
+                        data-testid="team-delete-open"
                         variant="ghost"
                         size="icon-sm"
                         aria-label={t("teams.deleteAria", { name: team.name })}

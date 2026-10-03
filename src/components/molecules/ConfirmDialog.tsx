@@ -32,7 +32,7 @@ export function ConfirmDialog({
 
   return (
     <AlertDialog open={isOpen} onOpenChange={(open) => !open && onCancel()}>
-      <AlertDialogContent>
+      <AlertDialogContent data-testid="confirm-dialog">
         <AlertDialogHeader>
           <AlertDialogTitle>{title ?? t("deleteDialog.title")}</AlertDialogTitle>
           <AlertDialogDescription>
@@ -40,8 +40,14 @@ export function ConfirmDialog({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>{t("buttons.cancel")}</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm} className="bg-red-500 hover:bg-red-600">
+          <AlertDialogCancel data-testid="confirm-dialog-cancel">
+            {t("buttons.cancel")}
+          </AlertDialogCancel>
+          <AlertDialogAction
+            data-testid="confirm-dialog-confirm"
+            onClick={onConfirm}
+            className="bg-red-500 hover:bg-red-600"
+          >
             {confirmLabel ?? t("buttons.delete")}
           </AlertDialogAction>
         </AlertDialogFooter>

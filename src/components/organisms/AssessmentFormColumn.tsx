@@ -64,13 +64,14 @@ export function AssessmentFormColumn({
 }: Props) {
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-2xl border border-slate-200 p-6">
+      <div className="bg-white rounded-2xl border border-slate-200 p-6" data-testid="assessment-profile">
         <h2 className="text-lg font-semibold text-slate-800 mb-4">{labels.personalTitle}</h2>
         <div className="space-y-4">
           <div>
             <Label htmlFor="name">{labels.nameLabel}</Label>
             <Input
               id="name"
+              data-testid="assessment-name"
               value={name}
               readOnly={readOnlyProfile}
               onChange={(e) => onNameChange(e.target.value)}
@@ -82,6 +83,7 @@ export function AssessmentFormColumn({
             <Label htmlFor="role">{labels.roleLabel}</Label>
             <Input
               id="role"
+              data-testid="assessment-role"
               value={role}
               readOnly={readOnlyProfile}
               onChange={(e) => onRoleChange(e.target.value)}
@@ -93,7 +95,10 @@ export function AssessmentFormColumn({
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl border border-slate-200 p-6">
+      <div
+        className="bg-white rounded-2xl border border-slate-200 p-6"
+        data-testid="assessment-competencies"
+      >
         <h2 className="text-lg font-semibold text-slate-800 mb-4">{labels.competenciesTitle}</h2>
         <div className="space-y-3">
           {VERTICALS.map((vertical) => (

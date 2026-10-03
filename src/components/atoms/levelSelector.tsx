@@ -142,9 +142,13 @@ export default function LevelSelector({
   };
 
   return (
-    <div className={`rounded-xl border ${verticalBgColors[vertical]} overflow-hidden`}>
+    <div
+      className={`rounded-xl border ${verticalBgColors[vertical]} overflow-hidden`}
+      data-testid={`level-vertical-${vertical}`}
+    >
       <button
         type="button"
+        data-testid={`level-toggle-${vertical}`}
         onClick={handleHeaderClick}
         className="w-full p-4 flex items-center justify-between hover:bg-white/50 transition-colors"
         aria-expanded={isExpanded}
@@ -227,6 +231,7 @@ export default function LevelSelector({
                 <div className="flex gap-1 shrink-0">
                   <Button
                     eventId={`level_selector_current_${vertical}_L${level.level}`}
+                    data-testid={`level-current-${vertical}-${level.level}`}
                     type="button"
                     size="sm"
                     variant={
@@ -250,6 +255,7 @@ export default function LevelSelector({
                   {!hideGoal && (
                     <Button
                       eventId={`level_selector_goal_${vertical}_L${level.level}`}
+                      data-testid={`level-goal-${vertical}-${level.level}`}
                       type="button"
                       size="sm"
                       variant={

@@ -14,10 +14,21 @@ export function ReferenceModal({ isOpen, onClose }: ReferenceModalProps) {
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-start justify-center overflow-y-auto py-8">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl mx-4">
+      <div
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl mx-4"
+        data-testid="reference-modal"
+        role="dialog"
+        aria-modal="true"
+      >
         <div className="flex items-center justify-between p-6 border-b border-slate-200">
           <h2 className="text-xl font-semibold text-slate-800">{t("reference.title")}</h2>
-          <Button eventId="reference_modal_close" size="icon" variant="ghost" onClick={onClose}>
+          <Button
+            eventId="reference_modal_close"
+            data-testid="reference-modal-close"
+            size="icon"
+            variant="ghost"
+            onClick={onClose}
+          >
             <span className="text-xl">&times;</span>
           </Button>
         </div>

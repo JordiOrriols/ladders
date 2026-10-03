@@ -69,13 +69,17 @@ export function AssessmentHeader({
   );
 
   return (
-    <header className="bg-white border-b border-slate-200 sticky top-0 z-40">
+    <header
+      className="bg-white border-b border-slate-200 sticky top-0 z-40"
+      data-testid="assessment-header"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-3">
             {onBack && (
               <Button
                 eventId="assessment_header_back"
+                data-testid="assessment-back"
                 variant="ghost"
                 size="icon"
                 onClick={onBack}
@@ -107,6 +111,7 @@ export function AssessmentHeader({
                   <Button
                     key={idx}
                     eventId={action.eventId}
+                    data-testid={`assessment-action-${action.eventId}`}
                     variant={action.variant ?? "outline"}
                     size={action.size ?? "sm"}
                     disabled={action.disabled}
@@ -144,6 +149,7 @@ export function AssessmentHeader({
                   />
                   <Button
                     eventId={action.eventId}
+                    data-testid={`assessment-action-${action.eventId}`}
                     variant="outline"
                     size="sm"
                     onClick={() => fileInputRef.current?.click()}

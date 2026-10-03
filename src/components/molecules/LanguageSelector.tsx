@@ -45,6 +45,7 @@ export function LanguageSelector() {
               <DropdownMenu.RadioItem
                 key={language.code}
                 value={language.code}
+                data-testid={`language-button-${language.code}`}
                 className="flex cursor-default select-none items-center justify-between gap-4 rounded px-3 py-2 text-sm text-slate-700 outline-none data-[highlighted]:bg-slate-100"
               >
                 <span>{language.label}</span>
