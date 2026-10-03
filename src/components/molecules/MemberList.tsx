@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { Plus, User } from "lucide-react";
+import { Plus, User } from "@jordiorriols/ui/icons";
 import { useTranslation } from "react-i18next";
 import type { Member, Team } from "../../types";
 import { Button } from "../ui/button";

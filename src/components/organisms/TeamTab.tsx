@@ -1,5 +1,5 @@
 import React from "react";
-import { Pencil, Plus, Share2, Trash2 } from "lucide-react";
+import { Pencil, Plus, Share2, Trash2 } from "@jordiorriols/ui/icons";
 import { useTranslation } from "react-i18next";
 import type { Member, Team } from "../../types";
 import MemberCard from "../atoms/memberCard";

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { CalendarDays, Check, Plus, Trash2 } from "lucide-react";
+import { CalendarDays, Check, Plus, Trash2 } from "@jordiorriols/ui/icons";
 import { useTranslation } from "react-i18next";
 import type { SmartGoal, SmartGoalInput } from "@/types";
 import type { GoalStore } from "@/data/goalStore";

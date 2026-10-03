@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Cloud, LogIn } from "lucide-react";
+import { Cloud, LogIn } from "@jordiorriols/ui/icons";
 import { useTranslation } from "react-i18next";
 import { LoginDialog } from "@/components/molecules/LoginDialog";
 import { Button } from "@/components/ui/button";

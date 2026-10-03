@@ -1,5 +1,5 @@
 import React from "react";
-import { Plus, Users } from "lucide-react";
+import { Plus, Users } from "@jordiorriols/ui/icons";
 import { useTranslation } from "react-i18next";
 import { Button, EmptyState } from "@jordiorriols/ui";
 

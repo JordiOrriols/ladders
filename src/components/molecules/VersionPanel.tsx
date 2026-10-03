@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Eye, EyeOff, Trash2 } from "lucide-react";
+import { Eye, EyeOff, Trash2 } from "@jordiorriols/ui/icons";
 import { useTranslation } from "react-i18next";
 import { versionLabel } from "@/data/evaluations";
 import { evaluationAuthor } from "@/data/radarSeries";

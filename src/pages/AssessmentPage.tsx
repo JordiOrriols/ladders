@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Check, LoaderCircle, Send, TriangleAlert } from "lucide-react";
+import { Check, LoaderCircle, Send, TriangleAlert } from "@jordiorriols/ui/icons";
 import { AssessmentFormColumn } from "@/components/organisms/AssessmentFormColumn";
 import { AssessmentHeader } from "@/components/organisms/AssessmentHeader";
 import { AssessmentPreview } from "@/components/organisms/AssessmentPreview";

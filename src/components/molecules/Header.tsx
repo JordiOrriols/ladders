@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { LayoutGrid, LogIn, LogOut } from "lucide-react";
+import { LayoutGrid, LogIn, LogOut } from "@jordiorriols/ui/icons";
 import { useTranslation } from "react-i18next";
 import { AppHeader, Button } from "@jordiorriols/ui";
 import { useAsyncAction } from "@jordiorriols/ui/hooks";
