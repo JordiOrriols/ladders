@@ -120,7 +120,11 @@ function RadarChart({
         ref={svgRef}
         width={size}
         height={size}
-        className="overflow-visible"
+        // The viewBox is what lets the drawing scale down inside a narrow
+        // column. Without it the svg keeps its intrinsic size and the labels
+        // spill out of the page on a phone.
+        viewBox={`0 0 ${size} ${size}`}
+        className="h-auto w-full max-w-full overflow-visible"
         role="img"
         aria-label="Competency radar chart showing current levels, goal levels, and self-assessment"
       >
