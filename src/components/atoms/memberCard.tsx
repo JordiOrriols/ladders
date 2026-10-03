@@ -1,5 +1,6 @@
 import React from "react";
-import { User, Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
+import { UserAvatar } from "@jordiorriols/ui";
 import { Button } from "@/components/ui/button";
 import type { Member } from "@/types";
 import RadarChart, { SERIES_COLORS } from "./radarChart";
@@ -45,9 +46,7 @@ export default function MemberCard({
     >
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
-            <User className="w-5 h-5 text-slate-500" />
-          </div>
+          <UserAvatar label={member.name} />
           <div>
             <h3 className="font-semibold text-slate-800" data-testid="member-name">
               {member.name}
