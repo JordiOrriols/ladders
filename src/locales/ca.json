@@ -358,6 +358,11 @@
     }
   },
   "welcome": {
+    "features": {
+      "team": "Competències de l'equip",
+      "account": "Compte segur",
+      "sharing": "Avaluacions compartides"
+    },
     "eyebrow": "Escala d'Enginyeria",
     "title": "Com voleu començar?",
     "description": "Inicieu sessió per mantenir el vostre equip protegit i disponible entre dispositius.",

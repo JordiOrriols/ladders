@@ -32,12 +32,17 @@ the library's development React. After rebuilding the library, refresh it with
 when the library's version has not changed: npm can otherwise retain the old
 installed copy. Vite excludes its ESM entry points from
 dependency prebundling so changed exports do not leave stale optimized modules.
+Restart Vite after this refresh to clear its in-memory dependency transforms.
 
 Shared views, official Radix primitives, icons, auth/form hooks and Umami live in
 `../ui`. Application translations, competency definitions, sharing URLs,
 repositories, access rules and database tables stay here. `index.css` imports
 the library's Tailwind tokens instead of redeclaring them. App adapters preserve
 the existing imports, callbacks and test IDs while supplying translated props.
+
+`WelcomeScreen` shares Planner's welcome layout with app-specific copy and
+features. `AppHeader` standardizes branding sizes and language/account actions
+across both apps; authentication and translations remain in their adapters.
 
 Set these values in `.env`:
 

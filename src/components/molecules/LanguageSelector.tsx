@@ -16,6 +16,7 @@ export function LanguageSelector() {
       value={i18n.language}
       onValueChange={(language) => void i18n.changeLanguage(language)}
       label={t("header.language")}
+      className="inline-flex"
     />
   );
 }
