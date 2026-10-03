@@ -11,7 +11,7 @@ export function WelcomePage() {
   const [authMode, setAuthMode] = useState<"signIn" | "signUp" | null>(null);
 
   return (
-    <main className="min-h-screen bg-slate-50 px-4 py-10 sm:py-16">
+    <main className="min-h-screen bg-slate-50 px-4 py-10 sm:py-16" data-testid="welcome-page">
       <div className="mx-auto max-w-xl">
         <header className="mb-10 max-w-2xl">
           <p className="mb-3 text-sm font-semibold text-emerald-700">{t("welcome.eyebrow")}</p>
@@ -31,6 +31,7 @@ export function WelcomePage() {
             <div className="mt-6 flex flex-wrap gap-2">
               <Button
                 eventId="welcome_sign_in"
+                data-testid="welcome-sign-in"
                 disabled={!authEnabled}
                 onClick={() => setAuthMode("signIn")}
               >
@@ -39,6 +40,7 @@ export function WelcomePage() {
               </Button>
               <Button
                 eventId="welcome_sign_up"
+                data-testid="welcome-sign-up"
                 variant="outline"
                 disabled={!authEnabled}
                 onClick={() => setAuthMode("signUp")}
