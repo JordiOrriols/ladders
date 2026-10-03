@@ -193,6 +193,8 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
           editor.autosaveState === "error" ? "text-red-600" : "text-slate-500"
         }`}
         role="status"
+        data-testid="assessment-autosave"
+        data-state={editor.autosaveState}
       >
         {editor.autosaveState === "saving" ? (
           <LoaderCircle className="h-3.5 w-3.5 animate-spin" />

@@ -47,14 +47,21 @@ function MemberDetailsPanelComponent({
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-6">
+    <div className="bg-white rounded-2xl border border-slate-200 p-6" data-testid="member-details">
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-semibold text-slate-800">{member.name}</h2>
+          <h2 className="text-2xl font-semibold text-slate-800" data-testid="member-details-name">
+            {member.name}
+          </h2>
           {member.role && <p className="text-slate-500">{member.role}</p>}
         </div>
         {!readOnly && (
-          <Button eventId="member_details_edit" variant="outline" onClick={handleEditClick}>
+          <Button
+            eventId="member_details_edit"
+            variant="outline"
+            onClick={handleEditClick}
+            data-testid="member-details-edit"
+          >
             {t("buttons.edit")}
           </Button>
         )}

@@ -63,7 +63,7 @@ export default function MemberCard({
           <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
             <Button
               eventId="member_card_edit"
-              data-testid="member-card-edit"
+              data-testid={`member-edit-${member.id}`}
               size="icon"
               variant="ghost"
               className="h-8 w-8"
@@ -73,7 +73,7 @@ export default function MemberCard({
             </Button>
             <Button
               eventId="member_card_delete"
-              data-testid="member-card-delete"
+              data-testid={`member-delete-${member.id}`}
               size="icon"
               variant="ghost"
               className="h-8 w-8"
