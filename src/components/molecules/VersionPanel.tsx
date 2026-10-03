@@ -158,6 +158,7 @@ export function VersionPanel({
                 {onDelete && canDelete(evaluation) && (
                   <button
                     type="button"
+                    data-testid="version-delete"
                     onClick={() => setPendingDelete(evaluation)}
                     title={t("buttons.delete")}
                     aria-label={t("buttons.delete")}
