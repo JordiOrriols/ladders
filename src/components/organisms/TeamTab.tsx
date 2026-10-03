@@ -39,7 +39,13 @@ export function TeamTab({
     onSelectMember(member);
   };
 
-  if (!members || members.length === 0) {
+  // The onboarding empty state belongs to a brand new account. As soon as there
+  // is a team of its own, the team list has to render instead: an empty team
+  // still needs its share, rename and delete actions, and those live on the
+  // team card.
+  const onlyTheDefaultTeam = teams.every((team) => team.isDefault);
+
+  if ((!members || members.length === 0) && onlyTheDefaultTeam) {
     return (
       <div className="space-y-4" data-testid="team-tab">
         {onCreateTeam && (
