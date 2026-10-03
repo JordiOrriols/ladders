@@ -120,6 +120,7 @@ export function LoginDialog({ isOpen, onClose, initialMode = "signIn" }: Props) 
               <Label htmlFor="login-email">{t("auth.email")}</Label>
               <Input
                 id="login-email"
+                data-testid="login-email"
                 type="email"
                 autoComplete="email"
                 required
@@ -133,6 +134,7 @@ export function LoginDialog({ isOpen, onClose, initialMode = "signIn" }: Props) 
                 <Label htmlFor="login-password">{t("auth.password")}</Label>
                 <Input
                   id="login-password"
+                  data-testid="login-password"
                   type="password"
                   autoComplete={mode === "signIn" ? "current-password" : "new-password"}
                   required
@@ -144,11 +146,15 @@ export function LoginDialog({ isOpen, onClose, initialMode = "signIn" }: Props) 
               </div>
             )}
             {error && (
-              <p role="alert" className="text-sm text-red-600">
+              <p role="alert" data-testid="login-error" className="text-sm text-red-600">
                 {error}
               </p>
             )}
-            {info && <p className="text-sm text-emerald-700">{info}</p>}
+            {info && (
+              <p className="text-sm text-emerald-700" data-testid="login-info">
+                {info}
+              </p>
+            )}
             <div className="flex flex-wrap gap-x-4 gap-y-2">
               {mode === "signIn" && (
                 <button
@@ -176,7 +182,12 @@ export function LoginDialog({ isOpen, onClose, initialMode = "signIn" }: Props) 
           </div>
           <AlertDialogFooter>
             <AlertDialogCancel type="button">{t("buttons.cancel")}</AlertDialogCancel>
-            <Button eventId={`auth_${mode}`} type="submit" disabled={busy}>
+            <Button
+              eventId={`auth_${mode}`}
+              data-testid="login-submit"
+              type="submit"
+              disabled={busy}
+            >
               {t(
                 mode === "signIn"
                   ? "auth.signIn"

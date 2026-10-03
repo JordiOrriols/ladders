@@ -43,6 +43,13 @@ export default function ViewPage() {
         else setState({ kind: "ready", info, evaluations, links });
       })
       .catch((error) => {
+        // A view link that has not been enabled yet resolves to nothing, which
+        // is a missing link rather than a failure: without this the page would
+        // report a server error for a link that simply is not shared.
+        if (error instanceof Error && /invalid view link/i.test(error.message)) {
+          setState({ kind: "notFound" });
+          return;
+        }
         console.error("Failed to load shared evaluation", error);
         if (active) setState({ kind: "error" });
       });
@@ -69,8 +76,12 @@ export default function ViewPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs defaultValue="evaluation" className="space-y-6">
           <TabsList className="bg-white border border-slate-200">
-            <TabsTrigger value="evaluation">{t("memberAssessment.evaluationTab")}</TabsTrigger>
-            <TabsTrigger value="goals">{t("smartGoals.tab")}</TabsTrigger>
+            <TabsTrigger value="evaluation" data-testid="assessment-tab-evaluation">
+              {t("memberAssessment.evaluationTab")}
+            </TabsTrigger>
+            <TabsTrigger value="goals" data-testid="assessment-tab-goals">
+              {t("smartGoals.tab")}
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="evaluation">
             <div className="bg-white rounded-2xl border border-slate-200 p-6">

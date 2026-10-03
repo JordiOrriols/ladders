@@ -52,10 +52,10 @@ export function CreateTeamDialog({ isOpen, onClose, onCreate, initialName }: Pro
 
   return (
     <AlertDialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <AlertDialogContent>
+      <AlertDialogContent data-testid="team-name-dialog">
         <form onSubmit={handleSubmit} className="space-y-4">
           <AlertDialogHeader>
-            <AlertDialogTitle>
+            <AlertDialogTitle data-testid="team-name-dialog-title">
               {t(renaming ? "teams.renameTitle" : "teams.createTitle")}
             </AlertDialogTitle>
             <AlertDialogDescription>
@@ -66,6 +66,7 @@ export function CreateTeamDialog({ isOpen, onClose, onCreate, initialName }: Pro
             <Label htmlFor="team-name">{t("teams.name")}</Label>
             <Input
               id="team-name"
+              data-testid="team-name-input"
               value={name}
               onChange={(event) => setName(event.target.value)}
               maxLength={120}
@@ -80,9 +81,10 @@ export function CreateTeamDialog({ isOpen, onClose, onCreate, initialName }: Pro
             </p>
           )}
           <AlertDialogFooter>
-            <AlertDialogCancel type="button">{t("buttons.cancel")}</AlertDialogCancel>
+            <AlertDialogCancel type="button" data-testid="team-name-cancel">{t("buttons.cancel")}</AlertDialogCancel>
             <Button
               eventId={renaming ? "team_rename" : "team_create"}
+              data-testid="team-name-submit"
               type="submit"
               disabled={busy || !name.trim() || name.trim() === initialName}
             >

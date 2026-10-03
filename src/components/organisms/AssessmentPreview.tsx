@@ -53,7 +53,7 @@ export function AssessmentPreview({
   const arrow = labels.arrow ?? <span className="text-slate-400">→</span>;
 
   return (
-    <div className="lg:sticky lg:top-24 lg:self-start">
+    <div className="min-w-0 lg:sticky lg:top-24 lg:self-start">
       <div className="bg-white rounded-2xl border border-slate-200 p-6">
         <h2 className="text-lg font-semibold text-slate-800 mb-6 text-center">{title}</h2>
 

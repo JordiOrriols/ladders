@@ -154,7 +154,11 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
   if (isPeer && editor.submitted) {
     return (
       <PageMessage kind="thanks">
-        <Button eventId="peer_submit_another" onClick={() => window.location.reload()}>
+        <Button
+          eventId="peer_submit_another"
+          data-testid="peer-another"
+          onClick={() => window.location.reload()}
+        >
           {t("peerAssessment.another")}
         </Button>
       </PageMessage>
@@ -193,6 +197,8 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
           editor.autosaveState === "error" ? "text-red-600" : "text-slate-500"
         }`}
         role="status"
+        data-testid="assessment-autosave"
+        data-state={editor.autosaveState}
       >
         {editor.autosaveState === "saving" ? (
           <LoaderCircle className="h-3.5 w-3.5 animate-spin" />
@@ -253,20 +259,29 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
       <main className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs defaultValue="evaluation" className="space-y-6">
           {showGoals && (
-            <TabsList className="bg-white border border-slate-200">
-              <TabsTrigger value="evaluation">{t("memberAssessment.evaluationTab")}</TabsTrigger>
-              <TabsTrigger value="goals">{t("smartGoals.tab")}</TabsTrigger>
+            <TabsList
+              className="bg-white border border-slate-200"
+              data-testid="assessment-tabs-list"
+            >
+              <TabsTrigger value="evaluation" data-testid="assessment-tab-evaluation">
+                {t("memberAssessment.evaluationTab")}
+              </TabsTrigger>
+              <TabsTrigger value="goals" data-testid="assessment-tab-goals">
+                {t("smartGoals.tab")}
+              </TabsTrigger>
             </TabsList>
           )}
 
           <TabsContent value="evaluation">
+            {/* Grid items default to min-width:auto, so a wide child widens the
+                whole track and pushes the page sideways on a phone. */}
             <div
               className={`grid gap-6 ${
                 store.showHistory || isManager ? "xl:grid-cols-[260px_1fr_1fr]" : "lg:grid-cols-2"
               }`}
             >
               {store.showHistory && (
-                <div className="space-y-4">
+                <div className="min-w-0 space-y-4">
                   <VersionPanel
                     evaluations={editor.evaluations}
                     selectedId={editor.editingId}
@@ -315,6 +330,7 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
                       <Label htmlFor="author-name">{t("peerAssessment.yourName")}</Label>
                       <Input
                         id="author-name"
+                        data-testid="assessment-author"
                         value={editor.authorName}
                         required
                         maxLength={120}

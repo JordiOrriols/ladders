@@ -52,8 +52,14 @@ function MemberListComponent({
           />
         </div>
         <div className="min-w-0">
-          <p className="font-medium text-slate-800 truncate">{member.name}</p>
-          {member.role && <p className="text-xs text-slate-500 truncate">{member.role}</p>}
+          <p className="font-medium text-slate-800 truncate" data-testid="member-name">
+            {member.name}
+          </p>
+          {member.role && (
+            <p className="text-xs text-slate-500 truncate" data-testid="member-role">
+              {member.role}
+            </p>
+          )}
         </div>
       </div>
     </button>

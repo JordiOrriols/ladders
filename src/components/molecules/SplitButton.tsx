@@ -37,6 +37,7 @@ export function SplitButton({
     <div className="inline-flex shrink-0">
       <Button
         eventId={eventId}
+        data-testid={`split-button-${eventId}`}
         variant={variant}
         size="sm"
         disabled={disabled}
@@ -50,6 +51,7 @@ export function SplitButton({
         <DropdownMenu.Trigger asChild>
           <Button
             eventId={`${eventId}_menu`}
+            data-testid={`split-menu-${eventId}`}
             variant={variant}
             size="icon-sm"
             disabled={items.length === 0}
@@ -68,6 +70,7 @@ export function SplitButton({
             {items.map((item) => (
               <DropdownMenu.Item
                 key={item.eventId}
+                data-testid={`split-item-${item.eventId}`}
                 {...(item.disabled ? { disabled: true } : {})}
                 onSelect={item.onSelect}
                 className={cn(

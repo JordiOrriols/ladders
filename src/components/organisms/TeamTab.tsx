@@ -39,12 +39,23 @@ export function TeamTab({
     onSelectMember(member);
   };
 
-  if (!members || members.length === 0) {
+  // The onboarding empty state belongs to a brand new account. As soon as there
+  // is a team of its own, the team list has to render instead: an empty team
+  // still needs its share, rename and delete actions, and those live on the
+  // team card.
+  const onlyTheDefaultTeam = teams.every((team) => team.isDefault);
+
+  if ((!members || members.length === 0) && onlyTheDefaultTeam) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-4" data-testid="team-tab">
         {onCreateTeam && (
           <div className="flex justify-end">
-            <Button eventId="team_create_open" variant="outline" onClick={onCreateTeam}>
+            <Button
+              eventId="team_create_open"
+              data-testid="team-create-open"
+              variant="outline"
+              onClick={onCreateTeam}
+            >
               <Plus className="h-4 w-4" />
               {t("teams.create")}
             </Button>
@@ -82,7 +93,12 @@ export function TeamTab({
           </p>
         </div>
         {onCreateTeam && (
-          <Button eventId="team_create_open" variant="outline" onClick={onCreateTeam}>
+          <Button
+            eventId="team_create_open"
+            data-testid="team-create-open"
+            variant="outline"
+            onClick={onCreateTeam}
+          >
             <Plus className="h-4 w-4" />
             {t("teams.create")}
           </Button>
@@ -100,6 +116,7 @@ export function TeamTab({
         };
         return (
           <section
+            data-testid={`team-section-${team.id}`}
             key={team.id}
             className="space-y-3"
             aria-labelledby={`team-${team.id}`}
@@ -115,7 +132,13 @@ export function TeamTab({
                   {teamMembers.length}
                 </span>
                 {team.access !== "owner" && (
-                  <span className="text-xs text-slate-500">{t(`teams.${team.access}`)}</span>
+                  <span
+                    className="text-xs text-slate-500"
+                    data-testid={`team-access-${team.id}`}
+                    data-access={team.access}
+                  >
+                    {t(`teams.${team.access}`)}
+                  </span>
                 )}
               </div>
               <div className="flex items-center gap-1">
@@ -137,6 +160,7 @@ export function TeamTab({
                     {onRenameTeam && (
                       <Button
                         eventId="team_rename_open"
+                        data-testid="team-rename-open"
                         variant="ghost"
                         size="sm"
                         aria-label={t("teams.renameAria", { name: team.name })}
@@ -149,6 +173,7 @@ export function TeamTab({
                     {onShareTeam && (
                       <Button
                         eventId="team_share_open"
+                        data-testid="team-share-open"
                         variant="ghost"
                         size="sm"
                         onClick={() => onShareTeam(team)}
@@ -160,6 +185,7 @@ export function TeamTab({
                     {onDeleteTeam && teamMembers.length === 0 && !team.isDefault && (
                       <Button
                         eventId="team_delete_open"
+                        data-testid="team-delete-open"
                         variant="ghost"
                         size="icon-sm"
                         aria-label={t("teams.deleteAria", { name: team.name })}

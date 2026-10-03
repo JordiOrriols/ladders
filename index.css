@@ -1,6 +1,11 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Tailwind skips node_modules when auto-detecting sources, so the class names
+   that live inside the shared UI library would never be generated. Point it at
+   the package explicitly. */
+@source "./node_modules/@jordiorriols/ui/dist";
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
