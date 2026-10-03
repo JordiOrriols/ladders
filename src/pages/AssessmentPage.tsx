@@ -222,6 +222,7 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
           <>
             {autosaveStatus}
             {isManager &&
+            store.editableProfile &&
             repository &&
             editor.member?.selfToken &&
             editor.member.peerToken &&

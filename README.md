@@ -63,10 +63,17 @@ assumed. Only when Ladders runs on `localhost` or `127.0.0.1`, an empty setting
 falls back to `http://127.0.0.1:5176`. Missing or invalid production configuration
 shows an actionable error rather than copying a broken link.
 
+For GitHub Pages builds, configure the **repository Actions variable**
+`VITE_PLANNER_URL` under **Settings → Secrets and variables → Actions → Variables**.
+Use your actual configured Planner deployment URL, including its pathname.
+The production workflow passes this variable to Vite's build step; changing it
+requires another build/deployment because Vite embeds it at build time.
+
 Member creation/editing includes an optional planning role (`backend`, `frontend`,
 `design`, or `qa`), separate from the existing free-text job role. The Share menu
 includes **Vacations**, copying the member's independent permanent vacation UUID.
 Self, peer, and view links retain their existing routes and tokens.
+Read-only team viewers do not see sharing actions or the planning-role editor.
 
 This requires the additive shared-vacations migration maintained in `../planner`
 to provide `public.members.planning_role` (nullable) and

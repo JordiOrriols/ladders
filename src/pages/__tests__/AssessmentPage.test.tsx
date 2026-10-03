@@ -109,6 +109,44 @@ describe("AssessmentPage", () => {
     });
   });
 
+  it("hides sharing and planning-role editing for read-only team viewers", async () => {
+    const repo = dataState.repository!;
+    const member = await repo.createMember({
+      name: "Ada",
+      role: "Lead",
+      planningRole: "backend",
+      templateId: null,
+    });
+    const teams = await repo.listTeams();
+    vi.spyOn(repo, "listTeams").mockResolvedValue(
+      teams.map((team) => ({ ...team, access: "viewer" }))
+    );
+    renderAt(`/member/${member.id}`);
+    expect(await screen.findByLabelText("Name")).toHaveAttribute("readonly");
+    expect(screen.queryByRole("button", { name: "Share" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Choose a sharing link" })).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Planning role (optional)")).not.toBeInTheDocument();
+  });
+
+  it.each(["owner", "editor"] as const)(
+    "retains vacation sharing and planning-role editing for team %s access",
+    async (access) => {
+      const repo = dataState.repository!;
+      const member = await repo.createMember({
+        name: "Ada",
+        role: "Lead",
+        planningRole: "backend",
+        templateId: null,
+      });
+      const teams = await repo.listTeams();
+      vi.spyOn(repo, "listTeams").mockResolvedValue(teams.map((team) => ({ ...team, access })));
+      renderAt(`/member/${member.id}`);
+      expect(await screen.findByLabelText("Planning role (optional)")).toHaveValue("backend");
+      await userEvent.click(screen.getByRole("button", { name: "Choose a sharing link" }));
+      expect(screen.getByRole("menuitem", { name: "Vacations" })).toBeInTheDocument();
+    }
+  );
+
   it("creates a member and its first version from /member/new", async () => {
     renderAt("/member/new");
     const nameInput = await screen.findByLabelText("Name");

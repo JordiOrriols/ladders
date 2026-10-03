@@ -43,7 +43,9 @@ export function createManagerStore(
   let canEdit = false;
   const store: EvaluationStore = {
     kind: "manager",
-    editableProfile: true,
+    get editableProfile() {
+      return !memberId || canEdit;
+    },
     showHistory: true,
     memberId: () => memberId,
     async load() {
