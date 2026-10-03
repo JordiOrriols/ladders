@@ -27,7 +27,10 @@ npm start
 
 The app consumes `file:../ui` as a packed local dependency, not a symlink into
 the library's development React. After rebuilding the library, refresh it with
-`npm install ../ui --ignore-scripts`. Vite excludes its ESM entry points from
+`npm uninstall @jordiorriols/ui --ignore-scripts` followed by
+`npm install ../ui --install-links --ignore-scripts`. Removing first is necessary
+when the library's version has not changed: npm can otherwise retain the old
+installed copy. Vite excludes its ESM entry points from
 dependency prebundling so changed exports do not leave stale optimized modules.
 
 Shared views, official Radix primitives, icons, auth/form hooks and Umami live in
