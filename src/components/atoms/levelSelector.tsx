@@ -232,6 +232,13 @@ export default function LevelSelector({
                   <Button
                     eventId={`level_selector_current_${vertical}_L${level.level}`}
                     data-testid={`level-current-${vertical}-${level.level}`}
+                    // The chosen level is otherwise only visible as a colour, and a
+                    // test should not have to read a stylesheet to know it.
+                    data-selected={
+                      currentLevel === level.level || currentLevel === level.level + 0.5
+                        ? "true"
+                        : "false"
+                    }
                     type="button"
                     size="sm"
                     variant={
