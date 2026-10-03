@@ -255,7 +255,10 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
       <main className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs defaultValue="evaluation" className="space-y-6">
           {showGoals && (
-            <TabsList className="bg-white border border-slate-200" data-testid="assessment-tabs-list">
+            <TabsList
+              className="bg-white border border-slate-200"
+              data-testid="assessment-tabs-list"
+            >
               <TabsTrigger value="evaluation" data-testid="assessment-tab-evaluation">
                 {t("memberAssessment.evaluationTab")}
               </TabsTrigger>
@@ -321,6 +324,7 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
                       <Label htmlFor="author-name">{t("peerAssessment.yourName")}</Label>
                       <Input
                         id="author-name"
+                        data-testid="assessment-author"
                         value={editor.authorName}
                         required
                         maxLength={120}

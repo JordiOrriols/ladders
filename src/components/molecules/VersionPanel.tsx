@@ -133,6 +133,8 @@ export function VersionPanel({
                   className={`shrink-0 text-[10px] uppercase tracking-wide px-1.5 py-0.5 rounded ${
                     published ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-600"
                   }`}
+                  data-testid="version-status"
+                  data-status={evaluation.status}
                 >
                   {t(`versions.status.${evaluation.status}`)}
                 </span>
@@ -163,6 +165,8 @@ export function VersionPanel({
                 {evaluation.kind === "peer" && onChangeStatus && canChangeStatus(evaluation) && (
                   <button
                     type="button"
+                    data-testid="version-publish"
+                    data-status={evaluation.status}
                     disabled={busyId !== null}
                     onClick={() => void changeStatus(evaluation)}
                     className="ml-auto rounded px-2 py-1 text-xs text-indigo-700 hover:bg-indigo-50 disabled:opacity-50"
