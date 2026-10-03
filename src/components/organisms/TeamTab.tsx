@@ -110,7 +110,7 @@ export function TeamTab({
         };
         return (
           <section
-          data-testid={`team-section-${team.id}`}
+            data-testid={`team-section-${team.id}`}
             key={team.id}
             className="space-y-3"
             aria-labelledby={`team-${team.id}`}
@@ -126,7 +126,13 @@ export function TeamTab({
                   {teamMembers.length}
                 </span>
                 {team.access !== "owner" && (
-                  <span className="text-xs text-slate-500">{t(`teams.${team.access}`)}</span>
+                  <span
+                    className="text-xs text-slate-500"
+                    data-testid={`team-access-${team.id}`}
+                    data-access={team.access}
+                  >
+                    {t(`teams.${team.access}`)}
+                  </span>
                 )}
               </div>
               <div className="flex items-center gap-1">
