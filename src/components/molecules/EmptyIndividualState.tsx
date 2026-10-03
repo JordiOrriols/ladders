@@ -1,26 +1,21 @@
 import React from "react";
 import { Plus, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { Button } from "../ui/button";
+import { Button, EmptyState } from "@jordiorriols/ui";
 
-interface EmptyIndividualStateProps {
-  onAddMember: () => void;
-}
-
-export function EmptyIndividualState({ onAddMember }: EmptyIndividualStateProps) {
+export function EmptyIndividualState({ onAddMember }: { onAddMember: () => void }) {
   const { t } = useTranslation();
-
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center">
-      <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mx-auto mb-4">
-        <User className="w-8 h-8 text-slate-400" />
-      </div>
-      <h3 className="text-lg font-semibold text-slate-800 mb-2">{t("individualView.empty")}</h3>
-      <p className="text-slate-500 mb-6">{t("individualView.emptyDescription")}</p>
-      <Button eventId="empty_individual_add_member" onClick={onAddMember}>
-        <Plus className="w-4 h-4 mr-2" />
-        {t("buttons.add")}
-      </Button>
-    </div>
+    <EmptyState
+      icon={<User className="w-8 h-8 text-slate-400" />}
+      title={t("individualView.empty")}
+      description={t("individualView.emptyDescription")}
+      action={
+        <Button eventId="empty_individual_add_member" onClick={onAddMember}>
+          <Plus className="w-4 h-4 mr-2" />
+          {t("buttons.add")}
+        </Button>
+      }
+    />
   );
 }
