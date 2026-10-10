@@ -26,4 +26,11 @@ describe("Header", () => {
     // Should have some header content
     expect(container).toBeTruthy();
   });
+
+  it("brands the header with the growth icon", () => {
+    renderWithI18n(<Header />);
+    expect(
+      screen.getByTestId("header-content").querySelector("svg.lucide-trending-up")
+    ).toBeTruthy();
+  });
 });
