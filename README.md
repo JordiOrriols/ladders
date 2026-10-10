@@ -75,6 +75,19 @@ VITE_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
 
 The publishable key is safe to use in the browser. Database access is protected by the Row Level Security policies in the migrations. Never put the service-role key in this application.
 
+### CI and deployment
+
+Pushes to `main` or `master` and manual dispatch run the same compile, lint,
+format, coverage, build and GitHub Pages deployment checks. CI checks out Ladders
+and UI as sibling directories, builds UI first, then runs `npm ci --install-links`
+with Node.js 24.21.0. This layout is required by the `file:../ui` dependency.
+The Pages artifact comes from `ladders/dist`.
+
+Set the Actions variable `UI_REF` to the UI revision to build (defaults to `main`).
+That revision must contain the shared component changes before deploying either
+app. For a private UI repository, set `UI_READ_TOKEN` to a token with read access.
+No registry publication is needed.
+
 ### Shared Planner vacations
 
 Set `VITE_PLANNER_URL` to the absolute URL of your Planner deployment, including
