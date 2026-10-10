@@ -30,6 +30,9 @@ repositories, access rules and database tables stay here. `index.css` imports
 the library's Tailwind tokens instead of redeclaring them. App adapters preserve
 the existing imports, callbacks and test IDs while supplying translated props.
 
+Umami is loaded from `src/index.jsx` with the UI's `loadUmami`, not a `<script>`
+tag, so automated browsers (Playwright e2e runs) never load it or send events.
+
 `WelcomeScreen` shares Planner's welcome layout with app-specific copy and
 features. `AppHeader` standardizes branding sizes and language/account actions
 across both apps; authentication and translations remain in their adapters.
