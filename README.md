@@ -10,32 +10,22 @@ A React application for managing team competency assessments, evaluation history
 
 ## Application setup
 
-Build the sibling shared UI package before installing this app:
+The shared UI library is installed from GitHub Packages as
+`@jordiorriols/ui`. Export a token with `read:packages` scope before installing;
+`.npmrc` reads it from `GITHUB_TOKEN`:
 
 ```bash
-cd ../ui
-npm install
-npm run build
-cd ../ladders
-```
-
-```bash
+export GITHUB_TOKEN=<token with read:packages>
 npm install
 cp .env.example .env
 npm start
 ```
 
-The app consumes `file:../ui` as a packed local dependency, not a symlink into
-the library's development React. After rebuilding the library, refresh it with
-`npm uninstall @jordiorriols/ui --ignore-scripts` followed by
-`npm install ../ui --install-links --ignore-scripts`. Removing first is necessary
-when the library's version has not changed: npm can otherwise retain the old
-installed copy. Vite excludes its ESM entry points from
-dependency prebundling so changed exports do not leave stale optimized modules.
-Restart Vite after this refresh to clear its in-memory dependency transforms.
+New UI versions are published automatically on every push to UI `main`. Update
+with `npm install @jordiorriols/ui@latest` and restart Vite.
 
 Shared views, official Radix primitives, icons, auth/form hooks and Umami live in
-`../ui`. Application translations, competency definitions, sharing URLs,
+`@jordiorriols/ui`. Application translations, competency definitions, sharing URLs,
 repositories, access rules and database tables stay here. `index.css` imports
 the library's Tailwind tokens instead of redeclaring them. App adapters preserve
 the existing imports, callbacks and test IDs while supplying translated props.
@@ -78,15 +68,11 @@ The publishable key is safe to use in the browser. Database access is protected 
 ### CI and deployment
 
 Pushes to `main` or `master` and manual dispatch run the same compile, lint,
-format, coverage, build and GitHub Pages deployment checks. CI checks out Ladders
-and UI as sibling directories, builds UI first, then runs `npm ci --install-links`
-with Node.js 24.21.0. This layout is required by the `file:../ui` dependency.
-The Pages artifact comes from `ladders/dist`.
-
-Set the Actions variable `UI_REF` to the UI revision to build (defaults to `main`).
-That revision must contain the shared component changes before deploying either
-app. For a private UI repository, set `UI_READ_TOKEN` to a token with read access.
-No registry publication is needed.
+format, coverage, build and GitHub Pages deployment checks as Planner, using
+Node.js 24.21.0. `npm ci` installs `@jordiorriols/ui` from GitHub Packages with
+the workflow token (`packages: read`). Grant this repository read access in the
+package's **Manage Actions access** settings, or set the `UI_READ_TOKEN` secret
+to a token with `read:packages`.
 
 ### Shared Planner vacations
 
