@@ -26,4 +26,15 @@ describe("LanguageSelector", () => {
     expect(i18n.language).toBe("es");
     expect(screen.getByTestId("language-selector")).toHaveTextContent("ES");
   });
+
+  it("offers French, German and Italian", async () => {
+    renderSelector();
+    await userEvent.click(screen.getByRole("button", { name: "Language" }));
+    for (const label of ["Français", "Deutsch", "Italiano"]) {
+      expect(screen.getByRole("menuitemradio", { name: label })).toBeInTheDocument();
+    }
+    await userEvent.click(screen.getByRole("menuitemradio", { name: "Deutsch" }));
+    expect(i18n.language).toBe("de");
+    expect(screen.getByRole("button", { name: "Sprache" })).toHaveTextContent("DE");
+  });
 });
