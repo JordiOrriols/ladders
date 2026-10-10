@@ -37,7 +37,101 @@ describe("AssessmentPage", () => {
     vi.restoreAllMocks();
     dataState.repository = createInMemoryRepository();
     vi.spyOn(window, "alert").mockImplementation(() => {});
+    void i18n.changeLanguage("en");
   });
+
+  it("lets the manager share and hide each saved peer comment independently", async () => {
+    const repo = dataState.repository!;
+    const member = await repo.createMember({ name: "Ada", role: "Dev", templateId: null });
+    const peer = await repo.createEvaluation(member.id, "peer", {
+      status: "published",
+      authorName: "Sam",
+      currentLevels: { Technology: 3 },
+      goalLevels: {},
+      comments: { Technology: "Private peer feedback", People: "A separate comment" },
+    });
+    renderAt(`/member/${member.id}`);
+    const technology = await screen.findByTestId(`comment-visibility-${peer.id}-Technology`);
+    const people = screen.getByTestId(`comment-visibility-${peer.id}-People`);
+    expect(technology).toHaveTextContent("Share with employee");
+    await userEvent.click(technology);
+    await waitFor(() => expect(technology).toHaveTextContent("Hide from employee"));
+    expect(people).toHaveTextContent("Share with employee");
+    expect((await repo.listEvaluations(member.id))[0]?.commentVisibility).toEqual({
+      Technology: true,
+    });
+    await userEvent.click(technology);
+    await waitFor(() => expect(technology).toHaveTextContent("Share with employee"));
+    expect((await repo.listEvaluations(member.id))[0]?.comments.Technology).toBe(
+      "Private peer feedback"
+    );
+  });
+
+  it("reports failed moderation instead of presenting a successful toggle", async () => {
+    const repo = dataState.repository!;
+    const member = await repo.createMember({ name: "Ada", role: "Dev", templateId: null });
+    const peer = await repo.createEvaluation(member.id, "peer", {
+      status: "published",
+      authorName: "Sam",
+      currentLevels: {},
+      goalLevels: {},
+      comments: { Technology: "Private" },
+    });
+    vi.spyOn(repo, "setCommentVisibility").mockRejectedValue(
+      new Error("Team edit access required")
+    );
+    renderAt(`/member/${member.id}`);
+    const toggle = await screen.findByTestId(`comment-visibility-${peer.id}-Technology`);
+    await userEvent.click(toggle);
+    expect(await screen.findByRole("alert")).toHaveTextContent("Team edit access required");
+    expect(toggle).toHaveTextContent("Share with employee");
+  });
+
+  it("preserves hidden manager comments when autosaving a new version", async () => {
+    const repo = dataState.repository!;
+    const member = await repo.createMember({ name: "Ada", role: "Dev", templateId: null });
+    const original = await repo.createEvaluation(member.id, "manager", {
+      status: "published",
+      authorName: null,
+      currentLevels: {},
+      goalLevels: {},
+      comments: { Technology: "Original private feedback" },
+      commentVisibility: { Technology: false },
+    });
+    renderAt(`/member/${member.id}`);
+    const comment = await screen.findByPlaceholderText("Add notes for this competency");
+    await userEvent.clear(comment);
+    await userEvent.type(comment, "Updated private feedback");
+    await waitFor(async () => {
+      const versions = await repo.listEvaluations(member.id);
+      expect(versions.find((version) => version.id !== original.id)).toMatchObject({
+        status: "draft",
+        comments: { Technology: "Updated private feedback" },
+        commentVisibility: { Technology: false },
+      });
+    });
+  });
+
+  it.each(["self", "peer"] as const)(
+    "reuses language and app branding on the %s token header",
+    async (kind) => {
+      vi.spyOn(tokenApi, "resolveToken").mockResolvedValue({
+        linkKind: kind,
+        name: "Ada",
+        role: "Dev",
+        templateId: null,
+      });
+      vi.spyOn(tokenApi, "listSelfEvaluations").mockResolvedValue([]);
+      renderAt("/e/11111111-1111-4111-8111-111111111111");
+      await screen.findByLabelText("Name");
+      expect(
+        screen.getByTestId("assessment-header").querySelector("svg.lucide-layout-grid")
+      ).toBeInTheDocument();
+      await userEvent.click(screen.getByRole("button", { name: "Language" }));
+      await userEvent.click(screen.getByRole("menuitemradio", { name: "Español" }));
+      expect(i18n.language).toBe("es");
+    }
+  );
 
   it("shows a blank self form without goals, history or deletion after publishing", async () => {
     vi.spyOn(tokenApi, "resolveToken").mockResolvedValue({
@@ -118,6 +212,13 @@ describe("AssessmentPage", () => {
       templateId: null,
     });
     const teams = await repo.listTeams();
+    const peer = await repo.createEvaluation(member.id, "peer", {
+      status: "published",
+      authorName: "Sam",
+      currentLevels: {},
+      goalLevels: {},
+      comments: { Technology: "Private peer feedback" },
+    });
     vi.spyOn(repo, "listTeams").mockResolvedValue(
       teams.map((team) => ({ ...team, access: "viewer" }))
     );
@@ -126,6 +227,9 @@ describe("AssessmentPage", () => {
     expect(screen.queryByRole("button", { name: "Share" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Choose a sharing link" })).not.toBeInTheDocument();
     expect(screen.queryByLabelText("Planning role (optional)")).not.toBeInTheDocument();
+    expect(
+      screen.queryByTestId(`comment-visibility-${peer.id}-Technology`)
+    ).not.toBeInTheDocument();
   });
 
   it.each(["owner", "editor"] as const)(

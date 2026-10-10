@@ -44,6 +44,28 @@ the existing imports, callbacks and test IDs while supplying translated props.
 features. `AppHeader` standardizes branding sizes and language/account actions
 across both apps; authentication and translations remain in their adapters.
 
+All Ladders routes render UI's `AppFooter`. Manager, self, peer and shared-view
+assessment headers reuse the same app icon and language selector (English,
+Spanish and Catalan), including shared-link loading/error/thank-you screens.
+Clipboard success/failure and publish validation use UI's accessible `AlertModal`,
+not native JavaScript `alert()`.
+
+### Employee comment privacy
+
+Managers and team editors can share/hide each saved competency comment in the
+assessment's **Comments shared with the employee** section. Controls cover all
+versions, including peers, without requiring chart comparison. Peer comments
+start hidden; manager and self comments keep their previous visible default.
+Draft manager/peer versions are still private until published. Hiding never
+deletes the original comment or its ratings, and self links retain access to the
+employee's own answers.
+
+`20261010190000_comment_visibility.sql` adds per-comment visibility and a
+team-edit-authorized RPC, and redacts hidden text in `public_view` on the server.
+Anonymous users never receive hidden text from that API. The approved migration
+is recorded in the shared Supabase project and mirrored in Planner's migration
+history; apply it only once. No historical comment text is rewritten.
+
 Set these values in `.env`:
 
 ```dotenv
