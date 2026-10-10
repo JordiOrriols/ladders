@@ -336,7 +336,22 @@
       "EM7": "Manages with impact beyond the team, across multiple teams."
     }
   },
+  "planningRole": {
+    "label": "Planning role (optional)",
+    "none": "Not assigned",
+    "hint": "Used for Planner capacity, separate from your job role.",
+    "options": {
+      "backend": "Backend",
+      "frontend": "Frontend",
+      "design": "Design",
+      "qa": "QA"
+    }
+  },
   "share": {
+    "vacations": {
+      "label": "Vacations",
+      "configurationError": "Configure VITE_PLANNER_URL with the absolute Planner URL, including its deployment pathname, and rebuild Ladders."
+    },
     "title": "Permanent links",
     "action": "Share",
     "menuLabel": "Choose a sharing link",
@@ -357,6 +372,11 @@
     }
   },
   "welcome": {
+    "features": {
+      "team": "Team competencies",
+      "account": "Secure account",
+      "sharing": "Shared evaluations"
+    },
     "eyebrow": "Engineering Ladder",
     "title": "How do you want to start?",
     "description": "Sign in to keep your team protected and available across devices.",

@@ -62,6 +62,7 @@ describe("AssessmentPage", () => {
     const create = vi.spyOn(tokenApi, "saveSelfEvaluation");
     renderAt("/e/11111111-1111-4111-8111-111111111111");
     expect(await screen.findByLabelText("Name")).toHaveValue("Ada");
+    expect(screen.queryByLabelText("Planning role (optional)")).not.toBeInTheDocument();
     expect(screen.queryByRole("tab", { name: "SMART Goals" })).not.toBeInTheDocument();
     expect(screen.queryByTestId("version-panel")).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Delete" })).not.toBeInTheDocument();
@@ -69,6 +70,82 @@ describe("AssessmentPage", () => {
     expect(create).not.toHaveBeenCalled();
     expect(screen.getByRole("button", { name: "Publish" })).toBeDisabled();
   });
+
+  it("saves the planning role separately from the job role when creating a member", async () => {
+    renderAt("/member/new");
+    await userEvent.type(await screen.findByLabelText("Name"), "Ada");
+    await userEvent.type(screen.getByLabelText("Role (optional)"), "Engineering lead");
+    await userEvent.selectOptions(screen.getByLabelText("Planning role (optional)"), "backend");
+    await waitFor(async () => {
+      expect((await dataState.repository!.listMembers())[0]).toMatchObject({
+        name: "Ada",
+        role: "Engineering lead",
+        planningRole: "backend",
+      });
+    });
+  });
+
+  it("loads and clears an existing planning role without changing other profile fields or tokens", async () => {
+    const repo = dataState.repository!;
+    const member = await repo.createMember({
+      name: "Ada",
+      role: "Engineering lead",
+      planningRole: "frontend",
+      templateId: "D3",
+    });
+    renderAt(`/member/${member.id}`);
+    expect(await screen.findByLabelText("Planning role (optional)")).toHaveValue("frontend");
+    await userEvent.selectOptions(screen.getByLabelText("Planning role (optional)"), "");
+    await waitFor(async () => {
+      expect(await repo.getMember(member.id)).toMatchObject({
+        role: member.role,
+        planningRole: null,
+        templateId: member.templateId,
+        vacationToken: member.vacationToken,
+        selfToken: member.selfToken,
+        peerToken: member.peerToken,
+        viewToken: member.viewToken,
+      });
+    });
+  });
+
+  it("hides sharing and planning-role editing for read-only team viewers", async () => {
+    const repo = dataState.repository!;
+    const member = await repo.createMember({
+      name: "Ada",
+      role: "Lead",
+      planningRole: "backend",
+      templateId: null,
+    });
+    const teams = await repo.listTeams();
+    vi.spyOn(repo, "listTeams").mockResolvedValue(
+      teams.map((team) => ({ ...team, access: "viewer" }))
+    );
+    renderAt(`/member/${member.id}`);
+    expect(await screen.findByLabelText("Name")).toHaveAttribute("readonly");
+    expect(screen.queryByRole("button", { name: "Share" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Choose a sharing link" })).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Planning role (optional)")).not.toBeInTheDocument();
+  });
+
+  it.each(["owner", "editor"] as const)(
+    "retains vacation sharing and planning-role editing for team %s access",
+    async (access) => {
+      const repo = dataState.repository!;
+      const member = await repo.createMember({
+        name: "Ada",
+        role: "Lead",
+        planningRole: "backend",
+        templateId: null,
+      });
+      const teams = await repo.listTeams();
+      vi.spyOn(repo, "listTeams").mockResolvedValue(teams.map((team) => ({ ...team, access })));
+      renderAt(`/member/${member.id}`);
+      expect(await screen.findByLabelText("Planning role (optional)")).toHaveValue("backend");
+      await userEvent.click(screen.getByRole("button", { name: "Choose a sharing link" }));
+      expect(screen.getByRole("menuitem", { name: "Vacations" })).toBeInTheDocument();
+    }
+  );
 
   it("creates a member and its first version from /member/new", async () => {
     renderAt("/member/new");

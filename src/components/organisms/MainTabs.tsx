@@ -1,5 +1,5 @@
 import React from "react";
-import { Info, Users, User } from "lucide-react";
+import { Info, Users, User } from "@jordiorriols/ui/icons";
 import { useTranslation } from "react-i18next";
 import type { Evaluation, Member, Team } from "../../types";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "../ui/tabs";

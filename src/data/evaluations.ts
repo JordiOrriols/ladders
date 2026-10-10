@@ -35,6 +35,8 @@ export function toMemberSummary(member: TeamMember, evaluations: Evaluation[]): 
     teamId: member.teamId,
     name: member.name,
     role: member.role,
+    planningRole: member.planningRole,
+    vacationToken: member.vacationToken,
     templateId: member.templateId,
     currentLevels: manager?.currentLevels ?? {},
     goalLevels: manager?.goalLevels ?? {},

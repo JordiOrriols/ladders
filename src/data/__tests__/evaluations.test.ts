@@ -4,6 +4,7 @@ import esLocale from "@/locales/es.json";
 import caLocale from "@/locales/ca.json";
 import { VERTICALS } from "@/components/atoms/levelSelector";
 import type { Evaluation } from "@/types";
+import { PLANNING_ROLES } from "@/types";
 import { latestOf, toMemberSummary, versionLabel } from "../evaluations";
 import { LADDER_TEMPLATES, findTemplate } from "../ladderTemplates";
 
@@ -44,8 +45,11 @@ describe("summaries and imports", () => {
     const summary = toMemberSummary(
       {
         id: "m",
+        teamId: "t",
         name: "Ada",
         role: "",
+        planningRole: "frontend",
+        vacationToken: "vacations",
         templateId: null,
         selfToken: null,
         peerToken: null,
@@ -61,6 +65,8 @@ describe("summaries and imports", () => {
     );
     expect(summary.currentLevels).toEqual({ Technology: 3 });
     expect(summary.selfAssessmentLevels).toEqual({});
+    expect(summary.planningRole).toBe("frontend");
+    expect(summary.vacationToken).toBe("vacations");
   });
 
   it("latestOf filters by kind and status", () => {
@@ -74,6 +80,19 @@ describe("summaries and imports", () => {
 });
 
 describe("ladder templates", () => {
+  it("translates planning roles and vacation sharing in every supported locale", () => {
+    for (const locale of [enLocale, esLocale, caLocale]) {
+      expect(locale.planningRole.label).toBeTruthy();
+      expect(locale.planningRole.none).toBeTruthy();
+      expect(locale.planningRole.hint).toBeTruthy();
+      for (const role of PLANNING_ROLES) {
+        expect(locale.planningRole.options[role]).toBeTruthy();
+      }
+      expect(locale.share.vacations.label).toBeTruthy();
+      expect(locale.share.vacations.configurationError).toContain("VITE_PLANNER_URL");
+    }
+  });
+
   it("defines a level 1-5 for every vertical", () => {
     for (const template of LADDER_TEMPLATES) {
       for (const vertical of VERTICALS) {

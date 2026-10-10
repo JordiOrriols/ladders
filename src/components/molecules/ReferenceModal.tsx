@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
-import { Button } from "../ui/button";
+import { ReferenceDialog } from "@jordiorriols/ui";
 import { VERTICALS, LEVELS, LevelExample } from "../atoms/levelSelector";
 
 interface ReferenceModalProps {
@@ -11,85 +11,43 @@ interface ReferenceModalProps {
 export function ReferenceModal({ isOpen, onClose }: ReferenceModalProps) {
   const { t } = useTranslation();
 
-  // Escape is the expected way out of a dialog, so honour it even though the
-  // overlay is rendered by hand rather than by a dialog primitive.
-  useEffect(() => {
-    if (!isOpen) return;
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
-  }, [isOpen, onClose]);
-
-  if (!isOpen) return null;
-
   return (
-    <div
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-start justify-center overflow-y-auto py-8"
-      onClick={onClose}
+    <ReferenceDialog
+      isOpen={isOpen}
+      onClose={onClose}
+      title={t("reference.title")}
+      closeLabel={t("buttons.close")}
     >
-      <div
-        className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl mx-4"
-        data-testid="reference-modal"
-        role="dialog"
-        aria-modal="true"
-        aria-label={t("reference.title")}
-        onClick={(event) => event.stopPropagation()}
-      >
-        <div className="flex items-center justify-between p-6 border-b border-slate-200">
-          <h2 className="text-xl font-semibold text-slate-800">{t("reference.title")}</h2>
-          <Button
-            eventId="reference_modal_close"
-            data-testid="reference-modal-close"
-            size="icon"
-            variant="ghost"
-            onClick={onClose}
-          >
-            <span className="text-xl">&times;</span>
-          </Button>
-        </div>
-        <div
-          className="p-6 max-h-[70vh] overflow-y-auto space-y-6"
-          data-testid="reference-modal-body"
-        >
-          {VERTICALS.map((vertical) => (
-            <div key={vertical} data-testid={`reference-vertical-${vertical}`}>
-              <h3 className="font-semibold text-lg text-slate-800 mb-3">{vertical}</h3>
-              {vertical === "Influence" && (
-                <p className="text-sm text-slate-500 mb-3">{t("influenceScope")}</p>
-              )}
-              <div className="space-y-2">
-                {LEVELS.map((level) => (
-                  <div
-                    key={level}
-                    className="p-3 bg-slate-50 rounded-lg"
-                    data-testid={`reference-level-${vertical}-${level}`}
-                  >
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-xs font-medium text-slate-400 bg-white px-2 py-0.5 rounded">
-                        L{level}
-                      </span>
-                      <span className="font-medium text-slate-700">
-                        {t(`levels.${vertical}.${level}.name`)}
-                      </span>
-                    </div>
-                    <p className="text-sm text-slate-600">
-                      {t(`levels.${vertical}.${level}.description`)}
-                    </p>
-                    <LevelExample vertical={vertical} level={level} />
-                  </div>
-                ))}
+      {VERTICALS.map((vertical) => (
+        <div key={vertical} data-testid={`reference-vertical-${vertical}`}>
+          <h3 className="font-semibold text-lg text-slate-800 mb-3">{vertical}</h3>
+          {vertical === "Influence" && (
+            <p className="text-sm text-slate-500 mb-3">{t("influenceScope")}</p>
+          )}
+          <div className="space-y-2">
+            {LEVELS.map((level) => (
+              <div
+                key={level}
+                className="p-3 bg-slate-50 rounded-lg"
+                data-testid={`reference-level-${vertical}-${level}`}
+              >
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-xs font-medium text-slate-400 bg-white px-2 py-0.5 rounded">
+                    L{level}
+                  </span>
+                  <span className="font-medium text-slate-700">
+                    {t(`levels.${vertical}.${level}.name`)}
+                  </span>
+                </div>
+                <p className="text-sm text-slate-600">
+                  {t(`levels.${vertical}.${level}.description`)}
+                </p>
+                <LevelExample vertical={vertical} level={level} />
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-        <div className="p-6 border-t border-slate-200 bg-slate-50 rounded-b-2xl">
-          <Button eventId="reference_modal_close_footer" onClick={onClose} className="w-full">
-            {t("buttons.close")}
-          </Button>
-        </div>
-      </div>
-    </div>
+      ))}
+    </ReferenceDialog>
   );
 }

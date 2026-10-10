@@ -1,5 +1,5 @@
 import React from "react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { I18nextProvider } from "react-i18next";
@@ -9,8 +9,11 @@ import { ShareAction } from "../ShareAction";
 
 const member: TeamMember = {
   id: "member-id-that-never-enters-the-url",
+  teamId: "team-id",
   name: "Ada",
   role: "Engineer",
+  planningRole: null,
+  vacationToken: "44444444-4444-4444-8444-444444444444",
   templateId: null,
   selfToken: "11111111-1111-4111-8111-111111111111",
   peerToken: "22222222-2222-4222-8222-222222222222",
@@ -33,8 +36,14 @@ describe("ShareAction", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.stubEnv("VITE_PLANNER_URL", "https://planner.example.com/planner/");
     vi.spyOn(window, "alert").mockImplementation(() => {});
     Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.restoreAllMocks();
   });
 
   it("copies the permanent self UUID from the primary action", async () => {
@@ -52,8 +61,29 @@ describe("ShareAction", () => {
     );
     await userEvent.click(screen.getByRole("button", { name: "Choose a sharing link" }));
     expect(screen.queryByRole("menuitem", { name: "View my evaluation" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("menuitem", { name: "Vacations" })).not.toBeInTheDocument();
     await userEvent.click(screen.getByRole("menuitem", { name: "Peer evaluation" }));
     expect(writeText).toHaveBeenLastCalledWith(expect.stringContaining(`#/e/${member.peerToken}`));
+  });
+
+  it("copies the independent vacation UUID to Planner without enabling evaluation sharing", async () => {
+    const onEnableView = renderAction();
+    await userEvent.click(screen.getByRole("button", { name: "Choose a sharing link" }));
+    await userEvent.click(screen.getByRole("menuitem", { name: "Vacations" }));
+    expect(writeText).toHaveBeenLastCalledWith(
+      `https://planner.example.com/planner/#/vacations/${member.vacationToken}`
+    );
+    expect(onEnableView).not.toHaveBeenCalled();
+  });
+
+  it("shows actionable configuration errors instead of copying a broken vacation URL", async () => {
+    vi.stubEnv("VITE_PLANNER_URL", "/relative/planner");
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    renderAction();
+    await userEvent.click(screen.getByRole("button", { name: "Choose a sharing link" }));
+    await userEvent.click(screen.getByRole("menuitem", { name: "Vacations" }));
+    expect(writeText).not.toHaveBeenCalled();
+    expect(window.alert).toHaveBeenCalledWith(expect.stringContaining("VITE_PLANNER_URL"));
   });
 
   it("offers peer and public UUID links", async () => {

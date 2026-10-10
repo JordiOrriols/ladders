@@ -5,6 +5,8 @@ export type EvaluationKind = "manager" | "self" | "peer";
 export type EvaluationStatus = "draft" | "published";
 export type TeamAccess = "owner" | "editor" | "viewer";
 export type SharedTeamAccess = Exclude<TeamAccess, "owner">;
+export const PLANNING_ROLES = ["backend", "frontend", "design", "qa"] as const;
+export type PlanningRole = (typeof PLANNING_ROLES)[number];
 
 export interface Team {
   id: string;
@@ -54,6 +56,8 @@ export interface Member {
   teamId: string;
   name: string;
   role?: string;
+  planningRole: PlanningRole | null;
+  vacationToken: string | null;
   currentLevels: LevelMap;
   goalLevels: LevelMap;
   comments?: CommentMap;
@@ -67,6 +71,8 @@ export interface TeamMember {
   teamId: string;
   name: string;
   role: string;
+  planningRole: PlanningRole | null;
+  vacationToken: string | null;
   templateId: string | null;
   selfToken: string | null;
   peerToken: string | null;
@@ -93,5 +99,6 @@ export interface Evaluation extends EvaluationInput {
 export type MemberProfile = {
   name: string;
   role: string;
+  planningRole?: PlanningRole | null;
   templateId: string | null;
 };

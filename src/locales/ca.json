@@ -337,7 +337,22 @@
       "EM7": "Gestiona amb impacte més enllà de l'equip, en diversos equips."
     }
   },
+  "planningRole": {
+    "label": "Rol de planificació (opcional)",
+    "none": "Sense assignar",
+    "hint": "S'utilitza per a la capacitat de Planner, independentment del rol professional.",
+    "options": {
+      "backend": "Backend",
+      "frontend": "Frontend",
+      "design": "Disseny",
+      "qa": "QA"
+    }
+  },
   "share": {
+    "vacations": {
+      "label": "Vacances",
+      "configurationError": "Configura VITE_PLANNER_URL amb l'URL absoluta de Planner, inclosa la ruta del desplegament, i torna a compilar Ladders."
+    },
     "title": "Enllaços permanents",
     "action": "Compartir",
     "menuLabel": "Triar un enllaç per compartir",
@@ -358,6 +373,11 @@
     }
   },
   "welcome": {
+    "features": {
+      "team": "Competències de l'equip",
+      "account": "Compte segur",
+      "sharing": "Avaluacions compartides"
+    },
     "eyebrow": "Escala d'Enginyeria",
     "title": "Com voleu començar?",
     "description": "Inicieu sessió per mantenir el vostre equip protegit i disponible entre dispositius.",

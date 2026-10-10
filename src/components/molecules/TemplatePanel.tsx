@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ChevronDown, ChevronUp, GraduationCap } from "lucide-react";
+import { ChevronDown, ChevronUp, GraduationCap } from "@jordiorriols/ui/icons";
 import { useTranslation } from "react-i18next";
 import { VERTICALS } from "@/components/atoms/levelSelector";
 import { LADDER_TEMPLATES, LADDER_TRACKS, findTemplate } from "@/data/ladderTemplates";

@@ -49,6 +49,7 @@ jobs:
       - name: Build Vite project
         run: npm run build
         env:
+          VITE_PLANNER_URL: ${{ vars.VITE_PLANNER_URL }}
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
 

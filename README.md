@@ -10,11 +10,39 @@ A React application for managing team competency assessments, evaluation history
 
 ## Application setup
 
+Build the sibling shared UI package before installing this app:
+
+```bash
+cd ../ui
+npm install
+npm run build
+cd ../ladders
+```
+
 ```bash
 npm install
 cp .env.example .env
 npm start
 ```
+
+The app consumes `file:../ui` as a packed local dependency, not a symlink into
+the library's development React. After rebuilding the library, refresh it with
+`npm uninstall @jordiorriols/ui --ignore-scripts` followed by
+`npm install ../ui --install-links --ignore-scripts`. Removing first is necessary
+when the library's version has not changed: npm can otherwise retain the old
+installed copy. Vite excludes its ESM entry points from
+dependency prebundling so changed exports do not leave stale optimized modules.
+Restart Vite after this refresh to clear its in-memory dependency transforms.
+
+Shared views, official Radix primitives, icons, auth/form hooks and Umami live in
+`../ui`. Application translations, competency definitions, sharing URLs,
+repositories, access rules and database tables stay here. `index.css` imports
+the library's Tailwind tokens instead of redeclaring them. App adapters preserve
+the existing imports, callbacks and test IDs while supplying translated props.
+
+`WelcomeScreen` shares Planner's welcome layout with app-specific copy and
+features. `AppHeader` standardizes branding sizes and language/account actions
+across both apps; authentication and translations remain in their adapters.
 
 Set these values in `.env`:
 
@@ -24,6 +52,35 @@ VITE_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
 ```
 
 The publishable key is safe to use in the browser. Database access is protected by the Row Level Security policies in the migrations. Never put the service-role key in this application.
+
+### Shared Planner vacations
+
+Set `VITE_PLANNER_URL` to the absolute URL of your Planner deployment, including
+its pathname, and rebuild Ladders. For example, a deployment at
+`https://example.com/planner/` creates links at
+`https://example.com/planner/#/vacations/<vacationToken>`. No production host is
+assumed. Only when Ladders runs on `localhost` or `127.0.0.1`, an empty setting
+falls back to `http://127.0.0.1:5176`. Missing or invalid production configuration
+shows an actionable error rather than copying a broken link.
+
+For GitHub Pages builds, configure the **repository Actions variable**
+`VITE_PLANNER_URL` under **Settings → Secrets and variables → Actions → Variables**.
+Use your actual configured Planner deployment URL, including its pathname.
+The production workflow passes this variable to Vite's build step; changing it
+requires another build/deployment because Vite embeds it at build time.
+
+Member creation/editing includes an optional planning role (`backend`, `frontend`,
+`design`, or `qa`), separate from the existing free-text job role. The Share menu
+includes **Vacations**, copying the member's independent permanent vacation UUID.
+Self, peer, and view links retain their existing routes and tokens.
+Read-only team viewers do not see sharing actions or the planning-role editor.
+
+This requires the additive shared-vacations migration maintained in `../planner`
+to provide `public.members.planning_role` (nullable) and
+`public.members.vacation_token` (database-generated UUID), plus Planner's
+permissions/RPCs. Ladders reads the token but never sets or rotates it. Planner
+workspaces can link multiple Ladders teams. Deploy the shared schema only after
+approval and local RLS validation; Ladders does not apply it automatically.
 
 ## Initialize Supabase
 
