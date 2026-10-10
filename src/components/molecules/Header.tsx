@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { LayoutGrid } from "@jordiorriols/ui/icons";
+import { AppIcon } from "@/components/atoms/AppIcon";
 import { useTranslation } from "react-i18next";
 import { AppHeader } from "@jordiorriols/ui";
 import { useAsyncAction } from "@jordiorriols/ui/hooks";
@@ -16,7 +16,7 @@ export function Header() {
     <AppHeader
       title={t("header.title")}
       subtitle={t("header.subtitle")}
-      icon={<LayoutGrid className="w-5 h-5 text-white" />}
+      icon={<AppIcon />}
       {...(authEnabled
         ? {
             accountAction: {

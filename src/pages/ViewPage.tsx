@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { EvaluationViewer } from "@/components/organisms/EvaluationViewer";
 import { SmartGoalsPanel } from "@/components/organisms/SmartGoalsPanel";
 import { ShareAction } from "@/components/molecules/ShareAction";
+import { AssessmentHeader } from "@/components/organisms/AssessmentHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { createTokenGoalStore } from "@/data/goalStore";
 import { getPublicView, getViewSharingLinks, isValidToken, resolveToken } from "@/data/tokenApi";
@@ -62,17 +63,12 @@ export default function ViewPage() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <header className="bg-white border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between gap-4">
-          <div className="min-w-0">
-            <h1 className="text-lg font-semibold text-slate-800">
-              {t("viewPage.title", { name: state.info.name })}
-            </h1>
-            {state.info.role && <p className="text-xs text-slate-500">{state.info.role}</p>}
-          </div>
-          <ShareAction member={state.links} />
-        </div>
-      </header>
+      <AssessmentHeader
+        title={t("viewPage.title", { name: state.info.name })}
+        subtitle={state.info.role}
+        actions={[]}
+        extraActions={<ShareAction member={state.links} />}
+      />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs defaultValue="evaluation" className="space-y-6">
           <TabsList className="bg-white border border-slate-200">

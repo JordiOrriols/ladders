@@ -1,6 +1,8 @@
 import React, { useCallback, useRef } from "react";
 import type { ReactNode } from "react";
 import { ArrowLeft } from "@jordiorriols/ui/icons";
+import { AppIcon } from "@/components/atoms/AppIcon";
+import { LanguageSelector } from "@/components/molecules/LanguageSelector";
 import { Button } from "@/components/ui/button";
 import { SplitButton } from "@/components/molecules/SplitButton";
 import type { SplitButtonItem } from "@/components/molecules/SplitButton";
@@ -53,7 +55,10 @@ export function AssessmentHeader({
   title,
   subtitle,
   onBack,
-  leadingAdornment,
+  leadingAdornment = {
+    icon: <AppIcon />,
+    className: "shrink-0 bg-gradient-to-br from-indigo-500 to-purple-600",
+  },
   actions,
   extraActions,
 }: Props) {
@@ -104,6 +109,7 @@ export function AssessmentHeader({
           </div>
 
           <div className="flex flex-wrap items-center justify-end gap-2">
+            <LanguageSelector />
             {extraActions}
             {actions.map((action, idx) => {
               if (action.type === "button") {

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { AlertModal } from "@jordiorriols/ui";
 import { Calendar, Eye, Share2, UserRound, Users } from "@jordiorriols/ui/icons";
 import { useTranslation } from "react-i18next";
 import type { TeamMember } from "@/types";
@@ -20,6 +21,7 @@ type Props = {
 
 export function ShareAction({ member, onEnableView }: Props) {
   const { t } = useTranslation();
+  const [message, setMessage] = useState<string | null>(null);
 
   const copy = async (kind: ShareKind) => {
     const token =
@@ -42,10 +44,10 @@ export function ShareAction({ member, onEnableView }: Props) {
           ? buildVacationLink(token)
           : buildShareLink(`${kind === "view" ? "v" : "e"}/${token}`)
       );
-      alert(t("alerts.linkCopied"));
+      setMessage(t("alerts.linkCopied"));
     } catch (error) {
       console.error("Failed to copy share link", error);
-      alert(
+      setMessage(
         t(
           error instanceof PlannerUrlError
             ? "share.vacations.configurationError"
@@ -56,47 +58,57 @@ export function ShareAction({ member, onEnableView }: Props) {
   };
 
   return (
-    <SplitButton
-      label={t("share.action")}
-      icon={<Share2 className="h-4 w-4" />}
-      eventId="member_share_self"
-      onClick={() => void copy("self")}
-      menuLabel={t("share.menuLabel")}
-      variant="outline"
-      items={[
-        {
-          label: t("share.self.label"),
-          icon: <UserRound className="h-4 w-4" />,
-          eventId: "member_share_self_menu",
-          onSelect: () => void copy("self"),
-        },
-        {
-          label: t("share.peer.label"),
-          icon: <Users className="h-4 w-4" />,
-          eventId: "member_share_peer",
-          onSelect: () => void copy("peer"),
-        },
-        ...(member.viewToken
-          ? [
-              {
-                label: t("share.view.label"),
-                icon: <Eye className="h-4 w-4" />,
-                eventId: "member_share_view",
-                onSelect: () => void copy("view"),
-              },
-            ]
-          : []),
-        ...(member.vacationToken
-          ? [
-              {
-                label: t("share.vacations.label"),
-                icon: <Calendar className="h-4 w-4" />,
-                eventId: "member_share_vacations",
-                onSelect: () => void copy("vacations"),
-              },
-            ]
-          : []),
-      ]}
-    />
+    <>
+      <SplitButton
+        label={t("share.action")}
+        icon={<Share2 className="h-4 w-4" />}
+        eventId="member_share_self"
+        onClick={() => void copy("self")}
+        menuLabel={t("share.menuLabel")}
+        variant="outline"
+        menuModal={false}
+        items={[
+          {
+            label: t("share.self.label"),
+            icon: <UserRound className="h-4 w-4" />,
+            eventId: "member_share_self_menu",
+            onSelect: () => void copy("self"),
+          },
+          {
+            label: t("share.peer.label"),
+            icon: <Users className="h-4 w-4" />,
+            eventId: "member_share_peer",
+            onSelect: () => void copy("peer"),
+          },
+          ...(member.viewToken
+            ? [
+                {
+                  label: t("share.view.label"),
+                  icon: <Eye className="h-4 w-4" />,
+                  eventId: "member_share_view",
+                  onSelect: () => void copy("view"),
+                },
+              ]
+            : []),
+          ...(member.vacationToken
+            ? [
+                {
+                  label: t("share.vacations.label"),
+                  icon: <Calendar className="h-4 w-4" />,
+                  eventId: "member_share_vacations",
+                  onSelect: () => void copy("vacations"),
+                },
+              ]
+            : []),
+        ]}
+      />
+      <AlertModal
+        isOpen={message !== null}
+        title={t("alerts.notice")}
+        description={message ?? ""}
+        closeLabel={t("buttons.close")}
+        onClose={() => setMessage(null)}
+      />
+    </>
   );
 }
