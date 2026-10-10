@@ -2,6 +2,9 @@ import { describe, it, expect } from "vitest";
 import enLocale from "@/locales/en.json";
 import esLocale from "@/locales/es.json";
 import caLocale from "@/locales/ca.json";
+import frLocale from "@/locales/fr.json";
+import deLocale from "@/locales/de.json";
+import itLocale from "@/locales/it.json";
 import { VERTICALS } from "@/components/atoms/levelSelector";
 import type { Evaluation } from "@/types";
 import { PLANNING_ROLES } from "@/types";
@@ -81,7 +84,7 @@ describe("summaries and imports", () => {
 
 describe("ladder templates", () => {
   it("translates planning roles and vacation sharing in every supported locale", () => {
-    for (const locale of [enLocale, esLocale, caLocale]) {
+    for (const locale of [enLocale, esLocale, caLocale, frLocale, deLocale, itLocale]) {
       expect(locale.planningRole.label).toBeTruthy();
       expect(locale.planningRole.none).toBeTruthy();
       expect(locale.planningRole.hint).toBeTruthy();
@@ -106,7 +109,7 @@ describe("ladder templates", () => {
   });
 
   it("has a summary in every locale", () => {
-    for (const locale of [enLocale, esLocale, caLocale]) {
+    for (const locale of [enLocale, esLocale, caLocale, frLocale, deLocale, itLocale]) {
       for (const template of LADDER_TEMPLATES) {
         expect((locale.templates.summaries as Record<string, string>)[template.id]).toBeTruthy();
       }
