@@ -31,6 +31,7 @@ export interface EvaluationStore {
   remove(id: string): Promise<void>;
   canChangeStatus(evaluation: Evaluation): boolean;
   canDelete(evaluation: Evaluation): boolean;
+  setCommentVisibility?(id: string, category: string, visible: boolean): Promise<Evaluation>;
 }
 
 export function createManagerStore(
@@ -93,6 +94,10 @@ export function createManagerStore(
     },
     updateDraft: (id, input) => repo.updateEvaluationDraft(id, input),
     setStatus: (id, status) => repo.setEvaluationStatus(id, status),
+    async setCommentVisibility(id, category, visible) {
+      if (!canEdit) throw new Error("Team edit access required");
+      return repo.setCommentVisibility(id, category, visible);
+    },
     async remove(id) {
       if (!owner) throw new Error("Only the team owner can delete evaluations");
       await repo.deleteEvaluation(id);

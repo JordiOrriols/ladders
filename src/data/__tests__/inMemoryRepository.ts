@@ -217,6 +217,18 @@ export function createInMemoryRepository(): Repository {
         evaluation.id === evaluationId ? { ...evaluation, status } : evaluation
       );
     },
+    async setCommentVisibility(evaluationId, category, visible) {
+      const current = evaluations.find((evaluation) => evaluation.id === evaluationId);
+      if (!current) throw new Error("Evaluation not found");
+      const updated = {
+        ...current,
+        commentVisibility: { ...current.commentVisibility, [category]: visible },
+      };
+      evaluations = evaluations.map((evaluation) =>
+        evaluation.id === evaluationId ? updated : evaluation
+      );
+      return updated;
+    },
     async deleteEvaluation(evaluationId: string) {
       evaluations = evaluations.filter((evaluation) => evaluation.id !== evaluationId);
     },

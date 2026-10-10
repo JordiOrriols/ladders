@@ -160,6 +160,7 @@ export function useEvaluationEditor(store: EvaluationStore) {
           status: "draft" as const,
           authorName: store.kind === "self" ? nextProfile.name : null,
           ...snapshot.form,
+          ...(source?.commentVisibility ? { commentVisibility: source.commentVisibility } : {}),
         };
         const saved = draftRef.current
           ? await store.updateDraft!(draftRef.current.id, input)
@@ -286,6 +287,15 @@ export function useEvaluationEditor(store: EvaluationStore) {
   };
 
   const updateForm = useCallback((patch: (prev: FormState) => FormState) => setForm(patch), []);
+  const setCommentVisibility = async (id: string, category: string, visible: boolean) => {
+    if (!store.setCommentVisibility) throw new Error("Comment visibility cannot be changed");
+    await queueRef.current;
+    const updated = await store.setCommentVisibility(id, category, visible);
+    if (draftRef.current?.id === updated.id) draftRef.current = updated;
+    setEvaluations((current) =>
+      current.map((evaluation) => (evaluation.id === updated.id ? updated : evaluation))
+    );
+  };
   const updateProfile = useCallback(
     (patch: Partial<MemberProfile>) => setProfile((prev) => ({ ...prev, ...patch })),
     []
@@ -368,6 +378,7 @@ export function useEvaluationEditor(store: EvaluationStore) {
     save,
     deleteVersion,
     changeVersionStatus,
+    setCommentVisibility,
     reload: load,
   };
 }

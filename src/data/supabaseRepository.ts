@@ -66,6 +66,7 @@ export type EvaluationRow = {
   current_levels: Evaluation["currentLevels"];
   goal_levels: Evaluation["goalLevels"];
   comments: Evaluation["comments"];
+  comment_visibility?: Record<string, boolean>;
   created_at: string;
 };
 
@@ -73,7 +74,7 @@ const MEMBER_COLUMNS =
   "id,team_id,name,role,planning_role,vacation_token,template_id,self_token,peer_token,view_token,view_enabled,created_at";
 const TEAM_COLUMNS = "id,owner_id,name,is_default,created_at,updated_at";
 const EVALUATION_COLUMNS =
-  "id,member_id,kind,status,author_name,current_levels,goal_levels,comments,created_at";
+  "id,member_id,kind,status,author_name,current_levels,goal_levels,comments,created_at,comment_visibility";
 const GOAL_COLUMNS =
   "id,member_id,title,description,due_date,progress,comments,created_at,updated_at";
 
@@ -138,6 +139,7 @@ export const toEvaluation = (row: EvaluationRow): Evaluation => ({
   currentLevels: row.current_levels ?? {},
   goalLevels: row.goal_levels ?? {},
   comments: row.comments ?? {},
+  commentVisibility: row.comment_visibility ?? {},
   createdAt: row.created_at,
 });
 
@@ -147,6 +149,7 @@ export const toEvaluationPayload = (input: EvaluationInput) => ({
   current_levels: input.currentLevels,
   goal_levels: input.goalLevels,
   comments: input.comments,
+  ...(input.commentVisibility ? { comment_visibility: input.commentVisibility } : {}),
 });
 
 function toMemberPatch(patch: MemberPatch) {
@@ -356,6 +359,17 @@ export function createSupabaseRepository(client: SupabaseClient): Repository {
     async setEvaluationStatus(id, status) {
       const { error } = await client.from("evaluations").update({ status }).eq("id", id);
       if (error) throw new Error(error.message);
+    },
+    async setCommentVisibility(id, category, visible) {
+      return toEvaluation(
+        unwrap<EvaluationRow>(
+          await client.rpc("set_evaluation_comment_visibility", {
+            p_id: id,
+            p_category: category,
+            p_visible: visible,
+          })
+        )
+      );
     },
     async deleteEvaluation(id) {
       const { error } = await client.from("evaluations").delete().eq("id", id);
