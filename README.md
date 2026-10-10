@@ -10,32 +10,22 @@ A React application for managing team competency assessments, evaluation history
 
 ## Application setup
 
-Build the sibling shared UI package before installing this app:
+The shared UI library is installed from GitHub Packages as
+`@jordiorriols/ui`. Export a token with `read:packages` scope before installing;
+`.npmrc` reads it from `GITHUB_TOKEN`:
 
 ```bash
-cd ../ui
-npm install
-npm run build
-cd ../ladders
-```
-
-```bash
+export GITHUB_TOKEN=<token with read:packages>
 npm install
 cp .env.example .env
 npm start
 ```
 
-The app consumes `file:../ui` as a packed local dependency, not a symlink into
-the library's development React. After rebuilding the library, refresh it with
-`npm uninstall @jordiorriols/ui --ignore-scripts` followed by
-`npm install ../ui --install-links --ignore-scripts`. Removing first is necessary
-when the library's version has not changed: npm can otherwise retain the old
-installed copy. Vite excludes its ESM entry points from
-dependency prebundling so changed exports do not leave stale optimized modules.
-Restart Vite after this refresh to clear its in-memory dependency transforms.
+New UI versions are published automatically on every push to UI `main`. Update
+with `npm install @jordiorriols/ui@latest` and restart Vite.
 
 Shared views, official Radix primitives, icons, auth/form hooks and Umami live in
-`../ui`. Application translations, competency definitions, sharing URLs,
+`@jordiorriols/ui`. Application translations, competency definitions, sharing URLs,
 repositories, access rules and database tables stay here. `index.css` imports
 the library's Tailwind tokens instead of redeclaring them. App adapters preserve
 the existing imports, callbacks and test IDs while supplying translated props.
@@ -43,6 +33,28 @@ the existing imports, callbacks and test IDs while supplying translated props.
 `WelcomeScreen` shares Planner's welcome layout with app-specific copy and
 features. `AppHeader` standardizes branding sizes and language/account actions
 across both apps; authentication and translations remain in their adapters.
+
+All Ladders routes render UI's `AppFooter`. Manager, self, peer and shared-view
+assessment headers reuse the same app icon and language selector (English,
+Spanish and Catalan), including shared-link loading/error/thank-you screens.
+Clipboard success/failure and publish validation use UI's accessible `AlertModal`,
+not native JavaScript `alert()`.
+
+### Employee comment privacy
+
+Managers and team editors can share/hide each saved competency comment in the
+assessment's **Comments shared with the employee** section. Controls cover all
+versions, including peers, without requiring chart comparison. Peer comments
+start hidden; manager and self comments keep their previous visible default.
+Draft manager/peer versions are still private until published. Hiding never
+deletes the original comment or its ratings, and self links retain access to the
+employee's own answers.
+
+`20261010190000_comment_visibility.sql` adds per-comment visibility and a
+team-edit-authorized RPC, and redacts hidden text in `public_view` on the server.
+Anonymous users never receive hidden text from that API. The approved migration
+is recorded in the shared Supabase project and mirrored in Planner's migration
+history; apply it only once. No historical comment text is rewritten.
 
 Set these values in `.env`:
 
@@ -52,6 +64,15 @@ VITE_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
 ```
 
 The publishable key is safe to use in the browser. Database access is protected by the Row Level Security policies in the migrations. Never put the service-role key in this application.
+
+### CI and deployment
+
+Pushes to `main` or `master` and manual dispatch run the same compile, lint,
+format, coverage, build and GitHub Pages deployment checks as Planner, using
+Node.js 24.21.0. `npm ci` installs `@jordiorriols/ui` from GitHub Packages with
+the workflow token (`packages: read`). Grant this repository read access in the
+package's **Manage Actions access** settings, or set the `UI_READ_TOKEN` secret
+to a token with `read:packages`.
 
 ### Shared Planner vacations
 

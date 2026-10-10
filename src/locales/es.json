@@ -1,4 +1,5 @@
 {
+  "footer": { "attribution": "Hecho con amor por Jordi Orriols" },
   "header": {
     "title": "Escalera de Ingeniería",
     "subtitle": "Rastreador de competencias del equipo",
@@ -268,6 +269,7 @@
     "clearAll": "Limpiar Todo"
   },
   "alerts": {
+    "notice": "Aviso",
     "linkCopied": "¡Enlace copiado al portapapeles!",
     "shareLinkCopied": "¡Enlace de autoevaluación copiado al portapapeles!",
     "failedToCopyLink": "Error al copiar el enlace",
@@ -285,6 +287,12 @@
     "goal": "Objetivo"
   },
   "comments": {
+    "visibilityTitle": "Comentarios compartidos con la persona evaluada",
+    "visibilityDescription": "Los comentarios de compañeros empiezan ocultos. Comparte u oculta cada comentario guardado. Los borradores siguen siendo privados hasta publicarse.",
+    "visible": "Compartido con la persona evaluada",
+    "hidden": "Oculto para la persona evaluada",
+    "hide": "Ocultar a la persona evaluada",
+    "show": "Compartir con la persona evaluada",
     "title": "Comentarios"
   },
   "autosave": {

@@ -30,6 +30,8 @@ import { createRepositoryGoalStore, type GoalStore } from "@/data/goalStore";
 import { EditorValidationError, useEvaluationEditor } from "@/hooks/useEvaluationEditor";
 import { PageMessage } from "./PageMessage";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AlertModal } from "@jordiorriols/ui";
+import { useAsyncAction } from "@jordiorriols/ui/hooks";
 
 type StoreState = { store: EvaluationStore } | { error: "notFound" | "loading" };
 
@@ -88,6 +90,8 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
   const { id: routeId } = useParams();
   const { repository } = useData();
   const editor = useEvaluationEditor(store);
+  const [message, setMessage] = useState<string | null>(null);
+  const visibilityAction = useAsyncAction();
   const isManager = store.kind === "manager";
   const isPeer = store.kind === "peer";
   const hideGoal = !isManager;
@@ -131,14 +135,14 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
   const handleSave = async () => {
     try {
       await editor.save("published");
-      if (!isPeer) alert(t("alerts.published"));
+      if (!isPeer) setMessage(t("alerts.published"));
     } catch (error) {
       if (error instanceof EditorValidationError) {
-        alert(t(`alerts.${error.message}`));
+        setMessage(t(`alerts.${error.message}`));
         return;
       }
       console.error("Failed to save evaluation", error);
-      alert(t("alerts.saveFailed"));
+      setMessage(t("alerts.saveFailed"));
     }
   };
 
@@ -295,6 +299,63 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
                     canChangeStatus={store.canChangeStatus}
                     onChangeStatus={editor.changeVersionStatus}
                   />
+                  {isManager && store.editableProfile && store.setCommentVisibility && (
+                    <section
+                      className="mt-6 rounded-2xl border border-slate-200 bg-white p-6"
+                      aria-label={t("comments.visibilityTitle")}
+                    >
+                      <h2 className="font-semibold text-slate-800">
+                        {t("comments.visibilityTitle")}
+                      </h2>
+                      <p className="text-sm text-slate-500 mb-4">
+                        {t("comments.visibilityDescription")}
+                      </p>
+                      <CommentGroups
+                        groups={editor.evaluations.map((evaluation) => ({
+                          id: evaluation.id,
+                          label: `${evaluationAuthor(evaluation, t)} · ${versionLabel(evaluation, editor.evaluations, i18n.language)}`,
+                          color: comparisonColor(evaluation),
+                          comments: evaluation.comments,
+                        }))}
+                        commentAction={(group, category) => {
+                          const evaluation = editor.evaluations.find(
+                            (item) => item.id === group.id
+                          );
+                          if (!evaluation) return null;
+                          const visible =
+                            evaluation.commentVisibility?.[category] ?? evaluation.kind !== "peer";
+                          return (
+                            <div className="mt-2 flex flex-wrap items-center gap-2">
+                              <span className="text-xs text-slate-500">
+                                {t(visible ? "comments.visible" : "comments.hidden")}
+                              </span>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                disabled={
+                                  visibilityAction.busy || editor.autosaveState === "saving"
+                                }
+                                data-testid={`comment-visibility-${evaluation.id}-${category}`}
+                                aria-label={`${t(visible ? "comments.hide" : "comments.show")}: ${group.label} · ${category}`}
+                                onClick={() =>
+                                  void visibilityAction.run(() =>
+                                    editor.setCommentVisibility(evaluation.id, category, !visible)
+                                  )
+                                }
+                              >
+                                {t(visible ? "comments.hide" : "comments.show")}
+                              </Button>
+                            </div>
+                          );
+                        }}
+                      />
+                      {visibilityAction.error && (
+                        <p role="alert" className="text-sm text-red-600">
+                          {visibilityAction.error}
+                        </p>
+                      )}
+                    </section>
+                  )}
                 </div>
               )}
 
@@ -397,6 +458,13 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
           )}
         </Tabs>
       </main>
+      <AlertModal
+        isOpen={message !== null}
+        title={t("alerts.notice")}
+        description={message ?? ""}
+        closeLabel={t("buttons.close")}
+        onClose={() => setMessage(null)}
+      />
     </div>
   );
 }

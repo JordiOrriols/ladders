@@ -6,6 +6,7 @@ import Home from "./pages/home";
 import { DataProvider } from "./data/DataProvider";
 import { EntryGate } from "./components/EntryGate";
 import { PasswordResetDialog } from "./components/molecules/PasswordResetDialog";
+import { AppFooter } from "@jordiorriols/ui";
 
 const AssessmentPage = lazy(() => import("./pages/AssessmentPage"));
 const ViewPage = lazy(() => import("./pages/ViewPage"));
@@ -45,22 +46,31 @@ function ErrorFallback({ error, resetErrorBoundary }) {
 }
 
 export default function App() {
+  const { t } = useTranslation();
   return (
-    <ErrorBoundary FallbackComponent={ErrorFallback} onReset={() => (window.location.href = "/")}>
-      <DataProvider>
-        <PasswordResetDialog />
-        <EntryGate>
-          <Suspense fallback={<LoadingFallback />}>
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/member/:id" element={<AssessmentPage />} />
-              <Route path="/e/:token" element={<AssessmentPage />} />
-              <Route path="/v/:token" element={<ViewPage />} />
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-          </Suspense>
-        </EntryGate>
-      </DataProvider>
-    </ErrorBoundary>
+    <div className="min-h-screen flex flex-col">
+      <div className="flex-1">
+        <ErrorBoundary
+          FallbackComponent={ErrorFallback}
+          onReset={() => (window.location.href = "/")}
+        >
+          <DataProvider>
+            <PasswordResetDialog />
+            <EntryGate>
+              <Suspense fallback={<LoadingFallback />}>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/member/:id" element={<AssessmentPage />} />
+                  <Route path="/e/:token" element={<AssessmentPage />} />
+                  <Route path="/v/:token" element={<ViewPage />} />
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+              </Suspense>
+            </EntryGate>
+          </DataProvider>
+        </ErrorBoundary>
+      </div>
+      <AppFooter text={t("footer.attribution")} />
+    </div>
   );
 }

@@ -83,7 +83,8 @@ describe("ShareAction", () => {
     await userEvent.click(screen.getByRole("button", { name: "Choose a sharing link" }));
     await userEvent.click(screen.getByRole("menuitem", { name: "Vacations" }));
     expect(writeText).not.toHaveBeenCalled();
-    expect(window.alert).toHaveBeenCalledWith(expect.stringContaining("VITE_PLANNER_URL"));
+    expect(await screen.findByRole("alertdialog")).toHaveTextContent("VITE_PLANNER_URL");
+    expect(window.alert).not.toHaveBeenCalled();
   });
 
   it("offers peer and public UUID links", async () => {
@@ -91,6 +92,7 @@ describe("ShareAction", () => {
     await userEvent.click(screen.getByRole("button", { name: "Choose a sharing link" }));
     await userEvent.click(screen.getByRole("menuitem", { name: "Peer evaluation" }));
     expect(writeText).toHaveBeenLastCalledWith(expect.stringContaining(`#/e/${member.peerToken}`));
+    await userEvent.click(await screen.findByTestId("alert-modal-close"));
 
     await userEvent.click(screen.getByRole("button", { name: "Choose a sharing link" }));
     await userEvent.click(screen.getByRole("menuitem", { name: "View my evaluation" }));

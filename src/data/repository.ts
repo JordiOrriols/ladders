@@ -45,5 +45,6 @@ export interface Repository {
   ): Promise<Evaluation>;
   updateEvaluationDraft(id: string, input: EvaluationInput): Promise<Evaluation>;
   setEvaluationStatus(id: string, status: EvaluationStatus): Promise<void>;
+  setCommentVisibility(id: string, category: string, visible: boolean): Promise<Evaluation>;
   deleteEvaluation(id: string): Promise<void>;
 }

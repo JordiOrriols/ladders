@@ -2,11 +2,12 @@ name: Build and Deploy Vite App
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "master"]
   workflow_dispatch:
 
 permissions:
   contents: read
+  packages: read
   pages: write
   id-token: write
 
@@ -16,6 +17,9 @@ concurrency:
 
 jobs:
   build-and-deploy:
+    env:
+      # Read by .npmrc to install @jordiorriols/ui from GitHub Packages.
+      GITHUB_TOKEN: ${{ secrets.UI_READ_TOKEN || github.token }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -28,7 +32,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 24.21.0
           cache: npm
 
       - name: Install dependencies

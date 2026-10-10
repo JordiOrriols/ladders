@@ -108,7 +108,11 @@ export function AssessmentPreview({
             </div>
           ))}
         </div>
-        {comments && <div className="mt-6 border-t border-slate-200 pt-6">{comments}</div>}
+        {comments && (
+          <div className="mt-6 border-t border-slate-200 pt-6" data-testid="assessment-comments">
+            {comments}
+          </div>
+        )}
       </div>
     </div>
   );

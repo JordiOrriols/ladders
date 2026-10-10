@@ -87,6 +87,7 @@ export interface EvaluationInput {
   currentLevels: LevelMap;
   goalLevels: LevelMap;
   comments: CommentMap;
+  commentVisibility?: Record<string, boolean>;
 }
 
 export interface Evaluation extends EvaluationInput {

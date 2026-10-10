@@ -1,7 +1,8 @@
 import React from "react";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { AssessmentHeader } from "@/components/organisms/AssessmentHeader";
 
 type Props = {
   kind: "loading" | "notFound" | "error" | "thanks";
@@ -10,25 +11,32 @@ type Props = {
 
 export function PageMessage({ kind, children }: Props) {
   const { t } = useTranslation();
+  const { pathname } = useLocation();
+  const shared = pathname.startsWith("/e/") || pathname.startsWith("/v/");
   return (
-    <div className="flex items-center justify-center min-h-screen bg-slate-50 p-6">
-      <div
-        className="text-center max-w-md space-y-4"
-        role={kind === "error" ? "alert" : "status"}
-        data-testid="page-message"
-        data-kind={kind}
-      >
-        {kind === "loading" && (
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-slate-400 mx-auto" />
-        )}
-        <p className="text-slate-700">{t(`pageMessage.${kind}`)}</p>
-        {children}
-        {kind !== "loading" && (
-          <Link to="/" className="block text-sm text-indigo-600 hover:underline">
-            {t("pageMessage.home")}
-          </Link>
-        )}
+    <>
+      {shared && (
+        <AssessmentHeader title={t("header.title")} subtitle={t("header.subtitle")} actions={[]} />
+      )}
+      <div className="flex items-center justify-center min-h-screen bg-slate-50 p-6">
+        <div
+          className="text-center max-w-md space-y-4"
+          role={kind === "error" ? "alert" : "status"}
+          data-testid="page-message"
+          data-kind={kind}
+        >
+          {kind === "loading" && (
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-slate-400 mx-auto" />
+          )}
+          <p className="text-slate-700">{t(`pageMessage.${kind}`)}</p>
+          {children}
+          {kind !== "loading" && (
+            <Link to="/" className="block text-sm text-indigo-600 hover:underline">
+              {t("pageMessage.home")}
+            </Link>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
