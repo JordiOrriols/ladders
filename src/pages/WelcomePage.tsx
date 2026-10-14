@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Cloud, LayoutGrid, Users, Share2 } from "@jordiorriols/ui/icons";
+import { Cloud, Users, Share2 } from "@jordiorriols/ui/icons";
+import { AppIcon } from "@/components/atoms/AppIcon";
 import { useTranslation } from "react-i18next";
 import { LoginDialog } from "@/components/molecules/LoginDialog";
 import { WelcomeScreen } from "@jordiorriols/ui";
@@ -13,7 +14,7 @@ export function WelcomePage() {
   return (
     <WelcomeScreen
       brand={t("welcome.eyebrow")}
-      icon={<LayoutGrid />}
+      icon={<AppIcon />}
       title={t("welcome.title")}
       description={t("welcome.description")}
       features={[

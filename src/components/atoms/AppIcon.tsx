@@ -1,6 +1,7 @@
 import React from "react";
-import { LayoutGrid } from "@jordiorriols/ui/icons";
+import { TrendingUp } from "@jordiorriols/ui/icons";
 
+/** The Ladders brand mark; the hosting UI component sets its size and colour. */
 export function AppIcon() {
-  return <LayoutGrid className="w-5 h-5 text-white" />;
+  return <TrendingUp />;
 }

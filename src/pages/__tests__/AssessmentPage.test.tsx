@@ -125,7 +125,7 @@ describe("AssessmentPage", () => {
       renderAt("/e/11111111-1111-4111-8111-111111111111");
       await screen.findByLabelText("Name");
       expect(
-        screen.getByTestId("assessment-header").querySelector("svg.lucide-layout-grid")
+        screen.getByTestId("assessment-header").querySelector("svg.lucide-trending-up")
       ).toBeInTheDocument();
       await userEvent.click(screen.getByRole("button", { name: "Language" }));
       await userEvent.click(screen.getByRole("menuitemradio", { name: "Español" }));
