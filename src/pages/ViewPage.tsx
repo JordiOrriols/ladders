@@ -1,3 +1,4 @@
+import { AppMain, AppPage } from "@jordiorriols/ui";
 import React, { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -62,14 +63,14 @@ export default function ViewPage() {
   if (state.kind !== "ready") return <PageMessage kind={state.kind} />;
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <AppPage>
       <AssessmentHeader
         title={t("viewPage.title", { name: state.info.name })}
         subtitle={state.info.role}
         actions={[]}
         extraActions={<ShareAction member={state.links} />}
       />
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <AppMain>
         <Tabs defaultValue="evaluation" className="space-y-6">
           <TabsList className="bg-white border border-slate-200">
             <TabsTrigger value="evaluation" data-testid="assessment-tab-evaluation">
@@ -91,7 +92,7 @@ export default function ViewPage() {
             <SmartGoalsPanel store={goalStore} />
           </TabsContent>
         </Tabs>
-      </main>
-    </div>
+      </AppMain>
+    </AppPage>
   );
 }

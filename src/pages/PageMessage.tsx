@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "react-router-dom";
 import { AssessmentHeader } from "@/components/organisms/AssessmentHeader";
-import { AppSkeleton } from "@jordiorriols/ui";
+import { AppPage, AppSkeleton } from "@jordiorriols/ui";
 
 type Props = {
   kind: "loading" | "notFound" | "error" | "thanks";
@@ -16,11 +16,11 @@ export function PageMessage({ kind, children }: Props) {
   const shared = pathname.startsWith("/e/") || pathname.startsWith("/v/");
   if (kind === "loading") return <AppSkeleton label={t("pageMessage.loading")} />;
   return (
-    <>
+    <AppPage>
       {shared && (
         <AssessmentHeader title={t("header.title")} subtitle={t("header.subtitle")} actions={[]} />
       )}
-      <div className="flex items-center justify-center min-h-screen bg-slate-50 p-6">
+      <div className="flex items-center justify-center min-h-screen p-6">
         <div
           className="text-center max-w-md space-y-4"
           role={kind === "error" ? "alert" : "status"}
@@ -34,6 +34,6 @@ export function PageMessage({ kind, children }: Props) {
           </Link>
         </div>
       </div>
-    </>
+    </AppPage>
   );
 }
