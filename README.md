@@ -25,7 +25,7 @@ New UI versions are published automatically on every push to UI `main`. Update
 with `npm install @jordiorriols/ui@latest` and restart Vite.
 
 Shared views, official Radix primitives, icons, auth/form hooks and Umami live in
-`@jordiorriols/ui`. Application translations, competency definitions, sharing URLs,
+`@jordiorriols/ui`. Application translations, competency definitions, sharing routes,
 repositories, access rules and database tables stay here. `index.css` imports
 the library's Tailwind tokens instead of redeclaring them. App adapters preserve
 the existing imports, callbacks and test IDs while supplying translated props.
@@ -36,6 +36,11 @@ tag, so automated browsers (Playwright e2e runs) never load it or send events.
 `WelcomeScreen` shares Planner's welcome layout with app-specific copy and
 features. `AppHeader` standardizes branding sizes and language/account actions
 across both apps; authentication and translations remain in their adapters.
+
+The header icon opens UI's shared `ProjectSwitcher`. Names, icons and canonical
+URLs live in the UI `PROJECTS` registry: add a project there once, release UI,
+then update/deploy both apps. Auth and shared assessment loading reuse UI's
+accessible `AppSkeleton` and reduced-motion-aware pulsing `Skeleton` blocks.
 
 All Ladders routes render UI's `AppFooter`. Manager, self, peer and shared-view
 assessment headers reuse the same app icon and language selector (English,
@@ -79,19 +84,9 @@ to a token with `read:packages`.
 
 ### Shared Planner vacations
 
-Set `VITE_PLANNER_URL` to the absolute URL of your Planner deployment, including
-its pathname, and rebuild Ladders. For example, a deployment at
-`https://example.com/planner/` creates links at
-`https://example.com/planner/#/vacations/<vacationToken>`. No production host is
-assumed. Only when Ladders runs on `localhost` or `127.0.0.1`, an empty setting
-falls back to `http://127.0.0.1:5176`. Missing or invalid production configuration
-shows an actionable error rather than copying a broken link.
-
-For GitHub Pages builds, configure the **repository Actions variable**
-`VITE_PLANNER_URL` under **Settings → Secrets and variables → Actions → Variables**.
-Use your actual configured Planner deployment URL, including its pathname.
-The production workflow passes this variable to Vite's build step; changing it
-requires another build/deployment because Vite embeds it at build time.
+Vacation links use `getProjectUrl("planner")` from the shared UI project registry,
+the same source as the header project switcher. No separate Planner URL setting
+is needed. Updating a project URL requires a UI release and updated app dependencies.
 
 Member creation/editing includes an optional planning role (`backend`, `frontend`,
 `design`, or `qa`), separate from the existing free-text job role. The Share menu
@@ -131,11 +126,29 @@ Alternatively, for a new empty project, paste and run those files in order in th
 
 ## Auth configuration
 
-In Supabase Dashboard under **Authentication → URL Configuration**:
+Both apps share Supabase accounts but explicitly tag signup, OAuth and recovery
+callbacks with `auth_app=ladders` or `auth_app=planner`. Before creating a Supabase
+client, a callback addressed to the other registered app is forwarded there,
+preserving its code/hash so the intended origin can exchange the PKCE code.
 
-- Set the Site URL to the deployed application URL.
-- Add `http://localhost:5173` and `http://127.0.0.1:5173` as redirect URLs for local development.
-- Add the exact GitHub Pages base URL as a redirect URL for production.
+In Supabase Dashboard under **Authentication → URL Configuration**, keep one
+Site URL as the default and add all these Redirect URLs:
+
+- `https://ladders.jordiorriols.cat/`
+- `https://ladders.jordiorriols.cat/?auth_app=ladders`
+- `https://planner.jordiorriols.cat/`
+- `https://planner.jordiorriols.cat/?auth_app=planner`
+- Approved local origins with the same query, for example
+  `http://localhost:5173/?auth_app=ladders`,
+  `http://127.0.0.1:5173/?auth_app=ladders` and
+  `http://127.0.0.1:5176/?auth_app=planner`.
+
+For subpath deployments, allow the complete deployment pathname and query.
+Keep email verification/recovery templates using `{{ .ConfirmationURL }}`;
+custom templates must preserve the supplied `{{ .RedirectTo }}`, not force
+`{{ .SiteURL }}`. Old emails without an app marker cannot reliably identify their
+origin and should be requested again. The allow-list must accept these URLs;
+otherwise Supabase can fall back to Site URL before an app marker reaches us.
 
 Email/password authentication must be enabled. Password-reset emails redirect to the application base URL, where Supabase restores the PKCE recovery session.
 
