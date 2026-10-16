@@ -145,7 +145,9 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
                   {comment.text}
                 </p>
                 <time dateTime={comment.createdAt} className="text-xs text-slate-400">
-                  {new Date(comment.createdAt).toLocaleString(i18n.resolvedLanguage ?? i18n.language)}
+                  {new Date(comment.createdAt).toLocaleString(
+                    i18n.resolvedLanguage ?? i18n.language
+                  )}
                 </time>
               </li>
             ))}
@@ -286,7 +288,8 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
                     </h3>
                     <span className="flex items-center gap-1 text-xs text-slate-500">
                       <CalendarDays className="h-4 w-4" />
-                      {goal.dueDate && `${goal.dueDate} · `}
+                      {goal.dueDate &&
+                        `${new Date(`${goal.dueDate}T00:00:00`).toLocaleDateString(i18n.resolvedLanguage ?? i18n.language)} · `}
                       {remainingLabel}
                     </span>
                   </div>
