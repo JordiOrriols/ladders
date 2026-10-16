@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import React from "react";
 import { I18nextProvider } from "react-i18next";
 import i18n from "../../../i18n";
@@ -32,5 +33,21 @@ describe("Header", () => {
     expect(
       screen.getByTestId("header-content").querySelector("svg.lucide-trending-up")
     ).toBeTruthy();
+  });
+
+  it("opens the shared project registry from the header icon", async () => {
+    renderWithI18n(<Header />);
+    const trigger = screen.getByRole("button", { name: "Switch project" });
+    await userEvent.click(trigger);
+    expect(screen.getByRole("menuitem", { name: "Planner" })).toHaveAttribute(
+      "href",
+      "https://planner.jordiorriols.cat/"
+    );
+    expect(screen.getByRole("menuitem", { name: "Ladders" })).toHaveAttribute(
+      "aria-current",
+      "page"
+    );
+    await userEvent.keyboard("{Escape}");
+    expect(trigger).toHaveFocus();
   });
 });
