@@ -22,15 +22,19 @@ export function LoginDialog({
     initialMode,
     actions,
     messages: {
-      passwordResetSent: t("auth.passwordResetSent"),
-      checkEmail: t("auth.checkEmail"),
+      passwordResetSent: "auth.passwordResetSent",
+      checkEmail: "auth.checkEmail",
     },
   });
   return (
     <LoginDialogView
       isOpen={isOpen}
       onClose={onClose}
-      form={{ ...form, error: form.error ? localizeError(form.error, t) : null }}
+      form={{
+        ...form,
+        error: form.error ? localizeError(form.error, t) : null,
+        info: form.info ? t(form.info) : null,
+      }}
       labels={{
         signInTitle: t("auth.signInTitle"),
         signUpTitle: t("auth.signUpTitle"),

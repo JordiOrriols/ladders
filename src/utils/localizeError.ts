@@ -26,8 +26,8 @@ const messages: [RegExp, string][] = [
 /** Never expose untranslated service messages or their potentially sensitive details in the UI. */
 export function localizeError(error: unknown, t: TFunction): string {
   const message = error instanceof Error ? error.message : typeof error === "string" ? error : "";
-  if ([t("auth.passwordTooShort"), t("auth.passwordsDoNotMatch")].includes(message)) {
-    return message;
+  if (message === "auth.passwordTooShort" || message === "auth.passwordsDoNotMatch") {
+    return t(message);
   }
   const key = messages.find(([pattern]) => pattern.test(message))?.[1] ?? "generic";
   return t(`errors.${key}`);

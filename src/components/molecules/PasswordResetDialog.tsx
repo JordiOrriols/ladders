@@ -12,8 +12,8 @@ export function PasswordResetDialog() {
     isOpen: passwordRecovery,
     updatePassword,
     messages: {
-      passwordTooShort: t("auth.passwordTooShort"),
-      passwordsDoNotMatch: t("auth.passwordsDoNotMatch"),
+      passwordTooShort: "auth.passwordTooShort",
+      passwordsDoNotMatch: "auth.passwordsDoNotMatch",
     },
   });
   return (
