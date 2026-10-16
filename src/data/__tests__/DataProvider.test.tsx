@@ -52,7 +52,7 @@ const renderApp = () =>
   render(
     <I18nextProvider i18n={i18n}>
       <DataProvider>
-        <Header onAddMember={vi.fn()} onShowReference={vi.fn()} />
+        <Header />
         <RepoKind />
       </DataProvider>
     </I18nextProvider>
@@ -92,6 +92,13 @@ describe("DataProvider + login", () => {
     await userEvent.type(screen.getByLabelText("Password"), "supersecret");
     await userEvent.click(screen.getByRole("button", { name: "Create account" }));
     expect(await screen.findByText(/Check your email/)).toBeInTheDocument();
+    expect(auth.signUp).toHaveBeenCalledWith({
+      email: "a@b.co",
+      password: "supersecret",
+      options: {
+        emailRedirectTo: `${window.location.origin}${window.location.pathname}?auth_app=ladders`,
+      },
+    });
 
     auth.signUp.mockResolvedValueOnce({
       data: { session: null },
@@ -105,7 +112,7 @@ describe("DataProvider + login", () => {
     renderApp();
     await userEvent.click(await screen.findByRole("button", { name: "Request reset" }));
     expect(auth.resetPasswordForEmail).toHaveBeenCalledWith("a@b.co", {
-      redirectTo: `${window.location.origin}${window.location.pathname}`,
+      redirectTo: `${window.location.origin}${window.location.pathname}?auth_app=ladders`,
     });
   });
 
@@ -114,7 +121,9 @@ describe("DataProvider + login", () => {
     await userEvent.click(await screen.findByRole("button", { name: "GitHub" }));
     expect(auth.signInWithOAuth).toHaveBeenCalledWith({
       provider: "github",
-      options: { redirectTo: `${window.location.origin}${window.location.pathname}` },
+      options: {
+        redirectTo: `${window.location.origin}${window.location.pathname}?auth_app=ladders`,
+      },
     });
   });
 
