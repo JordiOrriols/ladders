@@ -19,6 +19,9 @@ describe("locales", () => {
       const bundle = i18n.getResourceBundle(code, "translation") as Messages | undefined;
       expect(bundle, `missing ${code} resources`).toBeDefined();
       const messages = new Map(flatten(bundle!));
+      expect([...messages.keys()].sort(), `${code}: locale key parity`).toEqual(
+        english.map(([key]) => key).sort()
+      );
       for (const [key, value] of english) {
         expect(messages.get(key), `${code}: ${key}`).toBeTruthy();
         expect(placeholders(messages.get(key)!), `${code}: ${key}`).toEqual(placeholders(value));
