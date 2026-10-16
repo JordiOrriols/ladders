@@ -359,8 +359,7 @@
   },
   "share": {
     "vacations": {
-      "label": "Urlaub",
-      "configurationError": "Konfigurieren Sie VITE_PLANNER_URL mit der absoluten Planner-URL einschließlich ihres Deployment-Pfads und bauen Sie Ladders neu."
+      "label": "Urlaub"
     },
     "title": "Permanente Links",
     "action": "Teilen",

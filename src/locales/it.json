@@ -359,8 +359,7 @@
   },
   "share": {
     "vacations": {
-      "label": "Ferie",
-      "configurationError": "Configura VITE_PLANNER_URL con l'URL assoluto di Planner, incluso il percorso di deployment, e ricompila Ladders."
+      "label": "Ferie"
     },
     "title": "Link permanenti",
     "action": "Condividi",

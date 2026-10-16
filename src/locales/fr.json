@@ -359,8 +359,7 @@
   },
   "share": {
     "vacations": {
-      "label": "Vacances",
-      "configurationError": "Configurez VITE_PLANNER_URL avec l’URL absolue de Planner, y compris le chemin de déploiement, puis reconstruisez Ladders."
+      "label": "Vacances"
     },
     "title": "Liens permanents",
     "action": "Partager",

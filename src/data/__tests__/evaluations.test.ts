@@ -92,7 +92,6 @@ describe("ladder templates", () => {
         expect(locale.planningRole.options[role]).toBeTruthy();
       }
       expect(locale.share.vacations.label).toBeTruthy();
-      expect(locale.share.vacations.configurationError).toContain("VITE_PLANNER_URL");
     }
   });
 

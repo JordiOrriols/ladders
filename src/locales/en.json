@@ -357,8 +357,7 @@
   },
   "share": {
     "vacations": {
-      "label": "Vacations",
-      "configurationError": "Configure VITE_PLANNER_URL with the absolute Planner URL, including its deployment pathname, and rebuild Ladders."
+      "label": "Vacations"
     },
     "title": "Permanent links",
     "action": "Share",

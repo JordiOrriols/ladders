@@ -358,8 +358,7 @@
   },
   "share": {
     "vacations": {
-      "label": "Vacaciones",
-      "configurationError": "Configura VITE_PLANNER_URL con la URL absoluta de Planner, incluida la ruta del despliegue, y vuelve a compilar Ladders."
+      "label": "Vacaciones"
     },
     "title": "Enlaces permanentes",
     "action": "Compartir",
