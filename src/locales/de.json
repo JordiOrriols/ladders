@@ -28,7 +28,10 @@
     "Process": "Prozess",
     "Influence": "Einfluss"
   },
-  "members": { "edit": "{{name}} bearbeiten", "delete": "{{name}} löschen" },
+  "members": {
+    "edit": "{{name}} bearbeiten",
+    "delete": "{{name}} löschen"
+  },
   "chart": {
     "description": "Kompetenz-Radardiagramm mit aktuellen Stufen, Zielen und Selbsteinschätzung",
     "download": "Diagramm als PNG-Bild herunterladen"
@@ -457,7 +460,8 @@
     "passwordsDoNotMatch": "Die Passwörter stimmen nicht überein.",
     "checkEmail": "Prüfen Sie Ihre E-Mail, um Ihr Konto zu bestätigen.",
     "switchToSignUp": "Noch kein Konto? Erstellen Sie eines",
-    "switchToSignIn": "Sie haben bereits ein Konto? Anmelden"
+    "switchToSignIn": "Sie haben bereits ein Konto? Anmelden",
+    "linkFailed": "Dieser Link hat nicht funktioniert: {{message}}. Fordere über „Anmelden“ einen neuen an."
   },
   "pageMessage": {
     "loading": "Wird geladen...",

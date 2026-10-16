@@ -28,7 +28,10 @@
     "Process": "Proceso",
     "Influence": "Influencia"
   },
-  "members": { "edit": "Editar a {{name}}", "delete": "Eliminar a {{name}}" },
+  "members": {
+    "edit": "Editar a {{name}}",
+    "delete": "Eliminar a {{name}}"
+  },
   "chart": {
     "description": "Gráfico de radar de competencias con niveles actuales, objetivos y autoevaluación",
     "download": "Descargar gráfico como imagen PNG"
@@ -42,7 +45,9 @@
     "goalDetails": "Objetivo L{{level}}: {{name}}",
     "selfDetails": "Autoevaluación L{{level}}: {{name}}"
   },
-  "footer": { "attribution": "Hecho con amor por Jordi Orriols" },
+  "footer": {
+    "attribution": "Hecho con amor por Jordi Orriols"
+  },
   "header": {
     "projectSwitcher": "Cambiar de proyecto",
     "back": "Volver",
@@ -455,7 +460,8 @@
     "passwordsDoNotMatch": "Las contraseñas no coinciden.",
     "checkEmail": "Revise su email para confirmar la cuenta.",
     "switchToSignUp": "¿No tiene cuenta? Cree una",
-    "switchToSignIn": "¿Ya tiene cuenta? Inicie sesión"
+    "switchToSignIn": "¿Ya tiene cuenta? Inicie sesión",
+    "linkFailed": "Este enlace no ha funcionado: {{message}}. Pide uno nuevo desde Iniciar sesión."
   },
   "pageMessage": {
     "loading": "Cargando...",

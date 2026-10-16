@@ -28,7 +28,10 @@
     "Process": "Procés",
     "Influence": "Influència"
   },
-  "members": { "edit": "Edita {{name}}", "delete": "Elimina {{name}}" },
+  "members": {
+    "edit": "Edita {{name}}",
+    "delete": "Elimina {{name}}"
+  },
   "chart": {
     "description": "Gràfic de radar de competències amb nivells actuals, objectius i autoavaluació",
     "download": "Descarrega el gràfic com a imatge PNG"
@@ -42,7 +45,9 @@
     "goalDetails": "Objectiu L{{level}}: {{name}}",
     "selfDetails": "Autoavaluació L{{level}}: {{name}}"
   },
-  "footer": { "attribution": "Fet amb amor per Jordi Orriols" },
+  "footer": {
+    "attribution": "Fet amb amor per Jordi Orriols"
+  },
   "header": {
     "projectSwitcher": "Canvia de projecte",
     "back": "Torna enrere",
@@ -455,7 +460,8 @@
     "passwordsDoNotMatch": "Les contrasenyes no coincideixen.",
     "checkEmail": "Reviseu el vostre email per confirmar el compte.",
     "switchToSignUp": "No teniu compte? Creeu-ne un",
-    "switchToSignIn": "Ja teniu compte? Inicieu sessió"
+    "switchToSignIn": "Ja teniu compte? Inicieu sessió",
+    "linkFailed": "Aquest enllaç no ha funcionat: {{message}}. Demana'n un de nou des d'Iniciar sessió."
   },
   "pageMessage": {
     "loading": "Carregant...",
