@@ -92,29 +92,28 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-slate-50" data-testid="main-content">
-      <ErrorBoundary componentName="Header">
-        <Header />
+      <ErrorBoundary componentName="MainTabs">
+        <MainTabs
+          teams={team.teams}
+          members={summaries}
+          evaluations={team.evaluations}
+          onAddMember={openNewMember}
+          onEditMember={(member) => openMember(member.id)}
+          onDeleteMember={(id) => setDeleteId(id)}
+          onSelectMember={(member) => openMember(member.id)}
+          onShowReference={() => setShowReference(true)}
+          onCreateTeam={() => setShowCreateTeam(true)}
+          onShareTeam={(selectedTeam) => void openTeamSharing(selectedTeam)}
+          onMoveMember={(memberId, teamId) => void handleMoveMember(memberId, teamId)}
+          onDeleteTeam={(selectedTeam) => setDeleteTeamId(selectedTeam.id)}
+          onRenameTeam={setRenamingTeam}
+          renderHeader={(navigation) => (
+            <ErrorBoundary componentName="Header">
+              <Header navigation={navigation} />
+            </ErrorBoundary>
+          )}
+        />
       </ErrorBoundary>
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" data-testid="main-area">
-        <ErrorBoundary componentName="MainTabs">
-          <MainTabs
-            teams={team.teams}
-            members={summaries}
-            evaluations={team.evaluations}
-            onAddMember={openNewMember}
-            onEditMember={(member) => openMember(member.id)}
-            onDeleteMember={(id) => setDeleteId(id)}
-            onSelectMember={(member) => openMember(member.id)}
-            onShowReference={() => setShowReference(true)}
-            onCreateTeam={() => setShowCreateTeam(true)}
-            onShareTeam={(selectedTeam) => void openTeamSharing(selectedTeam)}
-            onMoveMember={(memberId, teamId) => void handleMoveMember(memberId, teamId)}
-            onDeleteTeam={(selectedTeam) => setDeleteTeamId(selectedTeam.id)}
-            onRenameTeam={setRenamingTeam}
-          />
-        </ErrorBoundary>
-      </main>
 
       <ErrorBoundary componentName="ConfirmDialog">
         <ConfirmDialog

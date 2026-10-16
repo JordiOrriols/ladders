@@ -90,7 +90,8 @@
   },
   "tabs": {
     "team": "Team",
-    "individual": "Individuale"
+    "individual": "Individuale",
+    "label": "Viste"
   },
   "teams": {
     "create": "Crea team",

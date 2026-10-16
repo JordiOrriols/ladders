@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React from "react";
 import { I18nextProvider } from "react-i18next";
@@ -57,5 +57,37 @@ describe("MainTabs", () => {
     );
     await userEvent.click(screen.getByTestId("reference-button"));
     expect(onShowReference).toHaveBeenCalledOnce();
+  });
+
+  it("renders the tabs as shared header navigation and switches views", async () => {
+    renderWithI18n(
+      <MainTabs
+        members={[]}
+        onAddMember={vi.fn()}
+        onEditMember={vi.fn()}
+        onDeleteMember={vi.fn()}
+        onSelectMember={vi.fn()}
+        onShowReference={vi.fn()}
+        renderHeader={(navigation) => <header>{navigation}</header>}
+      />
+    );
+    const nav = within(screen.getByRole("banner")).getByRole("navigation", {
+      name: i18n.t("tabs.label"),
+    });
+    const [tabs, actions] = Array.from(nav.children) as HTMLElement[];
+    expect(within(tabs!).getAllByRole("tab")).toHaveLength(2);
+    expect(within(actions!).getByTestId("reference-button")).toBeVisible();
+    const team = screen.getByRole("tab", { name: i18n.t("tabs.team") });
+    expect(team.className).toContain("border-b-2");
+    await userEvent.click(team);
+    expect(team).toHaveAttribute("data-state", "active");
+    expect(screen.getByRole("tab", { name: i18n.t("tabs.individual") })).toHaveAttribute(
+      "data-state",
+      "inactive"
+    );
+    expect(within(screen.getByTestId("main-area")).getByRole("tabpanel")).toHaveAttribute(
+      "aria-labelledby",
+      team.id
+    );
   });
 });

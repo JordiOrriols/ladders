@@ -88,7 +88,8 @@
   },
   "tabs": {
     "team": "Equipo",
-    "individual": "Individual"
+    "individual": "Individual",
+    "label": "Vistas"
   },
   "teams": {
     "create": "Crear equipo",

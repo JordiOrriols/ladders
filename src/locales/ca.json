@@ -88,7 +88,8 @@
   },
   "tabs": {
     "team": "Equip",
-    "individual": "Individual"
+    "individual": "Individual",
+    "label": "Vistes"
   },
   "teams": {
     "create": "Crear equip",
