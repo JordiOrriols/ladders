@@ -8,6 +8,7 @@ const errors = [
   ["Email not confirmed", "emailNotConfirmed"],
   ["User already registered", "accountExists"],
   ["Password should be at least 8 characters", "password"],
+  ["Weak password", "password"],
   ["Too many requests", "rateLimit"],
   ["JWT expired", "session"],
   ["Authentication is not configured", "configuration"],
