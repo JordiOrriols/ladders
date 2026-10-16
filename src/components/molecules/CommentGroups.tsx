@@ -12,12 +12,26 @@ export function CommentGroups({
   commentAction?: (group: CommentGroup, category: string) => ReactNode;
 }) {
   const { t } = useTranslation();
+  const categories = VERTICALS.map((vertical) => t(`verticals.${vertical}`));
   return (
     <CommentGroupsView
-      groups={groups}
-      categories={VERTICALS}
+      groups={groups.map((group) => ({
+        ...group,
+        comments: Object.fromEntries(
+          VERTICALS.map((vertical, index) => [categories[index]!, group.comments[vertical] ?? ""])
+        ),
+      }))}
+      categories={categories}
       title={t("comments.title")}
-      {...(commentAction ? { commentAction } : {})}
+      {...(commentAction
+        ? {
+            commentAction: (group: CommentGroup, category: string) =>
+              commentAction(
+                groups.find((original) => original.id === group.id)!,
+                VERTICALS[categories.indexOf(category)]!
+              ),
+          }
+        : {})}
     />
   );
 }
