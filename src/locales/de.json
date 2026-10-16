@@ -100,7 +100,7 @@
     "name": "Teamname",
     "share": "Teilen",
     "shareTitle": "{{name}} teilen",
-    "shareDescription": "Fügen Sie ein bestehendes Konto per E-Mail hinzu und wählen Sie Lese- oder Bearbeitungszugriff.",
+    "shareDescription": "Fügen Sie ein bestehendes Konto per E-Mail hinzu und wählen Sie Lese- oder Bearbeitungszugriff. Es sieht alle Teams im Arbeitsbereich dieses Teams.",
     "permission": "Berechtigung",
     "permissionFor": "Berechtigung für {{email}}",
     "viewer": "Anzeigen",

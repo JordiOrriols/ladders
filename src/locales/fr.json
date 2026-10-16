@@ -100,7 +100,7 @@
     "name": "Nom de l’équipe",
     "share": "Partager",
     "shareTitle": "Partager {{name}}",
-    "shareDescription": "Ajoutez un compte existant par e-mail et choisissez un accès en lecture seule ou en modification.",
+    "shareDescription": "Ajoutez un compte existant par e-mail et choisissez un accès en lecture seule ou en modification. Il verra toutes les équipes de l'espace de travail de cette équipe.",
     "permission": "Autorisation",
     "permissionFor": "Autorisation pour {{email}}",
     "viewer": "Afficher",

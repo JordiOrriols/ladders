@@ -98,7 +98,7 @@
     "name": "Team name",
     "share": "Share",
     "shareTitle": "Share {{name}}",
-    "shareDescription": "Add an existing account by email and choose read-only or edit access.",
+    "shareDescription": "Add an existing account by email and choose read-only or edit access. They will see every team in this team's workspace.",
     "permission": "Permission",
     "permissionFor": "Permission for {{email}}",
     "viewer": "View",

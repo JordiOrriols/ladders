@@ -98,7 +98,7 @@
     "name": "Nom de l'equip",
     "share": "Compartir",
     "shareTitle": "Compartir {{name}}",
-    "shareDescription": "Afegiu un compte existent per email i trieu accés de lectura o edició.",
+    "shareDescription": "Afegiu un compte existent per email i trieu accés de lectura o edició. Veurà tots els equips de l'espai de treball d'aquest equip.",
     "permission": "Permís",
     "permissionFor": "Permís per a {{email}}",
     "viewer": "Veure",

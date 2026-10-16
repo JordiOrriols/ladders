@@ -98,7 +98,7 @@
     "name": "Nombre del equipo",
     "share": "Compartir",
     "shareTitle": "Compartir {{name}}",
-    "shareDescription": "Añada una cuenta existente por email y elija acceso de lectura o edición.",
+    "shareDescription": "Añada una cuenta existente por email y elija acceso de lectura o edición. Verá todos los equipos del espacio de trabajo de este equipo.",
     "permission": "Permiso",
     "permissionFor": "Permiso para {{email}}",
     "viewer": "Ver",

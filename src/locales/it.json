@@ -100,7 +100,7 @@
     "name": "Nome del team",
     "share": "Condividi",
     "shareTitle": "Condividi {{name}}",
-    "shareDescription": "Aggiungi un account esistente via email e scegli accesso in sola lettura o in modifica.",
+    "shareDescription": "Aggiungi un account esistente via email e scegli accesso in sola lettura o in modifica. Vedrà tutti i team dello spazio di lavoro di questo team.",
     "permission": "Permesso",
     "permissionFor": "Permesso per {{email}}",
     "viewer": "Visualizza",
