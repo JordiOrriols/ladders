@@ -27,7 +27,7 @@ interface Props {
 }
 
 export function SmartGoalsPanel({ store, readOnly = false }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [goals, setGoals] = useState<SmartGoal[]>([]);
   const [draft, setDraft] = useState<SmartGoalInput>(emptyGoal);
   const [loading, setLoading] = useState(true);
@@ -144,7 +144,7 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
                   {comment.text}
                 </p>
                 <time dateTime={comment.createdAt} className="text-xs text-slate-400">
-                  {new Date(comment.createdAt).toLocaleString()}
+                  {new Date(comment.createdAt).toLocaleString(i18n.resolvedLanguage ?? i18n.language)}
                 </time>
               </li>
             ))}
