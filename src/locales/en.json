@@ -28,7 +28,10 @@
     "Process": "Process",
     "Influence": "Influence"
   },
-  "members": { "edit": "Edit {{name}}", "delete": "Delete {{name}}" },
+  "members": {
+    "edit": "Edit {{name}}",
+    "delete": "Delete {{name}}"
+  },
   "chart": {
     "description": "Competency radar chart showing current levels, goal levels, and self-assessment",
     "download": "Download chart as PNG image"
@@ -42,7 +45,9 @@
     "goalDetails": "Goal L{{level}}: {{name}}",
     "selfDetails": "Self L{{level}}: {{name}}"
   },
-  "footer": { "attribution": "Made with love by Jordi Orriols" },
+  "footer": {
+    "attribution": "Made with love by Jordi Orriols"
+  },
   "header": {
     "projectSwitcher": "Switch project",
     "back": "Go back",
@@ -455,7 +460,8 @@
     "passwordsDoNotMatch": "Passwords do not match.",
     "checkEmail": "Check your email to confirm your account.",
     "switchToSignUp": "No account? Create one",
-    "switchToSignIn": "Already have an account? Sign in"
+    "switchToSignIn": "Already have an account? Sign in",
+    "linkFailed": "This link did not work: {{message}}. Ask for a new one from Sign in."
   },
   "pageMessage": {
     "loading": "Loading...",

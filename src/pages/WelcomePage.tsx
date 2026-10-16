@@ -8,7 +8,7 @@ import { useData } from "@/data/DataProvider";
 
 export function WelcomePage() {
   const { t } = useTranslation();
-  const { authEnabled } = useData();
+  const { authEnabled, linkError } = useData();
   const [authMode, setAuthMode] = useState<"signIn" | "signUp" | null>(null);
 
   return (
@@ -27,7 +27,12 @@ export function WelcomePage() {
       disabled={!authEnabled}
       onSignIn={() => setAuthMode("signIn")}
       onSignUp={() => setAuthMode("signUp")}
-      notice={!authEnabled && <p role="alert">{t("welcome.authUnavailable")}</p>}
+      notice={
+        <>
+          {linkError && <p role="alert">{t("auth.linkFailed", { message: linkError })}</p>}
+          {!authEnabled && <p role="alert">{t("welcome.authUnavailable")}</p>}
+        </>
+      }
     >
       <LoginDialog
         isOpen={authMode !== null}

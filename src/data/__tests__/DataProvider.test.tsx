@@ -27,7 +27,7 @@ const { auth, state } = vi.hoisted(() => {
   };
 });
 
-vi.mock("../supabaseClient", () => ({ supabase: { auth } }));
+vi.mock("../supabaseClient", () => ({ supabase: { auth }, authCallback: null }));
 function RepoKind() {
   const {
     repository,

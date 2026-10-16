@@ -28,7 +28,10 @@
     "Process": "Processo",
     "Influence": "Influenza"
   },
-  "members": { "edit": "Modifica {{name}}", "delete": "Elimina {{name}}" },
+  "members": {
+    "edit": "Modifica {{name}}",
+    "delete": "Elimina {{name}}"
+  },
   "chart": {
     "description": "Grafico radar delle competenze con livelli attuali, obiettivi e autovalutazione",
     "download": "Scarica il grafico come immagine PNG"
@@ -457,7 +460,8 @@
     "passwordsDoNotMatch": "Le password non corrispondono.",
     "checkEmail": "Controlla la tua email per confermare l'account.",
     "switchToSignUp": "Non hai un account? Creane uno",
-    "switchToSignIn": "Hai già un account? Accedi"
+    "switchToSignIn": "Hai già un account? Accedi",
+    "linkFailed": "Questo link non ha funzionato: {{message}}. Richiedine uno nuovo da Accedi."
   },
   "pageMessage": {
     "loading": "Caricamento...",
