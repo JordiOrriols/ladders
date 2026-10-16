@@ -57,6 +57,15 @@ describe("EntryGate", () => {
     expect(screen.getByText("Owned application")).toBeInTheDocument();
   });
 
+  it("shows the shared pulsing skeleton while restoring authentication", () => {
+    dataState.loading = true;
+    renderGate();
+    const skeleton = screen.getByRole("status", { name: i18n.t("pageMessage.loading") });
+    expect(skeleton).toHaveAttribute("aria-busy", "true");
+    expect(skeleton.querySelector(".animate-pulse")).toBeInTheDocument();
+    expect(screen.queryByText("Owned application")).not.toBeInTheDocument();
+  });
+
   it.each(["/e/11111111-1111-4111-8111-111111111111", "/v/11111111-1111-4111-8111-111111111111"])(
     "always lets shared route %s through",
     (path) => {

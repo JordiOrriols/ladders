@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { useLocation } from "react-router-dom";
 import { useData } from "@/data/DataProvider";
 import { WelcomePage } from "@/pages/WelcomePage";
-import { Spinner } from "@jordiorriols/ui";
+import { AppSkeleton } from "@jordiorriols/ui";
 import { useTranslation } from "react-i18next";
 
 export function EntryGate({ children }: { children: ReactNode }) {
@@ -13,11 +13,7 @@ export function EntryGate({ children }: { children: ReactNode }) {
   const isSharedRoute = pathname.startsWith("/e/") || pathname.startsWith("/v/");
 
   if (loading && !isSharedRoute) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-50">
-        <Spinner label={t("pageMessage.loading")} />
-      </div>
-    );
+    return <AppSkeleton label={t("pageMessage.loading")} />;
   }
 
   if (authError && !isSharedRoute) {
