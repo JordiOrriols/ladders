@@ -129,6 +129,16 @@ permissions/RPCs. Ladders reads the token but never sets or rotates it. Planner
 workspaces can link multiple Ladders teams. Deploy the shared schema only after
 approval and local RLS validation; Ladders does not apply it automatically.
 
+### Workspaces and access
+
+Teams live inside a workspace and never move to another one. The home page uses
+UI's `WorkspaceBar` next to the navigation tabs (same as Planner and Pulse) to pick
+the workspace, create a new one, and, for owners, share it per app through
+`workspace_collaborators`. Only the selected workspace's teams, members and
+evaluations are shown. Team access comes from the workspace share; there is no
+per-team share button. Only workspace owners can create teams
+(`create_team(p_name, p_workspace)`).
+
 ## Initialize Supabase
 
 Creating a Supabase project does not create this application's tables. Apply both migrations before trying to save members or evaluations.

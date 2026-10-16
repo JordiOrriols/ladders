@@ -19,10 +19,11 @@ interface MainTabsProps {
   onSelectMember: (member: Member) => void;
   onShowReference: () => void;
   onCreateTeam?: () => void;
-  onShareTeam?: (team: Team) => void;
   onMoveMember?: (memberId: string, teamId: string) => void;
   onDeleteTeam?: (team: Team) => void;
   onRenameTeam?: (team: Team) => void;
+  /** Workspace picker and sharing, shown in the tab bar next to the tabs. */
+  workspaceActions?: ReactNode;
   /** Places the tab navigation inside the app header, below the branding. */
   renderHeader?: (navigation: ReactNode) => ReactNode;
 }
@@ -37,10 +38,10 @@ export function MainTabs({
   onSelectMember,
   onShowReference,
   onCreateTeam,
-  onShareTeam,
   onMoveMember,
   onDeleteTeam,
   onRenameTeam,
+  workspaceActions,
   renderHeader,
 }: MainTabsProps) {
   const { t } = useTranslation();
@@ -49,16 +50,19 @@ export function MainTabs({
     <AppNavigation
       label={t("tabs.label")}
       actions={
-        <Button
-          eventId="tabs_show_reference"
-          variant="outline"
-          size="sm"
-          onClick={onShowReference}
-          data-testid="reference-button"
-        >
-          <Info className="w-4 h-4" />
-          <span className="hidden sm:inline">{t("header.reference")}</span>
-        </Button>
+        <>
+          {workspaceActions}
+          <Button
+            eventId="tabs_show_reference"
+            variant="outline"
+            size="sm"
+            onClick={onShowReference}
+            data-testid="reference-button"
+          >
+            <Info className="w-4 h-4" />
+            <span className="hidden sm:inline">{t("header.reference")}</span>
+          </Button>
+        </>
       }
     >
       <Tabs.List className="flex items-center gap-1" data-testid="tabs-list">
@@ -92,7 +96,6 @@ export function MainTabs({
               onDeleteMember={onDeleteMember}
               onSelectMember={onSelectMember}
               {...(onCreateTeam ? { onCreateTeam } : {})}
-              {...(onShareTeam ? { onShareTeam } : {})}
               {...(onMoveMember ? { onMoveMember } : {})}
               {...(onDeleteTeam ? { onDeleteTeam } : {})}
               {...(onRenameTeam ? { onRenameTeam } : {})}

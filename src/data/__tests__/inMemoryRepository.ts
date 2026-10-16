@@ -4,14 +4,16 @@ import type {
   EvaluationKind,
   EvaluationStatus,
   MemberProfile,
-  SharedTeamAccess,
   SmartGoal,
   SmartGoalInput,
   Team,
+  TeamAccess,
   TeamMember,
-  TeamShare,
 } from "@/types";
 import type { MemberPatch, Repository } from "../repository";
+
+/** The workspace that holds the default team of the in-memory account. */
+export const DEFAULT_WORKSPACE = "workspace-default";
 
 let sequence = 0;
 const id = (prefix: string) => `${prefix}-${++sequence}`;
@@ -27,7 +29,7 @@ export function createInMemoryRepository(): Repository {
     updatedAt: new Date().toISOString(),
   };
   let teams: Team[] = [defaultTeam];
-  let shares: TeamShare[] = [];
+  const teamWorkspace = new Map<string, string>([[defaultTeam.id, DEFAULT_WORKSPACE]]);
   let members: TeamMember[] = [];
   let evaluations: Evaluation[] = [];
   let goals: SmartGoal[] = [];
@@ -37,7 +39,12 @@ export function createInMemoryRepository(): Repository {
     async listTeams() {
       return teams;
     },
-    async createTeam(name: string) {
+    async listWorkspaceTeams(workspaceId: string, access: TeamAccess) {
+      return teams
+        .filter((team) => teamWorkspace.get(team.id) === workspaceId)
+        .map((team) => ({ ...team, access }));
+    },
+    async createTeam(name: string, workspaceId: string) {
       const team: Team = {
         ...defaultTeam,
         id: id("team"),
@@ -47,6 +54,7 @@ export function createInMemoryRepository(): Repository {
         updatedAt: new Date().toISOString(),
       };
       teams = [...teams, team];
+      teamWorkspace.set(team.id, workspaceId);
       return team;
     },
     async updateTeam(teamId: string, name: string) {
@@ -62,31 +70,6 @@ export function createInMemoryRepository(): Repository {
       if (team.isDefault) throw new Error("Default team cannot be deleted");
       if (members.some((member) => member.teamId === teamId)) throw new Error("Team is not empty");
       teams = teams.filter((item) => item.id !== teamId);
-    },
-    async listTeamShares(teamId: string) {
-      return shares.filter((share) => share.teamId === teamId);
-    },
-    async shareTeamByEmail(teamId: string, email: string, access: SharedTeamAccess) {
-      const existing = shares.find((share) => share.teamId === teamId && share.email === email);
-      const share: TeamShare = {
-        teamId,
-        userId: existing?.userId ?? id("user"),
-        email,
-        access,
-        sharedAt: existing?.sharedAt ?? new Date().toISOString(),
-      };
-      shares = [
-        ...shares.filter((item) => !(item.teamId === teamId && item.email === email)),
-        share,
-      ];
-    },
-    async updateTeamShare(teamId: string, userId: string, access: SharedTeamAccess) {
-      shares = shares.map((share) =>
-        share.teamId === teamId && share.userId === userId ? { ...share, access } : share
-      );
-    },
-    async removeTeamShare(teamId: string, userId: string) {
-      shares = shares.filter((share) => share.teamId !== teamId || share.userId !== userId);
     },
     async moveMember(memberId: string, teamId: string) {
       const current = members.find((member) => member.id === memberId);

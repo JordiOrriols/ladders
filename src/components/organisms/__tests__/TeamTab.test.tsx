@@ -160,7 +160,6 @@ describe("TeamTab", () => {
         onEditMember={vi.fn()}
         onDeleteMember={vi.fn()}
         onSelectMember={vi.fn()}
-        onShareTeam={vi.fn()}
         onDeleteTeam={onDeleteTeam}
       />
     );
