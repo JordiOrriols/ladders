@@ -4,7 +4,7 @@ const messages: [RegExp, string][] = [
   [/invalid login credentials|invalid_credentials|invalid_grant/i, "invalidCredentials"],
   [/email not confirmed/i, "emailNotConfirmed"],
   [/already registered|already been registered|user_already_exists/i, "accountExists"],
-  [/weak_password|password.*(?:short|least|weak)|same_password/i, "password"],
+  [/weak[ _]password|password.*(?:short|least|weak)|same_password/i, "password"],
   [/rate.limit|too many requests|after \d+ seconds/i, "rateLimit"],
   [/session.*(?:expired|missing)|refresh.token|jwt expired|authentication required/i, "session"],
   [/not configured|configured backend/i, "configuration"],

@@ -105,7 +105,7 @@ describe("DataProvider + login", () => {
       error: { message: "Weak password" },
     } as never);
     await userEvent.click(screen.getByRole("button", { name: "Create account" }));
-    expect(await screen.findByRole("alert")).toHaveTextContent("Weak password");
+    expect(await screen.findByRole("alert")).toHaveTextContent(i18n.t("errors.password"));
   });
 
   it("requests a reset email with the deployment base URL", async () => {
