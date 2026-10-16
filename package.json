@@ -20,7 +20,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@jordiorriols/ui": "^0.3.7",
+    "@jordiorriols/ui": "^0.3.8",
     "@supabase/supabase-js": "^2.117.2",
     "@tailwindcss/vite": "^4.1.7",
     "@vitejs/plugin-react": "^4.5.0",

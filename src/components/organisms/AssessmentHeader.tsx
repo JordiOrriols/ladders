@@ -60,6 +60,7 @@ export function AssessmentHeader({ title, subtitle, onBack, actions, extraAction
 
   return (
     <AppHeader
+      projectId="ladders"
       title={title}
       {...(subtitle ? { subtitle } : {})}
       icon={<AppIcon />}
