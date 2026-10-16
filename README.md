@@ -39,14 +39,42 @@ across both apps; authentication and translations remain in their adapters.
 
 The header icon opens UI's shared `ProjectSwitcher`. Names, icons and canonical
 URLs live in the UI `PROJECTS` registry: add a project there once, release UI,
-then update/deploy both apps. Auth and shared assessment loading reuse UI's
+then update/deploy both apps. The welcome and assessment icon adapter also reads
+its icon from that registry. Auth and shared assessment loading reuse UI's
 accessible `AppSkeleton` and reduced-motion-aware pulsing `Skeleton` blocks.
 
 All Ladders routes render UI's `AppFooter`. Manager, self, peer and shared-view
 assessment headers reuse the same app icon and language selector (English,
-Spanish and Catalan), including shared-link loading/error/thank-you screens.
+Spanish, Catalan, French, German and Italian), including shared-link
+loading/error/thank-you screens.
 Clipboard success/failure and publish validation use UI's accessible `AlertModal`,
 not native JavaScript `alert()`.
+
+### Localization
+
+All application-owned copy, accessible labels, placeholders, validation and
+error messages come from i18next and the six `src/locales/*.json` bundles.
+Both header adapters supply `AppHeader.projectSwitcherLabel`; `AppFooter`
+receives translated attribution instead of its English default. Locale changes
+update the document's `lang`, and regional preferences resolve to a supported
+base language. Displayed dates, comment timestamps and averages use that locale.
+
+Competency identifiers such as `Technology`, saved evaluation keys and template
+IDs remain stable. Adapters translate their display labels without changing
+chart values or moderation callbacks. Names, roles, goals and comments entered
+by users are never translated. Backend diagnostics remain internal;
+`localizeError` maps recognized failures to translated messages and uses a safe
+translated fallback for unknown failures.
+
+Check locale key/interpolation parity, source copy and six-language UI/error
+regressions with:
+
+```bash
+npm test -- src/__tests__/locales.test.ts src/__tests__/untranslated-ui.test.ts \
+  src/__tests__/localization.test.tsx src/utils/__tests__/localizeError.test.ts
+```
+
+Keep all six bundles in sync when adding copy.
 
 ### Employee comment privacy
 
