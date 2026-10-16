@@ -2,6 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { NameDialog } from "@jordiorriols/ui";
 import { useNameForm } from "@jordiorriols/ui/hooks";
+import { localizeError } from "@/utils/localizeError";
 
 export function CreateTeamDialog({
   isOpen,
@@ -26,7 +27,7 @@ export function CreateTeamDialog({
     <NameDialog
       isOpen={isOpen}
       onClose={onClose}
-      form={form}
+      form={{ ...form, error: form.error ? localizeError(form.error, t) : null }}
       eventId={renaming ? "team_rename" : "team_create"}
       labels={{
         title: t(renaming ? "teams.renameTitle" : "teams.createTitle"),

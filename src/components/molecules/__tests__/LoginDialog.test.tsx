@@ -1,6 +1,6 @@
 import React from "react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { act, cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { I18nextProvider } from "react-i18next";
 import i18n from "@/i18n";
@@ -22,6 +22,13 @@ const renderDialog = () =>
   );
 
 describe("LoginDialog password reset", () => {
+  afterEach(async () => {
+    cleanup();
+    await act(async () => {
+      await i18n.changeLanguage("en");
+    });
+  });
+
   beforeEach(() => {
     requestPasswordReset.mockReset();
     signInWithGitHub.mockReset();
@@ -52,5 +59,21 @@ describe("LoginDialog password reset", () => {
     await userEvent.click(screen.getByText("Forgot password?"));
     await userEvent.click(screen.getByText("Back to sign in"));
     expect(screen.getByLabelText("Password")).toBeInTheDocument();
+  });
+
+  it("retranslates a visible reset confirmation when the language changes", async () => {
+    requestPasswordReset.mockResolvedValue(undefined);
+    renderDialog();
+    await userEvent.click(screen.getByText("Forgot password?"));
+    await userEvent.type(screen.getByLabelText("Email"), "ada@example.com");
+    await userEvent.click(screen.getByRole("button", { name: "Send reset email" }));
+    expect(await screen.findByText(i18n.t("auth.passwordResetSent"))).toBeInTheDocument();
+    await act(async () => {
+      await i18n.changeLanguage("fr");
+    });
+    expect(screen.getByText(i18n.t("auth.passwordResetSent"))).toBeInTheDocument();
+    expect(
+      screen.queryByText("Check your email for password reset instructions.")
+    ).not.toBeInTheDocument();
   });
 });

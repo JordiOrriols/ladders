@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { LoginDialog as LoginDialogView } from "@jordiorriols/ui";
 import { useLoginForm } from "@jordiorriols/ui/hooks";
 import { useData } from "@/data/DataProvider";
+import { localizeError } from "@/utils/localizeError";
 
 export function LoginDialog({
   isOpen,
@@ -21,15 +22,19 @@ export function LoginDialog({
     initialMode,
     actions,
     messages: {
-      passwordResetSent: t("auth.passwordResetSent"),
-      checkEmail: t("auth.checkEmail"),
+      passwordResetSent: "auth.passwordResetSent",
+      checkEmail: "auth.checkEmail",
     },
   });
   return (
     <LoginDialogView
       isOpen={isOpen}
       onClose={onClose}
-      form={form}
+      form={{
+        ...form,
+        error: form.error ? localizeError(form.error, t) : null,
+        info: form.info ? t(form.info) : null,
+      }}
       labels={{
         signInTitle: t("auth.signInTitle"),
         signUpTitle: t("auth.signUpTitle"),

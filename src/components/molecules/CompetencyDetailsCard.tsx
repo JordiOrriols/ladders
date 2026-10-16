@@ -22,21 +22,24 @@ export function CompetencyDetailsCard({
 
   return (
     <div className="p-4 bg-slate-50 rounded-xl">
-      <h4 className="font-medium text-slate-700 mb-2">{vertical}</h4>
+      <h4 className="font-medium text-slate-700 mb-2">{t(`verticals.${vertical}`)}</h4>
       <div className="space-y-2 text-sm">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-emerald-500" />
           <span className="text-slate-600">
             {currentLevel > 0
               ? `L${currentLevel}: ${t(`levels.${vertical}.${currentLevel}.name`)}`
-              : "Not set"}
+              : t("labels.currentNotSet")}
           </span>
         </div>
         {goalLevel > 0 && (
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-amber-500" />
             <span className="text-slate-600">
-              Goal L{goalLevel}: {t(`levels.${vertical}.${goalLevel}.name`)}
+              {t("competency.goalDetails", {
+                level: goalLevel,
+                name: t(`levels.${vertical}.${goalLevel}.name`),
+              })}
             </span>
           </div>
         )}
@@ -44,7 +47,10 @@ export function CompetencyDetailsCard({
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-purple-500" />
             <span className="text-slate-600">
-              Self L{selfAssessmentLevel}: {t(`levels.${vertical}.${selfAssessmentLevel}.name`)}
+              {t("competency.selfDetails", {
+                level: selfAssessmentLevel,
+                name: t(`levels.${vertical}.${selfAssessmentLevel}.name`),
+              })}
             </span>
           </div>
         )}

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ProgressIndicator } from "@jordiorriols/ui";
+import { localizeError } from "@/utils/localizeError";
 
 const emptyGoal: SmartGoalInput = {
   title: "",
@@ -27,7 +28,7 @@ interface Props {
 }
 
 export function SmartGoalsPanel({ store, readOnly = false }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [goals, setGoals] = useState<SmartGoal[]>([]);
   const [draft, setDraft] = useState<SmartGoalInput>(emptyGoal);
   const [loading, setLoading] = useState(true);
@@ -144,7 +145,9 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
                   {comment.text}
                 </p>
                 <time dateTime={comment.createdAt} className="text-xs text-slate-400">
-                  {new Date(comment.createdAt).toLocaleString()}
+                  {new Date(comment.createdAt).toLocaleString(
+                    i18n.resolvedLanguage ?? i18n.language
+                  )}
                 </time>
               </li>
             ))}
@@ -198,7 +201,7 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
 
       {error && (
         <p role="alert" className="text-sm text-red-600">
-          {error}
+          {localizeError(error, t)}
         </p>
       )}
 
@@ -285,7 +288,8 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
                     </h3>
                     <span className="flex items-center gap-1 text-xs text-slate-500">
                       <CalendarDays className="h-4 w-4" />
-                      {goal.dueDate && `${goal.dueDate} · `}
+                      {goal.dueDate &&
+                        `${new Date(`${goal.dueDate}T00:00:00`).toLocaleDateString(i18n.resolvedLanguage ?? i18n.language)} · `}
                       {remainingLabel}
                     </span>
                   </div>

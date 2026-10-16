@@ -36,7 +36,6 @@ describe("ShareAction", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.stubEnv("VITE_PLANNER_URL", "https://planner.example.com/planner/");
     vi.spyOn(window, "alert").mockImplementation(() => {});
     Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
   });
@@ -71,19 +70,20 @@ describe("ShareAction", () => {
     await userEvent.click(screen.getByRole("button", { name: "Choose a sharing link" }));
     await userEvent.click(screen.getByRole("menuitem", { name: "Vacations" }));
     expect(writeText).toHaveBeenLastCalledWith(
-      `https://planner.example.com/planner/#/vacations/${member.vacationToken}`
+      `https://planner.jordiorriols.cat/#/vacations/${member.vacationToken}`
     );
     expect(onEnableView).not.toHaveBeenCalled();
   });
 
-  it("shows actionable configuration errors instead of copying a broken vacation URL", async () => {
-    vi.stubEnv("VITE_PLANNER_URL", "/relative/planner");
+  it("reports clipboard errors instead of claiming the vacation link was copied", async () => {
+    writeText.mockRejectedValueOnce(new Error("Clipboard denied"));
     vi.spyOn(console, "error").mockImplementation(() => {});
     renderAction();
     await userEvent.click(screen.getByRole("button", { name: "Choose a sharing link" }));
     await userEvent.click(screen.getByRole("menuitem", { name: "Vacations" }));
-    expect(writeText).not.toHaveBeenCalled();
-    expect(await screen.findByRole("alertdialog")).toHaveTextContent("VITE_PLANNER_URL");
+    expect(await screen.findByRole("alertdialog")).toHaveTextContent(
+      i18n.t("alerts.failedToCopyLink")
+    );
     expect(window.alert).not.toHaveBeenCalled();
   });
 

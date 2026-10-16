@@ -1,6 +1,6 @@
 import React from "react";
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { act, cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { I18nextProvider } from "react-i18next";
 import i18n from "@/i18n";
@@ -22,6 +22,13 @@ const renderDialog = () =>
   );
 
 describe("PasswordResetDialog", () => {
+  afterEach(async () => {
+    cleanup();
+    await act(async () => {
+      await i18n.changeLanguage("en");
+    });
+  });
+
   beforeEach(() => {
     state.passwordRecovery = true;
     updatePassword.mockReset();
@@ -51,6 +58,18 @@ describe("PasswordResetDialog", () => {
     await userEvent.type(screen.getByLabelText("Confirm password"), "new-password");
     await userEvent.click(screen.getByRole("button", { name: "Update password" }));
     expect(updatePassword).toHaveBeenCalledWith("new-password");
+  });
+
+  it("retranslates an existing validation error when the language changes", async () => {
+    renderDialog();
+    await userEvent.type(screen.getByLabelText("New password"), "short");
+    await userEvent.type(screen.getByLabelText("Confirm password"), "short");
+    await userEvent.click(screen.getByRole("button", { name: "Update password" }));
+    await act(async () => {
+      await i18n.changeLanguage("de");
+    });
+    expect(screen.getByRole("alert")).toHaveTextContent(i18n.t("auth.passwordTooShort"));
+    expect(screen.getByRole("alert")).not.toHaveTextContent("at least 8 characters");
   });
 
   it("stays hidden outside a recovery session", () => {

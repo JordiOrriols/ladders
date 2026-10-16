@@ -1,6 +1,51 @@
 {
+  "errors": {
+    "title": "Algo ha salido mal",
+    "retry": "Volver a intentar",
+    "generic": "No se ha podido completar la acción. Inténtalo de nuevo.",
+    "invalidCredentials": "El correo o la contraseña son incorrectos.",
+    "emailNotConfirmed": "Confirma tu correo antes de iniciar sesión.",
+    "accountExists": "Ya existe una cuenta con este correo.",
+    "password": "Elige una contraseña diferente y más segura.",
+    "rateLimit": "Demasiados intentos. Espera antes de volver a intentarlo.",
+    "session": "Tu sesión ha caducado. Inicia sesión de nuevo.",
+    "configuration": "El acceso a cuentas no está configurado en este entorno.",
+    "network": "Error de red",
+    "saveMember": "Guarda primero al miembro.",
+    "invalidLink": "Este enlace no es válido o ya no está disponible.",
+    "shareUser": "No se ha encontrado una cuenta válida para este correo.",
+    "defaultTeam": "No se puede eliminar el equipo predeterminado.",
+    "teamNotEmpty": "Mueve o elimina a los miembros del equipo antes de eliminarlo.",
+    "progress": "El progreso debe estar entre 0 y 100.",
+    "comment": "Los comentarios deben tener entre 1 y 10.000 caracteres.",
+    "chooseComment": "Selecciona un comentario de competencia existente.",
+    "access": "No tienes permiso para realizar esta acción."
+  },
+  "verticals": {
+    "Technology": "Tecnología",
+    "System": "Sistema",
+    "People": "Personas",
+    "Process": "Proceso",
+    "Influence": "Influencia"
+  },
+  "members": { "edit": "Editar a {{name}}", "delete": "Eliminar a {{name}}" },
+  "chart": {
+    "description": "Gráfico de radar de competencias con niveles actuales, objetivos y autoevaluación",
+    "download": "Descargar gráfico como imagen PNG"
+  },
+  "competency": {
+    "details": "Detalles de la competencia {{vertical}}. Nivel actual: {{current}}. Nivel objetivo: {{goal}}",
+    "current": "Actual: L{{level}} {{name}}",
+    "currentNotSet": "Actual: Sin definir",
+    "goal": "Objetivo: L{{level}} {{name}}",
+    "self": "Autoevaluación: L{{level}} {{name}}",
+    "goalDetails": "Objetivo L{{level}}: {{name}}",
+    "selfDetails": "Autoevaluación L{{level}}: {{name}}"
+  },
   "footer": { "attribution": "Hecho con amor por Jordi Orriols" },
   "header": {
+    "projectSwitcher": "Cambiar de proyecto",
+    "back": "Volver",
     "title": "Escalera de Ingeniería",
     "subtitle": "Rastreador de competencias del equipo",
     "selfAssessment": "Autoevaluación",
@@ -15,7 +60,6 @@
     "edit": "Editar",
     "delete": "Eliminar",
     "close": "Cerrar",
-    "clear": "Limpiar",
     "shareLink": "Compartir Enlace",
     "current": "Actual",
     "currentPlus": "Actual +",
@@ -358,8 +402,7 @@
   },
   "share": {
     "vacations": {
-      "label": "Vacaciones",
-      "configurationError": "Configura VITE_PLANNER_URL con la URL absoluta de Planner, incluida la ruta del despliegue, y vuelve a compilar Ladders."
+      "label": "Vacaciones"
     },
     "title": "Enlaces permanentes",
     "action": "Compartir",

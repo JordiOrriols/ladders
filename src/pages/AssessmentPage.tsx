@@ -32,6 +32,7 @@ import { PageMessage } from "./PageMessage";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertModal } from "@jordiorriols/ui";
 import { useAsyncAction } from "@jordiorriols/ui/hooks";
+import { localizeError } from "@/utils/localizeError";
 
 type StoreState = { store: EvaluationStore } | { error: "notFound" | "loading" };
 
@@ -351,7 +352,7 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
                       />
                       {visibilityAction.error && (
                         <p role="alert" className="text-sm text-red-600">
-                          {visibilityAction.error}
+                          {localizeError(visibilityAction.error, t)}
                         </p>
                       )}
                     </section>
@@ -419,7 +420,13 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
                 metrics={[
                   {
                     label: t("memberAssessment.currentAverage"),
-                    value: editor.currentAverage.toFixed(1),
+                    value: editor.currentAverage.toLocaleString(
+                      i18n.resolvedLanguage ?? i18n.language,
+                      {
+                        minimumFractionDigits: 1,
+                        maximumFractionDigits: 1,
+                      }
+                    ),
                     tone: "current",
                   },
                   ...(hideGoal
@@ -427,7 +434,13 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
                     : [
                         {
                           label: t("memberAssessment.goalAverage"),
-                          value: editor.goalAverage.toFixed(1),
+                          value: editor.goalAverage.toLocaleString(
+                            i18n.resolvedLanguage ?? i18n.language,
+                            {
+                              minimumFractionDigits: 1,
+                              maximumFractionDigits: 1,
+                            }
+                          ),
                           tone: "goal" as const,
                         },
                       ]),

@@ -1,8 +1,53 @@
 {
+  "errors": {
+    "title": "Etwas ist schiefgelaufen",
+    "retry": "Erneut versuchen",
+    "generic": "Die Aktion konnte nicht abgeschlossen werden. Bitte versuche es erneut.",
+    "invalidCredentials": "Die E-Mail-Adresse oder das Passwort ist falsch.",
+    "emailNotConfirmed": "Bestätige deine E-Mail-Adresse, bevor du dich anmeldest.",
+    "accountExists": "Für diese E-Mail-Adresse besteht bereits ein Konto.",
+    "password": "Wähle ein anderes, stärkeres Passwort.",
+    "rateLimit": "Zu viele Versuche. Bitte warte, bevor du es erneut versuchst.",
+    "session": "Deine Sitzung ist abgelaufen. Bitte melde dich erneut an.",
+    "configuration": "Der Kontozugang ist in dieser Umgebung nicht konfiguriert.",
+    "network": "Netzwerkfehler",
+    "saveMember": "Speichere zuerst das Mitglied.",
+    "invalidLink": "Dieser Link ist ungültig oder nicht mehr verfügbar.",
+    "shareUser": "Für diese E-Mail-Adresse wurde kein geeignetes Konto gefunden.",
+    "defaultTeam": "Das Standardteam kann nicht gelöscht werden.",
+    "teamNotEmpty": "Verschiebe oder entferne die Teammitglieder, bevor du das Team löschst.",
+    "progress": "Der Fortschritt muss zwischen 0 und 100 liegen.",
+    "comment": "Kommentare müssen zwischen 1 und 10.000 Zeichen enthalten.",
+    "chooseComment": "Wähle einen vorhandenen Kompetenzkommentar.",
+    "access": "Du hast keine Berechtigung für diese Aktion."
+  },
+  "verticals": {
+    "Technology": "Technologie",
+    "System": "System",
+    "People": "Menschen",
+    "Process": "Prozess",
+    "Influence": "Einfluss"
+  },
+  "members": { "edit": "{{name}} bearbeiten", "delete": "{{name}} löschen" },
+  "chart": {
+    "description": "Kompetenz-Radardiagramm mit aktuellen Stufen, Zielen und Selbsteinschätzung",
+    "download": "Diagramm als PNG-Bild herunterladen"
+  },
+  "competency": {
+    "details": "Details zur Kompetenz {{vertical}}. Aktuelle Stufe: {{current}}. Zielstufe: {{goal}}",
+    "current": "Aktuell: L{{level}} {{name}}",
+    "currentNotSet": "Aktuell: Nicht festgelegt",
+    "goal": "Ziel: L{{level}} {{name}}",
+    "self": "Selbst: L{{level}} {{name}}",
+    "goalDetails": "Ziel L{{level}}: {{name}}",
+    "selfDetails": "Selbst L{{level}}: {{name}}"
+  },
   "footer": {
     "attribution": "Mit Liebe gemacht von Jordi Orriols"
   },
   "header": {
+    "projectSwitcher": "Projekt wechseln",
+    "back": "Zurück",
     "title": "Engineering-Karriereleiter",
     "subtitle": "Kompetenz-Tracker für Teams",
     "selfAssessment": "Selbsteinschätzung",
@@ -359,8 +404,7 @@
   },
   "share": {
     "vacations": {
-      "label": "Urlaub",
-      "configurationError": "Konfigurieren Sie VITE_PLANNER_URL mit der absoluten Planner-URL einschließlich ihres Deployment-Pfads und bauen Sie Ladders neu."
+      "label": "Urlaub"
     },
     "title": "Permanente Links",
     "action": "Teilen",

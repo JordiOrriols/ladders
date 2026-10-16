@@ -1,8 +1,53 @@
 {
+  "errors": {
+    "title": "Une erreur est survenue",
+    "retry": "Réessayer",
+    "generic": "L'action n'a pas pu être effectuée. Veuillez réessayer.",
+    "invalidCredentials": "L'adresse e-mail ou le mot de passe est incorrect.",
+    "emailNotConfirmed": "Confirmez votre adresse e-mail avant de vous connecter.",
+    "accountExists": "Un compte existe déjà avec cette adresse e-mail.",
+    "password": "Choisissez un mot de passe différent et plus sûr.",
+    "rateLimit": "Trop de tentatives. Veuillez patienter avant de réessayer.",
+    "session": "Votre session a expiré. Veuillez vous reconnecter.",
+    "configuration": "L'accès aux comptes n'est pas configuré pour cet environnement.",
+    "network": "Erreur réseau",
+    "saveMember": "Enregistrez d'abord le membre.",
+    "invalidLink": "Ce lien n'est pas valide ou n'est plus disponible.",
+    "shareUser": "Aucun compte éligible n'a été trouvé pour cette adresse e-mail.",
+    "defaultTeam": "L'équipe par défaut ne peut pas être supprimée.",
+    "teamNotEmpty": "Déplacez ou supprimez les membres de l'équipe avant de la supprimer.",
+    "progress": "La progression doit être comprise entre 0 et 100.",
+    "comment": "Les commentaires doivent contenir entre 1 et 10 000 caractères.",
+    "chooseComment": "Choisissez un commentaire de compétence existant.",
+    "access": "Vous n'avez pas l'autorisation d'effectuer cette action."
+  },
+  "verticals": {
+    "Technology": "Technologie",
+    "System": "Système",
+    "People": "Personnes",
+    "Process": "Processus",
+    "Influence": "Influence"
+  },
+  "members": { "edit": "Modifier {{name}}", "delete": "Supprimer {{name}}" },
+  "chart": {
+    "description": "Graphique radar des compétences avec niveaux actuels, objectifs et autoévaluation",
+    "download": "Télécharger le graphique au format PNG"
+  },
+  "competency": {
+    "details": "Détails de la compétence {{vertical}}. Niveau actuel : {{current}}. Niveau cible : {{goal}}",
+    "current": "Actuel : L{{level}} {{name}}",
+    "currentNotSet": "Actuel : Non défini",
+    "goal": "Objectif : L{{level}} {{name}}",
+    "self": "Autoévaluation : L{{level}} {{name}}",
+    "goalDetails": "Objectif L{{level}} : {{name}}",
+    "selfDetails": "Autoévaluation L{{level}} : {{name}}"
+  },
   "footer": {
     "attribution": "Créé avec amour par Jordi Orriols"
   },
   "header": {
+    "projectSwitcher": "Changer de projet",
+    "back": "Retour",
     "title": "Échelle d’ingénierie",
     "subtitle": "Suivi des compétences de l’équipe",
     "selfAssessment": "Auto-évaluation",
@@ -359,8 +404,7 @@
   },
   "share": {
     "vacations": {
-      "label": "Vacances",
-      "configurationError": "Configurez VITE_PLANNER_URL avec l’URL absolue de Planner, y compris le chemin de déploiement, puis reconstruisez Ladders."
+      "label": "Vacances"
     },
     "title": "Liens permanents",
     "action": "Partager",

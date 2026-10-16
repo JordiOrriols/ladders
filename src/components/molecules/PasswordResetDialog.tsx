@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { PasswordResetDialog as PasswordResetDialogView } from "@jordiorriols/ui";
 import { usePasswordResetForm } from "@jordiorriols/ui/hooks";
 import { useData } from "@/data/DataProvider";
+import { localizeError } from "@/utils/localizeError";
 
 export function PasswordResetDialog() {
   const { t } = useTranslation();
@@ -11,14 +12,14 @@ export function PasswordResetDialog() {
     isOpen: passwordRecovery,
     updatePassword,
     messages: {
-      passwordTooShort: t("auth.passwordTooShort"),
-      passwordsDoNotMatch: t("auth.passwordsDoNotMatch"),
+      passwordTooShort: "auth.passwordTooShort",
+      passwordsDoNotMatch: "auth.passwordsDoNotMatch",
     },
   });
   return (
     <PasswordResetDialogView
       isOpen={passwordRecovery}
-      form={form}
+      form={{ ...form, error: form.error ? localizeError(form.error, t) : null }}
       labels={{
         title: t("auth.resetPasswordTitle"),
         description: t("auth.resetPasswordDescription"),

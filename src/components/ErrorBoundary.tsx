@@ -1,4 +1,15 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
+
+function ErrorMessage() {
+  const { t } = useTranslation();
+  return (
+    <div role="alert" className="p-4 bg-red-50 border border-red-200 rounded-lg">
+      <h3 className="text-sm font-medium text-red-800 mb-2">{t("errors.title")}</h3>
+      <p className="text-xs text-red-600">{t("errors.generic")}</p>
+    </div>
+  );
+}
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;
@@ -27,16 +38,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
 
   override render() {
     if (this.state.hasError && this.state.error) {
-      return this.props.fallback ? (
-        this.props.fallback(this.state.error)
-      ) : (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-          <h3 className="text-sm font-medium text-red-800 mb-2">
-            {this.props.componentName || "Component"} Error
-          </h3>
-          <p className="text-xs text-red-600">{this.state.error.message}</p>
-        </div>
-      );
+      return this.props.fallback ? this.props.fallback(this.state.error) : <ErrorMessage />;
     }
 
     return this.props.children;

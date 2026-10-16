@@ -1,4 +1,5 @@
 import React, { memo } from "react";
+import { useTranslation } from "react-i18next";
 import { RadarChart as RadarChartView, type RadarChartProps } from "@jordiorriols/ui";
 import { VERTICALS, LEVELS } from "./levelSelector";
 import { downloadRadarImage } from "../../utils/downloadRadarImage";
@@ -13,13 +14,21 @@ export const SERIES_COLORS = {
 
 type Props = Pick<RadarChartProps, "series" | "size" | "showLabels" | "showLegend" | "className">;
 function RadarChart(props: Props) {
+  const { t } = useTranslation();
+  const axes = VERTICALS.map((vertical) => t(`verticals.${vertical}`));
   return (
     <RadarChartView
       {...props}
-      axes={VERTICALS}
+      axes={axes}
+      series={props.series.map((series) => ({
+        ...series,
+        levels: Object.fromEntries(
+          VERTICALS.map((vertical, index) => [axes[index]!, series.levels[vertical] ?? 0])
+        ),
+      }))}
       maxLevel={LEVELS.length}
-      label="Competency radar chart showing current levels, goal levels, and self-assessment"
-      downloadLabel="Download chart as PNG image"
+      label={t("chart.description")}
+      downloadLabel={t("chart.download")}
       onDownload={downloadRadarImage}
     />
   );

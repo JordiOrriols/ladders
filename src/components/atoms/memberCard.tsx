@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { ProfileCard } from "@jordiorriols/ui";
 import type { Member } from "@/types";
 import RadarChart, { SERIES_COLORS } from "./radarChart";
@@ -14,6 +15,7 @@ interface MemberCardProps {
 }
 
 export default function MemberCard({ member, onEdit, onDelete, ...props }: MemberCardProps) {
+  const { t } = useTranslation();
   return (
     <ProfileCard
       {...props}
@@ -22,14 +24,14 @@ export default function MemberCard({ member, onEdit, onDelete, ...props }: Membe
       {...(member.role ? { subtitle: member.role } : {})}
       onEdit={() => onEdit(member)}
       onDelete={() => onDelete(member.id)}
-      editLabel={`Edit ${member.name}`}
-      deleteLabel={`Delete ${member.name}`}
+      editLabel={t("members.edit", { name: member.name })}
+      deleteLabel={t("members.delete", { name: member.name })}
     >
       <RadarChart
         series={[
           {
             id: "goal",
-            label: "Goal",
+            label: t("series.goal"),
             levels: member.goalLevels,
             color: SERIES_COLORS.goal,
             dashed: true,
@@ -38,7 +40,7 @@ export default function MemberCard({ member, onEdit, onDelete, ...props }: Membe
             ? [
                 {
                   id: "self",
-                  label: "Self Assessment",
+                  label: t("header.selfAssessment"),
                   levels: member.selfAssessmentLevels,
                   color: SERIES_COLORS.self,
                   dashed: true,
@@ -47,7 +49,7 @@ export default function MemberCard({ member, onEdit, onDelete, ...props }: Membe
             : []),
           {
             id: "current",
-            label: "Current",
+            label: t("series.current"),
             levels: member.currentLevels,
             color: SERIES_COLORS.current,
             primary: true,

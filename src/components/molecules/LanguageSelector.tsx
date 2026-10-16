@@ -6,7 +6,7 @@ export function LanguageSelector() {
   const { t, i18n } = useTranslation();
   return (
     <LanguageSelectorView
-      value={i18n.language}
+      value={i18n.resolvedLanguage ?? i18n.language}
       onValueChange={(language) => void i18n.changeLanguage(language)}
       label={t("header.language")}
       className="inline-flex"

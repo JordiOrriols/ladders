@@ -3,12 +3,7 @@ import { AlertModal } from "@jordiorriols/ui";
 import { Calendar, Eye, Share2, UserRound, Users } from "@jordiorriols/ui/icons";
 import { useTranslation } from "react-i18next";
 import type { TeamMember } from "@/types";
-import {
-  buildShareLink,
-  buildVacationLink,
-  copyToClipboard,
-  PlannerUrlError,
-} from "@/utils/sharing";
+import { buildShareLink, buildVacationLink, copyToClipboard } from "@/utils/sharing";
 import { SplitButton } from "./SplitButton";
 
 type ShareKind = "self" | "peer" | "view" | "vacations";
@@ -47,13 +42,7 @@ export function ShareAction({ member, onEnableView }: Props) {
       setMessage(t("alerts.linkCopied"));
     } catch (error) {
       console.error("Failed to copy share link", error);
-      setMessage(
-        t(
-          error instanceof PlannerUrlError
-            ? "share.vacations.configurationError"
-            : "alerts.failedToCopyLink"
-        )
-      );
+      setMessage(t("alerts.failedToCopyLink"));
     }
   };
 

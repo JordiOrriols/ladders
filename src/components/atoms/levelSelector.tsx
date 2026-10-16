@@ -62,14 +62,18 @@ export default function LevelSelector({
     <LevelSelectorView
       {...props}
       id={vertical}
-      title={vertical}
+      title={t(`verticals.${vertical}`)}
       currentLevel={currentLevel}
       goalLevel={goalLevel}
       selfAssessmentLevel={selfAssessmentLevel}
       hideGoal={hideGoal}
       accentClassName={accentClassName}
       className={className}
-      ariaLabel={`${vertical} competency details. Current level: ${currentLevel || "not set"}. Goal level: ${goalLevel || "not set"}`}
+      ariaLabel={t("competency.details", {
+        vertical: t(`verticals.${vertical}`),
+        current: currentLevel || t("labels.currentNotSet"),
+        goal: goalLevel || t("labels.currentNotSet"),
+      })}
       options={LEVELS.map((level) => ({
         value: level,
         name: t(`levels.${vertical}.${level}.name`),
@@ -81,7 +85,7 @@ export default function LevelSelector({
         currentPlus: t("buttons.currentPlus"),
         goal: t("buttons.goal"),
         goalPlus: t("buttons.goalPlus"),
-        self: "Self",
+        self: t("versions.kind.self"),
         comments: t("forms.comments"),
         commentsPlaceholder: t("forms.commentsPlaceholder"),
       }}
@@ -89,27 +93,33 @@ export default function LevelSelector({
         <>
           <p className="text-slate-600">
             {currentLevelData
-              ? `Current: L${currentLevel} ${t(`levels.${vertical}.${Math.floor(currentLevel)}.name`)}`
+              ? t("competency.current", {
+                  level: currentLevel,
+                  name: t(`levels.${vertical}.${currentLevel}.name`),
+                })
               : currentLevel === Math.floor(currentLevel) + 0.5
-                ? `Current: L${Math.floor(currentLevel)}+ ${t(`levels.${vertical}.${Math.floor(currentLevel)}.name`)}`
-                : "Current: Not set"}
+                ? t("competency.current", {
+                    level: `${Math.floor(currentLevel)}+`,
+                    name: t(`levels.${vertical}.${Math.floor(currentLevel)}.name`),
+                  })
+                : t("competency.currentNotSet")}
           </p>
           {!hideGoal &&
             (goalLevelData || goalLevel === Math.floor(goalLevel) + 0.5) &&
             goalLevel > 0 && (
               <p className="text-slate-600">
-                Goal: L{goalLevel}
-                {goalLevel !== Math.floor(goalLevel) && "+"}
-                {goalLevel !== Math.floor(goalLevel)
-                  ? ""
-                  : ` ${t(`levels.${vertical}.${Math.floor(goalLevel)}.name`)}`}
-                {goalLevel === Math.floor(goalLevel) &&
-                  ` ${t(`levels.${vertical}.${goalLevel}.name`)}`}
+                {t("competency.goal", {
+                  level: `${Math.floor(goalLevel)}${goalLevel !== Math.floor(goalLevel) ? "+" : ""}`,
+                  name: t(`levels.${vertical}.${Math.floor(goalLevel)}.name`),
+                })}
               </p>
             )}
           {selfAssessmentLevelData && selfAssessmentLevel > 0 && (
             <p className="text-purple-600">
-              Self: L{selfAssessmentLevel} {t(`levels.${vertical}.${selfAssessmentLevel}.name`)}
+              {t("competency.self", {
+                level: selfAssessmentLevel,
+                name: t(`levels.${vertical}.${selfAssessmentLevel}.name`),
+              })}
             </p>
           )}
         </>

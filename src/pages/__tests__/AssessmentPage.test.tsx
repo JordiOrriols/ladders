@@ -83,7 +83,7 @@ describe("AssessmentPage", () => {
     renderAt(`/member/${member.id}`);
     const toggle = await screen.findByTestId(`comment-visibility-${peer.id}-Technology`);
     await userEvent.click(toggle);
-    expect(await screen.findByRole("alert")).toHaveTextContent("Team edit access required");
+    expect(await screen.findByRole("alert")).toHaveTextContent(i18n.t("errors.access"));
     expect(toggle).toHaveTextContent("Share with employee");
   });
 

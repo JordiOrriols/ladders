@@ -13,32 +13,31 @@ const ViewPage = lazy(() => import("./pages/ViewPage"));
 
 // Loading fallback component
 function LoadingFallback() {
+  const { t } = useTranslation();
   return (
     <div className="flex items-center justify-center min-h-screen">
       <div className="text-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-400 mx-auto mb-4" />
-        <p className="text-slate-600">Loading...</p>
+        <p className="text-slate-600">{t("pageMessage.loading")}</p>
       </div>
     </div>
   );
 }
 
 // Error fallback component
-function ErrorFallback({ error, resetErrorBoundary }) {
+function ErrorFallback({ resetErrorBoundary }) {
   const { t } = useTranslation();
 
   return (
     <div className="flex items-center justify-center min-h-screen">
       <div className="text-center p-6 bg-red-50 rounded-lg border border-red-200">
-        <h1 className="text-2xl font-semibold text-red-800 mb-4">
-          {t("app.error", "Something went wrong")}
-        </h1>
-        <p className="text-red-700 mb-4">{error.message}</p>
+        <h1 className="text-2xl font-semibold text-red-800 mb-4">{t("errors.title")}</h1>
+        <p className="text-red-700 mb-4">{t("errors.generic")}</p>
         <button
           onClick={resetErrorBoundary}
           className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
         >
-          {t("buttons.retry", "Try again")}
+          {t("errors.retry")}
         </button>
       </div>
     </div>
