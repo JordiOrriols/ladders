@@ -90,7 +90,8 @@
   },
   "tabs": {
     "team": "Team",
-    "individual": "Individuell"
+    "individual": "Individuell",
+    "label": "Ansichten"
   },
   "teams": {
     "create": "Team erstellen",

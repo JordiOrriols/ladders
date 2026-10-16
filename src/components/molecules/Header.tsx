@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, type ReactNode } from "react";
 import { AppIcon } from "@/components/atoms/AppIcon";
 import { useTranslation } from "react-i18next";
 import { AppHeader } from "@jordiorriols/ui";
@@ -8,7 +8,7 @@ import { localizeError } from "@/utils/localizeError";
 import { LoginDialog } from "./LoginDialog";
 import { LanguageSelector } from "./LanguageSelector";
 
-export function Header() {
+export function Header({ navigation }: { navigation?: ReactNode } = {}) {
   const { t } = useTranslation();
   const { authEnabled, user, signOut } = useData();
   const [showLogin, setShowLogin] = useState(false);
@@ -20,6 +20,7 @@ export function Header() {
       title={t("header.title")}
       subtitle={t("header.subtitle")}
       icon={<AppIcon />}
+      {...(navigation ? { navigation } : {})}
       {...(authEnabled
         ? {
             accountAction: {
