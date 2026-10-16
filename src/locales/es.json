@@ -1,6 +1,8 @@
 {
   "footer": { "attribution": "Hecho con amor por Jordi Orriols" },
   "header": {
+    "projectSwitcher": "Cambiar de proyecto",
+    "back": "Volver",
     "title": "Escalera de Ingeniería",
     "subtitle": "Rastreador de competencias del equipo",
     "selfAssessment": "Autoevaluación",

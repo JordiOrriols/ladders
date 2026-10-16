@@ -15,6 +15,7 @@ export function Header() {
   return (
     <AppHeader
       projectId="ladders"
+      projectSwitcherLabel={t("header.projectSwitcher")}
       title={t("header.title")}
       subtitle={t("header.subtitle")}
       icon={<AppIcon />}

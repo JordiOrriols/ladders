@@ -3,6 +3,8 @@
     "attribution": "Créé avec amour par Jordi Orriols"
   },
   "header": {
+    "projectSwitcher": "Changer de projet",
+    "back": "Retour",
     "title": "Échelle d’ingénierie",
     "subtitle": "Suivi des compétences de l’équipe",
     "selfAssessment": "Auto-évaluation",

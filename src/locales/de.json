@@ -3,6 +3,8 @@
     "attribution": "Mit Liebe gemacht von Jordi Orriols"
   },
   "header": {
+    "projectSwitcher": "Projekt wechseln",
+    "back": "Zurück",
     "title": "Engineering-Karriereleiter",
     "subtitle": "Kompetenz-Tracker für Teams",
     "selfAssessment": "Selbsteinschätzung",

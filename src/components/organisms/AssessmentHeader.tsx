@@ -1,4 +1,5 @@
 import React, { useCallback, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import type { ReactNode } from "react";
 import { AppHeader } from "@jordiorriols/ui";
 import { ArrowLeft } from "@jordiorriols/ui/icons";
@@ -47,6 +48,7 @@ type Props = {
 };
 
 export function AssessmentHeader({ title, subtitle, onBack, actions, extraActions }: Props) {
+  const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleFileChange = useCallback(
@@ -61,6 +63,7 @@ export function AssessmentHeader({ title, subtitle, onBack, actions, extraAction
   return (
     <AppHeader
       projectId="ladders"
+      projectSwitcherLabel={t("header.projectSwitcher")}
       title={title}
       {...(subtitle ? { subtitle } : {})}
       icon={<AppIcon />}
@@ -73,7 +76,7 @@ export function AssessmentHeader({ title, subtitle, onBack, actions, extraAction
             variant="ghost"
             size="icon"
             onClick={onBack}
-            aria-label="Go back"
+            aria-label={t("header.back")}
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>

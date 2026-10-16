@@ -1,6 +1,8 @@
 {
   "footer": { "attribution": "Fet amb amor per Jordi Orriols" },
   "header": {
+    "projectSwitcher": "Canvia de projecte",
+    "back": "Torna enrere",
     "title": "Escala d'Enginyeria",
     "subtitle": "Rastreador de competències del equip",
     "selfAssessment": "Autoevaluació",

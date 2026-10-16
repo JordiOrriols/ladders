@@ -3,6 +3,8 @@
     "attribution": "Creato con amore da Jordi Orriols"
   },
   "header": {
+    "projectSwitcher": "Cambia progetto",
+    "back": "Indietro",
     "title": "Scala di Ingegneria",
     "subtitle": "Tracker delle competenze del team",
     "selfAssessment": "Autovalutazione",

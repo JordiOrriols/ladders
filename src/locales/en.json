@@ -1,6 +1,8 @@
 {
   "footer": { "attribution": "Made with love by Jordi Orriols" },
   "header": {
+    "projectSwitcher": "Switch project",
+    "back": "Go back",
     "title": "Engineering Ladder",
     "subtitle": "Team competency tracker",
     "selfAssessment": "Self Assessment",
