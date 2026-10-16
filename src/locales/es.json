@@ -1,4 +1,25 @@
 {
+  "verticals": {
+    "Technology": "Tecnología",
+    "System": "Sistema",
+    "People": "Personas",
+    "Process": "Proceso",
+    "Influence": "Influencia"
+  },
+  "members": { "edit": "Editar a {{name}}", "delete": "Eliminar a {{name}}" },
+  "chart": {
+    "description": "Gráfico de radar de competencias con niveles actuales, objetivos y autoevaluación",
+    "download": "Descargar gráfico como imagen PNG"
+  },
+  "competency": {
+    "details": "Detalles de la competencia {{vertical}}. Nivel actual: {{current}}. Nivel objetivo: {{goal}}",
+    "current": "Actual: L{{level}} {{name}}",
+    "currentNotSet": "Actual: Sin definir",
+    "goal": "Objetivo: L{{level}} {{name}}",
+    "self": "Autoevaluación: L{{level}} {{name}}",
+    "goalDetails": "Objetivo L{{level}}: {{name}}",
+    "selfDetails": "Autoevaluación L{{level}}: {{name}}"
+  },
   "footer": { "attribution": "Hecho con amor por Jordi Orriols" },
   "header": {
     "projectSwitcher": "Cambiar de proyecto",

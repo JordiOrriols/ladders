@@ -1,4 +1,25 @@
 {
+  "verticals": {
+    "Technology": "Technologie",
+    "System": "System",
+    "People": "Menschen",
+    "Process": "Prozess",
+    "Influence": "Einfluss"
+  },
+  "members": { "edit": "{{name}} bearbeiten", "delete": "{{name}} löschen" },
+  "chart": {
+    "description": "Kompetenz-Radardiagramm mit aktuellen Stufen, Zielen und Selbsteinschätzung",
+    "download": "Diagramm als PNG-Bild herunterladen"
+  },
+  "competency": {
+    "details": "Details zur Kompetenz {{vertical}}. Aktuelle Stufe: {{current}}. Zielstufe: {{goal}}",
+    "current": "Aktuell: L{{level}} {{name}}",
+    "currentNotSet": "Aktuell: Nicht festgelegt",
+    "goal": "Ziel: L{{level}} {{name}}",
+    "self": "Selbst: L{{level}} {{name}}",
+    "goalDetails": "Ziel L{{level}}: {{name}}",
+    "selfDetails": "Selbst L{{level}}: {{name}}"
+  },
   "footer": {
     "attribution": "Mit Liebe gemacht von Jordi Orriols"
   },

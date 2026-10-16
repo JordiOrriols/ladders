@@ -1,4 +1,25 @@
 {
+  "verticals": {
+    "Technology": "Tecnologia",
+    "System": "Sistema",
+    "People": "Persone",
+    "Process": "Processo",
+    "Influence": "Influenza"
+  },
+  "members": { "edit": "Modifica {{name}}", "delete": "Elimina {{name}}" },
+  "chart": {
+    "description": "Grafico radar delle competenze con livelli attuali, obiettivi e autovalutazione",
+    "download": "Scarica il grafico come immagine PNG"
+  },
+  "competency": {
+    "details": "Dettagli della competenza {{vertical}}. Livello attuale: {{current}}. Livello obiettivo: {{goal}}",
+    "current": "Attuale: L{{level}} {{name}}",
+    "currentNotSet": "Attuale: Non definito",
+    "goal": "Obiettivo: L{{level}} {{name}}",
+    "self": "Autovalutazione: L{{level}} {{name}}",
+    "goalDetails": "Obiettivo L{{level}}: {{name}}",
+    "selfDetails": "Autovalutazione L{{level}}: {{name}}"
+  },
   "footer": {
     "attribution": "Creato con amore da Jordi Orriols"
   },

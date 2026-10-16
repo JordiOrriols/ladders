@@ -1,4 +1,25 @@
 {
+  "verticals": {
+    "Technology": "Technology",
+    "System": "System",
+    "People": "People",
+    "Process": "Process",
+    "Influence": "Influence"
+  },
+  "members": { "edit": "Edit {{name}}", "delete": "Delete {{name}}" },
+  "chart": {
+    "description": "Competency radar chart showing current levels, goal levels, and self-assessment",
+    "download": "Download chart as PNG image"
+  },
+  "competency": {
+    "details": "{{vertical}} competency details. Current level: {{current}}. Goal level: {{goal}}",
+    "current": "Current: L{{level}} {{name}}",
+    "currentNotSet": "Current: Not set",
+    "goal": "Goal: L{{level}} {{name}}",
+    "self": "Self: L{{level}} {{name}}",
+    "goalDetails": "Goal L{{level}}: {{name}}",
+    "selfDetails": "Self L{{level}}: {{name}}"
+  },
   "footer": { "attribution": "Made with love by Jordi Orriols" },
   "header": {
     "projectSwitcher": "Switch project",

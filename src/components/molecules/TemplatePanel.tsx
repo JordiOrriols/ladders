@@ -75,7 +75,8 @@ export function TemplatePanel({ templateId, onChange }: Props) {
                 return (
                   <li key={vertical} className="text-xs text-slate-600">
                     <span className="font-semibold text-slate-700">
-                      {vertical} · L{level} {t(`levels.${vertical}.${level}.name`)}
+                      {t(`verticals.${vertical}`)} · L{level}{" "}
+                      {t(`levels.${vertical}.${level}.name`)}
                     </span>
                     {" — "}
                     {t(`levels.${vertical}.${level}.description`)}

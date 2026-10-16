@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import type { ReactNode } from "react";
 import RadarChart from "@/components/atoms/radarChart";
 import type { RadarSeries } from "@/components/atoms/radarChart";
@@ -50,6 +51,7 @@ export function AssessmentPreview({
   children,
   comments,
 }: Props) {
+  const { t } = useTranslation();
   const arrow = labels.arrow ?? <span className="text-slate-400">→</span>;
 
   return (
@@ -76,7 +78,7 @@ export function AssessmentPreview({
           <h3 className="text-sm font-semibold text-slate-700">{labels.sectionTitle}</h3>
           {verticalStats.map(({ vertical, current, goal, self }) => (
             <div key={vertical} className="flex items-center justify-between text-sm">
-              <span className="text-slate-600 font-medium">{vertical}</span>
+              <span className="text-slate-600 font-medium">{t(`verticals.${vertical}`)}</span>
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-1">
                   <div className="w-2 h-2 rounded-full bg-emerald-500" />

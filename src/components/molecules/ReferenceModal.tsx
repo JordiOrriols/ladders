@@ -20,7 +20,9 @@ export function ReferenceModal({ isOpen, onClose }: ReferenceModalProps) {
     >
       {VERTICALS.map((vertical) => (
         <div key={vertical} data-testid={`reference-vertical-${vertical}`}>
-          <h3 className="font-semibold text-lg text-slate-800 mb-3">{vertical}</h3>
+          <h3 className="font-semibold text-lg text-slate-800 mb-3">
+            {t(`verticals.${vertical}`)}
+          </h3>
           {vertical === "Influence" && (
             <p className="text-sm text-slate-500 mb-3">{t("influenceScope")}</p>
           )}
