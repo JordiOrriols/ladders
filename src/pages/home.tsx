@@ -1,3 +1,4 @@
+import { AppPage } from "@jordiorriols/ui";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -91,7 +92,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50" data-testid="main-content">
+    <AppPage data-testid="main-content">
       <ErrorBoundary componentName="MainTabs">
         <MainTabs
           teams={team.teams}
@@ -179,6 +180,6 @@ export default function Home() {
           await refreshShares(sharedTeam.id);
         }}
       />
-    </div>
+    </AppPage>
   );
 }

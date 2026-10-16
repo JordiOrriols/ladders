@@ -30,7 +30,7 @@ import { createRepositoryGoalStore, type GoalStore } from "@/data/goalStore";
 import { EditorValidationError, useEvaluationEditor } from "@/hooks/useEvaluationEditor";
 import { PageMessage } from "./PageMessage";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AlertModal } from "@jordiorriols/ui";
+import { AlertModal, AppMain, AppPage } from "@jordiorriols/ui";
 import { useAsyncAction } from "@jordiorriols/ui/hooks";
 import { localizeError } from "@/utils/localizeError";
 
@@ -218,7 +218,7 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
     ) : null;
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <AppPage>
       <AssessmentHeader
         {...(isManager ? { onBack: () => navigate("/") } : {})}
         title={t(`${mode}.title`, { name: editor.profile.name })}
@@ -263,7 +263,7 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
         ]}
       />
 
-      <main className="max-w-[90rem] mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <AppMain className="max-w-[90rem]">
         <Tabs defaultValue="evaluation" className="space-y-6">
           {showGoals && (
             <TabsList
@@ -470,7 +470,7 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
             </TabsContent>
           )}
         </Tabs>
-      </main>
+      </AppMain>
       <AlertModal
         isOpen={message !== null}
         title={t("alerts.notice")}
@@ -478,6 +478,6 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
         closeLabel={t("buttons.close")}
         onClose={() => setMessage(null)}
       />
-    </div>
+    </AppPage>
   );
 }

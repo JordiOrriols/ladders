@@ -2,7 +2,7 @@ import React, { type ReactNode } from "react";
 import { Info, Users, User } from "@jordiorriols/ui/icons";
 import { useTranslation } from "react-i18next";
 import type { Evaluation, Member, Team } from "../../types";
-import { AppNavigation, AppNavigationItem } from "@jordiorriols/ui";
+import { AppMain, AppNavigation, AppNavigationItem } from "@jordiorriols/ui";
 import { Tabs } from "@jordiorriols/ui/radix";
 import { TeamTab } from "./TeamTab";
 import { IndividualTab } from "./IndividualTab";
@@ -81,7 +81,7 @@ export function MainTabs({
   return (
     <Tabs.Root defaultValue="individual" data-testid="main-tabs">
       {renderHeader ? renderHeader(navigation) : navigation}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" data-testid="main-area">
+      <AppMain data-testid="main-area">
         <Tabs.Content value="team">
           <ErrorBoundary componentName="TeamTab">
             <TeamTab
@@ -111,7 +111,7 @@ export function MainTabs({
             />
           </ErrorBoundary>
         </Tabs.Content>
-      </main>
+      </AppMain>
     </Tabs.Root>
   );
 }

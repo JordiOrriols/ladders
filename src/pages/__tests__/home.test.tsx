@@ -58,4 +58,12 @@ describe("Home Page", () => {
     expect(screen.queryByTestId("import-team-button")).not.toBeInTheDocument();
     expect(screen.queryByTestId("export-team-button")).not.toBeInTheDocument();
   });
+
+  it("shares the page canvas with white header and cards", async () => {
+    renderWithProviders(<Home />);
+    expect(await screen.findByTestId("main-content")).toHaveClass("min-h-screen", "bg-page");
+    expect(screen.getByTestId("main-content")).not.toHaveClass("bg-slate-50");
+    expect(screen.getByRole("banner")).toHaveClass("bg-background");
+    expect(screen.getByTestId("main-area")).toHaveClass("mx-auto", "max-w-7xl");
+  });
 });
