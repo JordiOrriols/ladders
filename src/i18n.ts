@@ -17,11 +17,22 @@ const resources = {
   it: { translation: it },
 };
 
+function updateDocumentLanguage() {
+  if (typeof document !== "undefined") {
+    document.documentElement.lang = i18n.resolvedLanguage ?? "en";
+  }
+}
+
+i18n.on("languageChanged", updateDocumentLanguage);
+i18n.on("initialized", updateDocumentLanguage);
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources,
+    supportedLngs: Object.keys(resources),
+    nonExplicitSupportedLngs: true,
     fallbackLng: "en",
     ns: ["translation"],
     defaultNS: "translation",
