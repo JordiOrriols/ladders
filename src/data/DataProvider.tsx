@@ -1,11 +1,14 @@
 import React, { createContext, useContext, useMemo, type ReactNode } from "react";
 import { useSupabaseAuth } from "@jordiorriols/ui/hooks";
-import { getAuthRedirectUrl } from "@jordiorriols/ui";
+import { createWorkspaceApi, getAuthRedirectUrl, type WorkspaceApi } from "@jordiorriols/ui";
 import type { Repository } from "./repository";
 import { supabase } from "./supabaseClient";
 import { createSupabaseRepository } from "./supabaseRepository";
 
-type DataContextValue = ReturnType<typeof useSupabaseAuth> & { repository: Repository | null };
+type DataContextValue = ReturnType<typeof useSupabaseAuth> & {
+  repository: Repository | null;
+  workspaceApi: WorkspaceApi | null;
+};
 const DataContext = createContext<DataContextValue | null>(null);
 
 export function DataProvider({ children }: { children: ReactNode }) {
@@ -14,7 +17,15 @@ export function DataProvider({ children }: { children: ReactNode }) {
     () => (supabase && auth.user ? createSupabaseRepository(supabase) : null),
     [auth.user]
   );
-  return <DataContext.Provider value={{ ...auth, repository }}>{children}</DataContext.Provider>;
+  const workspaceApi = useMemo(
+    () => (supabase && auth.user ? createWorkspaceApi(supabase) : null),
+    [auth.user]
+  );
+  return (
+    <DataContext.Provider value={{ ...auth, repository, workspaceApi }}>
+      {children}
+    </DataContext.Provider>
+  );
 }
 
 const unavailable = async (): Promise<never> => {
@@ -27,6 +38,7 @@ const fallback: DataContextValue = {
   passwordRecovery: false,
   authError: null,
   repository: null,
+  workspaceApi: null,
   signIn: unavailable,
   signInWithGitHub: unavailable,
   signUp: unavailable,

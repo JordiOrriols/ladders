@@ -4,7 +4,6 @@ export type CommentMap = Record<string, string>;
 export type EvaluationKind = "manager" | "self" | "peer";
 export type EvaluationStatus = "draft" | "published";
 export type TeamAccess = "owner" | "editor" | "viewer";
-export type SharedTeamAccess = Exclude<TeamAccess, "owner">;
 export const PLANNING_ROLES = ["backend", "frontend", "design", "qa"] as const;
 export type PlanningRole = (typeof PLANNING_ROLES)[number];
 
@@ -16,14 +15,6 @@ export interface Team {
   access: TeamAccess;
   createdAt: string;
   updatedAt: string;
-}
-
-export interface TeamShare {
-  teamId: string;
-  userId: string;
-  email: string;
-  access: SharedTeamAccess;
-  sharedAt: string;
 }
 
 export interface SmartGoal {

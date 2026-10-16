@@ -1,13 +1,13 @@
-import { AppPage } from "@jordiorriols/ui";
+import { AppPage, WorkspaceBar, getWorkspaceLabels } from "@jordiorriols/ui";
+import { useWorkspaceList } from "@jordiorriols/ui/hooks";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import type { Evaluation, SharedTeamAccess, Team, TeamMember, TeamShare } from "../types";
+import type { Evaluation, Team, TeamMember } from "../types";
 import { Header } from "../components/molecules/Header";
 import { ConfirmDialog } from "../components/molecules/ConfirmDialog";
 import { CreateTeamDialog } from "../components/molecules/CreateTeamDialog";
 import { ReferenceModal } from "../components/molecules/ReferenceModal";
-import { ShareTeamDialog } from "../components/molecules/ShareTeamDialog";
 import { MainTabs } from "../components/organisms/MainTabs";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 import { useData } from "@/data/DataProvider";
@@ -17,27 +17,36 @@ type TeamState = { teams: Team[]; members: TeamMember[]; evaluations: Evaluation
 
 export default function Home() {
   const navigate = useNavigate();
-  const { t } = useTranslation();
-  const { repository, loading } = useData();
+  const { t, i18n } = useTranslation();
+  const { repository, workspaceApi, loading } = useData();
+  const directory = useWorkspaceList(workspaceApi, "ladders");
+  const workspaceId = directory.workspace?.id;
+  const access = directory.workspace?.access_level;
   const [team, setTeam] = useState<TeamState>({ teams: [], members: [], evaluations: [] });
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [deleteTeamId, setDeleteTeamId] = useState<string | null>(null);
   const [showReference, setShowReference] = useState(false);
   const [showCreateTeam, setShowCreateTeam] = useState(false);
   const [renamingTeam, setRenamingTeam] = useState<Team | null>(null);
-  const [sharedTeam, setSharedTeam] = useState<Team | null>(null);
-  const [shares, setShares] = useState<TeamShare[]>([]);
-  const [sharesLoading, setSharesLoading] = useState(false);
 
+  // Home shows the teams of the selected workspace; sharing happens on the workspace.
   const reload = useCallback(async () => {
     if (!repository) return;
-    const [teams, members, evaluations] = await Promise.all([
-      repository.listTeams(),
+    if (!workspaceId || !access) {
+      setTeam({ teams: [], members: [], evaluations: [] });
+      return;
+    }
+    const [teams, allMembers, allEvaluations] = await Promise.all([
+      repository.listWorkspaceTeams(workspaceId, access),
       repository.listMembers(),
       repository.listEvaluations(),
     ]);
+    const teamIds = new Set(teams.map((item) => item.id));
+    const members = allMembers.filter((member) => teamIds.has(member.teamId));
+    const memberIds = new Set(members.map((member) => member.id));
+    const evaluations = allEvaluations.filter((evaluation) => memberIds.has(evaluation.memberId));
     setTeam({ teams, members, evaluations });
-  }, [repository]);
+  }, [repository, workspaceId, access]);
 
   useEffect(() => {
     if (loading) return;
@@ -72,23 +81,11 @@ export default function Home() {
 
   const openMember = (id: string) => navigate(`/member/${id}`);
 
-  const openNewMember = (teamId?: string) =>
-    navigate(teamId ? `/member/new?team=${encodeURIComponent(teamId)}` : "/member/new");
-
-  const refreshShares = async (teamId: string) => {
-    if (!repository) return;
-    setShares(await repository.listTeamShares(teamId));
-  };
-
-  const openTeamSharing = async (selectedTeam: Team) => {
-    setSharedTeam(selectedTeam);
-    setSharesLoading(true);
-    setShares([]);
-    try {
-      await refreshShares(selectedTeam.id);
-    } finally {
-      setSharesLoading(false);
-    }
+  // New members always join a team of the selected workspace; an empty workspace gets a team first.
+  const openNewMember = (teamId?: string) => {
+    const target = teamId ?? team.teams.find((item) => item.access !== "viewer")?.id;
+    if (target) navigate(`/member/new?team=${encodeURIComponent(target)}`);
+    else if (access === "owner") setShowCreateTeam(true);
   };
 
   return (
@@ -103,11 +100,26 @@ export default function Home() {
           onDeleteMember={(id) => setDeleteId(id)}
           onSelectMember={(member) => openMember(member.id)}
           onShowReference={() => setShowReference(true)}
-          onCreateTeam={() => setShowCreateTeam(true)}
-          onShareTeam={(selectedTeam) => void openTeamSharing(selectedTeam)}
+          {...(access === "owner" ? { onCreateTeam: () => setShowCreateTeam(true) } : {})}
           onMoveMember={(memberId, teamId) => void handleMoveMember(memberId, teamId)}
           onDeleteTeam={(selectedTeam) => setDeleteTeamId(selectedTeam.id)}
           onRenameTeam={setRenamingTeam}
+          workspaceActions={
+            workspaceApi && directory.workspaces ? (
+              <WorkspaceBar
+                api={workspaceApi}
+                app="ladders"
+                workspaces={directory.workspaces}
+                value={workspaceId ?? ""}
+                onValueChange={directory.select}
+                onCreated={async (created) => {
+                  directory.select(created.id);
+                  await directory.refresh();
+                }}
+                labels={getWorkspaceLabels(i18n.language)}
+              />
+            ) : undefined
+          }
           renderHeader={(navigation) => (
             <ErrorBoundary componentName="Header">
               <Header navigation={navigation} />
@@ -123,6 +135,12 @@ export default function Home() {
           onCancel={() => setDeleteId(null)}
         />
       </ErrorBoundary>
+
+      {directory.error && (
+        <p role="alert" className="px-6 text-sm text-destructive">
+          {directory.error}
+        </p>
+      )}
 
       <ConfirmDialog
         isOpen={!!deleteTeamId}
@@ -141,8 +159,8 @@ export default function Home() {
         isOpen={showCreateTeam}
         onClose={() => setShowCreateTeam(false)}
         onCreate={async (name) => {
-          if (!repository) return;
-          await repository.createTeam(name);
+          if (!repository || !workspaceId) return;
+          await repository.createTeam(name, workspaceId);
           await reload();
         }}
       />
@@ -155,29 +173,6 @@ export default function Home() {
           if (!repository || !renamingTeam) return;
           await repository.updateTeam(renamingTeam.id, name);
           await reload();
-        }}
-      />
-
-      <ShareTeamDialog
-        team={sharedTeam}
-        shares={shares}
-        isOpen={!!sharedTeam}
-        loading={sharesLoading}
-        onClose={() => setSharedTeam(null)}
-        onShare={async (email, access) => {
-          if (!repository || !sharedTeam) return;
-          await repository.shareTeamByEmail(sharedTeam.id, email, access);
-          await refreshShares(sharedTeam.id);
-        }}
-        onChangeAccess={async (userId, access: SharedTeamAccess) => {
-          if (!repository || !sharedTeam) return;
-          await repository.updateTeamShare(sharedTeam.id, userId, access);
-          await refreshShares(sharedTeam.id);
-        }}
-        onRemove={async (userId) => {
-          if (!repository || !sharedTeam) return;
-          await repository.removeTeamShare(sharedTeam.id, userId);
-          await refreshShares(sharedTeam.id);
         }}
       />
     </AppPage>

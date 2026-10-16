@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { createInMemoryRepository } from "./inMemoryRepository";
+import { DEFAULT_WORKSPACE, createInMemoryRepository } from "./inMemoryRepository";
 import type { GoalComment } from "@/types";
 
 describe("team repository contract", () => {
   it("creates a default team and moves members between teams", async () => {
     const repo = createInMemoryRepository();
     const [defaultTeam] = await repo.listTeams();
-    const platform = await repo.createTeam("Platform");
+    const platform = await repo.createTeam("Platform", DEFAULT_WORKSPACE);
     const member = await repo.createMember({ name: "Ada", role: "Dev", templateId: null });
 
     expect(defaultTeam?.isDefault).toBe(true);
@@ -14,15 +14,18 @@ describe("team repository contract", () => {
     expect((await repo.moveMember(member.id, platform.id)).teamId).toBe(platform.id);
   });
 
-  it("manages team shares and blocks populated team deletion", async () => {
+  it("lists teams per workspace and blocks populated team deletion", async () => {
     const repo = createInMemoryRepository();
-    const platform = await repo.createTeam("Platform");
-    await repo.shareTeamByEmail(platform.id, "ada@example.com", "editor");
-    const [share] = await repo.listTeamShares(platform.id);
-    expect(share).toMatchObject({ email: "ada@example.com", access: "editor" });
-
-    await repo.updateTeamShare(platform.id, share!.userId, "viewer");
-    expect((await repo.listTeamShares(platform.id))[0]?.access).toBe("viewer");
+    const platform = await repo.createTeam("Platform", "workspace-two");
+    expect(
+      (await repo.listWorkspaceTeams("workspace-two", "viewer")).map(({ name, access }) => ({
+        name,
+        access,
+      }))
+    ).toEqual([{ name: "Platform", access: "viewer" }]);
+    expect((await repo.listWorkspaceTeams(DEFAULT_WORKSPACE, "owner")).map((t) => t.name)).toEqual([
+      "Default Team",
+    ]);
 
     await repo.createMember({ name: "Ada", role: "Dev", templateId: null }, platform.id);
     await expect(repo.deleteTeam(platform.id)).rejects.toThrow("Team is not empty");

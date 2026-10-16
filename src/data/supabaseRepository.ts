@@ -3,12 +3,10 @@ import type {
   Evaluation,
   EvaluationInput,
   PlanningRole,
-  SharedTeamAccess,
   SmartGoal,
   SmartGoalInput,
   Team,
   TeamMember,
-  TeamShare,
 } from "@/types";
 import type { MemberPatch, Repository } from "./repository";
 
@@ -35,14 +33,6 @@ type TeamRow = {
   access_level?: Team["access"];
   created_at: string;
   updated_at: string;
-};
-
-type TeamShareRow = {
-  team_id: string;
-  user_id: string;
-  email: string;
-  access_level: SharedTeamAccess;
-  shared_at: string;
 };
 
 export type SmartGoalRow = {
@@ -101,14 +91,6 @@ const toTeam = (row: TeamRow): Team => ({
   access: row.access_level ?? "owner",
   createdAt: row.created_at,
   updatedAt: row.updated_at,
-});
-
-const toTeamShare = (row: TeamShareRow): TeamShare => ({
-  teamId: row.team_id,
-  userId: row.user_id,
-  email: row.email,
-  access: row.access_level,
-  sharedAt: row.shared_at,
 });
 
 export const toGoal = (row: SmartGoalRow): SmartGoal => ({
@@ -175,8 +157,22 @@ export function createSupabaseRepository(client: SupabaseClient): Repository {
       const rows = unwrap<TeamRow[]>(await client.rpc("list_accessible_teams"));
       return rows.map(toTeam);
     },
-    async createTeam(name) {
-      const row = unwrap<TeamRow>(await client.rpc("create_team", { p_name: name }));
+    async listWorkspaceTeams(workspaceId, access) {
+      const rows = unwrap<TeamRow[]>(
+        await client
+          .from("teams")
+          .select(TEAM_COLUMNS)
+          .eq("workspace_id", workspaceId)
+          .order("is_default", { ascending: false })
+          .order("name")
+          .order("created_at")
+      );
+      return rows.map((row) => toTeam({ ...row, access_level: access }));
+    },
+    async createTeam(name, workspaceId) {
+      const row = unwrap<TeamRow>(
+        await client.rpc("create_team", { p_name: name, p_workspace: workspaceId })
+      );
       return toTeam(row);
     },
     async updateTeam(id, name) {
@@ -192,35 +188,6 @@ export function createSupabaseRepository(client: SupabaseClient): Repository {
     },
     async deleteTeam(id) {
       const { error } = await client.from("teams").delete().eq("id", id);
-      if (error) throw new Error(error.message);
-    },
-    async listTeamShares(teamId) {
-      const rows = unwrap<TeamShareRow[]>(
-        await client.rpc("list_team_shares", { p_team_id: teamId })
-      );
-      return rows.map(toTeamShare);
-    },
-    async shareTeamByEmail(teamId, email, access) {
-      const { error } = await client.rpc("share_team_by_email", {
-        p_team_id: teamId,
-        p_email: email,
-        p_access: access,
-      });
-      if (error) throw new Error(error.message);
-    },
-    async updateTeamShare(teamId, userId, access) {
-      const { error } = await client.rpc("update_team_share", {
-        p_team_id: teamId,
-        p_user_id: userId,
-        p_access: access,
-      });
-      if (error) throw new Error(error.message);
-    },
-    async removeTeamShare(teamId, userId) {
-      const { error } = await client.rpc("remove_team_share", {
-        p_team_id: teamId,
-        p_user_id: userId,
-      });
       if (error) throw new Error(error.message);
     },
     async moveMember(memberId, teamId) {

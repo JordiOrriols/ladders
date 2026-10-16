@@ -1,5 +1,5 @@
 import React from "react";
-import { Pencil, Plus, Share2, Trash2 } from "@jordiorriols/ui/icons";
+import { Pencil, Plus, Trash2 } from "@jordiorriols/ui/icons";
 import { useTranslation } from "react-i18next";
 import type { Member, Team } from "../../types";
 import MemberCard from "../atoms/memberCard";
@@ -14,7 +14,6 @@ interface TeamTabProps {
   onDeleteMember: (id: string) => void;
   onSelectMember: (member: Member) => void;
   onCreateTeam?: () => void;
-  onShareTeam?: (team: Team) => void;
   onMoveMember?: (memberId: string, teamId: string) => void;
   onDeleteTeam?: (team: Team) => void;
   onRenameTeam?: (team: Team) => void;
@@ -28,7 +27,6 @@ export function TeamTab({
   onDeleteMember,
   onSelectMember,
   onCreateTeam,
-  onShareTeam,
   onMoveMember,
   onDeleteTeam,
   onRenameTeam,
@@ -41,7 +39,7 @@ export function TeamTab({
 
   // The onboarding empty state belongs to a brand new account. As soon as there
   // is a team of its own, the team list has to render instead: an empty team
-  // still needs its share, rename and delete actions, and those live on the
+  // still needs its rename and delete actions, and those live on the
   // team card.
   const onlyTheDefaultTeam = teams.every((team) => team.isDefault);
 
@@ -168,18 +166,6 @@ export function TeamTab({
                       >
                         <Pencil className="h-4 w-4" />
                         {t("teams.rename")}
-                      </Button>
-                    )}
-                    {onShareTeam && (
-                      <Button
-                        eventId="team_share_open"
-                        data-testid="team-share-open"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onShareTeam(team)}
-                      >
-                        <Share2 className="h-4 w-4" />
-                        {t("teams.share")}
                       </Button>
                     )}
                     {onDeleteTeam && teamMembers.length === 0 && !team.isDefault && (

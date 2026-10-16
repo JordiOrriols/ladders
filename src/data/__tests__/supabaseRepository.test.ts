@@ -101,31 +101,27 @@ describe("supabaseRepository", () => {
 
   it("creates teams through the authenticated RPC", async () => {
     const { client, calls } = fakeClient([{ data: teamRow, error: null }]);
-    const team = await createSupabaseRepository(client).createTeam("Platform");
+    const team = await createSupabaseRepository(client).createTeam("Platform", "w1");
     expect(team).toMatchObject({ id: "t1", name: "Platform", access: "owner" });
-    expect(calls).toContainEqual(["rpc", "create_team", { p_name: "Platform" }]);
+    expect(calls).toContainEqual(["rpc", "create_team", { p_name: "Platform", p_workspace: "w1" }]);
   });
 
-  it("shares teams and moves members through RPCs", async () => {
-    const { client, calls } = fakeClient([
-      { data: null, error: null },
-      { data: null, error: null },
-      { data: memberRow, error: null },
-    ]);
-    const repo = createSupabaseRepository(client);
-    await repo.shareTeamByEmail("t1", "ada@example.com", "editor");
-    await repo.updateTeamShare("t1", "u2", "viewer");
-    const moved = await repo.moveMember("m1", "t1");
+  it("lists the teams of one workspace with the caller's workspace access", async () => {
+    const { access_level: _access, ...row } = teamRow;
+    const { client, calls } = fakeClient([{ data: [row], error: null }]);
+    const teams = await createSupabaseRepository(client).listWorkspaceTeams("w1", "editor");
+    expect(teams).toEqual([expect.objectContaining({ id: "t1", access: "editor" })]);
+    expect(calls).toContainEqual(["teams", "eq", "workspace_id", "w1"]);
+  });
+
+  it("moves members through their RPC", async () => {
+    const { client, calls } = fakeClient([{ data: memberRow, error: null }]);
+    const moved = await createSupabaseRepository(client).moveMember("m1", "t1");
     expect(moved.teamId).toBe("t1");
     expect(calls).toContainEqual([
       "rpc",
-      "share_team_by_email",
-      { p_team_id: "t1", p_email: "ada@example.com", p_access: "editor" },
-    ]);
-    expect(calls).toContainEqual([
-      "rpc",
-      "update_team_share",
-      { p_team_id: "t1", p_user_id: "u2", p_access: "viewer" },
+      "move_member_to_team",
+      { p_member_id: "m1", p_team_id: "t1" },
     ]);
   });
 
