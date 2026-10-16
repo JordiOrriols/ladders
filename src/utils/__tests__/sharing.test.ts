@@ -19,15 +19,28 @@ describe("sharing helpers", () => {
     });
   });
 
-  it.each(["localhost", "127.0.0.1", "example.com"])("uses the shared registry from %s", (host) => {
-    Object.defineProperty(window, "location", {
-      value: new URL(`https://${host}/ladders/`),
-      configurable: true,
-    });
-    expect(buildVacationLink("vacation-uuid")).toBe(
-      "https://planner.jordiorriols.cat/#/vacations/vacation-uuid"
-    );
-  });
+  it.each(["example.com", "ladders.jordiorriols.cat"])(
+    "uses the shared registry from %s",
+    (host) => {
+      Object.defineProperty(window, "location", {
+        value: new URL(`https://${host}/ladders/`),
+        configurable: true,
+      });
+      expect(buildVacationLink("vacation-uuid")).toBe(
+        "https://planner.jordiorriols.cat/#/vacations/vacation-uuid"
+      );
+    }
+  );
+
+  it.each(["http://localhost:5175/#/member/1", "http://127.0.0.1:5175/"])(
+    "links to the local Planner dev server when Ladders runs on %s",
+    (href) => {
+      Object.defineProperty(window, "location", { value: new URL(href), configurable: true });
+      expect(buildVacationLink("vacation-uuid")).toBe(
+        "http://127.0.0.1:5176/#/vacations/vacation-uuid"
+      );
+    }
+  );
 
   it("encodes tokens without introducing new routes or query parameters", () => {
     expect(buildVacationLink("token/?x=1")).toBe(

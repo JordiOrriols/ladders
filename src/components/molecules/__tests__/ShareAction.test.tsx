@@ -70,7 +70,7 @@ describe("ShareAction", () => {
     await userEvent.click(screen.getByRole("button", { name: "Choose a sharing link" }));
     await userEvent.click(screen.getByRole("menuitem", { name: "Vacations" }));
     expect(writeText).toHaveBeenLastCalledWith(
-      `https://planner.jordiorriols.cat/#/vacations/${member.vacationToken}`
+      `http://127.0.0.1:5176/#/vacations/${member.vacationToken}`
     );
     expect(onEnableView).not.toHaveBeenCalled();
   });

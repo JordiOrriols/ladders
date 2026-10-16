@@ -4,8 +4,12 @@ export function buildShareLink(route: string): string {
   return `${base}#/${sanitizedRoute}`;
 }
 
+// Local Ladders links to the local Planner dev server (the e2e suite relies on it).
+const LOCAL_PLANNER_URL = "http://127.0.0.1:5176/";
+
 export function buildVacationLink(token: string): string {
-  const url = new URL(getProjectUrl("planner"));
+  const local = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+  const url = new URL(local ? LOCAL_PLANNER_URL : getProjectUrl("planner"));
   url.hash = `/vacations/${encodeURIComponent(token)}`;
   return url.href;
 }
