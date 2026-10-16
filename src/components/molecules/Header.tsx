@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { AppHeader } from "@jordiorriols/ui";
 import { useAsyncAction } from "@jordiorriols/ui/hooks";
 import { useData } from "@/data/DataProvider";
+import { localizeError } from "@/utils/localizeError";
 import { LoginDialog } from "./LoginDialog";
 import { LanguageSelector } from "./LanguageSelector";
 
@@ -35,7 +36,7 @@ export function Header() {
           <LanguageSelector />
           {error && (
             <p role="alert" className="text-sm text-red-600">
-              {error}
+              {localizeError(error, t)}
             </p>
           )}
         </>

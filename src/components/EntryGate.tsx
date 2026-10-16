@@ -5,6 +5,7 @@ import { useData } from "@/data/DataProvider";
 import { WelcomePage } from "@/pages/WelcomePage";
 import { AppSkeleton } from "@jordiorriols/ui";
 import { useTranslation } from "react-i18next";
+import { localizeError } from "@/utils/localizeError";
 
 export function EntryGate({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
@@ -19,7 +20,7 @@ export function EntryGate({ children }: { children: ReactNode }) {
   if (authError && !isSharedRoute) {
     return (
       <p role="alert" className="p-6 text-sm text-red-600">
-        {authError}
+        {localizeError(authError, t)}
       </p>
     );
   }

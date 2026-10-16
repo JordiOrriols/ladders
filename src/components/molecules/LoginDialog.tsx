@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { LoginDialog as LoginDialogView } from "@jordiorriols/ui";
 import { useLoginForm } from "@jordiorriols/ui/hooks";
 import { useData } from "@/data/DataProvider";
+import { localizeError } from "@/utils/localizeError";
 
 export function LoginDialog({
   isOpen,
@@ -29,7 +30,7 @@ export function LoginDialog({
     <LoginDialogView
       isOpen={isOpen}
       onClose={onClose}
-      form={form}
+      form={{ ...form, error: form.error ? localizeError(form.error, t) : null }}
       labels={{
         signInTitle: t("auth.signInTitle"),
         signUpTitle: t("auth.signUpTitle"),

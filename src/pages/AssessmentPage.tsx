@@ -32,6 +32,7 @@ import { PageMessage } from "./PageMessage";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AlertModal } from "@jordiorriols/ui";
 import { useAsyncAction } from "@jordiorriols/ui/hooks";
+import { localizeError } from "@/utils/localizeError";
 
 type StoreState = { store: EvaluationStore } | { error: "notFound" | "loading" };
 
@@ -351,7 +352,7 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
                       />
                       {visibilityAction.error && (
                         <p role="alert" className="text-sm text-red-600">
-                          {visibilityAction.error}
+                          {localizeError(visibilityAction.error, t)}
                         </p>
                       )}
                     </section>

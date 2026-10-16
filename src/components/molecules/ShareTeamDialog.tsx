@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { ShareAccessDialog } from "@jordiorriols/ui";
 import { useShareAccessForm } from "@jordiorriols/ui/hooks";
 import type { SharedTeamAccess, Team, TeamShare } from "@/types";
+import { localizeError } from "@/utils/localizeError";
 
 interface Props {
   team: Team | null;
@@ -37,7 +38,7 @@ export function ShareTeamDialog({
       isOpen={isOpen}
       onClose={onClose}
       loading={loading}
-      form={form}
+      form={{ ...form, error: form.error ? localizeError(form.error, t) : null }}
       entries={shares.map((share) => ({
         id: share.userId,
         email: share.email,

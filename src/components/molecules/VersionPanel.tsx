@@ -6,6 +6,7 @@ import { evaluationAuthor } from "@/data/radarSeries";
 import type { Evaluation, EvaluationStatus } from "@/types";
 import { ConfirmDialog } from "./ConfirmDialog";
 import { ButtonGroup, StatusBadge } from "@jordiorriols/ui";
+import { localizeError } from "@/utils/localizeError";
 
 type Props = {
   evaluations: Evaluation[];
@@ -74,7 +75,7 @@ export function VersionPanel({
       <h2 className="text-sm font-semibold text-slate-700">{t("versions.title")}</h2>
       {error && (
         <p role="alert" className="text-xs text-red-600">
-          {error}
+          {localizeError(error, t)}
         </p>
       )}
 

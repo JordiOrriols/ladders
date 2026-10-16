@@ -1,4 +1,26 @@
 {
+  "errors": {
+    "title": "Si è verificato un errore",
+    "retry": "Riprova",
+    "generic": "Non è stato possibile completare l'azione. Riprova.",
+    "invalidCredentials": "L'indirizzo email o la password non sono corretti.",
+    "emailNotConfirmed": "Conferma il tuo indirizzo email prima di accedere.",
+    "accountExists": "Esiste già un account con questo indirizzo email.",
+    "password": "Scegli una password diversa e più sicura.",
+    "rateLimit": "Troppi tentativi. Attendi prima di riprovare.",
+    "session": "La sessione è scaduta. Accedi di nuovo.",
+    "configuration": "L'accesso agli account non è configurato per questo ambiente.",
+    "network": "Errore di rete",
+    "saveMember": "Salva prima il membro.",
+    "invalidLink": "Questo link non è valido o non è più disponibile.",
+    "shareUser": "Nessun account idoneo trovato per questo indirizzo email.",
+    "defaultTeam": "Non è possibile eliminare il team predefinito.",
+    "teamNotEmpty": "Sposta o rimuovi i membri del team prima di eliminarlo.",
+    "progress": "L'avanzamento deve essere compreso tra 0 e 100.",
+    "comment": "I commenti devono contenere da 1 a 10.000 caratteri.",
+    "chooseComment": "Scegli un commento di competenza esistente.",
+    "access": "Non hai il permesso di eseguire questa azione."
+  },
   "verticals": {
     "Technology": "Tecnologia",
     "System": "Sistema",

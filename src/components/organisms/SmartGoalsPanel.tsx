@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ProgressIndicator } from "@jordiorriols/ui";
+import { localizeError } from "@/utils/localizeError";
 
 const emptyGoal: SmartGoalInput = {
   title: "",
@@ -198,7 +199,7 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
 
       {error && (
         <p role="alert" className="text-sm text-red-600">
-          {error}
+          {localizeError(error, t)}
         </p>
       )}
 
