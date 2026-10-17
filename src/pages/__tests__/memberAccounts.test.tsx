@@ -7,6 +7,7 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import i18n from "../../i18n";
 import Home from "../home";
 import JoinPage from "../JoinPage";
+import ViewPage from "../ViewPage";
 import { DEFAULT_WORKSPACE, createInMemoryRepository } from "@/data/__tests__/inMemoryRepository";
 import type { Repository } from "@/data/repository";
 
@@ -53,10 +54,25 @@ function renderAt(path: string) {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/join/:token" element={<JoinPage />} />
+          <Route path="/v/:token" element={<ViewPage />} />
         </Routes>
       </I18nextProvider>
     </MemoryRouter>
   );
+}
+
+async function expectNavigationTabs() {
+  const evaluation = await screen.findByTestId("assessment-tab-evaluation");
+  const goals = screen.getByTestId("assessment-tab-goals");
+  const navigation = screen.getByRole("navigation");
+  expect(navigation).toContainElement(evaluation);
+  expect(navigation).toContainElement(goals);
+  expect(evaluation).toHaveAttribute("aria-selected", "true");
+  expect(screen.queryByTestId("goals-panel")).not.toBeInTheDocument();
+
+  await userEvent.click(goals);
+  expect(goals).toHaveAttribute("aria-selected", "true");
+  expect(await screen.findByTestId("goals-panel")).toBeInTheDocument();
 }
 
 describe("Members linked to accounts", () => {
@@ -83,6 +99,26 @@ describe("Members linked to accounts", () => {
     expect(screen.queryByTestId("workspace-share")).not.toBeInTheDocument();
     expect(screen.queryByTestId("tab-team")).not.toBeInTheDocument();
     expect(dataState.repository!.myMember).toHaveBeenCalledWith(DEFAULT_WORKSPACE);
+  });
+
+  it("switches between the evaluation and goals with the header navigation tabs", async () => {
+    workspaceApi.listWorkspaces.mockResolvedValue([
+      { id: DEFAULT_WORKSPACE, name: "Squad", owner_id: "owner", access_level: "member" },
+    ]);
+    vi.spyOn(dataState.repository!, "myMember").mockResolvedValue({
+      id: "m1",
+      name: "Ada",
+      viewToken: VIEW_TOKEN,
+    });
+    renderAt("/");
+
+    await expectNavigationTabs();
+  });
+
+  it("uses the same navigation tabs on a shared view link", async () => {
+    renderAt(`/v/${VIEW_TOKEN}`);
+
+    await expectNavigationTabs();
   });
 
   it("links the account from an invite and opens the workspace", async () => {

@@ -1,4 +1,4 @@
-import { AppNavigation, AppNavigationItem } from "@jordiorriols/ui";
+import { AppNavigation } from "@jordiorriols/ui";
 import { UserRound } from "@jordiorriols/ui/icons";
 import React, { useEffect, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
@@ -48,7 +48,7 @@ export function MemberHome({
     <MemberView
       key={state.member.viewToken}
       token={state.member.viewToken}
-      renderHeader={({ title, share }) => (
+      renderHeader={({ title, share, tabs }) => (
         <Header
           navigation={
             <AppNavigation
@@ -60,10 +60,14 @@ export function MemberHome({
                 </>
               }
             >
-              <AppNavigationItem aria-current="page" data-testid="member-home-tab">
+              <span
+                className="mr-2 inline-flex items-center gap-2 border-r border-slate-200 pr-4 text-sm font-semibold text-slate-900 [&_svg]:size-4 [&_svg]:text-slate-500"
+                data-testid="member-home-tab"
+              >
                 <UserRound />
                 {title}
-              </AppNavigationItem>
+              </span>
+              {tabs}
             </AppNavigation>
           }
         />
