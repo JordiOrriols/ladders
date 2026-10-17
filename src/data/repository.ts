@@ -1,5 +1,7 @@
 import type {
   Evaluation,
+  LinkedMember,
+  MemberInvite,
   EvaluationInput,
   EvaluationKind,
   EvaluationStatus,
@@ -44,4 +46,11 @@ export interface Repository {
   setEvaluationStatus(id: string, status: EvaluationStatus): Promise<void>;
   setCommentVisibility(id: string, category: string, visible: boolean): Promise<Evaluation>;
   deleteEvaluation(id: string): Promise<void>;
+  /** The member the signed-in account is linked to in a workspace. */
+  myMember(workspaceId: string): Promise<LinkedMember | null>;
+  /** A one-time token the person opens, signed in, to link their account to the member. */
+  createMemberInvite(memberId: string): Promise<string>;
+  unlinkMember(memberId: string): Promise<void>;
+  previewMemberInvite(token: string): Promise<MemberInvite>;
+  claimMemberInvite(token: string): Promise<{ memberId: string; workspaceId: string }>;
 }

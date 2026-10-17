@@ -288,3 +288,44 @@ describe("supabaseRepository", () => {
     expect(calls).toContainEqual(["evaluations", "eq", "status", "draft"]);
   });
 });
+
+describe("member accounts", () => {
+  it("maps linked members and calls the invite RPCs", async () => {
+    const { client, calls } = fakeClient([
+      { data: [{ ...memberRow, user_id: "u2" }], error: null },
+      { data: [{ id: "m1", name: "Ada", view_token: "v" }], error: null },
+      { data: [], error: null },
+      { data: "token", error: null },
+      { data: null, error: null },
+      { data: [{ member_name: "Ada", workspace_id: "w1", workspace_name: "Squad" }], error: null },
+      { data: [{ member_id: "m1", workspace_id: "w1" }], error: null },
+      { data: [], error: null },
+    ]);
+    const repository = createSupabaseRepository(client);
+    expect((await repository.listMembers())[0]).toMatchObject({ linked: true });
+    expect(await repository.myMember("w1")).toEqual({ id: "m1", name: "Ada", viewToken: "v" });
+    expect(await repository.myMember("w2")).toBeNull();
+    expect(await repository.createMemberInvite("m1")).toBe("token");
+    await repository.unlinkMember("m1");
+    expect(await repository.previewMemberInvite("token")).toEqual({
+      memberName: "Ada",
+      workspaceId: "w1",
+      workspaceName: "Squad",
+    });
+    expect(await repository.claimMemberInvite("token")).toEqual({
+      memberId: "m1",
+      workspaceId: "w1",
+    });
+    await expect(repository.claimMemberInvite("token")).rejects.toThrow("no longer valid");
+    expect(calls.filter((call) => call[0] === "rpc")).toEqual([
+      ["rpc", "my_member", { workspace: "w1" }],
+      ["rpc", "my_member", { workspace: "w2" }],
+      ["rpc", "create_member_invite", { member: "m1" }],
+      ["rpc", "unlink_member", { member: "m1" }],
+      ["rpc", "member_invite", { invite: "token" }],
+      ["rpc", "claim_member_invite", { invite: "token" }],
+      ["rpc", "claim_member_invite", { invite: "token" }],
+    ]);
+    expect(calls[0]).toEqual(["members", "select", expect.stringContaining("user_id")]);
+  });
+});

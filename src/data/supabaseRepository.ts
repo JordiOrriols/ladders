@@ -22,6 +22,7 @@ export type MemberRow = {
   peer_token: string;
   view_token: string;
   view_enabled: boolean;
+  user_id?: string | null;
   created_at: string;
 };
 
@@ -61,7 +62,7 @@ export type EvaluationRow = {
 };
 
 const MEMBER_COLUMNS =
-  "id,team_id,name,role,planning_role,vacation_token,template_id,self_token,peer_token,view_token,view_enabled,created_at";
+  "id,team_id,name,role,planning_role,vacation_token,template_id,self_token,peer_token,view_token,view_enabled,user_id,created_at";
 const TEAM_COLUMNS = "id,owner_id,name,is_default,created_at,updated_at";
 const EVALUATION_COLUMNS =
   "id,member_id,kind,status,author_name,current_levels,goal_levels,comments,created_at,comment_visibility";
@@ -80,6 +81,7 @@ const toMember = (row: MemberRow): TeamMember => ({
   peerToken: row.peer_token,
   viewToken: row.view_token,
   viewEnabled: row.view_enabled,
+  linked: Boolean(row.user_id),
   createdAt: row.created_at,
 });
 
@@ -341,6 +343,40 @@ export function createSupabaseRepository(client: SupabaseClient): Repository {
     async deleteEvaluation(id) {
       const { error } = await client.from("evaluations").delete().eq("id", id);
       if (error) throw new Error(error.message);
+    },
+    async myMember(workspaceId) {
+      const rows = unwrap<{ id: string; name: string; view_token: string }[]>(
+        await client.rpc("my_member", { workspace: workspaceId })
+      );
+      const row = rows[0];
+      return row ? { id: row.id, name: row.name, viewToken: row.view_token } : null;
+    },
+    async createMemberInvite(memberId) {
+      return unwrap<string>(await client.rpc("create_member_invite", { member: memberId }));
+    },
+    async unlinkMember(memberId) {
+      const { error } = await client.rpc("unlink_member", { member: memberId });
+      if (error) throw new Error(error.message);
+    },
+    async previewMemberInvite(token) {
+      const rows = unwrap<{ member_name: string; workspace_id: string; workspace_name: string }[]>(
+        await client.rpc("member_invite", { invite: token })
+      );
+      const row = rows[0];
+      if (!row) throw new Error("This invite is no longer valid");
+      return {
+        memberName: row.member_name,
+        workspaceId: row.workspace_id,
+        workspaceName: row.workspace_name,
+      };
+    },
+    async claimMemberInvite(token) {
+      const rows = unwrap<{ member_id: string; workspace_id: string }[]>(
+        await client.rpc("claim_member_invite", { invite: token })
+      );
+      const row = rows[0];
+      if (!row) throw new Error("This invite is no longer valid");
+      return { memberId: row.member_id, workspaceId: row.workspace_id };
     },
   };
 }

@@ -33,6 +33,7 @@ export function createInMemoryRepository(): Repository {
   let members: TeamMember[] = [];
   let evaluations: Evaluation[] = [];
   let goals: SmartGoal[] = [];
+  const invites = new Map<string, string>();
 
   return {
     kind: "remote",
@@ -214,6 +215,43 @@ export function createInMemoryRepository(): Repository {
     },
     async deleteEvaluation(evaluationId: string) {
       evaluations = evaluations.filter((evaluation) => evaluation.id !== evaluationId);
+    },
+    async myMember(workspaceId: string) {
+      const member = members.find(
+        (item) => item.linked && teamWorkspace.get(item.teamId) === workspaceId
+      );
+      return member
+        ? { id: member.id, name: member.name, viewToken: member.viewToken ?? "" }
+        : null;
+    },
+    async createMemberInvite(memberId: string) {
+      if (members.find((member) => member.id === memberId)?.linked)
+        throw new Error("This member is already linked to an account");
+      const token = id("invite");
+      invites.set(token, memberId);
+      return token;
+    },
+    async unlinkMember(memberId: string) {
+      members = members.map((member) =>
+        member.id === memberId ? { ...member, linked: false } : member
+      );
+    },
+    async previewMemberInvite(token: string) {
+      const member = members.find((item) => item.id === invites.get(token));
+      if (!member) throw new Error("This invite is no longer valid");
+      const workspaceId = teamWorkspace.get(member.teamId) ?? DEFAULT_WORKSPACE;
+      return { memberName: member.name, workspaceId, workspaceName: "Default" };
+    },
+    async claimMemberInvite(token: string) {
+      const memberId = invites.get(token);
+      const member = members.find((item) => item.id === memberId);
+      if (!member) throw new Error("This invite is no longer valid");
+      invites.delete(token);
+      members = members.map((item) => (item.id === member.id ? { ...item, linked: true } : item));
+      return {
+        memberId: member.id,
+        workspaceId: teamWorkspace.get(member.teamId) ?? DEFAULT_WORKSPACE,
+      };
     },
   };
 }
