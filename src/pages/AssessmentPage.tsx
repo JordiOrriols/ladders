@@ -157,6 +157,17 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
     }
   };
 
+  const handleCreateInvite = async () => {
+    if (!editor.memberId || !repository) throw new Error("Save the member first");
+    return repository.createMemberInvite(editor.memberId);
+  };
+
+  const handleUnlink = async () => {
+    if (!editor.memberId || !repository) return;
+    await repository.unlinkMember(editor.memberId);
+    editor.setMember({ ...editor.member!, linked: false });
+  };
+
   if (isPeer && editor.submitted) {
     return (
       <PageMessage kind="thanks">
@@ -232,7 +243,12 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
             editor.member?.selfToken &&
             editor.member.peerToken &&
             editor.member.viewToken ? (
-              <ShareAction member={editor.member} onEnableView={handleEnableView} />
+              <ShareAction
+                member={editor.member}
+                onEnableView={handleEnableView}
+                onCreateInvite={handleCreateInvite}
+                onUnlink={handleUnlink}
+              />
             ) : null}
           </>
         }

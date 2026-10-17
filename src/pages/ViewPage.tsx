@@ -1,5 +1,5 @@
 import { AppMain, AppPage } from "@jordiorriols/ui";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { EvaluationViewer } from "@/components/organisms/EvaluationViewer";
@@ -22,9 +22,22 @@ type ViewState =
       links: Awaited<ReturnType<typeof getViewSharingLinks>>;
     };
 
+type ViewHeader = { title: string; subtitle: string; share: ReactNode };
+
 /** Read-only page for the evaluated person: published versions plus their own self versions. */
 export default function ViewPage() {
   const { token } = useParams();
+  return <MemberView token={token} />;
+}
+
+/** The view page of one member; `renderHeader` replaces the standalone header. */
+export function MemberView({
+  token,
+  renderHeader,
+}: {
+  token: string | undefined;
+  renderHeader?: (header: ViewHeader) => ReactNode;
+}) {
   const { t } = useTranslation();
   const [state, setState] = useState<ViewState>({ kind: "loading" });
   const goalStore = useMemo(
@@ -62,14 +75,23 @@ export default function ViewPage() {
 
   if (state.kind !== "ready") return <PageMessage kind={state.kind} />;
 
+  const header: ViewHeader = {
+    title: t("viewPage.title", { name: state.info.name }),
+    subtitle: state.info.role,
+    share: <ShareAction member={state.links} />,
+  };
   return (
     <AppPage>
-      <AssessmentHeader
-        title={t("viewPage.title", { name: state.info.name })}
-        subtitle={state.info.role}
-        actions={[]}
-        extraActions={<ShareAction member={state.links} />}
-      />
+      {renderHeader ? (
+        renderHeader(header)
+      ) : (
+        <AssessmentHeader
+          title={header.title}
+          subtitle={header.subtitle}
+          actions={[]}
+          extraActions={header.share}
+        />
+      )}
       <AppMain>
         <Tabs defaultValue="evaluation" className="space-y-6">
           <TabsList className="bg-white border border-slate-200">

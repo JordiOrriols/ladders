@@ -12,6 +12,8 @@ import { MainTabs } from "../components/organisms/MainTabs";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 import { useData } from "@/data/DataProvider";
 import { toMemberSummary } from "@/data/evaluations";
+import { takePendingInvite } from "@/utils/pendingInvite";
+import { MemberHome } from "./MemberHome";
 
 type TeamState = { teams: Team[]; members: TeamMember[]; evaluations: Evaluation[] };
 
@@ -32,7 +34,7 @@ export default function Home() {
   // Home shows the teams of the selected workspace; sharing happens on the workspace.
   const reload = useCallback(async () => {
     if (!repository) return;
-    if (!workspaceId || !access) {
+    if (!workspaceId || !access || access === "member") {
       setTeam({ teams: [], members: [], evaluations: [] });
       return;
     }
@@ -47,6 +49,12 @@ export default function Home() {
     const evaluations = allEvaluations.filter((evaluation) => memberIds.has(evaluation.memberId));
     setTeam({ teams, members, evaluations });
   }, [repository, workspaceId, access]);
+
+  // An invite opened before signing in continues once the account is back here.
+  useEffect(() => {
+    const invite = takePendingInvite();
+    if (invite) navigate(`/join/${invite}`, { replace: true });
+  }, [navigate]);
 
   useEffect(() => {
     if (loading) return;
@@ -88,6 +96,25 @@ export default function Home() {
     else if (access === "owner") setShowCreateTeam(true);
   };
 
+  const workspaceBar =
+    workspaceApi && directory.workspaces ? (
+      <WorkspaceBar
+        api={workspaceApi}
+        app="ladders"
+        workspaces={directory.workspaces}
+        value={workspaceId ?? ""}
+        onValueChange={directory.select}
+        onCreated={async (created) => {
+          directory.select(created.id);
+          await directory.refresh();
+        }}
+        labels={getWorkspaceLabels(i18n.language)}
+      />
+    ) : undefined;
+
+  if (workspaceId && access === "member")
+    return <MemberHome workspaceId={workspaceId} workspaceBar={workspaceBar} />;
+
   return (
     <AppPage data-testid="main-content">
       <ErrorBoundary componentName="MainTabs">
@@ -104,22 +131,7 @@ export default function Home() {
           onMoveMember={(memberId, teamId) => void handleMoveMember(memberId, teamId)}
           onDeleteTeam={(selectedTeam) => setDeleteTeamId(selectedTeam.id)}
           onRenameTeam={setRenamingTeam}
-          workspaceActions={
-            workspaceApi && directory.workspaces ? (
-              <WorkspaceBar
-                api={workspaceApi}
-                app="ladders"
-                workspaces={directory.workspaces}
-                value={workspaceId ?? ""}
-                onValueChange={directory.select}
-                onCreated={async (created) => {
-                  directory.select(created.id);
-                  await directory.refresh();
-                }}
-                labels={getWorkspaceLabels(i18n.language)}
-              />
-            ) : undefined
-          }
+          workspaceActions={workspaceBar}
           renderHeader={(navigation) => (
             <ErrorBoundary componentName="Header">
               <Header navigation={navigation} />

@@ -420,6 +420,13 @@
       "label": "Vedi la mia valutazione",
       "hint": "Sola lettura: le tue versioni pubblicate, le versioni peer pubblicate e le relative autovalutazioni.",
       "enable": "Abilitato"
+    },
+    "account": {
+      "invite": "Copia l'invito all'account",
+      "unlink": "Scollega l'account",
+      "copied": "Invito copiato. La persona lo apre dopo aver effettuato l'accesso per collegare il proprio account; funziona una volta, per 30 giorni.",
+      "unlinked": "L'account non è più collegato a questo membro.",
+      "failed": "Non ha funzionato. Riprova."
     }
   },
   "welcome": {
@@ -495,5 +502,13 @@
     "noTeamMembers": "Ancora nessun membro del team",
     "addMembersToSeeOverview": "Aggiungi membri per vedere la panoramica del team",
     "currentNotSet": "Non impostato"
+  },
+  "join": {
+    "title": "Collega il tuo account",
+    "description": "Sei stato invitato come {{member}} nello spazio {{workspace}}.",
+    "access": "Qui vedrai la tua valutazione e i tuoi obiettivi, e lo spazio come lettore in Planner e Pulse.",
+    "claim": "Collega il mio account",
+    "failed": "Impossibile collegare l'account: {{message}}",
+    "invalid": "Questo invito è già stato usato o è scaduto. Chiedine uno nuovo."
   }
 }

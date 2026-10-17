@@ -111,4 +111,54 @@ describe("ShareAction", () => {
     await userEvent.click(screen.getByRole("menuitem", { name: "View my evaluation" }));
     expect(onEnableView).not.toHaveBeenCalled();
   });
+
+  it("copies a one-time account invite for unlinked members", async () => {
+    const onCreateInvite = vi.fn(async () => "55555555-5555-4555-8555-555555555555");
+    render(
+      <I18nextProvider i18n={i18n}>
+        <ShareAction member={member} onCreateInvite={onCreateInvite} onUnlink={vi.fn()} />
+      </I18nextProvider>
+    );
+    await userEvent.click(screen.getByRole("button", { name: "Choose a sharing link" }));
+    expect(screen.queryByRole("menuitem", { name: "Unlink account" })).not.toBeInTheDocument();
+    await userEvent.click(screen.getByRole("menuitem", { name: "Copy account invite" }));
+    expect(writeText).toHaveBeenLastCalledWith(
+      expect.stringContaining("#/join/55555555-5555-4555-8555-555555555555")
+    );
+    expect(await screen.findByRole("alertdialog")).toHaveTextContent("Invite copied");
+  });
+
+  it("unlinks linked members instead of inviting them again", async () => {
+    const onUnlink = vi.fn(async () => {});
+    render(
+      <I18nextProvider i18n={i18n}>
+        <ShareAction
+          member={{ ...member, linked: true }}
+          onCreateInvite={vi.fn()}
+          onUnlink={onUnlink}
+        />
+      </I18nextProvider>
+    );
+    await userEvent.click(screen.getByRole("button", { name: "Choose a sharing link" }));
+    expect(screen.queryByRole("menuitem", { name: "Copy account invite" })).not.toBeInTheDocument();
+    await userEvent.click(screen.getByRole("menuitem", { name: "Unlink account" }));
+    expect(onUnlink).toHaveBeenCalledOnce();
+    expect(await screen.findByRole("alertdialog")).toHaveTextContent("no longer linked");
+  });
+
+  it("reports a failed invite", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    render(
+      <I18nextProvider i18n={i18n}>
+        <ShareAction
+          member={member}
+          onCreateInvite={vi.fn(async () => Promise.reject(new Error("denied")))}
+        />
+      </I18nextProvider>
+    );
+    await userEvent.click(screen.getByRole("button", { name: "Choose a sharing link" }));
+    await userEvent.click(screen.getByRole("menuitem", { name: "Copy account invite" }));
+    expect(await screen.findByRole("alertdialog")).toHaveTextContent("That did not work");
+    expect(writeText).not.toHaveBeenCalled();
+  });
 });

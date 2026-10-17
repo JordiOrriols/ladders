@@ -420,6 +420,13 @@
       "label": "Voir mon évaluation",
       "hint": "Lecture seule: vos versions publiées, les versions publiées par des pairs et leurs auto-évaluations.",
       "enable": "Activé"
+    },
+    "account": {
+      "invite": "Copier l'invitation de compte",
+      "unlink": "Dissocier le compte",
+      "copied": "Invitation copiée. La personne l'ouvre connectée pour associer son compte ; elle fonctionne une fois, pendant 30 jours.",
+      "unlinked": "Le compte n'est plus associé à ce membre.",
+      "failed": "Cela n'a pas fonctionné. Réessayez."
     }
   },
   "welcome": {
@@ -495,5 +502,13 @@
     "noTeamMembers": "Aucun membre d’équipe pour le moment",
     "addMembersToSeeOverview": "Ajoutez des membres pour voir la vue d’ensemble de l’équipe",
     "currentNotSet": "Non défini"
+  },
+  "join": {
+    "title": "Associer votre compte",
+    "description": "Vous avez été invité en tant que {{member}} dans l'espace {{workspace}}.",
+    "access": "Vous verrez ici votre évaluation et vos objectifs, et l'espace en lecture dans Planner et Pulse.",
+    "claim": "Associer mon compte",
+    "failed": "Le compte n'a pas pu être associé : {{message}}",
+    "invalid": "Cette invitation a déjà été utilisée ou a expiré. Demandez-en une nouvelle."
   }
 }

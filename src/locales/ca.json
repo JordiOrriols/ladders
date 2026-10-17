@@ -420,6 +420,13 @@
       "label": "Veure la meva avaluació",
       "hint": "Només lectura: les vostres versions publicades, les de companys publicades i les seves autoavaluacions.",
       "enable": "Activat"
+    },
+    "account": {
+      "invite": "Copia la invitació del compte",
+      "unlink": "Desvincula el compte",
+      "copied": "Invitació copiada. La persona l'obre amb la sessió iniciada per vincular el seu compte; funciona una vegada, durant 30 dies.",
+      "unlinked": "El compte ja no està vinculat a aquest membre.",
+      "failed": "No ha funcionat. Torna-ho a provar."
     }
   },
   "welcome": {
@@ -495,5 +502,13 @@
     "noTeamMembers": "Sense membres de l'equip encara",
     "addMembersToSeeOverview": "Afegiu membres per veure la descripció general de l'equip",
     "currentNotSet": "No establert"
+  },
+  "join": {
+    "title": "Vincula el teu compte",
+    "description": "T'han convidat com a {{member}} a l'espai {{workspace}}.",
+    "access": "Aquí veuràs la teva avaluació i els teus objectius, i l'espai com a lector a Planner i Pulse.",
+    "claim": "Vincula el meu compte",
+    "failed": "No s'ha pogut vincular el compte: {{message}}",
+    "invalid": "Aquesta invitació ja s'ha fet servir o ha caducat. Demana'n una de nova."
   }
 }

@@ -6,6 +6,7 @@ import { WelcomePage } from "@/pages/WelcomePage";
 import { AppSkeleton } from "@jordiorriols/ui";
 import { useTranslation } from "react-i18next";
 import { localizeError } from "@/utils/localizeError";
+import { rememberInvite } from "@/utils/pendingInvite";
 
 export function EntryGate({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
@@ -25,6 +26,10 @@ export function EntryGate({ children }: { children: ReactNode }) {
     );
   }
 
-  if (!isSharedRoute && !user) return <WelcomePage />;
+  if (!isSharedRoute && !user) {
+    const invite = /^\/join\/([^/]+)$/.exec(pathname)?.[1];
+    if (invite) rememberInvite(invite);
+    return <WelcomePage />;
+  }
   return children;
 }

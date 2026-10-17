@@ -420,6 +420,13 @@
       "label": "View my evaluation",
       "hint": "Read-only: your published versions, published peer versions and their self versions.",
       "enable": "Enabled"
+    },
+    "account": {
+      "invite": "Copy account invite",
+      "unlink": "Unlink account",
+      "copied": "Invite copied. The person opens it signed in to link their account; it works once, for 30 days.",
+      "unlinked": "The account is no longer linked to this member.",
+      "failed": "That did not work. Try again."
     }
   },
   "welcome": {
@@ -495,5 +502,13 @@
     "noTeamMembers": "No team members yet",
     "addMembersToSeeOverview": "Add members to see the team overview",
     "currentNotSet": "Not set"
+  },
+  "join": {
+    "title": "Link your account",
+    "description": "You were invited as {{member}} in the {{workspace}} workspace.",
+    "access": "You will see your own evaluation and goals here, and the workspace as a viewer in Planner and Pulse.",
+    "claim": "Link my account",
+    "failed": "The account could not be linked: {{message}}",
+    "invalid": "This invite was already used or has expired. Ask for a new one."
   }
 }
