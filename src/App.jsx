@@ -10,6 +10,7 @@ import { AppFooter } from "@jordiorriols/ui";
 
 const AssessmentPage = lazy(() => import("./pages/AssessmentPage"));
 const ViewPage = lazy(() => import("./pages/ViewPage"));
+const JoinPage = lazy(() => import("./pages/JoinPage"));
 
 // Loading fallback component
 function LoadingFallback() {
@@ -62,6 +63,7 @@ export default function App() {
                   <Route path="/member/:id" element={<AssessmentPage />} />
                   <Route path="/e/:token" element={<AssessmentPage />} />
                   <Route path="/v/:token" element={<ViewPage />} />
+                  <Route path="/join/:token" element={<JoinPage />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
               </Suspense>

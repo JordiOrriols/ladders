@@ -69,7 +69,23 @@ export interface TeamMember {
   peerToken: string | null;
   viewToken: string | null;
   viewEnabled: boolean;
+  /** Whether the person this member describes has linked their account. */
+  linked?: boolean;
   createdAt: string;
+}
+
+/** The member a signed-in account is linked to in a workspace. */
+export interface LinkedMember {
+  id: string;
+  name: string;
+  viewToken: string;
+}
+
+/** What a member invite links the account to. */
+export interface MemberInvite {
+  memberName: string;
+  workspaceId: string;
+  workspaceName: string;
 }
 
 export interface EvaluationInput {

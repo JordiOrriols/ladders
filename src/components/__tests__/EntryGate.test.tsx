@@ -49,6 +49,15 @@ describe("EntryGate", () => {
     );
   });
 
+  it("keeps an invite opened while signed out for after sign-in", () => {
+    sessionStorage.clear();
+    renderGate("/join/55555555-5555-4555-8555-555555555555");
+    expect(screen.getByRole("heading", { name: "How do you want to start?" })).toBeInTheDocument();
+    expect(sessionStorage.getItem("ladders.pendingInvite")).toBe(
+      "55555555-5555-4555-8555-555555555555"
+    );
+  });
+
   it("offers account access on an owned route", () => {
     renderGate();
     expect(screen.getByRole("heading", { name: "How do you want to start?" })).toBeInTheDocument();

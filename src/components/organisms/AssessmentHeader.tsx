@@ -45,9 +45,18 @@ type Props = {
   onBack?: () => void;
   actions: HeaderAction[];
   extraActions?: ReactNode;
+  /** Tab row shown below the branding, as on the home page. */
+  navigation?: ReactNode;
 };
 
-export function AssessmentHeader({ title, subtitle, onBack, actions, extraActions }: Props) {
+export function AssessmentHeader({
+  title,
+  subtitle,
+  onBack,
+  actions,
+  extraActions,
+  navigation,
+}: Props) {
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -68,6 +77,7 @@ export function AssessmentHeader({ title, subtitle, onBack, actions, extraAction
       {...(subtitle ? { subtitle } : {})}
       icon={<AppIcon />}
       testId="assessment-header"
+      {...(navigation ? { navigation } : {})}
       leading={
         onBack && (
           <Button

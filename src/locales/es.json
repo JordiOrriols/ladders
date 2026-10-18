@@ -420,6 +420,13 @@
       "label": "Ver mi evaluación",
       "hint": "Solo lectura: sus versiones publicadas, las de compañeros publicadas y sus autoevaluaciones.",
       "enable": "Activado"
+    },
+    "account": {
+      "invite": "Copiar invitación de cuenta",
+      "unlink": "Desvincular cuenta",
+      "copied": "Invitación copiada. La persona la abre con su sesión iniciada para vincular su cuenta; funciona una vez, durante 30 días.",
+      "unlinked": "La cuenta ya no está vinculada a este miembro.",
+      "failed": "No ha funcionado. Inténtalo de nuevo."
     }
   },
   "welcome": {
@@ -495,5 +502,13 @@
     "noTeamMembers": "Sin miembros del equipo todavía",
     "addMembersToSeeOverview": "Añada miembros para ver la descripción general del equipo",
     "currentNotSet": "No establecido"
+  },
+  "join": {
+    "title": "Vincula tu cuenta",
+    "description": "Te han invitado como {{member}} en el espacio {{workspace}}.",
+    "access": "Aquí verás tu evaluación y tus objetivos, y el espacio como lector en Planner y Pulse.",
+    "claim": "Vincular mi cuenta",
+    "failed": "No se ha podido vincular la cuenta: {{message}}",
+    "invalid": "Esta invitación ya se ha usado o ha caducado. Pide una nueva."
   }
 }

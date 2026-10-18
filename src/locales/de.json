@@ -420,6 +420,13 @@
       "label": "Meine Bewertung ansehen",
       "hint": "Nur Lesen: Ihre veröffentlichten Versionen, veröffentlichte Peer-Versionen und deren Selbstversionen.",
       "enable": "Aktiviert"
+    },
+    "account": {
+      "invite": "Konto-Einladung kopieren",
+      "unlink": "Konto trennen",
+      "copied": "Einladung kopiert. Die Person öffnet sie angemeldet, um ihr Konto zu verknüpfen; sie funktioniert einmal, 30 Tage lang.",
+      "unlinked": "Das Konto ist nicht mehr mit diesem Mitglied verknüpft.",
+      "failed": "Das hat nicht funktioniert. Versuche es erneut."
     }
   },
   "welcome": {
@@ -495,5 +502,13 @@
     "noTeamMembers": "Noch keine Teammitglieder",
     "addMembersToSeeOverview": "Fügen Sie Mitglieder hinzu, um die Teamübersicht zu sehen",
     "currentNotSet": "Nicht gesetzt"
+  },
+  "join": {
+    "title": "Konto verknüpfen",
+    "description": "Du wurdest als {{member}} in den Arbeitsbereich {{workspace}} eingeladen.",
+    "access": "Hier siehst du deine Bewertung und deine Ziele, und den Arbeitsbereich als Betrachter in Planner und Pulse.",
+    "claim": "Mein Konto verknüpfen",
+    "failed": "Das Konto konnte nicht verknüpft werden: {{message}}",
+    "invalid": "Diese Einladung wurde bereits verwendet oder ist abgelaufen. Bitte um eine neue."
   }
 }
