@@ -4,7 +4,7 @@ A React application for managing team competency assessments, evaluation history
 
 ## Requirements
 
-- Node.js 24+
+- Node.js 26 LTS with npm 11.20.0 (`nvm install && nvm use`)
 - A Supabase project
 - Docker Desktop only when running Supabase locally
 
@@ -105,7 +105,7 @@ The publishable key is safe to use in the browser. Database access is protected 
 
 Pushes to `main` or `master` and manual dispatch run the same compile, lint,
 format, coverage, build and GitHub Pages deployment checks as Planner, using
-Node.js 24.21.0. `npm ci` installs `@jordiorriols/ui` from GitHub Packages with
+Node.js 26 selected from `.nvmrc`. `npm ci` installs `@jordiorriols/ui` from GitHub Packages with
 the workflow token (`packages: read`). Grant this repository read access in the
 package's **Manage Actions access** settings, or set the `UI_READ_TOKEN` secret
 to a token with `read:packages`.

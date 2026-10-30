@@ -2,6 +2,10 @@
   "type": "module",
   "name": "static",
   "version": "0.1.0",
+  "packageManager": "npm@11.20.0",
+  "engines": {
+    "node": ">=26.0.0"
+  },
   "description": "",
   "license": "MIT",
   "scripts": {
