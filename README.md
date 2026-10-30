@@ -14,9 +14,13 @@ The shared UI library is installed from GitHub Packages as
 `@jordiorriols/ui`. Export a token with `read:packages` scope before installing;
 `.npmrc` reads it from `GITHUB_TOKEN`:
 
-UI `^0.3.19` supplies the shared blue Ladders branding for header, project-menu
+UI `^0.3.22` supplies the shared blue Ladders branding for header, project-menu
 and login/welcome icons. `projectId` and `ProjectIcon` reuse the UI registry,
 including employee evaluation pages, without a local palette.
+
+Planning-role and grouped seniority-template dropdowns use UI's shared
+`SelectField` listbox instead of browser-native select popups. Workspace sharing
+uses the same component, with consistent keyboard and mobile behavior.
 
 ```bash
 export GITHUB_TOKEN=<token with read:packages>

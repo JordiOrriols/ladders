@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { SelectField } from "@jordiorriols/ui";
 import { ChevronDown, ChevronUp, GraduationCap } from "@jordiorriols/ui/icons";
 import { useTranslation } from "react-i18next";
 import { VERTICALS } from "@/components/atoms/levelSelector";
@@ -31,23 +32,21 @@ export function TemplatePanel({ templateId, onChange }: Props) {
       </div>
 
       {onChange ? (
-        <select
+        <SelectField
           id="template-select"
           value={templateId ?? ""}
-          onChange={(e) => onChange(e.target.value || null)}
-          className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm"
-        >
-          <option value="">{t("templates.none")}</option>
-          {LADDER_TRACKS.map((track) => (
-            <optgroup key={track} label={t(`templates.tracks.${track}`)}>
-              {LADDER_TEMPLATES.filter((tpl) => tpl.track === track).map((tpl) => (
-                <option key={tpl.id} value={tpl.id}>
-                  {tpl.id} · {t(`templates.tracks.${track}`)}
-                </option>
-              ))}
-            </optgroup>
-          ))}
-        </select>
+          onValueChange={(value) => onChange(value || null)}
+          options={[
+            { value: "", label: t("templates.none") },
+            ...LADDER_TRACKS.flatMap((track) =>
+              LADDER_TEMPLATES.filter((tpl) => tpl.track === track).map((tpl) => ({
+                value: tpl.id,
+                label: `${tpl.id} · ${t(`templates.tracks.${track}`)}`,
+                group: t(`templates.tracks.${track}`),
+              }))
+            ),
+          ]}
+        />
       ) : (
         template && (
           <p className="text-sm font-medium text-slate-800">
