@@ -349,6 +349,7 @@
     "filter": "Filter versions by author",
     "empty": "No versions saved yet",
     "compare": "Show on chart",
+    "hideFromChart": "Hide from chart",
     "deleteTitle": "Delete this version?",
     "deleteDescription": "This version will be permanently removed from the history.",
     "kind": {

@@ -46,7 +46,7 @@ function ErrorFallback({ resetErrorBoundary }) {
 }
 
 export default function App() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   return (
     <div className="min-h-screen flex flex-col">
       <div className="flex-1">
@@ -71,7 +71,7 @@ export default function App() {
           </DataProvider>
         </ErrorBoundary>
       </div>
-      <AppFooter text={t("footer.attribution")} />
+      <AppFooter projectId="ladders" language={i18n.language} text={t("footer.attribution")} />
     </div>
   );
 }

@@ -31,6 +31,27 @@ describe("VersionPanel", () => {
     evaluation({ id: "p2", kind: "peer", authorName: "Bob" }),
   ];
 
+  it("labels the current comparison action and shares tooltips for comparison and deletion", async () => {
+    renderWithI18n(
+      <VersionPanel
+        evaluations={[list[1]!]}
+        selectedId={null}
+        compareIds={["p1"]}
+        onSelect={vi.fn()}
+        onToggleCompare={vi.fn()}
+        onDelete={vi.fn()}
+        canDelete={() => true}
+      />
+    );
+    const comparison = screen.getByRole("button", { name: "Hide from chart" });
+    expect(comparison).toHaveAttribute("aria-pressed", "true");
+    await userEvent.hover(comparison);
+    expect(await screen.findByRole("tooltip")).toHaveTextContent("Hide from chart");
+    await userEvent.unhover(comparison);
+    await userEvent.hover(screen.getByRole("button", { name: "Delete" }));
+    expect(await screen.findByRole("tooltip", { name: "Delete" })).toHaveTextContent("Delete");
+  });
+
   it("offers publish and return-to-draft actions for editable peer versions", async () => {
     const onChangeStatus = vi.fn().mockResolvedValue(undefined);
     renderWithI18n(
