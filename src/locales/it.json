@@ -349,6 +349,7 @@
     "filter": "Filtra versioni per autore",
     "empty": "Ancora nessuna versione salvata",
     "compare": "Mostra sul grafico",
+    "hideFromChart": "Nascondi dal grafico",
     "deleteTitle": "Eliminare questa versione?",
     "deleteDescription": "Questa versione verrà rimossa definitivamente dalla cronologia.",
     "kind": {

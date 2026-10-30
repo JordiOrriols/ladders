@@ -144,13 +144,12 @@ export function TeamTab({
                   <Button
                     eventId="team_add_member"
                     variant="ghost"
-                    size="sm"
+                    size="icon-sm"
                     data-testid="add-member-button"
                     aria-label={t("teams.addMemberTo", { name: team.name })}
                     onClick={() => onAddMember(team.id === "all" ? undefined : team.id)}
                   >
                     <Plus className="h-4 w-4" />
-                    {t("header.addMember")}
                   </Button>
                 )}
                 {team.access === "owner" && team.id !== "all" && (
@@ -160,12 +159,11 @@ export function TeamTab({
                         eventId="team_rename_open"
                         data-testid="team-rename-open"
                         variant="ghost"
-                        size="sm"
+                        size="icon-sm"
                         aria-label={t("teams.renameAria", { name: team.name })}
                         onClick={() => onRenameTeam(team)}
                       >
                         <Pencil className="h-4 w-4" />
-                        {t("teams.rename")}
                       </Button>
                     )}
                     {onDeleteTeam && teamMembers.length === 0 && !team.isDefault && (

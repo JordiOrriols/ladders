@@ -349,6 +349,7 @@
     "filter": "Versionen nach Autor filtern",
     "empty": "Noch keine Versionen gespeichert",
     "compare": "Im Diagramm anzeigen",
+    "hideFromChart": "Im Diagramm ausblenden",
     "deleteTitle": "Diese Version löschen?",
     "deleteDescription": "Diese Version wird dauerhaft aus dem Verlauf entfernt.",
     "kind": {

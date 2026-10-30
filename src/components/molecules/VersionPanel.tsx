@@ -5,7 +5,7 @@ import { versionLabel } from "@/data/evaluations";
 import { evaluationAuthor } from "@/data/radarSeries";
 import type { Evaluation, EvaluationStatus } from "@/types";
 import { ConfirmDialog } from "./ConfirmDialog";
-import { ButtonGroup, StatusBadge } from "@jordiorriols/ui";
+import { Button, ButtonGroup, StatusBadge } from "@jordiorriols/ui";
 import { localizeError } from "@/utils/localizeError";
 
 type Props = {
@@ -133,29 +133,31 @@ export function VersionPanel({
                 </StatusBadge>
               </div>
               <div className="flex items-center gap-1 mt-1">
-                <button
+                <Button
                   type="button"
+                  variant="ghost"
+                  size="icon-sm"
                   data-testid="version-compare"
                   disabled={isSelected}
                   onClick={() => onToggleCompare(evaluation.id)}
-                  title={t("versions.compare")}
-                  aria-label={t("versions.compare")}
+                  aria-label={t(isCompared ? "versions.hideFromChart" : "versions.compare")}
                   aria-pressed={isCompared}
                   className="p-1 rounded text-slate-500 hover:bg-slate-100 disabled:opacity-30"
                 >
                   {isCompared ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-                </button>
+                </Button>
                 {onDelete && canDelete(evaluation) && (
-                  <button
+                  <Button
                     type="button"
+                    variant="ghost"
+                    size="icon-sm"
                     data-testid="version-delete"
                     onClick={() => setPendingDelete(evaluation)}
-                    title={t("buttons.delete")}
                     aria-label={t("buttons.delete")}
                     className="p-1 rounded text-red-500 hover:bg-red-50 ml-auto"
                   >
                     <Trash2 className="w-4 h-4" />
-                  </button>
+                  </Button>
                 )}
                 {evaluation.kind === "peer" && onChangeStatus && canChangeStatus(evaluation) && (
                   <button
