@@ -13,6 +13,7 @@ export function WelcomePage() {
 
   return (
     <WelcomeScreen
+      projectId="ladders"
       brand={t("welcome.eyebrow")}
       icon={<AppIcon />}
       title={t("welcome.title")}
