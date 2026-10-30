@@ -103,6 +103,12 @@ The publishable key is safe to use in the browser. Database access is protected 
 
 ### CI and deployment
 
+Build and deployment run in separate jobs. Builds have only read permissions;
+`UI_READ_TOKEN` is available only to dependency installation. Only the deployment
+job receives Pages/OIDC permissions, on `main` or `master` and subject to the
+`github-pages` environment's branch policy. Checkout credentials are not persisted.
+Actions are pinned to commit SHAs and receive weekly Dependabot update PRs.
+
 Pushes to `main` or `master` and manual dispatch run the same compile, lint,
 format, coverage, build and GitHub Pages deployment checks as Planner, using
 Node.js 26 selected from `.nvmrc`. `npm ci` installs `@jordiorriols/ui` from GitHub Packages with
