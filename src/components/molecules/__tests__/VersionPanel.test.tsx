@@ -101,7 +101,8 @@ describe("TemplatePanel", () => {
   it("lets you pick a template and explains the level", async () => {
     const onChange = vi.fn();
     const { rerender } = renderWithI18n(<TemplatePanel templateId={null} onChange={onChange} />);
-    await userEvent.selectOptions(screen.getByLabelText("Seniority template"), "D3");
+    await userEvent.click(screen.getByLabelText("Seniority template"));
+    await userEvent.click(screen.getByRole("option", { name: /^D3 ·/ }));
     expect(onChange).toHaveBeenCalledWith("D3");
 
     rerender(

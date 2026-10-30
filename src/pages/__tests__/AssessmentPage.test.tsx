@@ -169,7 +169,8 @@ describe("AssessmentPage", () => {
     renderAt("/member/new");
     await userEvent.type(await screen.findByLabelText("Name"), "Ada");
     await userEvent.type(screen.getByLabelText("Role (optional)"), "Engineering lead");
-    await userEvent.selectOptions(screen.getByLabelText("Planning role (optional)"), "backend");
+    await userEvent.click(screen.getByLabelText("Planning role (optional)"));
+    await userEvent.click(screen.getByRole("option", { name: "Backend", exact: true }));
     await waitFor(async () => {
       expect((await dataState.repository!.listMembers())[0]).toMatchObject({
         name: "Ada",
@@ -188,8 +189,9 @@ describe("AssessmentPage", () => {
       templateId: "D3",
     });
     renderAt(`/member/${member.id}`);
-    expect(await screen.findByLabelText("Planning role (optional)")).toHaveValue("frontend");
-    await userEvent.selectOptions(screen.getByLabelText("Planning role (optional)"), "");
+    expect(await screen.findByLabelText("Planning role (optional)")).toHaveTextContent("Frontend");
+    await userEvent.click(screen.getByLabelText("Planning role (optional)"));
+    await userEvent.click(screen.getByRole("option", { name: "Not assigned", exact: true }));
     await waitFor(async () => {
       expect(await repo.getMember(member.id)).toMatchObject({
         role: member.role,
@@ -245,7 +247,7 @@ describe("AssessmentPage", () => {
       const teams = await repo.listTeams();
       vi.spyOn(repo, "listTeams").mockResolvedValue(teams.map((team) => ({ ...team, access })));
       renderAt(`/member/${member.id}`);
-      expect(await screen.findByLabelText("Planning role (optional)")).toHaveValue("backend");
+      expect(await screen.findByLabelText("Planning role (optional)")).toHaveTextContent("Backend");
       await userEvent.click(screen.getByRole("button", { name: "Choose a sharing link" }));
       expect(screen.getByRole("menuitem", { name: "Vacations" })).toBeInTheDocument();
     }
