@@ -21,6 +21,9 @@ including employee evaluation pages, without a local palette.
 Planning-role and grouped seniority-template dropdowns use UI's shared
 `SelectField` listbox instead of browser-native select popups. Workspace sharing
 uses the same component, with consistent keyboard and mobile behavior.
+Assessment profile, planning-role and SMART-goal fields reuse UI's `FormField`
+and `Textarea` from the registry package. Labels and hints remain translated;
+read-only states, autosaving, progress controls and goal comments stay app-owned.
 
 ```bash
 export GITHUB_TOKEN=<token with read:packages>

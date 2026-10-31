@@ -2,7 +2,7 @@ import React from "react";
 import type { ReactNode } from "react";
 import LevelSelector, { VERTICALS } from "@/components/atoms/levelSelector";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { FormField } from "@jordiorriols/ui";
 
 type LevelMap = Record<string, number>;
 type CommentMap = Record<string, string>;
@@ -70,30 +70,30 @@ export function AssessmentFormColumn({
       >
         <h2 className="text-lg font-semibold text-slate-800 mb-4">{labels.personalTitle}</h2>
         <div className="space-y-4">
-          <div>
-            <Label htmlFor="name">{labels.nameLabel}</Label>
-            <Input
-              id="name"
-              data-testid="assessment-name"
-              value={name}
-              readOnly={readOnlyProfile}
-              onChange={(e) => onNameChange(e.target.value)}
-              placeholder={labels.namePlaceholder}
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="role">{labels.roleLabel}</Label>
-            <Input
-              id="role"
-              data-testid="assessment-role"
-              value={role}
-              readOnly={readOnlyProfile}
-              onChange={(e) => onRoleChange(e.target.value)}
-              placeholder={labels.rolePlaceholder}
-              className="mt-1"
-            />
-          </div>
+          <FormField id="name" label={labels.nameLabel} className="space-y-1">
+            {(field) => (
+              <Input
+                {...field}
+                data-testid="assessment-name"
+                value={name}
+                readOnly={readOnlyProfile}
+                onChange={(e) => onNameChange(e.target.value)}
+                placeholder={labels.namePlaceholder}
+              />
+            )}
+          </FormField>
+          <FormField id="role" label={labels.roleLabel} className="space-y-1">
+            {(field) => (
+              <Input
+                {...field}
+                data-testid="assessment-role"
+                value={role}
+                readOnly={readOnlyProfile}
+                onChange={(e) => onRoleChange(e.target.value)}
+                placeholder={labels.rolePlaceholder}
+              />
+            )}
+          </FormField>
           {profileExtra}
         </div>
       </div>
