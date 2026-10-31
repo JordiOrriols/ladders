@@ -14,7 +14,7 @@ The shared UI library is installed from GitHub Packages as
 `@jordiorriols/ui`. Export a token with `read:packages` scope before installing;
 `.npmrc` reads it from `GITHUB_TOKEN`:
 
-UI `^0.3.24` supplies the shared blue Ladders branding for header, project-menu
+UI `^0.3.29` supplies the shared blue Ladders branding for header, project-menu
 and login/welcome icons. `projectId` and `ProjectIcon` reuse the UI registry,
 including employee evaluation pages, without a local palette.
 
@@ -49,6 +49,9 @@ tag, so automated browsers (Playwright e2e runs) never load it or send events.
 `WelcomeScreen` shares Planner's welcome layout with app-specific copy and
 features. `AppHeader` standardizes branding sizes and language/account actions
 across both apps; authentication and translations remain in their adapters.
+The specialized manager header supplies the shared header's language
+configuration, using the same localized adapter as employee/public selectors.
+Login dialog ownership, auth errors and evaluation layouts stay in Ladders.
 
 The header icon opens UI's shared `ProjectSwitcher`. Names, icons and canonical
 URLs live in the UI `PROJECTS` registry: add a project there once, release UI,
