@@ -24,6 +24,8 @@ uses the same component, with consistent keyboard and mobile behavior.
 Assessment profile, planning-role and SMART-goal fields reuse UI's `FormField`
 and `Textarea` from the registry package. Labels and hints remain translated;
 read-only states, autosaving, progress controls and goal comments stay app-owned.
+The localized error-boundary adapter delegates catching and diagnostics to UI,
+keeping generic employee-safe fallback messages rather than exposing raw errors.
 
 ```bash
 export GITHUB_TOKEN=<token with read:packages>
