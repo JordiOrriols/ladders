@@ -6,10 +6,11 @@ import { useAsyncAction } from "@jordiorriols/ui/hooks";
 import { useData } from "@/data/DataProvider";
 import { localizeError } from "@/utils/localizeError";
 import { LoginDialog } from "./LoginDialog";
-import { LanguageSelector } from "./LanguageSelector";
+import { useHeaderLanguage } from "./LanguageSelector";
 
 export function Header({ navigation }: { navigation?: ReactNode } = {}) {
   const { t } = useTranslation();
+  const language = useHeaderLanguage();
   const { authEnabled, user, signOut } = useData();
   const [showLogin, setShowLogin] = useState(false);
   const { run, busy, error } = useAsyncAction();
@@ -20,6 +21,7 @@ export function Header({ navigation }: { navigation?: ReactNode } = {}) {
       title={t("header.title")}
       subtitle={t("header.subtitle")}
       icon={<AppIcon />}
+      language={language}
       {...(navigation ? { navigation } : {})}
       {...(authEnabled
         ? {
@@ -34,7 +36,6 @@ export function Header({ navigation }: { navigation?: ReactNode } = {}) {
         : {})}
       actions={
         <>
-          <LanguageSelector />
           {error && (
             <p role="alert" className="text-sm text-red-600">
               {localizeError(error, t)}
