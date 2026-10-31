@@ -6,7 +6,7 @@ import type { GoalStore } from "@/data/goalStore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ProgressIndicator } from "@jordiorriols/ui";
+import { FormField, ProgressIndicator, Textarea } from "@jordiorriols/ui";
 import { localizeError } from "@/utils/localizeError";
 
 const emptyGoal: SmartGoalInput = {
@@ -162,18 +162,21 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
           }}
           className="space-y-2"
         >
-          <Label htmlFor={`new-comment-${goal.id}`}>{t("smartGoals.newComment")}</Label>
-          <textarea
-            id={`new-comment-${goal.id}`}
-            data-testid="goal-comment-input"
-            value={newComments[goal.id] ?? ""}
-            onChange={(event) =>
-              setNewComments((current) => ({ ...current, [goal.id]: event.target.value }))
-            }
-            disabled={saving}
-            maxLength={10000}
-            className="min-h-16 w-full rounded-md border border-slate-200 p-2 text-sm"
-          />
+          <FormField id={`new-comment-${goal.id}`} label={t("smartGoals.newComment")}>
+            {(field) => (
+              <Textarea
+                {...field}
+                data-testid="goal-comment-input"
+                value={newComments[goal.id] ?? ""}
+                onChange={(event) =>
+                  setNewComments((current) => ({ ...current, [goal.id]: event.target.value }))
+                }
+                disabled={saving}
+                maxLength={10000}
+                className="min-h-16"
+              />
+            )}
+          </FormField>
           <Button
             eventId="goal_comment_append"
             data-testid="goal-comment-submit"
@@ -212,41 +215,45 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
           className="space-y-4 rounded-xl border border-slate-200 bg-white p-5"
         >
           <div className="grid gap-4 md:grid-cols-[1fr_180px]">
-            <div>
-              <Label htmlFor="new-goal-title">{t("smartGoals.goalTitle")}</Label>
-              <Input
-                id="new-goal-title"
-                data-testid="goal-title-input"
-                value={draft.title}
-                onChange={(event) => setDraft({ ...draft, title: event.target.value })}
-                placeholder={t("smartGoals.titlePlaceholder")}
-                maxLength={160}
-                required
-                className="mt-1"
-              />
-            </div>
-            <div>
-              <Label htmlFor="new-goal-date">{t("smartGoals.dueDate")}</Label>
-              <Input
-                id="new-goal-date"
-                data-testid="goal-date-input"
-                type="date"
-                value={draft.dueDate ?? ""}
-                onChange={(event) => setDraft({ ...draft, dueDate: event.target.value || null })}
-                className="mt-1"
-              />
-            </div>
+            <FormField id="new-goal-title" label={t("smartGoals.goalTitle")} className="space-y-1">
+              {(field) => (
+                <Input
+                  {...field}
+                  data-testid="goal-title-input"
+                  value={draft.title}
+                  onChange={(event) => setDraft({ ...draft, title: event.target.value })}
+                  placeholder={t("smartGoals.titlePlaceholder")}
+                  maxLength={160}
+                  required
+                />
+              )}
+            </FormField>
+            <FormField id="new-goal-date" label={t("smartGoals.dueDate")} className="space-y-1">
+              {(field) => (
+                <Input
+                  {...field}
+                  data-testid="goal-date-input"
+                  type="date"
+                  value={draft.dueDate ?? ""}
+                  onChange={(event) => setDraft({ ...draft, dueDate: event.target.value || null })}
+                />
+              )}
+            </FormField>
           </div>
-          <div>
-            <Label htmlFor="new-goal-description">{t("smartGoals.goalDescription")}</Label>
-            <textarea
-              id="new-goal-description"
-              data-testid="goal-description-input"
-              value={draft.description}
-              onChange={(event) => setDraft({ ...draft, description: event.target.value })}
-              className="mt-1 min-h-24 w-full rounded-md border border-slate-200 p-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500"
-            />
-          </div>
+          <FormField
+            id="new-goal-description"
+            label={t("smartGoals.goalDescription")}
+            className="space-y-1"
+          >
+            {(field) => (
+              <Textarea
+                {...field}
+                data-testid="goal-description-input"
+                value={draft.description}
+                onChange={(event) => setDraft({ ...draft, description: event.target.value })}
+              />
+            )}
+          </FormField>
           <Button
             eventId="goal_create"
             data-testid="goal-create-submit"
@@ -359,63 +366,77 @@ export function SmartGoalsPanel({ store, readOnly = false }: Props) {
                 data-goal-title={goal.title}
               >
                 <div className="grid gap-4 md:grid-cols-[1fr_180px]">
-                  <div>
-                    <Label htmlFor={`goal-title-${goal.id}`}>{t("smartGoals.goalTitle")}</Label>
-                    <Input
-                      id={`goal-title-${goal.id}`}
-                      data-testid="goal-title-field"
-                      value={goal.title}
-                      disabled={readOnly || saving}
-                      onChange={(event) =>
-                        setGoals((current) =>
-                          current.map((item) =>
-                            item.id === goal.id ? { ...item, title: event.target.value } : item
+                  <FormField
+                    id={`goal-title-${goal.id}`}
+                    label={t("smartGoals.goalTitle")}
+                    className="space-y-1"
+                  >
+                    {(field) => (
+                      <Input
+                        {...field}
+                        data-testid="goal-title-field"
+                        value={goal.title}
+                        disabled={readOnly || saving}
+                        onChange={(event) =>
+                          setGoals((current) =>
+                            current.map((item) =>
+                              item.id === goal.id ? { ...item, title: event.target.value } : item
+                            )
                           )
-                        )
-                      }
-                      className="mt-1 font-medium"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor={`goal-date-${goal.id}`}>{t("smartGoals.dueDate")}</Label>
-                    <Input
-                      id={`goal-date-${goal.id}`}
-                      data-testid="goal-date-field"
-                      type="date"
-                      value={goal.dueDate ?? ""}
+                        }
+                        className="font-medium"
+                      />
+                    )}
+                  </FormField>
+                  <FormField
+                    id={`goal-date-${goal.id}`}
+                    label={t("smartGoals.dueDate")}
+                    className="space-y-1"
+                  >
+                    {(field) => (
+                      <Input
+                        {...field}
+                        data-testid="goal-date-field"
+                        type="date"
+                        value={goal.dueDate ?? ""}
+                        disabled={readOnly || saving}
+                        onChange={(event) =>
+                          setGoals((current) =>
+                            current.map((item) =>
+                              item.id === goal.id
+                                ? { ...item, dueDate: event.target.value || null }
+                                : item
+                            )
+                          )
+                        }
+                      />
+                    )}
+                  </FormField>
+                </div>
+                <FormField
+                  id={`goal-description-${goal.id}`}
+                  label={t("smartGoals.goalDescription")}
+                  className="mt-4 space-y-1"
+                >
+                  {(field) => (
+                    <Textarea
+                      {...field}
+                      data-testid="goal-description-field"
+                      value={goal.description}
                       disabled={readOnly || saving}
                       onChange={(event) =>
                         setGoals((current) =>
                           current.map((item) =>
                             item.id === goal.id
-                              ? { ...item, dueDate: event.target.value || null }
+                              ? { ...item, description: event.target.value }
                               : item
                           )
                         )
                       }
-                      className="mt-1"
+                      className="min-h-20 disabled:bg-slate-50"
                     />
-                  </div>
-                </div>
-                <div className="mt-4">
-                  <Label htmlFor={`goal-description-${goal.id}`}>
-                    {t("smartGoals.goalDescription")}
-                  </Label>
-                  <textarea
-                    id={`goal-description-${goal.id}`}
-                    data-testid="goal-description-field"
-                    value={goal.description}
-                    disabled={readOnly || saving}
-                    onChange={(event) =>
-                      setGoals((current) =>
-                        current.map((item) =>
-                          item.id === goal.id ? { ...item, description: event.target.value } : item
-                        )
-                      )
-                    }
-                    className="mt-1 min-h-20 w-full rounded-md border border-slate-200 p-2 text-sm outline-none focus:ring-2 focus:ring-indigo-500 disabled:bg-slate-50"
-                  />
-                </div>
+                  )}
+                </FormField>
                 <div className="mt-4 flex items-center gap-3">
                   <Label htmlFor={`goal-progress-${goal.id}`} className="shrink-0">
                     {t("smartGoals.progress")}
