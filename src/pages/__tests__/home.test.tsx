@@ -82,10 +82,13 @@ describe("Home Page", () => {
 
   it("shares the page canvas with white header and cards", async () => {
     renderWithProviders(<Home />);
-    expect(await screen.findByTestId("main-content")).toHaveClass("min-h-screen", "bg-page");
-    expect(screen.getByTestId("main-content")).not.toHaveClass("bg-slate-50");
+    await screen.findByTestId("main-content");
+    const main = screen.getByRole("main");
+    expect(main.parentElement).toHaveClass("min-h-screen", "bg-page", "flex", "flex-col");
+    expect(main.parentElement).not.toHaveClass("bg-slate-50");
     expect(screen.getByRole("banner")).toHaveClass("bg-background");
-    expect(screen.getByTestId("main-area")).toHaveClass("mx-auto", "max-w-7xl");
+    expect(main).toHaveClass("mx-auto", "max-w-7xl", "flex-1");
+    expect(main.parentElement).toContainElement(screen.getByTestId("app-footer"));
   });
 
   it("shows only the teams of the selected workspace and shares from the tab bar", async () => {
