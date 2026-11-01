@@ -1,50 +1,46 @@
-import React, { useState, type ReactNode } from "react";
+import React, { type ReactNode } from "react";
 import { AppIcon } from "@/components/atoms/AppIcon";
 import { useTranslation } from "react-i18next";
-import { AppHeader } from "@jordiorriols/ui";
-import { useAsyncAction } from "@jordiorriols/ui/hooks";
+import { AppHeader, AppAccountControls, getDisplayName } from "@jordiorriols/ui";
 import { useData } from "@/data/DataProvider";
-import { localizeError } from "@/utils/localizeError";
-import { LoginDialog } from "./LoginDialog";
+import { useAuthDialogProps } from "./LoginDialog";
 import { useHeaderLanguage } from "./LanguageSelector";
 
-export function Header({ navigation }: { navigation?: ReactNode } = {}) {
+export function useAppHeaderProps() {
   const { t } = useTranslation();
   const language = useHeaderLanguage();
-  const { authEnabled, user, signOut } = useData();
-  const [showLogin, setShowLogin] = useState(false);
-  const { run, busy, error } = useAsyncAction();
+  const { authEnabled, authError, user } = useData();
+  const auth = useAuthDialogProps();
+  return {
+    projectSwitcherLabel: t("header.projectSwitcher"),
+    title: t("header.title"),
+    subtitle: t("header.subtitle"),
+    language,
+    actions: (
+      <AppAccountControls
+        {...auth}
+        projectId="ladders"
+        enabled={authEnabled}
+        signedIn={!!user}
+        authError={authError}
+        signOutLabel={t("auth.signOut")}
+        accountTitle={getDisplayName({
+          accountName: user?.user_metadata?.["full_name"] ?? user?.user_metadata?.["name"],
+          email: user?.email ?? "",
+        })}
+      />
+    ),
+  };
+}
+
+export function Header({ navigation }: { navigation?: ReactNode } = {}) {
+  const header = useAppHeaderProps();
   return (
     <AppHeader
       projectId="ladders"
-      projectSwitcherLabel={t("header.projectSwitcher")}
-      title={t("header.title")}
-      subtitle={t("header.subtitle")}
+      {...header}
       icon={<AppIcon />}
-      language={language}
       {...(navigation ? { navigation } : {})}
-      {...(authEnabled
-        ? {
-            accountAction: {
-              type: user ? "signOut" : "signIn",
-              label: t(user ? "auth.signOut" : "auth.signIn"),
-              disabled: busy,
-              title: user?.email ?? "",
-              onClick: user ? () => void run(signOut) : () => setShowLogin(true),
-            },
-          }
-        : {})}
-      actions={
-        <>
-          {error && (
-            <p role="alert" className="text-sm text-red-600">
-              {localizeError(error, t)}
-            </p>
-          )}
-        </>
-      }
-    >
-      <LoginDialog isOpen={showLogin} onClose={() => setShowLogin(false)} />
-    </AppHeader>
+    />
   );
 }

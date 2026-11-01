@@ -2,7 +2,7 @@ import { AppNavigation } from "@jordiorriols/ui";
 import { UserRound } from "@jordiorriols/ui/icons";
 import React, { useEffect, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { Header } from "@/components/molecules/Header";
+import { AppLayout } from "@/components/AppLayout";
 import { useData } from "@/data/DataProvider";
 import type { LinkedMember } from "@/types";
 import { PageMessage } from "./PageMessage";
@@ -48,8 +48,8 @@ export function MemberHome({
     <MemberView
       key={state.member.viewToken}
       token={state.member.viewToken}
-      renderHeader={({ title, share, tabs }) => (
-        <Header
+      renderLayout={({ title, share, tabs }, content) => (
+        <AppLayout
           navigation={
             <AppNavigation
               label={t("tabs.label")}
@@ -70,7 +70,9 @@ export function MemberHome({
               {tabs}
             </AppNavigation>
           }
-        />
+        >
+          {content}
+        </AppLayout>
       )}
     />
   );

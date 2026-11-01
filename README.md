@@ -14,7 +14,7 @@ The shared UI library is installed from GitHub Packages as
 `@jordiorriols/ui`. Export a token with `read:packages` scope before installing;
 `.npmrc` reads it from `GITHUB_TOKEN`:
 
-UI `^0.3.29` supplies the shared blue Ladders branding for header, project-menu
+UI `^0.3.31` supplies the shared blue Ladders branding for header, project-menu
 and login/welcome icons. `projectId` and `ProjectIcon` reuse the UI registry,
 including employee evaluation pages, without a local palette.
 
@@ -26,6 +26,17 @@ and `Textarea` from the registry package. Labels and hints remain translated;
 read-only states, autosaving, progress controls and goal comments stay app-owned.
 The localized error-boundary adapter delegates catching and diagnostics to UI,
 keeping generic employee-safe fallback messages rather than exposing raw errors.
+
+Manager and signed-in employee pages use the same `AppShell`, shared account
+controls and footer; their permissions and actions remain different. Home views
+use `?view=team`, and evaluation/goals navigation uses `?tab=goals`, so refresh
+and browser Back preserve selection. Anonymous self, peer and view links use
+`PublicAppShell` without account controls or a project menu, retaining language
+selection on mobile and the existing token access/privacy rules.
+Account controls use UI's `AppAccountControls`. The welcome login adapter retains
+UI's `useLoginForm` and `LoginDialog` primitives so visible success confirmations
+can retranslate when the language changes; UI 0.3.31's `AuthDialog` stores these
+messages as already-translated strings.
 
 ```bash
 export GITHUB_TOKEN=<token with read:packages>

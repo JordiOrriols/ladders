@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Check, LoaderCircle, Send, TriangleAlert } from "@jordiorriols/ui/icons";
 import { AssessmentFormColumn } from "@/components/organisms/AssessmentFormColumn";
-import { AssessmentHeader } from "@/components/organisms/AssessmentHeader";
+import { AssessmentLayout } from "@/components/organisms/AssessmentHeader";
 import { AssessmentPreview } from "@/components/organisms/AssessmentPreview";
 import { SmartGoalsPanel } from "@/components/organisms/SmartGoalsPanel";
 import { ShareAction } from "@/components/molecules/ShareAction";
@@ -29,8 +29,8 @@ import { isValidToken, resolveToken } from "@/data/tokenApi";
 import { createRepositoryGoalStore, type GoalStore } from "@/data/goalStore";
 import { EditorValidationError, useEvaluationEditor } from "@/hooks/useEvaluationEditor";
 import { PageMessage } from "./PageMessage";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AlertModal, AppMain, AppPage } from "@jordiorriols/ui";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { AlertModal, AppNavigation, AppNavigationItem } from "@jordiorriols/ui";
 import { useAsyncAction } from "@jordiorriols/ui/hooks";
 import { localizeError } from "@/utils/localizeError";
 
@@ -88,6 +88,14 @@ export default function AssessmentPage() {
 function AssessmentEditor({ store }: { store: EvaluationStore }) {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
+  const [search] = useSearchParams();
+  const tab = search.get("tab") === "goals" ? "goals" : "evaluation";
+  const tabUrl = (value: string) => {
+    const next = new URLSearchParams(search);
+    if (value === "evaluation") next.delete("tab");
+    else next.set("tab", value);
+    return { search: next.toString() };
+  };
   const { id: routeId } = useParams();
   const { repository } = useData();
   const editor = useEvaluationEditor(store);
@@ -229,264 +237,264 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
     ) : null;
 
   return (
-    <AppPage>
-      <AssessmentHeader
-        {...(isManager ? { onBack: () => navigate("/") } : {})}
-        title={t(`${mode}.title`, { name: editor.profile.name })}
-        subtitle={t(`${mode}.subtitle`)}
-        extraActions={
-          <>
-            {autosaveStatus}
-            {isManager &&
-            store.editableProfile &&
-            repository &&
-            editor.member?.selfToken &&
-            editor.member.peerToken &&
-            editor.member.viewToken ? (
-              <ShareAction
-                member={editor.member}
-                onEnableView={handleEnableView}
-                onCreateInvite={handleCreateInvite}
-                onUnlink={handleUnlink}
-              />
-            ) : null}
-          </>
-        }
-        actions={[
-          ...(isPeer
-            ? [
-                {
-                  type: "button" as const,
-                  variant: "default" as const,
-                  label: t("buttons.submit"),
-                  icon: <Send className="w-4 h-4" />,
-                  disabled: editor.saving,
-                  onClick: () => void handleSave(),
-                  eventId: `${mode}_publish`,
-                },
-              ]
-            : [
-                {
-                  type: "button" as const,
-                  variant: "default" as const,
-                  label: t("buttons.publish"),
-                  icon: <Send className="w-4 h-4" />,
-                  disabled: !editor.canPublish,
-                  onClick: () => void handleSave(),
-                  eventId: `${mode}_publish`,
-                },
-              ]),
-        ]}
-      />
-
-      <AppMain className="max-w-[90rem]">
-        <Tabs defaultValue="evaluation" className="space-y-6">
-          {showGoals && (
-            <TabsList
-              className="bg-white border border-slate-200"
-              data-testid="assessment-tabs-list"
-            >
-              <TabsTrigger value="evaluation" data-testid="assessment-tab-evaluation">
-                {t("memberAssessment.evaluationTab")}
-              </TabsTrigger>
-              <TabsTrigger value="goals" data-testid="assessment-tab-goals">
-                {t("smartGoals.tab")}
-              </TabsTrigger>
-            </TabsList>
-          )}
-
-          <TabsContent value="evaluation">
-            {/* Grid items default to min-width:auto, so a wide child widens the
+    <AssessmentLayout
+      authenticated={isManager}
+      {...(showGoals
+        ? {
+            navigation: (
+              <AppNavigation label={t("tabs.label")}>
+                <AppNavigationItem asChild data-testid="assessment-tab-evaluation">
+                  <Link
+                    to={tabUrl("evaluation")}
+                    aria-current={tab === "evaluation" ? "page" : undefined}
+                  >
+                    {t("memberAssessment.evaluationTab")}
+                  </Link>
+                </AppNavigationItem>
+                <AppNavigationItem asChild data-testid="assessment-tab-goals">
+                  <Link to={tabUrl("goals")} aria-current={tab === "goals" ? "page" : undefined}>
+                    {t("smartGoals.tab")}
+                  </Link>
+                </AppNavigationItem>
+              </AppNavigation>
+            ),
+          }
+        : {})}
+      {...(isManager ? { onBack: () => navigate("/") } : {})}
+      title={t(`${mode}.title`, { name: editor.profile.name })}
+      subtitle={t(`${mode}.subtitle`)}
+      extraActions={
+        <>
+          {autosaveStatus}
+          {isManager &&
+          store.editableProfile &&
+          repository &&
+          editor.member?.selfToken &&
+          editor.member.peerToken &&
+          editor.member.viewToken ? (
+            <ShareAction
+              member={editor.member}
+              onEnableView={handleEnableView}
+              onCreateInvite={handleCreateInvite}
+              onUnlink={handleUnlink}
+            />
+          ) : null}
+        </>
+      }
+      actions={[
+        ...(isPeer
+          ? [
+              {
+                type: "button" as const,
+                variant: "default" as const,
+                label: t("buttons.submit"),
+                icon: <Send className="w-4 h-4" />,
+                disabled: editor.saving,
+                onClick: () => void handleSave(),
+                eventId: `${mode}_publish`,
+              },
+            ]
+          : [
+              {
+                type: "button" as const,
+                variant: "default" as const,
+                label: t("buttons.publish"),
+                icon: <Send className="w-4 h-4" />,
+                disabled: !editor.canPublish,
+                onClick: () => void handleSave(),
+                eventId: `${mode}_publish`,
+              },
+            ]),
+      ]}
+    >
+      <Tabs value={showGoals ? tab : "evaluation"} className="space-y-6">
+        <TabsContent value="evaluation">
+          {/* Grid items default to min-width:auto, so a wide child widens the
                 whole track and pushes the page sideways on a phone. */}
-            <div
-              className={`grid gap-6 ${
-                store.showHistory || isManager ? "xl:grid-cols-[260px_1fr_1fr]" : "lg:grid-cols-2"
-              }`}
-            >
-              {store.showHistory && (
-                <div className="min-w-0 space-y-4">
-                  <VersionPanel
-                    evaluations={editor.evaluations}
-                    selectedId={editor.editingId}
-                    compareIds={editor.compareIds}
-                    onSelect={editor.selectVersion}
-                    onToggleCompare={editor.toggleCompare}
-                    onDelete={(e) => void editor.deleteVersion(e)}
-                    canDelete={store.canDelete}
-                    canChangeStatus={store.canChangeStatus}
-                    onChangeStatus={editor.changeVersionStatus}
-                  />
-                  {isManager && store.editableProfile && store.setCommentVisibility && (
-                    <section
-                      className="mt-6 rounded-2xl border border-slate-200 bg-white p-6"
-                      aria-label={t("comments.visibilityTitle")}
-                    >
-                      <h2 className="font-semibold text-slate-800">
-                        {t("comments.visibilityTitle")}
-                      </h2>
-                      <p className="text-sm text-slate-500 mb-4">
-                        {t("comments.visibilityDescription")}
-                      </p>
-                      <CommentGroups
-                        groups={editor.evaluations.map((evaluation) => ({
-                          id: evaluation.id,
-                          label: `${evaluationAuthor(evaluation, t)} · ${versionLabel(evaluation, editor.evaluations, i18n.language)}`,
-                          color: comparisonColor(evaluation),
-                          comments: evaluation.comments,
-                        }))}
-                        commentAction={(group, category) => {
-                          const evaluation = editor.evaluations.find(
-                            (item) => item.id === group.id
-                          );
-                          if (!evaluation) return null;
-                          const visible =
-                            evaluation.commentVisibility?.[category] ?? evaluation.kind !== "peer";
-                          return (
-                            <div className="mt-2 flex flex-wrap items-center gap-2">
-                              <span className="text-xs text-slate-500">
-                                {t(visible ? "comments.visible" : "comments.hidden")}
-                              </span>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                disabled={
-                                  visibilityAction.busy || editor.autosaveState === "saving"
-                                }
-                                data-testid={`comment-visibility-${evaluation.id}-${category}`}
-                                aria-label={`${t(visible ? "comments.hide" : "comments.show")}: ${group.label} · ${category}`}
-                                onClick={() =>
-                                  void visibilityAction.run(() =>
-                                    editor.setCommentVisibility(evaluation.id, category, !visible)
-                                  )
-                                }
-                              >
-                                {t(visible ? "comments.hide" : "comments.show")}
-                              </Button>
-                            </div>
-                          );
-                        }}
-                      />
-                      {visibilityAction.error && (
-                        <p role="alert" className="text-sm text-red-600">
-                          {localizeError(visibilityAction.error, t)}
-                        </p>
-                      )}
-                    </section>
-                  )}
-                </div>
-              )}
-
-              <AssessmentFormColumn
-                name={editor.profile.name}
-                role={editor.profile.role}
-                currentLevels={editor.form.currentLevels}
-                goalLevels={editor.form.goalLevels}
-                comments={editor.form.comments}
-                expandedVertical={editor.expandedVertical}
-                onNameChange={editor.setName}
-                onRoleChange={editor.setRole}
-                onCurrentChange={editor.handleCurrentChange}
-                onGoalChange={editor.handleGoalChange}
-                onCommentChange={editor.handleCommentChange}
-                onToggleVertical={editor.toggleVertical}
-                readOnlyProfile={!store.editableProfile}
-                hideGoal={hideGoal}
-                labels={{
-                  personalTitle: t(`${mode}.personalInfo`),
-                  competenciesTitle: t(`${mode}.competencies`),
-                  nameLabel: t("forms.name"),
-                  roleLabel: t("forms.role"),
-                  namePlaceholder: t(
-                    isManager ? "forms.memberNamePlaceholder" : "forms.namePlaceholder"
-                  ),
-                  rolePlaceholder: t("forms.rolePlaceholder"),
-                }}
-                {...(howToItems.length > 0
-                  ? { howTo: { title: t("selfAssessment.howToUse"), items: howToItems } }
-                  : {})}
-                profileExtra={
-                  isPeer ? (
-                    <div>
-                      <Label htmlFor="author-name">{t("peerAssessment.yourName")}</Label>
-                      <Input
-                        id="author-name"
-                        data-testid="assessment-author"
-                        value={editor.authorName}
-                        required
-                        maxLength={120}
-                        onChange={(e) => editor.setAuthorName(e.target.value)}
-                        placeholder={t("forms.namePlaceholder")}
-                        className="mt-1"
-                      />
-                    </div>
-                  ) : isManager && store.editableProfile ? (
-                    <PlanningRoleField
-                      value={editor.profile.planningRole ?? null}
-                      onChange={editor.setPlanningRole}
+          <div
+            className={`grid gap-6 ${
+              store.showHistory || isManager ? "xl:grid-cols-[260px_1fr_1fr]" : "lg:grid-cols-2"
+            }`}
+          >
+            {store.showHistory && (
+              <div className="min-w-0 space-y-4">
+                <VersionPanel
+                  evaluations={editor.evaluations}
+                  selectedId={editor.editingId}
+                  compareIds={editor.compareIds}
+                  onSelect={editor.selectVersion}
+                  onToggleCompare={editor.toggleCompare}
+                  onDelete={(e) => void editor.deleteVersion(e)}
+                  canDelete={store.canDelete}
+                  canChangeStatus={store.canChangeStatus}
+                  onChangeStatus={editor.changeVersionStatus}
+                />
+                {isManager && store.editableProfile && store.setCommentVisibility && (
+                  <section
+                    className="mt-6 rounded-2xl border border-slate-200 bg-white p-6"
+                    aria-label={t("comments.visibilityTitle")}
+                  >
+                    <h2 className="font-semibold text-slate-800">
+                      {t("comments.visibilityTitle")}
+                    </h2>
+                    <p className="text-sm text-slate-500 mb-4">
+                      {t("comments.visibilityDescription")}
+                    </p>
+                    <CommentGroups
+                      groups={editor.evaluations.map((evaluation) => ({
+                        id: evaluation.id,
+                        label: `${evaluationAuthor(evaluation, t)} · ${versionLabel(evaluation, editor.evaluations, i18n.language)}`,
+                        color: comparisonColor(evaluation),
+                        comments: evaluation.comments,
+                      }))}
+                      commentAction={(group, category) => {
+                        const evaluation = editor.evaluations.find((item) => item.id === group.id);
+                        if (!evaluation) return null;
+                        const visible =
+                          evaluation.commentVisibility?.[category] ?? evaluation.kind !== "peer";
+                        return (
+                          <div className="mt-2 flex flex-wrap items-center gap-2">
+                            <span className="text-xs text-slate-500">
+                              {t(visible ? "comments.visible" : "comments.hidden")}
+                            </span>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              disabled={visibilityAction.busy || editor.autosaveState === "saving"}
+                              data-testid={`comment-visibility-${evaluation.id}-${category}`}
+                              aria-label={`${t(visible ? "comments.hide" : "comments.show")}: ${group.label} · ${category}`}
+                              onClick={() =>
+                                void visibilityAction.run(() =>
+                                  editor.setCommentVisibility(evaluation.id, category, !visible)
+                                )
+                              }
+                            >
+                              {t(visible ? "comments.hide" : "comments.show")}
+                            </Button>
+                          </div>
+                        );
+                      }}
                     />
-                  ) : null
-                }
-              />
+                    {visibilityAction.error && (
+                      <p role="alert" className="text-sm text-red-600">
+                        {localizeError(visibilityAction.error, t)}
+                      </p>
+                    )}
+                  </section>
+                )}
+              </div>
+            )}
 
-              <AssessmentPreview
-                title={t(`${mode}.preview`, {
-                  name: editor.profile.name || t("memberAssessment.member"),
-                })}
-                radar={{ series, size: 350 }}
-                metrics={[
-                  {
-                    label: t("memberAssessment.currentAverage"),
-                    value: editor.currentAverage.toLocaleString(
-                      i18n.resolvedLanguage ?? i18n.language,
-                      {
-                        minimumFractionDigits: 1,
-                        maximumFractionDigits: 1,
-                      }
-                    ),
-                    tone: "current",
-                  },
-                  ...(hideGoal
-                    ? []
-                    : [
-                        {
-                          label: t("memberAssessment.goalAverage"),
-                          value: editor.goalAverage.toLocaleString(
-                            i18n.resolvedLanguage ?? i18n.language,
-                            {
-                              minimumFractionDigits: 1,
-                              maximumFractionDigits: 1,
-                            }
-                          ),
-                          tone: "goal" as const,
-                        },
-                      ]),
-                ]}
-                verticalStats={editor.verticalStats.map(({ vertical, current, goal }) =>
-                  hideGoal ? { vertical, current } : { vertical, current, goal }
-                )}
-                labels={{
-                  sectionTitle: t("memberAssessment.competencyLevels"),
-                  currentLabel: "L",
-                  goalLabel: "L",
-                }}
-                comments={isManager ? <CommentGroups groups={commentGroups} /> : null}
-              >
-                {isManager && (
-                  <TemplatePanel
-                    templateId={editor.profile.templateId}
-                    onChange={editor.setTemplateId}
+            <AssessmentFormColumn
+              name={editor.profile.name}
+              role={editor.profile.role}
+              currentLevels={editor.form.currentLevels}
+              goalLevels={editor.form.goalLevels}
+              comments={editor.form.comments}
+              expandedVertical={editor.expandedVertical}
+              onNameChange={editor.setName}
+              onRoleChange={editor.setRole}
+              onCurrentChange={editor.handleCurrentChange}
+              onGoalChange={editor.handleGoalChange}
+              onCommentChange={editor.handleCommentChange}
+              onToggleVertical={editor.toggleVertical}
+              readOnlyProfile={!store.editableProfile}
+              hideGoal={hideGoal}
+              labels={{
+                personalTitle: t(`${mode}.personalInfo`),
+                competenciesTitle: t(`${mode}.competencies`),
+                nameLabel: t("forms.name"),
+                roleLabel: t("forms.role"),
+                namePlaceholder: t(
+                  isManager ? "forms.memberNamePlaceholder" : "forms.namePlaceholder"
+                ),
+                rolePlaceholder: t("forms.rolePlaceholder"),
+              }}
+              {...(howToItems.length > 0
+                ? { howTo: { title: t("selfAssessment.howToUse"), items: howToItems } }
+                : {})}
+              profileExtra={
+                isPeer ? (
+                  <div>
+                    <Label htmlFor="author-name">{t("peerAssessment.yourName")}</Label>
+                    <Input
+                      id="author-name"
+                      data-testid="assessment-author"
+                      value={editor.authorName}
+                      required
+                      maxLength={120}
+                      onChange={(e) => editor.setAuthorName(e.target.value)}
+                      placeholder={t("forms.namePlaceholder")}
+                      className="mt-1"
+                    />
+                  </div>
+                ) : isManager && store.editableProfile ? (
+                  <PlanningRoleField
+                    value={editor.profile.planningRole ?? null}
+                    onChange={editor.setPlanningRole}
                   />
-                )}
-              </AssessmentPreview>
-            </div>
+                ) : null
+              }
+            />
+
+            <AssessmentPreview
+              title={t(`${mode}.preview`, {
+                name: editor.profile.name || t("memberAssessment.member"),
+              })}
+              radar={{ series, size: 350 }}
+              metrics={[
+                {
+                  label: t("memberAssessment.currentAverage"),
+                  value: editor.currentAverage.toLocaleString(
+                    i18n.resolvedLanguage ?? i18n.language,
+                    {
+                      minimumFractionDigits: 1,
+                      maximumFractionDigits: 1,
+                    }
+                  ),
+                  tone: "current",
+                },
+                ...(hideGoal
+                  ? []
+                  : [
+                      {
+                        label: t("memberAssessment.goalAverage"),
+                        value: editor.goalAverage.toLocaleString(
+                          i18n.resolvedLanguage ?? i18n.language,
+                          {
+                            minimumFractionDigits: 1,
+                            maximumFractionDigits: 1,
+                          }
+                        ),
+                        tone: "goal" as const,
+                      },
+                    ]),
+              ]}
+              verticalStats={editor.verticalStats.map(({ vertical, current, goal }) =>
+                hideGoal ? { vertical, current } : { vertical, current, goal }
+              )}
+              labels={{
+                sectionTitle: t("memberAssessment.competencyLevels"),
+                currentLabel: "L",
+                goalLabel: "L",
+              }}
+              comments={isManager ? <CommentGroups groups={commentGroups} /> : null}
+            >
+              {isManager && (
+                <TemplatePanel
+                  templateId={editor.profile.templateId}
+                  onChange={editor.setTemplateId}
+                />
+              )}
+            </AssessmentPreview>
+          </div>
+        </TabsContent>
+        {showGoals && (
+          <TabsContent value="goals">
+            <SmartGoalsPanel store={goalStore} />
           </TabsContent>
-          {showGoals && (
-            <TabsContent value="goals">
-              <SmartGoalsPanel store={goalStore} />
-            </TabsContent>
-          )}
-        </Tabs>
-      </AppMain>
+        )}
+      </Tabs>
       <AlertModal
         isOpen={message !== null}
         title={t("alerts.notice")}
@@ -494,6 +502,6 @@ function AssessmentEditor({ store }: { store: EvaluationStore }) {
         closeLabel={t("buttons.close")}
         onClose={() => setMessage(null)}
       />
-    </AppPage>
+    </AssessmentLayout>
   );
 }

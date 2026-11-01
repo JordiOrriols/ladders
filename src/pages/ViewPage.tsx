@@ -1,13 +1,13 @@
-import { AppMain, AppNavigation, AppNavigationItem, AppPage } from "@jordiorriols/ui";
+import { AppNavigation, AppNavigationItem } from "@jordiorriols/ui";
 import { Radar, Target } from "@jordiorriols/ui/icons";
 import { Tabs } from "@jordiorriols/ui/radix";
 import React, { useEffect, useMemo, useState, type ReactNode } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { EvaluationViewer } from "@/components/organisms/EvaluationViewer";
 import { SmartGoalsPanel } from "@/components/organisms/SmartGoalsPanel";
 import { ShareAction } from "@/components/molecules/ShareAction";
-import { AssessmentHeader } from "@/components/organisms/AssessmentHeader";
+import { AssessmentLayout } from "@/components/organisms/AssessmentHeader";
 import { createTokenGoalStore } from "@/data/goalStore";
 import { getPublicView, getViewSharingLinks, isValidToken, resolveToken } from "@/data/tokenApi";
 import type { TokenInfo } from "@/data/tokenApi";
@@ -32,15 +32,23 @@ export default function ViewPage() {
   return <MemberView token={token} />;
 }
 
-/** The view page of one member; `renderHeader` replaces the standalone header. */
+/** Content is shared; the caller can supply an authenticated layout. */
 export function MemberView({
   token,
-  renderHeader,
+  renderLayout,
 }: {
   token: string | undefined;
-  renderHeader?: (header: ViewHeader) => ReactNode;
+  renderLayout?: (header: ViewHeader, content: ReactNode) => ReactNode;
 }) {
   const { t } = useTranslation();
+  const [search] = useSearchParams();
+  const selected = search.get("tab") === "goals" ? "goals" : "evaluation";
+  const tabUrl = (value: string) => {
+    const next = new URLSearchParams(search);
+    if (value === "evaluation") next.delete("tab");
+    else next.set("tab", value);
+    return { search: next.toString() };
+  };
   const [state, setState] = useState<ViewState>({ kind: "loading" });
   const goalStore = useMemo(
     () => (state.kind === "ready" && token ? createTokenGoalStore(token) : null),
@@ -79,20 +87,23 @@ export function MemberView({
 
   const share = <ShareAction member={state.links} />;
   const tabs = (
-    <Tabs.List className="flex items-center gap-1" data-testid="member-view-tabs">
-      <Tabs.Trigger value="evaluation" asChild>
-        <AppNavigationItem data-testid="assessment-tab-evaluation">
+    <div className="flex items-center gap-1" data-testid="member-view-tabs">
+      <AppNavigationItem asChild data-testid="assessment-tab-evaluation">
+        <Link
+          to={tabUrl("evaluation")}
+          aria-current={selected === "evaluation" ? "page" : undefined}
+        >
           <Radar />
           {t("memberAssessment.evaluationTab")}
-        </AppNavigationItem>
-      </Tabs.Trigger>
-      <Tabs.Trigger value="goals" asChild>
-        <AppNavigationItem data-testid="assessment-tab-goals">
+        </Link>
+      </AppNavigationItem>
+      <AppNavigationItem asChild data-testid="assessment-tab-goals">
+        <Link to={tabUrl("goals")} aria-current={selected === "goals" ? "page" : undefined}>
           <Target />
           {t("smartGoals.tab")}
-        </AppNavigationItem>
-      </Tabs.Trigger>
-    </Tabs.List>
+        </Link>
+      </AppNavigationItem>
+    </div>
   );
   const header: ViewHeader = {
     title: t("viewPage.title", { name: state.info.name }),
@@ -100,37 +111,36 @@ export function MemberView({
     share,
     tabs,
   };
+  const content = (
+    <>
+      <Tabs.Content value="evaluation">
+        <div className="bg-white rounded-2xl border border-slate-200 p-6">
+          <EvaluationViewer evaluations={state.evaluations} templateId={state.info.templateId} />
+        </div>
+      </Tabs.Content>
+      <Tabs.Content value="goals">
+        <SmartGoalsPanel store={goalStore} />
+      </Tabs.Content>
+    </>
+  );
   return (
-    <AppPage>
-      <Tabs.Root defaultValue="evaluation">
-        {renderHeader ? (
-          renderHeader(header)
-        ) : (
-          <AssessmentHeader
-            title={header.title}
-            subtitle={header.subtitle}
-            actions={[]}
-            navigation={
-              <AppNavigation label={t("tabs.label")} actions={share}>
-                {tabs}
-              </AppNavigation>
-            }
-          />
-        )}
-        <AppMain>
-          <Tabs.Content value="evaluation">
-            <div className="bg-white rounded-2xl border border-slate-200 p-6">
-              <EvaluationViewer
-                evaluations={state.evaluations}
-                templateId={state.info.templateId}
-              />
-            </div>
-          </Tabs.Content>
-          <Tabs.Content value="goals">
-            <SmartGoalsPanel store={goalStore} />
-          </Tabs.Content>
-        </AppMain>
-      </Tabs.Root>
-    </AppPage>
+    <Tabs.Root value={selected}>
+      {renderLayout ? (
+        renderLayout(header, content)
+      ) : (
+        <AssessmentLayout
+          title={header.title}
+          subtitle={header.subtitle}
+          actions={[]}
+          navigation={
+            <AppNavigation label={t("tabs.label")} actions={share}>
+              {tabs}
+            </AppNavigation>
+          }
+        >
+          {content}
+        </AssessmentLayout>
+      )}
+    </Tabs.Root>
   );
 }

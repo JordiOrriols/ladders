@@ -1,10 +1,9 @@
-import { AppMain, AppPage } from "@jordiorriols/ui";
 import { useAsyncAction, useWorkspaceList } from "@jordiorriols/ui/hooks";
 import { Link2 } from "@jordiorriols/ui/icons";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Header } from "@/components/molecules/Header";
+import { AppLayout } from "@/components/AppLayout";
 import { Button } from "@/components/ui/button";
 import { useData } from "@/data/DataProvider";
 import { isValidToken } from "@/data/tokenApi";
@@ -56,32 +55,29 @@ export default function JoinPage() {
     });
 
   return (
-    <AppPage>
-      <Header />
-      <AppMain>
-        <section
-          className="mx-auto max-w-md space-y-4 rounded-2xl border border-slate-200 bg-white p-6"
-          data-testid="join-invite"
-        >
-          <h1 className="text-xl font-semibold text-slate-900">{t("join.title")}</h1>
-          <p className="text-slate-700">
-            {t("join.description", {
-              member: state.invite.memberName,
-              workspace: state.invite.workspaceName,
-            })}
+    <AppLayout>
+      <section
+        className="mx-auto max-w-md space-y-4 rounded-2xl border border-slate-200 bg-white p-6"
+        data-testid="join-invite"
+      >
+        <h1 className="text-xl font-semibold text-slate-900">{t("join.title")}</h1>
+        <p className="text-slate-700">
+          {t("join.description", {
+            member: state.invite.memberName,
+            workspace: state.invite.workspaceName,
+          })}
+        </p>
+        <p className="text-sm text-slate-500">{t("join.access")}</p>
+        {error && (
+          <p role="alert" className="text-sm text-red-600">
+            {t("join.failed", { message: error })}
           </p>
-          <p className="text-sm text-slate-500">{t("join.access")}</p>
-          {error && (
-            <p role="alert" className="text-sm text-red-600">
-              {t("join.failed", { message: error })}
-            </p>
-          )}
-          <Button eventId="join_claim" onClick={() => void claim()} disabled={busy}>
-            <Link2 className="h-4 w-4" />
-            {t("join.claim")}
-          </Button>
-        </section>
-      </AppMain>
-    </AppPage>
+        )}
+        <Button eventId="join_claim" onClick={() => void claim()} disabled={busy}>
+          <Link2 className="h-4 w-4" />
+          {t("join.claim")}
+        </Button>
+      </section>
+    </AppLayout>
   );
 }
