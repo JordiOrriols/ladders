@@ -1,10 +1,10 @@
-import { AppPage, WorkspaceBar, getWorkspaceLabels } from "@jordiorriols/ui";
+import { WorkspaceBar, getWorkspaceLabels } from "@jordiorriols/ui";
 import { useWorkspaceList } from "@jordiorriols/ui/hooks";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import type { Evaluation, Team, TeamMember } from "../types";
-import { Header } from "../components/molecules/Header";
+import { AppLayout } from "../components/AppLayout";
 import { ConfirmDialog } from "../components/molecules/ConfirmDialog";
 import { CreateTeamDialog } from "../components/molecules/CreateTeamDialog";
 import { ReferenceModal } from "../components/molecules/ReferenceModal";
@@ -14,6 +14,7 @@ import { useData } from "@/data/DataProvider";
 import { toMemberSummary } from "@/data/evaluations";
 import { takePendingInvite } from "@/utils/pendingInvite";
 import { MemberHome } from "./MemberHome";
+import { PageMessage } from "./PageMessage";
 
 type TeamState = { teams: Team[]; members: TeamMember[]; evaluations: Evaluation[] };
 
@@ -116,8 +117,8 @@ export default function Home() {
     return <MemberHome workspaceId={workspaceId} workspaceBar={workspaceBar} />;
 
   return (
-    <AppPage data-testid="main-content">
-      <ErrorBoundary componentName="MainTabs">
+    <div data-testid="main-content">
+      <ErrorBoundary componentName="MainTabs" fallback={() => <PageMessage kind="error" />}>
         <MainTabs
           teams={team.teams}
           members={summaries}
@@ -132,9 +133,16 @@ export default function Home() {
           onDeleteTeam={(selectedTeam) => setDeleteTeamId(selectedTeam.id)}
           onRenameTeam={setRenamingTeam}
           workspaceActions={workspaceBar}
-          renderHeader={(navigation) => (
-            <ErrorBoundary componentName="Header">
-              <Header navigation={navigation} />
+          renderLayout={(navigation, content) => (
+            <ErrorBoundary componentName="Header" fallback={() => <PageMessage kind="error" />}>
+              <AppLayout navigation={navigation}>
+                {content}
+                {directory.error && (
+                  <p role="alert" className="text-sm text-destructive">
+                    {directory.error}
+                  </p>
+                )}
+              </AppLayout>
             </ErrorBoundary>
           )}
         />
@@ -147,12 +155,6 @@ export default function Home() {
           onCancel={() => setDeleteId(null)}
         />
       </ErrorBoundary>
-
-      {directory.error && (
-        <p role="alert" className="px-6 text-sm text-destructive">
-          {directory.error}
-        </p>
-      )}
 
       <ConfirmDialog
         isOpen={!!deleteTeamId}
@@ -187,6 +189,6 @@ export default function Home() {
           await reload();
         }}
       />
-    </AppPage>
+    </div>
   );
 }

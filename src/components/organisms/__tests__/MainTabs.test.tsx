@@ -5,9 +5,14 @@ import React from "react";
 import { I18nextProvider } from "react-i18next";
 import i18n from "../../../i18n";
 import { MainTabs } from "../MainTabs";
+import { MemoryRouter } from "react-router-dom";
 
 const renderWithI18n = (component: React.ReactElement) => {
-  return render(<I18nextProvider i18n={i18n}>{component}</I18nextProvider>);
+  return render(
+    <MemoryRouter>
+      <I18nextProvider i18n={i18n}>{component}</I18nextProvider>
+    </MemoryRouter>
+  );
 };
 
 describe("MainTabs", () => {
@@ -39,8 +44,8 @@ describe("MainTabs", () => {
         onShowReference={() => {}}
       />
     );
-    expect(screen.getByTestId("tab-individual")).toHaveAttribute("data-state", "active");
-    expect(screen.getByTestId("tab-team")).toHaveAttribute("data-state", "inactive");
+    expect(screen.getByTestId("tab-individual")).toHaveAttribute("aria-current", "page");
+    expect(screen.getByTestId("tab-team")).not.toHaveAttribute("aria-current");
   });
 
   it("shows Reference opposite the tabs", async () => {
@@ -68,26 +73,28 @@ describe("MainTabs", () => {
         onDeleteMember={vi.fn()}
         onSelectMember={vi.fn()}
         onShowReference={vi.fn()}
-        renderHeader={(navigation) => <header>{navigation}</header>}
+        renderLayout={(navigation, content) => (
+          <>
+            <header>{navigation}</header>
+            <main>{content}</main>
+          </>
+        )}
       />
     );
     const nav = within(screen.getByRole("banner")).getByRole("navigation", {
       name: i18n.t("tabs.label"),
     });
     const [tabs, actions] = Array.from(nav.children) as HTMLElement[];
-    expect(within(tabs!).getAllByRole("tab")).toHaveLength(2);
+    expect(within(tabs!).getAllByRole("link")).toHaveLength(2);
     expect(within(actions!).getByTestId("reference-button")).toBeVisible();
-    const team = screen.getByRole("tab", { name: i18n.t("tabs.team") });
+    const team = screen.getByRole("link", { name: i18n.t("tabs.team") });
     expect(team.className).toContain("border-b-2");
     await userEvent.click(team);
-    expect(team).toHaveAttribute("data-state", "active");
-    expect(screen.getByRole("tab", { name: i18n.t("tabs.individual") })).toHaveAttribute(
-      "data-state",
-      "inactive"
+    expect(team).toHaveAttribute("aria-current", "page");
+    expect(team).toHaveAttribute("href", "/?view=team");
+    expect(screen.getByRole("link", { name: i18n.t("tabs.individual") })).not.toHaveAttribute(
+      "aria-current"
     );
-    expect(within(screen.getByTestId("main-area")).getByRole("tabpanel")).toHaveAttribute(
-      "aria-labelledby",
-      team.id
-    );
+    expect(screen.getByRole("main")).toBeVisible();
   });
 });

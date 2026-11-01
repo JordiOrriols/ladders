@@ -1,12 +1,12 @@
 import React, { Suspense, lazy } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ErrorBoundary } from "react-error-boundary";
 import Home from "./pages/home";
 import { DataProvider } from "./data/DataProvider";
 import { EntryGate } from "./components/EntryGate";
 import { PasswordResetDialog } from "./components/molecules/PasswordResetDialog";
-import { AppFooter } from "@jordiorriols/ui";
+import { PageMessage } from "./pages/PageMessage";
+import { ErrorBoundary, ErrorState, PublicAppShell } from "@jordiorriols/ui";
 
 const AssessmentPage = lazy(() => import("./pages/AssessmentPage"));
 const ViewPage = lazy(() => import("./pages/ViewPage"));
@@ -14,45 +14,39 @@ const JoinPage = lazy(() => import("./pages/JoinPage"));
 
 // Loading fallback component
 function LoadingFallback() {
-  const { t } = useTranslation();
-  return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-slate-400 mx-auto mb-4" />
-        <p className="text-slate-600">{t("pageMessage.loading")}</p>
-      </div>
-    </div>
-  );
+  return <PageMessage kind="loading" />;
 }
 
 // Error fallback component
 function ErrorFallback({ resetErrorBoundary }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="text-center p-6 bg-red-50 rounded-lg border border-red-200">
-        <h1 className="text-2xl font-semibold text-red-800 mb-4">{t("errors.title")}</h1>
-        <p className="text-red-700 mb-4">{t("errors.generic")}</p>
-        <button
-          onClick={resetErrorBoundary}
-          className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-        >
-          {t("errors.retry")}
-        </button>
-      </div>
-    </div>
+    <PublicAppShell
+      projectId="ladders"
+      header={{ title: t("header.title"), subtitle: t("header.subtitle") }}
+      footer={{
+        text: t("footer.attribution"),
+        language: i18n.resolvedLanguage ?? i18n.language,
+      }}
+    >
+      <ErrorState
+        title={t("errors.title")}
+        message={t("errors.generic")}
+        onRetry={resetErrorBoundary}
+        retryLabel={t("errors.retry")}
+      />
+    </PublicAppShell>
   );
 }
 
 export default function App() {
-  const { t, i18n } = useTranslation();
   return (
     <div className="min-h-screen flex flex-col">
       <div className="flex-1">
         <ErrorBoundary
-          FallbackComponent={ErrorFallback}
-          onReset={() => (window.location.href = "/")}
+          componentName="App"
+          fallback={() => <ErrorFallback resetErrorBoundary={() => (window.location.href = "/")} />}
         >
           <DataProvider>
             <PasswordResetDialog />
@@ -71,7 +65,6 @@ export default function App() {
           </DataProvider>
         </ErrorBoundary>
       </div>
-      <AppFooter projectId="ladders" language={i18n.language} text={t("footer.attribution")} />
     </div>
   );
 }
