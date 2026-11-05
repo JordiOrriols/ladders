@@ -116,8 +116,8 @@ employee's own answers.
 `20261010190000_comment_visibility.sql` adds per-comment visibility and a
 team-edit-authorized RPC, and redacts hidden text in `public_view` on the server.
 Anonymous users never receive hidden text from that API. The approved migration
-is recorded in the shared Supabase project and mirrored in Planner's migration
-history; apply it only once. No historical comment text is rewritten.
+is applied to the shared Supabase project and kept in the
+[backend](https://github.com/JordiOrriols/backend) repository. No historical comment text is rewritten.
 
 Set these values in `.env`:
 
@@ -155,7 +155,7 @@ includes **Vacations**, copying the member's independent permanent vacation UUID
 Self, peer, and view links retain their existing routes and tokens.
 Read-only team viewers do not see sharing actions or the planning-role editor.
 
-This requires the additive shared-vacations migration maintained in `../planner`
+This requires the additive shared-vacations migration (in the backend repository)
 to provide `public.members.planning_role` (nullable) and
 `public.members.vacation_token` (database-generated UUID), plus Planner's
 permissions/RPCs. Ladders reads the token but never sets or rotates it. Planner
@@ -172,28 +172,14 @@ evaluations are shown. Team access comes from the workspace share; there is no
 per-team share button. Only workspace owners can create teams
 (`create_team(p_name, p_workspace)`).
 
-## Initialize Supabase
+## Database
 
-Creating a Supabase project does not create this application's tables. Apply both migrations before trying to save members or evaluations.
-
-Authenticate the CLI and link this repository to the existing project:
-
-```bash
-npx supabase login
-npx supabase link --project-ref your-project-ref
-npx supabase db push
-```
-
-Enter access tokens and database passwords directly in the terminal when prompted. Do not place them in `.env` or commit them.
-
-For the currently configured URL, the project ref is the subdomain before `.supabase.co`.
-
-The migrations run in filename order:
-
-1. `supabase/migrations/0001_init.sql` creates tables, Row Level Security policies, permanent UUID share tokens, and public token RPCs.
-2. `supabase/migrations/0002_editable_drafts.sql` enables draft autosave while keeping published evaluations immutable.
-
-Alternatively, for a new empty project, paste and run those files in order in the Supabase Dashboard SQL Editor. Prefer `supabase db push` because it records migration history.
+The Supabase project is shared with Agents, Planner, Pulse and Shiplog. Its
+migrations, configuration, email templates and database tests live in the
+[backend](https://github.com/JordiOrriols/backend) repository, which documents
+how to add a migration, back up, and apply it to the hosted project. Ladders has
+no schema of its own to apply. Never put access tokens or database passwords in
+`.env` or a commit.
 
 ## Auth configuration
 
@@ -232,11 +218,11 @@ To enable GitHub login:
 
 ## Local Supabase
 
-To run the complete stack locally:
+To run the complete stack locally, start it from the backend repository:
 
 ```bash
-npx supabase start
-npx supabase db reset
+cd ../backend
+npm run db:start
 ```
 
 Then replace the `.env` values with the local API URL and publishable key printed by `npx supabase status`.
