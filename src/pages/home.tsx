@@ -1,4 +1,10 @@
-import { WorkspaceBar, getWorkspaceLabels } from "@jordiorriols/ui";
+import {
+  AppSkeleton,
+  ErrorState,
+  WorkspaceBar,
+  WorkspaceSetup,
+  getWorkspaceLabels,
+} from "@jordiorriols/ui";
 import { useWorkspaceList } from "@jordiorriols/ui/hooks";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -21,7 +27,7 @@ type TeamState = { teams: Team[]; members: TeamMember[]; evaluations: Evaluation
 export default function Home() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
-  const { repository, workspaceApi, loading } = useData();
+  const { repository, workspaceApi, loading, user } = useData();
   const directory = useWorkspaceList(workspaceApi, "ladders");
   const workspaceId = directory.workspace?.id;
   const access = directory.workspace?.access_level;
@@ -109,9 +115,35 @@ export default function Home() {
           directory.select(created.id);
           await directory.refresh();
         }}
+        onDeleted={directory.refresh}
         labels={getWorkspaceLabels(i18n.language)}
       />
     ) : undefined;
+
+  if (user && workspaceApi && !workspaceId)
+    return (
+      <AppLayout>
+        {directory.error ? (
+          <ErrorState
+            message={directory.error}
+            onRetry={() => void directory.refresh()}
+            retryLabel={t("errors.retry")}
+          />
+        ) : directory.loading ? (
+          <AppSkeleton label={t("pageMessage.loading")} />
+        ) : (
+          <WorkspaceSetup
+            api={workspaceApi}
+            language={i18n.language}
+            onRefresh={directory.refresh}
+            onCreated={async (created) => {
+              directory.select(created.id);
+              await directory.refresh();
+            }}
+          />
+        )}
+      </AppLayout>
+    );
 
   if (workspaceId && access === "member")
     return <MemberHome workspaceId={workspaceId} workspaceBar={workspaceBar} />;

@@ -14,9 +14,16 @@ The shared UI library is installed from GitHub Packages as
 `@jordiorriols/ui`. Export a token with `read:packages` scope before installing;
 `.npmrc` reads it from `GITHUB_TOKEN`:
 
-UI `^0.3.32` includes Agents in the shared project switcher and supplies the shared blue Ladders branding for header, project-menu
+UI `^0.3.33` includes Agents in the shared project switcher and supplies the shared blue Ladders branding for header, project-menu
 and login/welcome icons. `projectId` and `ProjectIcon` reuse the UI registry,
 including employee evaluation pages, without a local palette.
+
+Accounts with no accessible workspace see UI's shared `WorkspaceSetup`: create
+one explicitly or wait for an invitation, checked automatically. The workspace
+menu lets owners delete only empty workspaces, after confirmation. Backend
+`delete_workspace` checks content across all five apps and discards empty
+teams/projects; failures remain visible. The backend lifecycle migration must
+be deployed before enabling these controls.
 
 Planning-role and grouped seniority-template dropdowns use UI's shared
 `SelectField` listbox instead of browser-native select popups. Workspace sharing
