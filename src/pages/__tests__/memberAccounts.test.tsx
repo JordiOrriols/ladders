@@ -67,12 +67,19 @@ async function expectNavigationTabs() {
   const navigation = screen.getByRole("navigation");
   expect(navigation).toContainElement(evaluation);
   expect(navigation).toContainElement(goals);
-  expect(evaluation).toHaveAttribute("aria-selected", "true");
+  expect(screen.getByRole("link", { name: "Evaluation", exact: true })).toBe(evaluation);
+  expect(evaluation).toHaveAttribute("aria-current", "page");
+  expect(goals).not.toHaveAttribute("aria-current");
   expect(screen.queryByTestId("goals-panel")).not.toBeInTheDocument();
 
   await userEvent.click(goals);
-  expect(goals).toHaveAttribute("aria-selected", "true");
+  expect(goals).toHaveAttribute("aria-current", "page");
+  expect(evaluation).not.toHaveAttribute("aria-current");
+  expect(goals.getAttribute("href")).toContain("tab=goals");
   expect(await screen.findByTestId("goals-panel")).toBeInTheDocument();
+  await userEvent.click(evaluation);
+  expect(evaluation).toHaveAttribute("aria-current", "page");
+  expect(screen.queryByTestId("goals-panel")).not.toBeInTheDocument();
 }
 
 describe("Members linked to accounts", () => {
