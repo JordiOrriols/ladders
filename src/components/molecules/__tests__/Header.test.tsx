@@ -43,6 +43,10 @@ describe("Header", () => {
       "href",
       "https://planner.jordiorriols.cat/"
     );
+    expect(screen.getByRole("menuitem", { name: "Agents" })).toHaveAttribute(
+      "href",
+      "https://agents.jordiorriols.cat/"
+    );
     expect(screen.getByRole("menuitem", { name: "Ladders" })).toHaveAttribute(
       "aria-current",
       "page"
