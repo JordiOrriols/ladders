@@ -95,7 +95,32 @@ async function request(path: string, body?: unknown, method = "GET"): Promise<un
   return response.json();
 }
 const path = (workspace: string) => `ladders/workspaces/${uuid(workspace)}/teams`;
+type ProfileInput = Pick<
+  PlatformRoster["members"][number],
+  "name" | "role" | "planning_role" | "template_id"
+>;
+function profileInput(input: ProfileInput): ProfileInput {
+  if (
+    !input.name.trim() ||
+    Array.from(input.name.trim()).length > 120 ||
+    Array.from(input.role.trim()).length > 120 ||
+    (input.template_id !== null && Array.from(input.template_id).length > 10)
+  )
+    throw new Error("Invalid member profile");
+  return {
+    name: input.name.trim(),
+    role: input.role.trim(),
+    planning_role: planningRole(input.planning_role),
+    template_id: input.template_id,
+  };
+}
 export const platformRepository = {
+  createMember: async (workspace: string, team: string, input: ProfileInput): Promise<string> => {
+    const result = object(
+      await request(`${path(workspace)}/${uuid(team)}/members`, profileInput(input), "POST")
+    );
+    return uuid(result["id"]);
+  },
   deleteMember: async (workspace: string, member: string) =>
     roster(
       await request(
@@ -123,30 +148,11 @@ export const platformRepository = {
       )
     );
   },
-  saveProfile: async (
-    workspace: string,
-    member: string,
-    input: Pick<
-      PlatformRoster["members"][number],
-      "name" | "role" | "planning_role" | "template_id"
-    >
-  ) => {
-    if (
-      !input.name.trim() ||
-      Array.from(input.name.trim()).length > 120 ||
-      Array.from(input.role.trim()).length > 120 ||
-      (input.template_id !== null && Array.from(input.template_id).length > 10)
-    )
-      throw new Error("Invalid member profile");
+  saveProfile: async (workspace: string, member: string, input: ProfileInput) => {
     return roster(
       await request(
         `ladders/workspaces/${uuid(workspace)}/members/${uuid(member)}`,
-        {
-          name: input.name.trim(),
-          role: input.role.trim(),
-          planning_role: planningRole(input.planning_role),
-          template_id: input.template_id,
-        },
+        profileInput(input),
         "PATCH"
       )
     );

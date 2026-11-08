@@ -14,12 +14,16 @@ export function PlatformMemberProfile({
   editable,
   onSaved,
   onDeleted,
+  createTeam,
+  onCreated,
 }: {
   workspace: string;
   member: PlatformRoster["members"][number];
   editable: boolean;
   onSaved: () => void;
   onDeleted?: () => void;
+  createTeam?: string;
+  onCreated?: (id: string) => void;
 }) {
   const { t } = useTranslation();
   const [profile, setProfile] = useState(member);
@@ -31,8 +35,12 @@ export function PlatformMemberProfile({
         event.preventDefault();
         if (!editable || action.busy) return;
         void action.run(async () => {
-          await platformRepository.saveProfile(workspace, member.id, profile);
-          onSaved();
+          if (createTeam && onCreated) {
+            onCreated(await platformRepository.createMember(workspace, createTeam, profile));
+          } else {
+            await platformRepository.saveProfile(workspace, member.id, profile);
+            onSaved();
+          }
         });
       }}
     >

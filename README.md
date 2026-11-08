@@ -38,7 +38,14 @@ Container deletion does not implicitly delete a platform-granted workspace: the
 legacy `created_for_team` cleanup flag is cleared in the same transaction so the
 workspace and all its app grants remain until explicit shared workspace deletion.
 
-Pending: member creation/moves,
+Owners/editors add members from a team's directory link. The creation route reuses
+the profile form and validators, saves explicitly and replaces its URL with the
+created member's permanent profile path. New members are unlinked (`user_id` null),
+view sharing is disabled and generated legacy tokens are never returned. Creation
+returns only the new ID. Invalid profiles roll back the insertion; foreign teams,
+viewers and revoked grants cannot create members. No legacy account is impersonated.
+
+Pending: member moves,
 evaluation editing/history/comment visibility, explicit employee identity mapping,
 SMART goals, shared workspace lifecycle and real corporate Access acceptance.
 No production data is written. E2Es use only `platform-local.config.ts` and the

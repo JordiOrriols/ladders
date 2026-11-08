@@ -6,7 +6,7 @@
     "memberUnavailable": "Membro non disponibile in questo spazio.",
     "workspaces": "Spazi di lavoro",
     "noAccess": "Nessun accesso a uno spazio Ladders. Chiedi un invito al proprietario.",
-    "migration": "Gestisci team e profili qui. I proprietari possono eliminare membri e team vuoti non predefiniti. Le valutazioni, la creazione e lo spostamento dei membri non sono ancora abilitati.",
+    "migration": "Gestisci team e profili qui. Proprietari ed editor possono aggiungere membri; i proprietari possono eliminare membri e team vuoti non predefiniti. Le valutazioni e lo spostamento dei membri non sono ancora abilitati.",
     "emptyTeams": "Questo spazio non ha team."
   },
   "errors": {

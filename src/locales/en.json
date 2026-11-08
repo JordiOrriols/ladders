@@ -6,7 +6,7 @@
     "memberUnavailable": "Member unavailable in this workspace.",
     "workspaces": "Workspaces",
     "noAccess": "No Ladders workspace access. Ask a workspace owner for an invitation.",
-    "migration": "Manage teams and member profiles here. Owners can delete members and empty non-default teams. Evaluations, member creation and moves are not yet enabled.",
+    "migration": "Manage teams and member profiles here. Owners and editors can add members; owners can delete members and empty non-default teams. Evaluations and member moves are not yet enabled.",
     "emptyTeams": "This workspace has no teams."
   },
   "errors": {

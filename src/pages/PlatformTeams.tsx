@@ -14,7 +14,7 @@ import { PlatformMemberProfile } from "../components/PlatformMemberProfile";
 import { PlatformDeleteAction } from "../components/PlatformDeleteAction";
 
 export default function PlatformTeams() {
-  const { workspace, member: memberId } = useParams();
+  const { workspace, member: memberId, team: createTeam } = useParams();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [directory, setDirectory] = useState<PlatformWorkspace[]>();
@@ -55,13 +55,13 @@ export default function PlatformTeams() {
     return () => {
       active = false;
     };
-  }, [load, revision, t, memberId]);
+  }, [load, revision, t, memberId, createTeam]);
   const access = directory?.find((item) => item.id === workspace);
   const member = data?.members.find((item) => item.id === memberId);
   return (
     <PlatformLayout>
       {workspace && <Link to="/">{t("platform.workspaces")}</Link>}
-      {workspace && memberId && (
+      {workspace && (memberId || createTeam) && (
         <Link to={`/workspaces/${workspace}/teams`}>{t("platform.teams")}</Link>
       )}
       <h2 className="text-2xl font-semibold">{access?.name ?? t("platform.workspaces")}</h2>
@@ -86,7 +86,32 @@ export default function PlatformTeams() {
           <p>{t("platform.noAccess")}</p>
         )
       ) : access && data ? (
-        memberId ? (
+        createTeam ? (
+          workspace &&
+          access.role !== "viewer" &&
+          data.teams.some((team) => team.id === createTeam) ? (
+            <PlatformMemberProfile
+              key={`${workspace}:${createTeam}`}
+              workspace={workspace}
+              member={{
+                id: "",
+                team_id: createTeam,
+                name: "",
+                role: "",
+                planning_role: null,
+                template_id: null,
+              }}
+              editable
+              createTeam={createTeam}
+              onSaved={() => setRevision((value) => value + 1)}
+              onCreated={(id) =>
+                navigate(`/workspaces/${workspace}/members/${id}`, { replace: true })
+              }
+            />
+          ) : (
+            <p role="alert">{t("platform.noAccess")}</p>
+          )
+        ) : memberId ? (
           member && workspace ? (
             <PlatformMemberProfile
               key={`${workspace}:${member.id}:${revision}`}
@@ -113,6 +138,11 @@ export default function PlatformTeams() {
             {data.teams.map((team) => (
               <section key={team.id} className="panel space-y-3">
                 <h3 className="text-xl font-semibold">{team.name}</h3>
+                {access.role !== "viewer" && (
+                  <Link to={`/workspaces/${workspace}/teams/${team.id}/members/new`}>
+                    {t("teams.addMemberTo", { name: team.name })}
+                  </Link>
+                )}
                 {access.role !== "viewer" && (
                   <Button
                     aria-label={t("teams.renameAria", { name: team.name })}

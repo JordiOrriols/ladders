@@ -24,6 +24,7 @@ export default function App() {
         <Route path="/" element={<PlatformTeams />} />
         <Route path="/workspaces/:workspace/teams" element={<PlatformTeams />} />
         <Route path="/workspaces/:workspace/members/:member" element={<PlatformTeams />} />
+        <Route path="/workspaces/:workspace/teams/:team/members/new" element={<PlatformTeams />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </ErrorBoundary>

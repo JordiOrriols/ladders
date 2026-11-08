@@ -4,6 +4,26 @@ import { platformRepository } from "./platform";
 const workspace = "11111111-1111-4111-8111-111111111111";
 const team = "22222222-2222-4222-8222-222222222222";
 afterEach(() => vi.unstubAllGlobals());
+it("creates a member with the existing profile validator and requires an ID-only response", async () => {
+  const input = { name: " New ", role: "", planning_role: null, template_id: null };
+  const fetch = vi.fn().mockImplementation(async () => new Response(JSON.stringify({ id: team })));
+  vi.stubGlobal("fetch", fetch);
+  expect(await platformRepository.createMember(workspace, team, input)).toBe(team);
+  expect(fetch).toHaveBeenLastCalledWith(
+    `/api/ladders/workspaces/${workspace}/teams/${team}/members`,
+    expect.objectContaining({
+      method: "POST",
+      body: '{"name":"New","role":"","planning_role":null,"template_id":null}',
+    })
+  );
+  await expect(
+    platformRepository.createMember(workspace, team, { ...input, name: "" })
+  ).rejects.toThrow("Invalid member profile");
+  fetch.mockImplementation(async () => new Response('{"name":"Missing ID"}'));
+  await expect(platformRepository.createMember(workspace, team, input)).rejects.toThrow(
+    "Invalid API response"
+  );
+});
 it("deletes members and teams only through scoped API paths without a request body", async () => {
   const fetch = vi.fn().mockImplementation(async () => new Response('{"teams":[],"members":[]}'));
   vi.stubGlobal("fetch", fetch);
