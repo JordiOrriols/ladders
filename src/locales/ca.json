@@ -1,15 +1,17 @@
 {
   "platform": {
+    "moveMember": "Mou el membre",
     "deleteName": "Elimina {{name}}",
     "profile": "Perfil del membre",
     "teams": "Equips",
     "memberUnavailable": "El membre no està disponible en aquest espai.",
     "workspaces": "Espais de treball",
     "noAccess": "No tens accés a cap espai de Ladders. Demana una invitació al propietari.",
-    "migration": "Gestiona equips i perfils aquí. Els propietaris i editors poden afegir membres; els propietaris poden eliminar membres i equips buits no predeterminats. Les avaluacions i el trasllat de membres encara no estan habilitats.",
+    "migration": "Gestiona equips i perfils aquí. Els propietaris i editors poden afegir i moure membres; els propietaris poden eliminar membres i equips buits no predeterminats. Les avaluacions encara no estan habilitades.",
     "emptyTeams": "Aquest espai no té equips."
   },
   "errors": {
+    "memberTeamConflict": "Aquest compte ja té un membre a l'equip de destinació.",
     "title": "S'ha produït un error",
     "retry": "Torna-ho a provar",
     "generic": "No s'ha pogut completar l'acció. Torna-ho a provar.",

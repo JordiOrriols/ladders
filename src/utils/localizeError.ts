@@ -14,6 +14,8 @@ const messages: [RegExp, string][] = [
   [/user not found or cannot share team/i, "shareUser"],
   [/default team cannot be deleted/i, "defaultTeam"],
   [/team is not empty/i, "teamNotEmpty"],
+  [/account already has a member in the destination team/i, "memberTeamConflict"],
+  [/members cannot move across team owners/i, "access"],
   [/progress must be between/i, "progress"],
   [/comment must contain/i, "comment"],
   [/choose an existing competency comment/i, "chooseComment"],

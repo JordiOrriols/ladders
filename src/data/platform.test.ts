@@ -4,6 +4,18 @@ import { platformRepository } from "./platform";
 const workspace = "11111111-1111-4111-8111-111111111111";
 const team = "22222222-2222-4222-8222-222222222222";
 afterEach(() => vi.unstubAllGlobals());
+it("moves members through a scoped body-free route and validates all IDs", async () => {
+  const fetch = vi.fn().mockImplementation(async () => new Response('{"teams":[],"members":[]}'));
+  vi.stubGlobal("fetch", fetch);
+  await platformRepository.moveMember(workspace, team, workspace);
+  expect(fetch).toHaveBeenCalledWith(
+    `/api/ladders/workspaces/${workspace}/members/${team}/teams/${workspace}`,
+    expect.objectContaining({ method: "PATCH" })
+  );
+  expect(fetch.mock.calls[0]?.[1]).not.toHaveProperty("body");
+  await expect(platformRepository.moveMember(workspace, team, "invalid")).rejects.toThrow();
+  expect(fetch).toHaveBeenCalledTimes(1);
+});
 it("creates a member with the existing profile validator and requires an ID-only response", async () => {
   const input = { name: " New ", role: "", planning_role: null, template_id: null };
   const fetch = vi.fn().mockImplementation(async () => new Response(JSON.stringify({ id: team })));

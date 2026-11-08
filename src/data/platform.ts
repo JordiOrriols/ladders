@@ -115,6 +115,14 @@ function profileInput(input: ProfileInput): ProfileInput {
   };
 }
 export const platformRepository = {
+  moveMember: async (workspace: string, member: string, team: string) =>
+    roster(
+      await request(
+        `ladders/workspaces/${uuid(workspace)}/members/${uuid(member)}/teams/${uuid(team)}`,
+        undefined,
+        "PATCH"
+      )
+    ),
   createMember: async (workspace: string, team: string, input: ProfileInput): Promise<string> => {
     const result = object(
       await request(`${path(workspace)}/${uuid(team)}/members`, profileInput(input), "POST")

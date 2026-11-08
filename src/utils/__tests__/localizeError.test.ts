@@ -18,6 +18,8 @@ const errors = [
   ["user not found or cannot share team", "shareUser"],
   ["default team cannot be deleted", "defaultTeam"],
   ["team is not empty", "teamNotEmpty"],
+  ["This account already has a member in the destination team", "memberTeamConflict"],
+  ["members cannot move across team owners", "access"],
   ["progress must be between 0 and 100", "progress"],
   ["comment must contain 1 to 10000 characters", "comment"],
   ["Choose an existing competency comment", "chooseComment"],

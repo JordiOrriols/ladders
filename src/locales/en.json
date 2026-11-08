@@ -1,15 +1,17 @@
 {
   "platform": {
+    "moveMember": "Move member",
     "deleteName": "Delete {{name}}",
     "profile": "Member profile",
     "teams": "Teams",
     "memberUnavailable": "Member unavailable in this workspace.",
     "workspaces": "Workspaces",
     "noAccess": "No Ladders workspace access. Ask a workspace owner for an invitation.",
-    "migration": "Manage teams and member profiles here. Owners and editors can add members; owners can delete members and empty non-default teams. Evaluations and member moves are not yet enabled.",
+    "migration": "Manage teams and member profiles here. Owners and editors can add and move members; owners can delete members and empty non-default teams. Evaluations are not yet enabled.",
     "emptyTeams": "This workspace has no teams."
   },
   "errors": {
+    "memberTeamConflict": "This account already has a member in the destination team.",
     "title": "Something went wrong",
     "retry": "Try again",
     "generic": "The action could not be completed. Please try again.",

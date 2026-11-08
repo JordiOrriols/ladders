@@ -12,6 +12,7 @@ import { PlatformLayout } from "../components/PlatformLayout";
 import { CreateTeamDialog } from "../components/molecules/CreateTeamDialog";
 import { PlatformMemberProfile } from "../components/PlatformMemberProfile";
 import { PlatformDeleteAction } from "../components/PlatformDeleteAction";
+import { PlatformMoveMember } from "../components/PlatformMoveMember";
 
 export default function PlatformTeams() {
   const { workspace, member: memberId, team: createTeam } = useParams();
@@ -113,18 +114,29 @@ export default function PlatformTeams() {
           )
         ) : memberId ? (
           member && workspace ? (
-            <PlatformMemberProfile
-              key={`${workspace}:${member.id}:${revision}`}
-              workspace={workspace}
-              member={member}
-              editable={access.role !== "viewer"}
-              onSaved={() => setRevision((value) => value + 1)}
-              {...(access.role === "owner"
-                ? {
-                    onDeleted: () => navigate(`/workspaces/${workspace}/teams`),
-                  }
-                : {})}
-            />
+            <div className="space-y-6">
+              <PlatformMemberProfile
+                key={`${workspace}:${member.id}:${revision}`}
+                workspace={workspace}
+                member={member}
+                editable={access.role !== "viewer"}
+                onSaved={() => setRevision((value) => value + 1)}
+                {...(access.role === "owner"
+                  ? {
+                      onDeleted: () => navigate(`/workspaces/${workspace}/teams`),
+                    }
+                  : {})}
+              />
+              {access.role !== "viewer" && (
+                <PlatformMoveMember
+                  key={`move:${workspace}:${member.id}:${revision}`}
+                  workspace={workspace}
+                  member={member}
+                  teams={data.teams}
+                  onMoved={() => setRevision((value) => value + 1)}
+                />
+              )}
+            </div>
           ) : (
             <p role="alert">{t("platform.memberUnavailable")}</p>
           )

@@ -1,15 +1,17 @@
 {
   "platform": {
+    "moveMember": "Mitglied verschieben",
     "deleteName": "{{name}} löschen",
     "profile": "Mitgliederprofil",
     "teams": "Teams",
     "memberUnavailable": "Mitglied in diesem Arbeitsbereich nicht verfügbar.",
     "workspaces": "Arbeitsbereiche",
     "noAccess": "Kein Zugriff auf einen Ladders-Arbeitsbereich. Bitte den Eigentümer um eine Einladung.",
-    "migration": "Verwalte Teams und Profile hier. Eigentümer und Bearbeiter können Mitglieder hinzufügen; Eigentümer können Mitglieder und leere Nicht-Standardteams löschen. Bewertungen und das Verschieben von Mitgliedern sind noch nicht aktiviert.",
+    "migration": "Verwalte Teams und Profile hier. Eigentümer und Bearbeiter können Mitglieder hinzufügen und verschieben; Eigentümer können Mitglieder und leere Nicht-Standardteams löschen. Bewertungen sind noch nicht aktiviert.",
     "emptyTeams": "Dieser Arbeitsbereich hat keine Teams."
   },
   "errors": {
+    "memberTeamConflict": "Dieses Konto hat bereits ein Mitglied im Zielteam.",
     "title": "Etwas ist schiefgelaufen",
     "retry": "Erneut versuchen",
     "generic": "Die Aktion konnte nicht abgeschlossen werden. Bitte versuche es erneut.",

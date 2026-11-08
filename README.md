@@ -45,7 +45,16 @@ view sharing is disabled and generated legacy tokens are never returned. Creatio
 returns only the new ID. Invalid profiles roll back the insertion; foreign teams,
 viewers and revoked grants cannot create members. No legacy account is impersonated.
 
-Pending: member moves,
+Owners/editors move existing members with the shared `FormField`/`SelectField`
+team selector and an explicit Move member button on the profile page. Selecting
+a destination alone performs no write. Moves stay within the workspace and
+legacy team owner; viewers and revoked grants cannot move members. A duplicate
+linked account in the destination returns a visible conflict without unlinking
+either member. Profile/account IDs, tokens and all evaluation/goal/invitation/
+vacation records survive; reselecting the current team is an idempotent no-op.
+The profile URL stays stable and the directory reloads the new team association.
+
+Pending:
 evaluation editing/history/comment visibility, explicit employee identity mapping,
 SMART goals, shared workspace lifecycle and real corporate Access acceptance.
 No production data is written. E2Es use only `platform-local.config.ts` and the

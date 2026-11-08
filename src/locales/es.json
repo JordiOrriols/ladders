@@ -1,15 +1,17 @@
 {
   "platform": {
+    "moveMember": "Mover miembro",
     "deleteName": "Eliminar {{name}}",
     "profile": "Perfil del miembro",
     "teams": "Equipos",
     "memberUnavailable": "El miembro no está disponible en este espacio.",
     "workspaces": "Espacios de trabajo",
     "noAccess": "No tienes acceso a un espacio de Ladders. Solicita una invitación a su propietario.",
-    "migration": "Gestiona equipos y perfiles aquí. Los propietarios y editores pueden añadir miembros; los propietarios pueden eliminar miembros y equipos vacíos no predeterminados. Las evaluaciones y el traslado de miembros aún no están habilitados.",
+    "migration": "Gestiona equipos y perfiles aquí. Los propietarios y editores pueden añadir y mover miembros; los propietarios pueden eliminar miembros y equipos vacíos no predeterminados. Las evaluaciones aún no están habilitadas.",
     "emptyTeams": "Este espacio no tiene equipos."
   },
   "errors": {
+    "memberTeamConflict": "Esta cuenta ya tiene un miembro en el equipo de destino.",
     "title": "Algo ha salido mal",
     "retry": "Volver a intentar",
     "generic": "No se ha podido completar la acción. Inténtalo de nuevo.",
