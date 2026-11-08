@@ -1,11 +1,12 @@
 {
   "platform": {
+    "deleteName": "Supprimer {{name}}",
     "profile": "Profil du membre",
     "teams": "Équipes",
     "memberUnavailable": "Membre indisponible dans cet espace.",
     "workspaces": "Espaces de travail",
     "noAccess": "Aucun accès à un espace Ladders. Demandez une invitation à son propriétaire.",
-    "migration": "Créez et renommez les équipes et modifiez les profils ici. Les évaluations, la création, le déplacement et la suppression des membres ne sont pas encore activés.",
+    "migration": "Gérez les équipes et les profils ici. Les propriétaires peuvent supprimer les membres et les équipes vides non définies par défaut. Les évaluations, la création et le déplacement des membres ne sont pas encore activés.",
     "emptyTeams": "Cet espace ne contient aucune équipe."
   },
   "errors": {

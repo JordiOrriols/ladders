@@ -96,6 +96,16 @@ async function request(path: string, body?: unknown, method = "GET"): Promise<un
 }
 const path = (workspace: string) => `ladders/workspaces/${uuid(workspace)}/teams`;
 export const platformRepository = {
+  deleteMember: async (workspace: string, member: string) =>
+    roster(
+      await request(
+        `ladders/workspaces/${uuid(workspace)}/members/${uuid(member)}`,
+        undefined,
+        "DELETE"
+      )
+    ),
+  deleteTeam: async (workspace: string, team: string) =>
+    roster(await request(`${path(workspace)}/${uuid(team)}`, undefined, "DELETE")),
   workspaces: async (): Promise<PlatformWorkspace[]> =>
     array(await request("apps/ladders/workspaces")).map((value) => {
       const row = object(value);

@@ -28,7 +28,17 @@ From the backend API directory, start the `web` profile of `compose.local.yml`.
 The local gateway serves `http://127.0.0.1:5320/ladders/` (direct port 5314).
 Docker installs GitHub Packages with a BuildKit secret. Do not merge or deploy yet.
 
-Pending: member creation/deletion/moves, team deletion with existing nonempty/default protections,
+Only owners delete members or empty non-default teams, using the existing shared
+confirmation dialog. Cancel performs no write; failed deletion stays visible.
+Deleting a member retains the existing database cascades for their evaluations,
+SMART goals, invitations and vacations, without deleting accounts or other members.
+Team deletion retains Shiplog applications and clears only their team association,
+matching the existing FK behavior. Nonempty/default teams are rejected with 409.
+Container deletion does not implicitly delete a platform-granted workspace: the
+legacy `created_for_team` cleanup flag is cleared in the same transaction so the
+workspace and all its app grants remain until explicit shared workspace deletion.
+
+Pending: member creation/moves,
 evaluation editing/history/comment visibility, explicit employee identity mapping,
 SMART goals, shared workspace lifecycle and real corporate Access acceptance.
 No production data is written. E2Es use only `platform-local.config.ts` and the

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { AppSkeleton, Button, ErrorState } from "@jordiorriols/ui";
 import { useTranslation } from "react-i18next";
 import {
@@ -11,10 +11,12 @@ import {
 import { PlatformLayout } from "../components/PlatformLayout";
 import { CreateTeamDialog } from "../components/molecules/CreateTeamDialog";
 import { PlatformMemberProfile } from "../components/PlatformMemberProfile";
+import { PlatformDeleteAction } from "../components/PlatformDeleteAction";
 
 export default function PlatformTeams() {
   const { workspace, member: memberId } = useParams();
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [directory, setDirectory] = useState<PlatformWorkspace[]>();
   const [data, setData] = useState<PlatformRoster>();
   const [error, setError] = useState<string>();
@@ -53,7 +55,7 @@ export default function PlatformTeams() {
     return () => {
       active = false;
     };
-  }, [load, revision, t]);
+  }, [load, revision, t, memberId]);
   const access = directory?.find((item) => item.id === workspace);
   const member = data?.members.find((item) => item.id === memberId);
   return (
@@ -92,6 +94,11 @@ export default function PlatformTeams() {
               member={member}
               editable={access.role !== "viewer"}
               onSaved={() => setRevision((value) => value + 1)}
+              {...(access.role === "owner"
+                ? {
+                    onDeleted: () => navigate(`/workspaces/${workspace}/teams`),
+                  }
+                : {})}
             />
           ) : (
             <p role="alert">{t("platform.memberUnavailable")}</p>
@@ -113,6 +120,17 @@ export default function PlatformTeams() {
                   >
                     {t("teams.rename")}
                   </Button>
+                )}
+                {access.role === "owner" && workspace && (
+                  <PlatformDeleteAction
+                    kind="team"
+                    name={team.name}
+                    disabled={data.members.some((member) => member.team_id === team.id)}
+                    onDelete={async () => {
+                      await platformRepository.deleteTeam(workspace, team.id);
+                      setRevision((value) => value + 1);
+                    }}
+                  />
                 )}
                 <ul>
                   {data.members

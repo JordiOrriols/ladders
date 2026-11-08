@@ -4,6 +4,25 @@ import { platformRepository } from "./platform";
 const workspace = "11111111-1111-4111-8111-111111111111";
 const team = "22222222-2222-4222-8222-222222222222";
 afterEach(() => vi.unstubAllGlobals());
+it("deletes members and teams only through scoped API paths without a request body", async () => {
+  const fetch = vi.fn().mockImplementation(async () => new Response('{"teams":[],"members":[]}'));
+  vi.stubGlobal("fetch", fetch);
+  await platformRepository.deleteMember(workspace, team);
+  expect(fetch).toHaveBeenLastCalledWith(
+    `/api/ladders/workspaces/${workspace}/members/${team}`,
+    expect.objectContaining({ method: "DELETE" })
+  );
+  expect(fetch.mock.calls[0]?.[1]).not.toHaveProperty("body");
+  await platformRepository.deleteTeam(workspace, team);
+  expect(fetch).toHaveBeenLastCalledWith(
+    `/api/ladders/workspaces/${workspace}/teams/${team}`,
+    expect.objectContaining({ method: "DELETE" })
+  );
+  await expect(platformRepository.deleteMember("../foreign", team)).rejects.toThrow(
+    "Invalid workspace"
+  );
+  expect(fetch).toHaveBeenCalledTimes(2);
+});
 it("saves only editable profile fields and validates profile limits before sending", async () => {
   const input = {
     name: " Member ",

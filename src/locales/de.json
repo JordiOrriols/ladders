@@ -1,11 +1,12 @@
 {
   "platform": {
+    "deleteName": "{{name}} löschen",
     "profile": "Mitgliederprofil",
     "teams": "Teams",
     "memberUnavailable": "Mitglied in diesem Arbeitsbereich nicht verfügbar.",
     "workspaces": "Arbeitsbereiche",
     "noAccess": "Kein Zugriff auf einen Ladders-Arbeitsbereich. Bitte den Eigentümer um eine Einladung.",
-    "migration": "Hier kannst du Teams erstellen und umbenennen und Profile bearbeiten. Bewertungen sowie das Erstellen, Verschieben und Löschen von Mitgliedern sind noch nicht aktiviert.",
+    "migration": "Verwalte Teams und Profile hier. Eigentümer können Mitglieder und leere Nicht-Standardteams löschen. Bewertungen sowie das Erstellen und Verschieben von Mitgliedern sind noch nicht aktiviert.",
     "emptyTeams": "Dieser Arbeitsbereich hat keine Teams."
   },
   "errors": {

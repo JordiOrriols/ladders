@@ -6,17 +6,20 @@ import { platformRepository, type PlatformRoster } from "../data/platform";
 import { MemberProfileFields } from "./molecules/MemberProfileFields";
 import { PlanningRoleField } from "./molecules/PlanningRoleField";
 import { TemplatePanel } from "./molecules/TemplatePanel";
+import { PlatformDeleteAction } from "./PlatformDeleteAction";
 
 export function PlatformMemberProfile({
   workspace,
   member,
   editable,
   onSaved,
+  onDeleted,
 }: {
   workspace: string;
   member: PlatformRoster["members"][number];
   editable: boolean;
   onSaved: () => void;
+  onDeleted?: () => void;
 }) {
   const { t } = useTranslation();
   const [profile, setProfile] = useState(member);
@@ -77,6 +80,17 @@ export function PlatformMemberProfile({
         <p role="alert" className="text-destructive">
           {action.error}
         </p>
+      )}
+      {onDeleted && (
+        <PlatformDeleteAction
+          kind="member"
+          name={member.name}
+          disabled={action.busy}
+          onDelete={async () => {
+            await platformRepository.deleteMember(workspace, member.id);
+            onDeleted();
+          }}
+        />
       )}
     </form>
   );
