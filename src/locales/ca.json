@@ -1,4 +1,10 @@
 {
+  "platform": {
+    "workspaces": "Espais de treball",
+    "noAccess": "No tens accés a cap espai de Ladders. Demana una invitació al propietari.",
+    "migration": "Migració del directori: crea i canvia el nom dels equips aquí. Les avaluacions i la gestió de membres encara no estan habilitades.",
+    "emptyTeams": "Aquest espai no té equips."
+  },
   "errors": {
     "title": "S'ha produït un error",
     "retry": "Torna-ho a provar",

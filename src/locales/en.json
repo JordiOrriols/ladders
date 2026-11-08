@@ -1,4 +1,10 @@
 {
+  "platform": {
+    "workspaces": "Workspaces",
+    "noAccess": "No Ladders workspace access. Ask a workspace owner for an invitation.",
+    "migration": "Team directory migration: create and rename teams here. Evaluations and member management are not yet enabled.",
+    "emptyTeams": "This workspace has no teams."
+  },
   "errors": {
     "title": "Something went wrong",
     "retry": "Try again",

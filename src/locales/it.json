@@ -1,4 +1,10 @@
 {
+  "platform": {
+    "workspaces": "Spazi di lavoro",
+    "noAccess": "Nessun accesso a uno spazio Ladders. Chiedi un invito al proprietario.",
+    "migration": "Migrazione della directory: crea e rinomina i team qui. Le valutazioni e la gestione dei membri non sono ancora abilitate.",
+    "emptyTeams": "Questo spazio non ha team."
+  },
   "errors": {
     "title": "Si è verificato un errore",
     "retry": "Riprova",

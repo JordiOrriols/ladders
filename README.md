@@ -2,6 +2,31 @@
 
 A React application for managing team competency assessments, evaluation history, and professional growth tracks.
 
+## Local Access/API migration branch
+
+This draft branch replaces the runtime entry point with authenticated, hash-free
+`/ladders/` workspace and team directories. It does not initialize Supabase auth,
+password dialogs or anonymous evaluation/invitation routes. Legacy source remains
+for reuse during migration; the historical setup below is not the current runtime.
+
+The scoped API lists team/member profiles only (no tokens, evaluations, comments,
+legacy owner IDs or account links). Owners create teams; owners/editors rename;
+viewers inspect. The existing shared `AppShell`, language selector, footer and
+`CreateTeamDialog` are reused, with six translated languages. New Access identities
+have no grants. Storage owner foreign keys are not identity associations.
+
+From the backend API directory, start the `web` profile of `compose.local.yml`.
+The local gateway serves `http://127.0.0.1:5320/ladders/` (direct port 5314).
+Docker installs GitHub Packages with a BuildKit secret. Do not merge or deploy yet.
+
+Pending: member CRUD/moves, team deletion with existing nonempty/default protections,
+evaluation editing/history/comment visibility, explicit employee identity mapping,
+SMART goals, shared workspace lifecycle and real corporate Access acceptance.
+No production data is written. E2Es use only `platform-local.config.ts` and the
+isolated signed test fixture, never historical remote-backed configs.
+
+## Historical legacy application
+
 ## Requirements
 
 - Node.js 26 LTS with npm 11.20.0 (`nvm install && nvm use`)

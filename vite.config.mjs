@@ -5,6 +5,12 @@ import { defineConfig } from "vite";
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: "/ladders/",
+  server: {
+    host: "127.0.0.1",
+    port: 5314,
+    proxy: { "/api": "http://127.0.0.1:5300" },
+  },
   optimizeDeps: {
     exclude: [
       "@jordiorriols/ui",

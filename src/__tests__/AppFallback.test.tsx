@@ -6,15 +6,11 @@ import { afterEach, expect, it, vi } from "vitest";
 import App from "../App";
 import i18n from "../i18n";
 
-vi.mock("../data/DataProvider", async (importOriginal) => {
-  const original = await importOriginal<typeof import("../data/DataProvider")>();
-  return {
-    ...original,
-    DataProvider: () => {
-      throw new Error("Private service failure");
-    },
-  };
-});
+vi.mock("../pages/PlatformTeams", () => ({
+  default: () => {
+    throw new Error("Private service failure");
+  },
+}));
 
 afterEach(() => vi.restoreAllMocks());
 
