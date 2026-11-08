@@ -1,8 +1,11 @@
 {
   "platform": {
+    "profile": "Perfil del miembro",
+    "teams": "Equipos",
+    "memberUnavailable": "El miembro no está disponible en este espacio.",
     "workspaces": "Espacios de trabajo",
     "noAccess": "No tienes acceso a un espacio de Ladders. Solicita una invitación a su propietario.",
-    "migration": "Migración del directorio: crea y renombra equipos aquí. Las evaluaciones y la gestión de miembros aún no están habilitadas.",
+    "migration": "Crea y renombra equipos y edita perfiles aquí. Las evaluaciones, la creación, el traslado y la eliminación de miembros aún no están habilitados.",
     "emptyTeams": "Este espacio no tiene equipos."
   },
   "errors": {

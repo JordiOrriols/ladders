@@ -15,11 +15,20 @@ viewers inspect. The existing shared `AppShell`, language selector, footer and
 `CreateTeamDialog` are reused, with six translated languages. New Access identities
 have no grants. Storage owner foreign keys are not identity associations.
 
+Member links open `/ladders/workspaces/:workspace/members/:member`. Owners/editors
+save names, job roles, planning roles and seniority templates through the API;
+viewers inspect read-only. The profile fields are extracted from the existing
+assessment form, which still uses that same component, alongside the existing
+planning-role field and template panel. Saving is explicit and errors remain
+visible. Scope rejects foreign/missing members; all legacy tokens, ownership,
+account links, creation dates and evaluation history remain unchanged. Planning
+role changes are visible in Planner capacity only with a separate Planner grant.
+
 From the backend API directory, start the `web` profile of `compose.local.yml`.
 The local gateway serves `http://127.0.0.1:5320/ladders/` (direct port 5314).
 Docker installs GitHub Packages with a BuildKit secret. Do not merge or deploy yet.
 
-Pending: member CRUD/moves, team deletion with existing nonempty/default protections,
+Pending: member creation/deletion/moves, team deletion with existing nonempty/default protections,
 evaluation editing/history/comment visibility, explicit employee identity mapping,
 SMART goals, shared workspace lifecycle and real corporate Access acceptance.
 No production data is written. E2Es use only `platform-local.config.ts` and the

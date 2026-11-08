@@ -4,6 +4,36 @@ import { platformRepository } from "./platform";
 const workspace = "11111111-1111-4111-8111-111111111111";
 const team = "22222222-2222-4222-8222-222222222222";
 afterEach(() => vi.unstubAllGlobals());
+it("saves only editable profile fields and validates profile limits before sending", async () => {
+  const input = {
+    name: " Member ",
+    role: " Engineer ",
+    planning_role: "backend" as const,
+    template_id: "D3",
+  };
+  const fetch = vi
+    .fn()
+    .mockImplementation(async () => new Response(JSON.stringify({ teams: [], members: [] })));
+  vi.stubGlobal("fetch", fetch);
+  await platformRepository.saveProfile(workspace, team, {
+    ...input,
+    ...{ owner_id: "spoof", self_token: "spoof" },
+  });
+  expect(fetch).toHaveBeenLastCalledWith(
+    `/api/ladders/workspaces/${workspace}/members/${team}`,
+    expect.objectContaining({
+      method: "PATCH",
+      body: '{"name":"Member","role":"Engineer","planning_role":"backend","template_id":"D3"}',
+    })
+  );
+  await expect(
+    platformRepository.saveProfile(workspace, team, { ...input, name: " " })
+  ).rejects.toThrow("Invalid member profile");
+  await expect(
+    platformRepository.saveProfile(workspace, team, { ...input, template_id: "x".repeat(11) })
+  ).rejects.toThrow("Invalid member profile");
+  expect(fetch).toHaveBeenCalledTimes(1);
+});
 it("reads scoped workspaces and validates roles", async () => {
   const fetch = vi
     .fn()
@@ -59,6 +89,7 @@ it("projects roster profiles without tokens and surfaces malformed responses or 
             name: "Member",
             role: "",
             planning_role: null,
+            template_id: null,
             self_token: "secret",
           },
         ],

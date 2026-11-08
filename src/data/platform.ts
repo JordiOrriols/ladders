@@ -15,6 +15,7 @@ export interface PlatformRoster {
     name: string;
     role: string;
     planning_role: "backend" | "frontend" | "design" | "qa" | null;
+    template_id: string | null;
   }[];
 }
 
@@ -68,19 +69,20 @@ function roster(value: unknown): PlatformRoster {
         name: text(row["name"]),
         role: text(row["role"]),
         planning_role: planningRole(row["planning_role"]),
+        template_id: row["template_id"] === null ? null : text(row["template_id"]),
       };
     }),
   };
 }
-async function request(path: string, name?: string, method = "GET"): Promise<unknown> {
+async function request(path: string, body?: unknown, method = "GET"): Promise<unknown> {
   const response = await fetch(`/api/${path}`, {
     credentials: "same-origin",
     method,
     headers: {
       Accept: "application/json",
-      ...(name === undefined ? {} : { "Content-Type": "application/json" }),
+      ...(body === undefined ? {} : { "Content-Type": "application/json" }),
     },
-    ...(name === undefined ? {} : { body: JSON.stringify({ name }) }),
+    ...(body === undefined ? {} : { body: JSON.stringify(body) }),
   });
   if (!response.ok) {
     const contentType = response.headers.get("content-type");
@@ -106,8 +108,36 @@ export const platformRepository = {
     return roster(
       await request(
         `${path(workspace)}${team ? `/${uuid(team)}` : ""}`,
-        name.trim(),
+        { name: name.trim() },
         team ? "PATCH" : "POST"
+      )
+    );
+  },
+  saveProfile: async (
+    workspace: string,
+    member: string,
+    input: Pick<
+      PlatformRoster["members"][number],
+      "name" | "role" | "planning_role" | "template_id"
+    >
+  ) => {
+    if (
+      !input.name.trim() ||
+      Array.from(input.name.trim()).length > 120 ||
+      Array.from(input.role.trim()).length > 120 ||
+      (input.template_id !== null && Array.from(input.template_id).length > 10)
+    )
+      throw new Error("Invalid member profile");
+    return roster(
+      await request(
+        `ladders/workspaces/${uuid(workspace)}/members/${uuid(member)}`,
+        {
+          name: input.name.trim(),
+          role: input.role.trim(),
+          planning_role: planningRole(input.planning_role),
+          template_id: input.template_id,
+        },
+        "PATCH"
       )
     );
   },

@@ -10,9 +10,10 @@ import {
 } from "../data/platform";
 import { PlatformLayout } from "../components/PlatformLayout";
 import { CreateTeamDialog } from "../components/molecules/CreateTeamDialog";
+import { PlatformMemberProfile } from "../components/PlatformMemberProfile";
 
 export default function PlatformTeams() {
-  const { workspace } = useParams();
+  const { workspace, member: memberId } = useParams();
   const { t } = useTranslation();
   const [directory, setDirectory] = useState<PlatformWorkspace[]>();
   const [data, setData] = useState<PlatformRoster>();
@@ -54,9 +55,13 @@ export default function PlatformTeams() {
     };
   }, [load, revision, t]);
   const access = directory?.find((item) => item.id === workspace);
+  const member = data?.members.find((item) => item.id === memberId);
   return (
     <PlatformLayout>
       {workspace && <Link to="/">{t("platform.workspaces")}</Link>}
+      {workspace && memberId && (
+        <Link to={`/workspaces/${workspace}/teams`}>{t("platform.teams")}</Link>
+      )}
       <h2 className="text-2xl font-semibold">{access?.name ?? t("platform.workspaces")}</h2>
       {loading ? (
         <AppSkeleton label={t("pageMessage.loading")} />
@@ -79,36 +84,52 @@ export default function PlatformTeams() {
           <p>{t("platform.noAccess")}</p>
         )
       ) : access && data ? (
-        <div className="space-y-6">
-          <p>{t("platform.migration")}</p>
-          {access.role === "owner" && (
-            <Button onClick={() => setEditing("new")}>{t("teams.create")}</Button>
-          )}
-          {data.teams.length === 0 && <p>{t("platform.emptyTeams")}</p>}
-          {data.teams.map((team) => (
-            <section key={team.id} className="panel space-y-3">
-              <h3 className="text-xl font-semibold">{team.name}</h3>
-              {access.role !== "viewer" && (
-                <Button
-                  aria-label={t("teams.renameAria", { name: team.name })}
-                  onClick={() => setEditing(team)}
-                >
-                  {t("teams.rename")}
-                </Button>
-              )}
-              <ul>
-                {data.members
-                  .filter((member) => member.team_id === team.id)
-                  .map((member) => (
-                    <li key={member.id}>
-                      {member.name}
-                      {member.role ? ` - ${member.role}` : ""}
-                    </li>
-                  ))}
-              </ul>
-            </section>
-          ))}
-        </div>
+        memberId ? (
+          member && workspace ? (
+            <PlatformMemberProfile
+              key={`${workspace}:${member.id}:${revision}`}
+              workspace={workspace}
+              member={member}
+              editable={access.role !== "viewer"}
+              onSaved={() => setRevision((value) => value + 1)}
+            />
+          ) : (
+            <p role="alert">{t("platform.memberUnavailable")}</p>
+          )
+        ) : (
+          <div className="space-y-6">
+            <p>{t("platform.migration")}</p>
+            {access.role === "owner" && (
+              <Button onClick={() => setEditing("new")}>{t("teams.create")}</Button>
+            )}
+            {data.teams.length === 0 && <p>{t("platform.emptyTeams")}</p>}
+            {data.teams.map((team) => (
+              <section key={team.id} className="panel space-y-3">
+                <h3 className="text-xl font-semibold">{team.name}</h3>
+                {access.role !== "viewer" && (
+                  <Button
+                    aria-label={t("teams.renameAria", { name: team.name })}
+                    onClick={() => setEditing(team)}
+                  >
+                    {t("teams.rename")}
+                  </Button>
+                )}
+                <ul>
+                  {data.members
+                    .filter((member) => member.team_id === team.id)
+                    .map((member) => (
+                      <li key={member.id}>
+                        <Link to={`/workspaces/${workspace}/members/${member.id}`}>
+                          {member.name}
+                        </Link>
+                        {member.role ? ` - ${member.role}` : ""}
+                      </li>
+                    ))}
+                </ul>
+              </section>
+            ))}
+          </div>
+        )
       ) : (
         <p role="alert">{t("platform.noAccess")}</p>
       )}
