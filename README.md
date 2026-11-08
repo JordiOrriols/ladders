@@ -55,10 +55,22 @@ vacation records survive; reselecting the current team is an idempotent no-op.
 The profile URL stays stable and the directory reloads the new team association.
 
 Pending:
-evaluation editing/history/comment visibility, explicit employee identity mapping,
+evaluation editing/comment visibility, explicit employee identity mapping,
 SMART goals, shared workspace lifecycle and real corporate Access acceptance.
 No production data is written. E2Es use only `platform-local.config.ts` and the
 isolated signed test fixture, never historical remote-backed configs.
+
+Member profiles link to authenticated
+`/ladders/workspaces/:workspace/members/:member/evaluations`. This read-only
+history reuses `EvaluationViewer`, version filtering, comparison radar, competency
+details, comments and templates. Owner/editor/viewer grants inspect manager/peer
+versions and published self versions; self drafts remain private, matching
+legacy team access. The internal history includes hidden manager/peer comments
+for reviewers, not an employee-safe projection. No account/token metadata is
+returned and version/status/deletion controls are not enabled. Member and
+workspace boundaries, foreign/missing members and revoked access are enforced
+server-side. Shared language selection/footer and hash-free refresh/navigation
+remain available; no legacy Supabase client is initialized by this route.
 
 ## Historical legacy application
 

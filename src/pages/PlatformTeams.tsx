@@ -115,6 +115,9 @@ export default function PlatformTeams() {
         ) : memberId ? (
           member && workspace ? (
             <div className="space-y-6">
+              <Link to={`/workspaces/${workspace}/members/${member.id}/evaluations`}>
+                {t("versions.title")}
+              </Link>
               <PlatformMemberProfile
                 key={`${workspace}:${member.id}:${revision}`}
                 workspace={workspace}

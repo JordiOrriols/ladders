@@ -1,3 +1,6 @@
+import type { Evaluation } from "../types";
+import { VERTICALS } from "../components/atoms/levelSelector";
+
 export interface PlatformWorkspace {
   id: string;
   name: string;
@@ -74,6 +77,51 @@ function roster(value: unknown): PlatformRoster {
     }),
   };
 }
+function competencyMap<T>(value: unknown, parse: (value: unknown) => T): Record<string, T> {
+  return Object.fromEntries(
+    Object.entries(object(value)).map(([key, value]) => {
+      if (!VERTICALS.includes(key)) throw new Error("Invalid API response");
+      return [key, parse(value)];
+    })
+  );
+}
+function levels(value: unknown): Record<string, number> {
+  return competencyMap(value, (value) => {
+    if (
+      typeof value !== "number" ||
+      !Number.isFinite(value) ||
+      value < 0 ||
+      value > 5.5 ||
+      !Number.isInteger(value * 2)
+    )
+      throw new Error("Invalid API response");
+    return value;
+  });
+}
+function evaluation(value: unknown): Evaluation {
+  const row = object(value);
+  if (row["kind"] !== "manager" && row["kind"] !== "self" && row["kind"] !== "peer")
+    throw new Error("Invalid API response");
+  if (row["status"] !== "draft" && row["status"] !== "published")
+    throw new Error("Invalid API response");
+  const createdAt = text(row["created_at"]);
+  if (!Number.isFinite(Date.parse(createdAt))) throw new Error("Invalid API response");
+  return {
+    id: uuid(row["id"]),
+    memberId: uuid(row["member_id"]),
+    kind: row["kind"],
+    status: row["status"],
+    authorName: row["author_name"] === null ? null : text(row["author_name"]),
+    currentLevels: levels(row["current_levels"]),
+    goalLevels: levels(row["goal_levels"]),
+    comments: competencyMap(row["comments"], text),
+    commentVisibility: competencyMap(row["comment_visibility"], (value) => {
+      if (typeof value !== "boolean") throw new Error("Invalid API response");
+      return value;
+    }),
+    createdAt,
+  };
+}
 async function request(path: string, body?: unknown, method = "GET"): Promise<unknown> {
   const response = await fetch(`/api/${path}`, {
     credentials: "same-origin",
@@ -115,6 +163,21 @@ function profileInput(input: ProfileInput): ProfileInput {
   };
 }
 export const platformRepository = {
+  evaluations: async (workspace: string, member: string): Promise<Evaluation[]> => {
+    const id = uuid(member);
+    const result = array(
+      await request(`ladders/workspaces/${uuid(workspace)}/members/${id}/evaluations`)
+    ).map(evaluation);
+    if (
+      result.some(
+        (evaluation) =>
+          evaluation.memberId !== id ||
+          (evaluation.kind === "self" && evaluation.status === "draft")
+      )
+    )
+      throw new Error("Invalid API response");
+    return result;
+  },
   moveMember: async (workspace: string, member: string, team: string) =>
     roster(
       await request(

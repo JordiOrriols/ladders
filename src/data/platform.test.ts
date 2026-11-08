@@ -4,6 +4,58 @@ import { platformRepository } from "./platform";
 const workspace = "11111111-1111-4111-8111-111111111111";
 const team = "22222222-2222-4222-8222-222222222222";
 afterEach(() => vi.unstubAllGlobals());
+it("parses scoped evaluation history without legacy adapters and rejects invalid levels or private self drafts", async () => {
+  const evaluation = {
+    id: workspace,
+    member_id: team,
+    kind: "manager",
+    status: "published",
+    author_name: null,
+    current_levels: { Technology: 5.5 },
+    goal_levels: {},
+    comments: { Technology: "Manager note" },
+    comment_visibility: { Technology: false },
+    created_at: "2026-11-01T00:00:00.000Z",
+  };
+  const fetch = vi.fn().mockImplementation(async () => new Response(JSON.stringify([evaluation])));
+  vi.stubGlobal("fetch", fetch);
+  expect(await platformRepository.evaluations(workspace, team)).toEqual([
+    {
+      id: workspace,
+      memberId: team,
+      kind: "manager",
+      status: "published",
+      authorName: null,
+      currentLevels: { Technology: 5.5 },
+      goalLevels: {},
+      comments: { Technology: "Manager note" },
+      commentVisibility: { Technology: false },
+      createdAt: evaluation.created_at,
+    },
+  ]);
+  expect(fetch).toHaveBeenCalledWith(
+    `/api/ladders/workspaces/${workspace}/members/${team}/evaluations`,
+    expect.objectContaining({ method: "GET" })
+  );
+  for (const patch of [
+    { current_levels: { Technology: 6 } },
+    { current_levels: { Technology: 0.25 } },
+    { current_levels: { Unknown: 1 } },
+    { comment_visibility: { Technology: "false" } },
+    { kind: "self", status: "draft" },
+    { member_id: workspace },
+    { created_at: "invalid" },
+    { kind: "other" },
+    { status: "other" },
+  ]) {
+    fetch.mockImplementation(
+      async () => new Response(JSON.stringify([{ ...evaluation, ...patch }]))
+    );
+    await expect(platformRepository.evaluations(workspace, team)).rejects.toThrow(
+      "Invalid API response"
+    );
+  }
+});
 it("moves members through a scoped body-free route and validates all IDs", async () => {
   const fetch = vi.fn().mockImplementation(async () => new Response('{"teams":[],"members":[]}'));
   vi.stubGlobal("fetch", fetch);
