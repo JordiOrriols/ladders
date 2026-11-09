@@ -14,6 +14,14 @@ const messages: [RegExp, string][] = [
   [/user not found or cannot share team/i, "shareUser"],
   [/default team cannot be deleted/i, "defaultTeam"],
   [/team is not empty/i, "teamNotEmpty"],
+  [
+    /account already (?:has a member|linked) in (?:the destination|a legacy member) team|account is already linked to a member of this team/i,
+    "memberTeamConflict",
+  ],
+  [/recipient must first authenticate/i, "inviteRecipient"],
+  [/this member is already linked to an account/i, "memberLinked"],
+  [/(?:member|workspace) invitation unavailable/i, "invitationUnavailable"],
+  [/members cannot move across team owners/i, "access"],
   [/progress must be between/i, "progress"],
   [/comment must contain/i, "comment"],
   [/choose an existing competency comment/i, "chooseComment"],
@@ -26,6 +34,8 @@ const messages: [RegExp, string][] = [
 /** Never expose untranslated service messages or their potentially sensitive details in the UI. */
 export function localizeError(error: unknown, t: TFunction): string {
   const message = error instanceof Error ? error.message : typeof error === "string" ? error : "";
+  if (/workspace is not empty/i.test(message)) return t("workspaceAccess.notEmpty");
+  if (/workspace access is busy/i.test(message)) return t("workspaceAccess.busy");
   if (message === "auth.passwordTooShort" || message === "auth.passwordsDoNotMatch") {
     return t(message);
   }

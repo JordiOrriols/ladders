@@ -2,6 +2,166 @@
 
 A React application for managing team competency assessments, evaluation history, and professional growth tracks.
 
+## Local Access/API migration branch
+
+This draft branch replaces the runtime entry point with authenticated, hash-free
+`/ladders/` workspace and team directories. It does not initialize Supabase auth,
+password dialogs or anonymous evaluation/invitation routes. Legacy source remains
+for reuse during migration; the historical setup below is not the current runtime.
+
+The scoped API lists team/member profiles only (no tokens, evaluations, comments,
+legacy owner IDs or account links). Owners create teams; owners/editors rename;
+viewers inspect. The existing shared `AppShell`, language selector, footer and
+`CreateTeamDialog` are reused, with six translated languages. New Access identities
+have no grants. Storage owner foreign keys are not identity associations.
+
+Member links open `/ladders/workspaces/:workspace/members/:member`. Owners/editors
+save names, job roles, planning roles and seniority templates through the API;
+viewers inspect read-only. The profile fields are extracted from the existing
+assessment form, which still uses that same component, alongside the existing
+planning-role field and template panel. Saving is explicit and errors remain
+visible. Scope rejects foreign/missing members; all legacy tokens, ownership,
+account links, creation dates and evaluation history remain unchanged. Planning
+role changes are visible in Planner capacity only with a separate Planner grant.
+
+From the backend API directory, start the `web` profile of `compose.local.yml`.
+The local gateway serves `http://127.0.0.1:5320/ladders/` (direct port 5314).
+Docker installs GitHub Packages with a BuildKit secret. Do not merge or deploy yet.
+
+All migrated apps link to one six-language workspace management screen at
+`/ladders/workspace-access`. Signed-in users can create an empty workspace or wait
+for an invitation, share their exact account ID, accept/decline app-specific
+invitations, and refresh. Creation grants owner access in all five apps and uses
+native platform ownership, without creating legacy accounts or changing imported
+owner IDs. App owners invite verified account IDs, change editor/viewer roles
+(external also in Planner/Shiplog) and remove grants or pending invites.
+The existing UI package name dialog, labels, fields, selectors and confirmation
+are reused. One screen avoids duplicating this cross-app workflow.
+Workspace deletion is available only to owners of all five apps, requires
+confirmation and succeeds only when all apps are empty, including protected
+history/snapshots. Cancellation never writes; failures remain visible. Successful
+deletion removes empty containers, grants and invitations, not user accounts.
+
+Only owners delete members or empty non-default teams, using the existing shared
+confirmation dialog. Cancel performs no write; failed deletion stays visible.
+Deleting a member retains the existing database cascades for their evaluations,
+SMART goals, invitations and vacations, without deleting accounts or other members.
+Team deletion retains Shiplog applications and clears only their team association,
+matching the existing FK behavior. Nonempty/default teams are rejected with 409.
+Container deletion does not implicitly delete a platform-granted workspace: the
+legacy `created_for_team` cleanup flag is cleared in the same transaction so the
+workspace and all its app grants remain until explicit shared workspace deletion.
+
+Owners/editors add members from a team's directory link. The creation route reuses
+the profile form and validators, saves explicitly and replaces its URL with the
+created member's permanent profile path. New members are unlinked (`user_id` null),
+view sharing is disabled and generated legacy tokens are never returned. Creation
+returns only the new ID. Invalid profiles roll back the insertion; foreign teams,
+viewers and revoked grants cannot create members. No legacy account is impersonated.
+
+Owners/editors move existing members with the shared `FormField`/`SelectField`
+team selector and an explicit Move member button on the profile page. Selecting
+a destination alone performs no write. Moves stay within the workspace and
+legacy team owner; viewers and revoked grants cannot move members. A duplicate
+linked account in the destination returns a visible conflict without unlinking
+either member. Profile/account IDs, tokens and all evaluation/goal/invitation/
+vacation records survive; reselecting the current team is an idempotent no-op.
+The profile URL stays stable and the directory reloads the new team association.
+
+SMART goals reuse the existing member profile panel and route through scoped API
+functions. Owners/editors can create, edit, track progress and append manager
+comments; viewers are read-only and only owners can delete. Legacy comment history
+is preserved, comments remain append-only, and goal records are restricted to the
+requested workspace/member. Direct runtime table access remains denied.
+
+Owners/editors use **Member invitations** on a member profile to target an exact
+verified account ID. The recipient signs in first, finds their ID at
+`/ladders/me/invitations` and explicitly accepts or declines. New Access users
+link directly to platform members without legacy accounts, email matching or
+workspace grants. Personal evaluation history, self editing, goals and peer
+assignments work for these links as well as existing mapped legacy links.
+Invitations expire after 30 days; replacement, revocation and consumption invalidate
+the previous ID. The server rejects another recipient, a linked member and a
+duplicate account within a team. Unlink uses the existing confirmation dialog,
+removes personal access and revokes assigned reviews, but preserves evaluation/
+goal records and independent workspace permissions. No other-app shares are added.
+
+The local administrator can explicitly map a verified Access account to a legacy
+account UUID. Mapping never matches by email or grants workspace access. Already-linked
+employees use `/ladders/me` to find only their own member profiles, then open
+`/ladders/me/members/:member/evaluations`. This route reuses the shared layout and
+evaluation viewer, includes own self drafts and published reviewer versions only,
+and receives only server-redacted comments with no internal visibility metadata.
+Workspace grants do not imply employee ownership; unmapping removes legacy-linked employee access.
+Employees open `/ladders/me/members/:member/self-evaluation` from their history
+to edit self evaluations with the same extracted editor and autosave hook used
+by managers. Own self drafts survive refresh and publish explicitly; published
+answers remain immutable, with subsequent edits saved as a new draft. The
+self-only editor receives own comments even when hidden from the mixed history,
+but never receives reviewer comments or moderation metadata. Manager-only goal
+controls, comment visibility, profile editing and deletion are unavailable.
+Direct platform links or explicit legacy mappings/member links are checked server-side on
+every read/write; workspace grants never imply employee ownership.
+Employees use `/ladders/me/members/:member/goals` to update progress and append
+comments through the existing goals panel's member mode. Goal definitions remain
+manager-owned and existing comments remain append-only. Every write checks the
+account/member link and rejects foreign goals; no create/delete/definition controls
+are enabled. Failed saves remain visible without granting workspace-wide access.
+Managers assign/revoke peer reviews from the member evaluation page. The shared
+selector lists only verified, linked colleagues in that workspace.
+Reviewers use `/ladders/me/peer-reviews` and an assignment-specific URL to submit
+through the same assessment editor, without name entry or evaluation history.
+Authorship comes from their linked profile; submissions are peer drafts pending
+manager moderation, with comments hidden by default. Each assignment accepts one
+submission. Revocation/unmapping denies access and never deletes saved feedback.
+No anonymous links, email inference or workspace-wide reviewer grants are used.
+The existing token peer editor retains its original name requirement.
+Pending: real corporate Access acceptance and linking the same workspace screen
+from Pulse/Agents as those adapters migrate.
+No production data is written. E2Es use only `platform-local.config.ts` and the
+isolated signed test fixture, never historical remote-backed configs.
+
+Member profiles link to authenticated
+`/ladders/workspaces/:workspace/members/:member/evaluations`. The read-only
+history reuses `EvaluationViewer`, version filtering, comparison radar, competency
+details, comments and templates. Owner/editor/viewer grants inspect manager/peer
+versions and published self versions; self drafts remain private, matching
+legacy team access. The internal history includes hidden manager/peer comments
+for reviewers, not an employee-safe projection. No account/token metadata is
+returned. Viewers retain the read-only history. Owners/editors
+use the same extracted `CommentVisibilityPanel` as the legacy assessment page
+to share or hide each saved manager, published self or peer comment independently.
+Peer comments default hidden; changing draft peer metadata does not publish it.
+Only visibility metadata changes, never content/status/identity/timestamps.
+Missing/private-self-draft/foreign evaluations cannot be targeted, and viewer
+or revoked grants cannot save. Errors stay localized and visible; successful
+updates preserve history selection and comparisons. The authenticated employee
+API applies the same default-hidden peer/default-visible manager comment rules
+server-side, excludes private reviewer drafts and never returns tokens/account IDs.
+Member and
+workspace boundaries, foreign/missing members and revoked access are enforced
+server-side. Shared language selection/footer and hash-free refresh/navigation
+remain available; no legacy Supabase client is initialized by this route.
+
+Owners/editors reuse the existing `useEvaluationEditor`, assessment competency
+form, version panel and comment-sharing panel through a typed API store adapter.
+Member profile fields remain read-only here and are edited on the profile page.
+Changes autosave after the existing 500ms delay into one manager draft, updating
+it in place; changing published content creates a new version rather than
+mutating history. Publishing changes that draft's status without replacing its
+ID/date/content. New drafts inherit the latest manager comment-visibility map
+server-side, not from caller-supplied identity/status/visibility fields.
+The existing peer publish/return-to-draft controls change status independently
+of comment sharing. Managers cannot edit peer/self content or change self status.
+Draft conflicts return 409; viewer, foreign and revoked writes are denied.
+Workspace owners reuse the existing version-panel delete confirmation to remove
+manager, peer and published self evaluations. Editors/viewers cannot delete, and
+private self drafts stay absent from both history and deletion. Failed deletes
+remain visible; autosave is flushed before deletion to avoid stale draft writes.
+Legacy anonymous routes remain disabled.
+
+## Historical legacy application
+
 ## Requirements
 
 - Node.js 26 LTS with npm 11.20.0 (`nvm install && nvm use`)

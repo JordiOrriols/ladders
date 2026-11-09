@@ -1,8 +1,7 @@
 import React from "react";
 import type { ReactNode } from "react";
 import LevelSelector, { VERTICALS } from "@/components/atoms/levelSelector";
-import { Input } from "@/components/ui/input";
-import { FormField } from "@jordiorriols/ui";
+import { MemberProfileFields } from "@/components/molecules/MemberProfileFields";
 
 type LevelMap = Record<string, number>;
 type CommentMap = Record<string, string>;
@@ -64,39 +63,16 @@ export function AssessmentFormColumn({
 }: Props) {
   return (
     <div className="min-w-0 space-y-6">
-      <div
-        className="bg-white rounded-2xl border border-slate-200 p-6"
-        data-testid="assessment-profile"
+      <MemberProfileFields
+        name={name}
+        role={role}
+        labels={labels}
+        onNameChange={onNameChange}
+        onRoleChange={onRoleChange}
+        readOnly={readOnlyProfile}
       >
-        <h2 className="text-lg font-semibold text-slate-800 mb-4">{labels.personalTitle}</h2>
-        <div className="space-y-4">
-          <FormField id="name" label={labels.nameLabel} className="space-y-1">
-            {(field) => (
-              <Input
-                {...field}
-                data-testid="assessment-name"
-                value={name}
-                readOnly={readOnlyProfile}
-                onChange={(e) => onNameChange(e.target.value)}
-                placeholder={labels.namePlaceholder}
-              />
-            )}
-          </FormField>
-          <FormField id="role" label={labels.roleLabel} className="space-y-1">
-            {(field) => (
-              <Input
-                {...field}
-                data-testid="assessment-role"
-                value={role}
-                readOnly={readOnlyProfile}
-                onChange={(e) => onRoleChange(e.target.value)}
-                placeholder={labels.rolePlaceholder}
-              />
-            )}
-          </FormField>
-          {profileExtra}
-        </div>
-      </div>
+        {profileExtra}
+      </MemberProfileFields>
 
       <div
         className="bg-white rounded-2xl border border-slate-200 p-6"

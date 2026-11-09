@@ -207,7 +207,7 @@ export function useEvaluationEditor(store: EvaluationStore) {
       if (store.editableProfile && !profile.name.trim()) {
         throw new EditorValidationError("nameRequired");
       }
-      if (store.kind === "peer" && !authorName.trim()) {
+      if (store.kind === "peer" && store.authorNameRequired !== false && !authorName.trim()) {
         throw new EditorValidationError("authorRequired");
       }
 
@@ -263,9 +263,10 @@ export function useEvaluationEditor(store: EvaluationStore) {
   const deleteVersion = useCallback(
     async (evaluation: Evaluation) => {
       if (!store.canDelete(evaluation)) throw new Error("Deletion is not allowed");
-      await store.remove(evaluation.id);
+      await flushAutosave();
+      const saved = await store.remove(evaluation.id);
       if (draftRef.current?.id === evaluation.id) draftRef.current = null;
-      const remaining = evaluations.filter((item) => item.id !== evaluation.id);
+      const remaining = saved ?? evaluations.filter((item) => item.id !== evaluation.id);
       setEvaluations(remaining);
       if (editingId === evaluation.id) {
         const next = latestOf(remaining, store.kind);
@@ -273,7 +274,7 @@ export function useEvaluationEditor(store: EvaluationStore) {
         setForm(formFrom(next));
       }
     },
-    [editingId, evaluations, store]
+    [editingId, evaluations, flushAutosave, store]
   );
 
   const changeVersionStatus = async (evaluation: Evaluation, status: EvaluationStatus) => {

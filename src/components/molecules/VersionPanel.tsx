@@ -14,7 +14,7 @@ type Props = {
   compareIds: string[];
   onSelect: (id: string) => void;
   onToggleCompare: (id: string) => void;
-  onDelete?: (evaluation: Evaluation) => void;
+  onDelete?: (evaluation: Evaluation) => void | Promise<void>;
   canDelete?: (evaluation: Evaluation) => boolean;
   onChangeStatus?: (evaluation: Evaluation, status: EvaluationStatus) => Promise<void>;
   canChangeStatus?: (evaluation: Evaluation) => boolean;
@@ -47,6 +47,22 @@ export function VersionPanel({
       await onChangeStatus(evaluation, evaluation.status === "draft" ? "published" : "draft");
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : String(reason));
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const deleteVersion = async () => {
+    if (!pendingDelete || !onDelete || busyId !== null) return;
+    const evaluation = pendingDelete;
+    setBusyId(evaluation.id);
+    setError(null);
+    try {
+      await onDelete(evaluation);
+      setPendingDelete(null);
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : String(reason));
+      setPendingDelete(null);
     } finally {
       setBusyId(null);
     }
@@ -152,6 +168,7 @@ export function VersionPanel({
                     variant="ghost"
                     size="icon-sm"
                     data-testid="version-delete"
+                    disabled={busyId !== null}
                     onClick={() => setPendingDelete(evaluation)}
                     aria-label={t("buttons.delete")}
                     className="p-1 rounded text-red-500 hover:bg-red-50 ml-auto"
@@ -182,10 +199,7 @@ export function VersionPanel({
         title={t("versions.deleteTitle")}
         description={t("versions.deleteDescription")}
         onCancel={() => setPendingDelete(null)}
-        onConfirm={() => {
-          if (pendingDelete) onDelete?.(pendingDelete);
-          setPendingDelete(null);
-        }}
+        onConfirm={() => void deleteVersion()}
       />
     </aside>
   );
