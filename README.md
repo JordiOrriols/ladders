@@ -54,9 +54,14 @@ either member. Profile/account IDs, tokens and all evaluation/goal/invitation/
 vacation records survive; reselecting the current team is an idempotent no-op.
 The profile URL stays stable and the directory reloads the new team association.
 
-Pending:
-explicit employee identity mapping, SMART goals, shared workspace lifecycle and
-real corporate Access acceptance.
+SMART goals reuse the existing member profile panel and route through scoped API
+functions. Owners/editors can create, edit, track progress and append manager
+comments; viewers are read-only and only owners can delete. Legacy comment history
+is preserved, comments remain append-only, and goal records are restricted to the
+requested workspace/member. Direct runtime table access remains denied.
+
+Pending: explicit employee identity mapping, shared workspace lifecycle and real
+corporate Access acceptance.
 No production data is written. E2Es use only `platform-local.config.ts` and the
 isolated signed test fixture, never historical remote-backed configs.
 

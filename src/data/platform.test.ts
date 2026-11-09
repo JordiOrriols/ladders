@@ -202,6 +202,87 @@ it("deletes members and teams only through scoped API paths without a request bo
   );
   expect(fetch).toHaveBeenCalledTimes(2);
 });
+it("reads, saves, comments on and deletes SMART goals through scoped API routes", async () => {
+  const row = {
+    id: workspace,
+    member_id: team,
+    title: "Goal",
+    description: "Description",
+    due_date: "2026-02-28",
+    progress: 25,
+    comments: [
+      {
+        id: team,
+        text: "Legacy note",
+        createdAt: "2026-01-01T00:00:00.000Z",
+        authorKind: "legacy",
+      },
+    ],
+    created_at: "2026-01-01T00:00:00.000Z",
+    updated_at: "2026-01-02T00:00:00.000Z",
+  };
+  const comment = {
+    id: team,
+    text: "Manager note",
+    createdAt: "2026-01-03T00:00:00.000Z",
+    authorKind: "manager",
+  };
+  const fetch = vi
+    .fn()
+    .mockImplementationOnce(async () => new Response(JSON.stringify([row])))
+    .mockImplementationOnce(async () => new Response(JSON.stringify(row)))
+    .mockImplementationOnce(async () => new Response(JSON.stringify({ ...row, progress: 50 })))
+    .mockImplementationOnce(
+      async () => new Response(JSON.stringify({ ...row, comments: [...row.comments, comment] }))
+    )
+    .mockImplementationOnce(async () => new Response("[]"));
+  vi.stubGlobal("fetch", fetch);
+  expect(await platformRepository.goals(workspace, team)).toEqual([
+    expect.objectContaining({
+      id: workspace,
+      memberId: team,
+      title: "Goal",
+      dueDate: "2026-02-28",
+      progress: 25,
+      comments: [expect.objectContaining({ authorKind: "legacy" })],
+    }),
+  ]);
+  const input = {
+    title: " New goal ",
+    description: "Details",
+    dueDate: null,
+    progress: 0,
+  };
+  await platformRepository.saveGoal(workspace, team, null, input);
+  expect(fetch).toHaveBeenLastCalledWith(
+    `/api/ladders/workspaces/${workspace}/members/${team}/goals`,
+    expect.objectContaining({
+      method: "POST",
+      body: '{"title":"New goal","description":"Details","due_date":null,"progress":0}',
+    })
+  );
+  await platformRepository.saveGoal(workspace, team, workspace, {
+    ...input,
+    title: "Goal",
+    progress: 50,
+  });
+  expect(fetch).toHaveBeenLastCalledWith(
+    `/api/ladders/workspaces/${workspace}/members/${team}/goals/${workspace}`,
+    expect.objectContaining({ method: "PATCH" })
+  );
+  expect(
+    await platformRepository.appendGoalComment(workspace, team, workspace, " Manager note ")
+  ).toEqual(expect.objectContaining({ id: workspace, memberId: team }));
+  expect(fetch).toHaveBeenLastCalledWith(
+    `/api/ladders/workspaces/${workspace}/members/${team}/goals/${workspace}/comments`,
+    expect.objectContaining({ method: "POST", body: '{"text":"Manager note"}' })
+  );
+  await platformRepository.deleteGoal(workspace, team, workspace);
+  expect(fetch).toHaveBeenLastCalledWith(
+    `/api/ladders/workspaces/${workspace}/members/${team}/goals/${workspace}`,
+    expect.objectContaining({ method: "DELETE" })
+  );
+});
 it("saves only editable profile fields and validates profile limits before sending", async () => {
   const input = {
     name: " Member ",

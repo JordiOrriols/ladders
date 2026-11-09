@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { AppSkeleton, Button, ErrorState } from "@jordiorriols/ui";
 import { useTranslation } from "react-i18next";
@@ -13,6 +13,8 @@ import { CreateTeamDialog } from "../components/molecules/CreateTeamDialog";
 import { PlatformMemberProfile } from "../components/PlatformMemberProfile";
 import { PlatformDeleteAction } from "../components/PlatformDeleteAction";
 import { PlatformMoveMember } from "../components/PlatformMoveMember";
+import { SmartGoalsPanel } from "../components/organisms/SmartGoalsPanel";
+import { createPlatformGoalStore } from "../data/platformGoalStore";
 
 export default function PlatformTeams() {
   const { workspace, member: memberId, team: createTeam } = useParams();
@@ -59,6 +61,13 @@ export default function PlatformTeams() {
   }, [load, revision, t, memberId, createTeam]);
   const access = directory?.find((item) => item.id === workspace);
   const member = data?.members.find((item) => item.id === memberId);
+  const goalStore = useMemo(
+    () =>
+      workspace && memberId && access
+        ? createPlatformGoalStore(workspace, memberId, access.role)
+        : null,
+    [access, memberId, workspace]
+  );
   return (
     <PlatformLayout>
       {workspace && <Link to="/">{t("platform.workspaces")}</Link>}
@@ -130,6 +139,9 @@ export default function PlatformTeams() {
                     }
                   : {})}
               />
+              {goalStore && (
+                <SmartGoalsPanel store={goalStore} readOnly={access.role === "viewer"} />
+              )}
               {access.role !== "viewer" && (
                 <PlatformMoveMember
                   key={`move:${workspace}:${member.id}:${revision}`}

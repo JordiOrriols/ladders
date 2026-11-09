@@ -1,4 +1,11 @@
-import type { Evaluation, EvaluationInput, EvaluationStatus } from "../types";
+import type {
+  Evaluation,
+  EvaluationInput,
+  EvaluationStatus,
+  GoalComment,
+  SmartGoal,
+  SmartGoalInput,
+} from "../types";
 import { VERTICALS } from "../components/atoms/levelSelector";
 
 export interface PlatformWorkspace {
@@ -134,6 +141,82 @@ function evaluationHistory(value: unknown, member: string): Evaluation[] {
     throw new Error("Invalid API response");
   return result;
 }
+function calendarDate(value: unknown): string {
+  const date = text(value);
+  const parsed = new Date(`${date}T00:00:00Z`);
+  if (
+    !/^(?!0000)\d{4}-\d{2}-\d{2}$/.test(date) ||
+    !Number.isFinite(parsed.getTime()) ||
+    parsed.toISOString().slice(0, 10) !== date
+  )
+    throw new Error("Invalid API response");
+  return date;
+}
+function goalComment(value: unknown): GoalComment {
+  const row = object(value);
+  const createdAt = text(row["createdAt"]);
+  const authorKind = row["authorKind"];
+  const comment = text(row["text"]);
+  if (
+    !Number.isFinite(Date.parse(createdAt)) ||
+    (authorKind !== "manager" && authorKind !== "member" && authorKind !== "legacy") ||
+    !comment.trim() ||
+    Array.from(comment).length > 10000
+  )
+    throw new Error("Invalid API response");
+  return { id: uuid(row["id"]), text: comment, createdAt, authorKind };
+}
+function smartGoal(value: unknown): SmartGoal {
+  const row = object(value);
+  const title = text(row["title"]);
+  const progress = row["progress"];
+  const createdAt = text(row["created_at"]);
+  const updatedAt = text(row["updated_at"]);
+  if (
+    !title.trim() ||
+    Array.from(title).length > 160 ||
+    typeof progress !== "number" ||
+    !Number.isInteger(progress) ||
+    progress < 0 ||
+    progress > 100 ||
+    !Number.isFinite(Date.parse(createdAt)) ||
+    !Number.isFinite(Date.parse(updatedAt))
+  )
+    throw new Error("Invalid API response");
+  return {
+    id: uuid(row["id"]),
+    memberId: uuid(row["member_id"]),
+    title,
+    description: text(row["description"]),
+    dueDate: row["due_date"] === null ? null : calendarDate(row["due_date"]),
+    progress,
+    comments: array(row["comments"]).map(goalComment),
+    createdAt,
+    updatedAt,
+  };
+}
+function smartGoalHistory(value: unknown, member: string): SmartGoal[] {
+  const result = array(value).map(smartGoal);
+  if (result.some((goal) => goal.memberId !== member)) throw new Error("Invalid API response");
+  return result;
+}
+function smartGoalContent(input: SmartGoalInput) {
+  if (
+    !input.title.trim() ||
+    Array.from(input.title.trim()).length > 160 ||
+    typeof input.description !== "string" ||
+    !Number.isInteger(input.progress) ||
+    input.progress < 0 ||
+    input.progress > 100
+  )
+    throw new Error("Invalid SMART goal");
+  return {
+    title: input.title.trim(),
+    description: input.description,
+    due_date: input.dueDate === null ? null : calendarDate(input.dueDate),
+    progress: input.progress,
+  };
+}
 async function request(path: string, body?: unknown, method = "GET"): Promise<unknown> {
   const response = await fetch(`/api/${path}`, {
     credentials: "same-origin",
@@ -175,6 +258,65 @@ function profileInput(input: ProfileInput): ProfileInput {
   };
 }
 export const platformRepository = {
+  goals: async (workspace: string, member: string): Promise<SmartGoal[]> => {
+    const memberId = uuid(member);
+    return smartGoalHistory(
+      await request(`ladders/workspaces/${uuid(workspace)}/members/${memberId}/goals`),
+      memberId
+    );
+  },
+  saveGoal: async (
+    workspace: string,
+    member: string,
+    id: string | null,
+    input: SmartGoalInput
+  ): Promise<SmartGoal> => {
+    const memberId = uuid(member);
+    const goal = smartGoal(
+      await request(
+        `ladders/workspaces/${uuid(workspace)}/members/${memberId}/goals${id ? `/${uuid(id)}` : ""}`,
+        smartGoalContent(input),
+        id ? "PATCH" : "POST"
+      )
+    );
+    if (goal.memberId !== memberId || (id !== null && goal.id !== id))
+      throw new Error("Invalid API response");
+    return goal;
+  },
+  appendGoalComment: async (
+    workspace: string,
+    member: string,
+    id: string,
+    textValue: string
+  ): Promise<SmartGoal> => {
+    const memberId = uuid(member);
+    const goalId = uuid(id);
+    const comment = textValue.trim();
+    if (!comment || Array.from(comment).length > 10000)
+      throw new Error("Comment must contain 1 to 10000 characters");
+    const goal = smartGoal(
+      await request(
+        `ladders/workspaces/${uuid(workspace)}/members/${memberId}/goals/${goalId}/comments`,
+        { text: comment },
+        "POST"
+      )
+    );
+    if (goal.memberId !== memberId || goal.id !== goalId) throw new Error("Invalid API response");
+    return goal;
+  },
+  deleteGoal: async (workspace: string, member: string, id: string): Promise<void> => {
+    const memberId = uuid(member);
+    const goalId = uuid(id);
+    const remaining = smartGoalHistory(
+      await request(
+        `ladders/workspaces/${uuid(workspace)}/members/${memberId}/goals/${goalId}`,
+        undefined,
+        "DELETE"
+      ),
+      memberId
+    );
+    if (remaining.some((goal) => goal.id === goalId)) throw new Error("Invalid API response");
+  },
   saveEvaluation: async (
     workspace: string,
     member: string,
