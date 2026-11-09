@@ -139,9 +139,6 @@ export default function PlatformTeams() {
                     }
                   : {})}
               />
-              {goalStore && (
-                <SmartGoalsPanel store={goalStore} readOnly={access.role === "viewer"} />
-              )}
               {access.role !== "viewer" && (
                 <PlatformMoveMember
                   key={`move:${workspace}:${member.id}:${revision}`}
@@ -150,6 +147,9 @@ export default function PlatformTeams() {
                   teams={data.teams}
                   onMoved={() => setRevision((value) => value + 1)}
                 />
+              )}
+              {goalStore && (
+                <SmartGoalsPanel store={goalStore} readOnly={access.role === "viewer"} />
               )}
             </div>
           ) : (
