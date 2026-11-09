@@ -1,5 +1,14 @@
 {
   "platform": {
+    "peerReviews": "Évaluations des pairs",
+    "reviewer": "Évaluateur",
+    "assignPeer": "Attribuer une évaluation",
+    "revokePeer": "Révoquer l'attribution",
+    "peerPending": "En attente",
+    "peerSubmitted": "Envoyée",
+    "peerRevoked": "Révoquée",
+    "noReviewers": "Aucun collègue lié et vérifié disponible dans cet espace.",
+    "noPeerAssignments": "Aucune évaluation des pairs attribuée.",
     "myEvaluations": "Mes évaluations",
     "moveMember": "Déplacer le membre",
     "deleteName": "Supprimer {{name}}",

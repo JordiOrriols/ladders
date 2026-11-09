@@ -207,7 +207,7 @@ export function useEvaluationEditor(store: EvaluationStore) {
       if (store.editableProfile && !profile.name.trim()) {
         throw new EditorValidationError("nameRequired");
       }
-      if (store.kind === "peer" && !authorName.trim()) {
+      if (store.kind === "peer" && store.authorNameRequired !== false && !authorName.trim()) {
         throw new EditorValidationError("authorRequired");
       }
 

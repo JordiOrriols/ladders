@@ -1,5 +1,14 @@
 {
   "platform": {
+    "peerReviews": "Peer reviews",
+    "reviewer": "Reviewer",
+    "assignPeer": "Assign peer review",
+    "revokePeer": "Revoke assignment",
+    "peerPending": "Pending",
+    "peerSubmitted": "Submitted",
+    "peerRevoked": "Revoked",
+    "noReviewers": "No linked, verified colleagues available in this workspace.",
+    "noPeerAssignments": "No peer reviews assigned.",
     "myEvaluations": "My evaluations",
     "moveMember": "Move member",
     "deleteName": "Delete {{name}}",

@@ -1,5 +1,14 @@
 {
   "platform": {
+    "peerReviews": "Peer-Bewertungen",
+    "reviewer": "Gutachter",
+    "assignPeer": "Peer-Bewertung zuweisen",
+    "revokePeer": "Zuweisung widerrufen",
+    "peerPending": "Ausstehend",
+    "peerSubmitted": "Eingereicht",
+    "peerRevoked": "Widerrufen",
+    "noReviewers": "Keine verknüpften, verifizierten Kollegen in diesem Arbeitsbereich verfügbar.",
+    "noPeerAssignments": "Keine Peer-Bewertungen zugewiesen.",
     "myEvaluations": "Meine Bewertungen",
     "moveMember": "Mitglied verschieben",
     "deleteName": "{{name}} löschen",

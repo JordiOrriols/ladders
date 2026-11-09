@@ -8,6 +8,7 @@ import { PlatformLayout } from "../components/PlatformLayout";
 import { EvaluationViewer } from "../components/organisms/EvaluationViewer";
 import { PlatformEvaluationEditor } from "../components/PlatformEvaluationEditor";
 import { localizeError } from "../utils/localizeError";
+import { PlatformPeerAssignments } from "../components/PlatformPeerAssignments";
 
 export default function PlatformEvaluations() {
   const { workspace, member } = useParams();
@@ -76,12 +77,19 @@ export default function PlatformEvaluations() {
         />
       ) : data ? (
         data.role !== "viewer" && workspace && member ? (
-          <PlatformEvaluationEditor
-            key={`${workspace}:${member}`}
-            workspace={workspace}
-            member={member}
-            canDelete={data.role === "owner"}
-          />
+          <>
+            <PlatformEvaluationEditor
+              key={`${workspace}:${member}`}
+              workspace={workspace}
+              member={member}
+              canDelete={data.role === "owner"}
+            />
+            <PlatformPeerAssignments
+              key={`peers:${workspace}:${member}`}
+              workspace={workspace}
+              member={member}
+            />
+          </>
         ) : (
           <EvaluationViewer evaluations={data.evaluations} templateId={data.member.template_id} />
         )

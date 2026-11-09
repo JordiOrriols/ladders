@@ -20,6 +20,7 @@ export type StoreSnapshot = {
 export interface EvaluationStore {
   /** Kind of the versions this store creates. */
   kind: EvaluationKind;
+  authorNameRequired?: boolean;
   editableProfile: boolean;
   showHistory: boolean;
   memberId(): string | null;

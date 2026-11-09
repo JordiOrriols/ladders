@@ -64,19 +64,24 @@ export function PlatformAssessmentEditor({ store }: { store: EvaluationStore }) 
         onRetry={() => void editor.reload()}
       />
     );
+  if (store.kind === "peer" && editor.submitted)
+    return <p role="status">{t("pageMessage.thanks")}</p>;
   return (
     <div className="space-y-6">
-      <VersionPanel
-        evaluations={editor.evaluations}
-        selectedId={editor.editingId}
-        compareIds={editor.compareIds}
-        onSelect={editor.selectVersion}
-        onToggleCompare={editor.toggleCompare}
-        onDelete={(evaluation) => editor.deleteVersion(evaluation)}
-        canDelete={store.canDelete}
-        canChangeStatus={store.canChangeStatus}
-        onChangeStatus={editor.changeVersionStatus}
-      />
+      {store.showHistory && (
+        <VersionPanel
+          evaluations={editor.evaluations}
+          selectedId={editor.editingId}
+          compareIds={editor.compareIds}
+          onSelect={editor.selectVersion}
+          onToggleCompare={editor.toggleCompare}
+          onDelete={(evaluation) => editor.deleteVersion(evaluation)}
+          canDelete={store.canDelete}
+          canChangeStatus={store.canChangeStatus}
+          onChangeStatus={editor.changeVersionStatus}
+        />
+      )}
+      {store.kind === "peer" && <p>{t("peerAssessment.subtitle")}</p>}
       <fieldset disabled={editor.saving || action.busy}>
         <AssessmentFormColumn
           hideGoal={hideGoal}
@@ -114,7 +119,7 @@ export function PlatformAssessmentEditor({ store }: { store: EvaluationStore }) 
         disabled={!editor.canPublish || action.busy}
         onClick={() => void action.run(() => editor.save("published"))}
       >
-        {t("buttons.publish")}
+        {t(store.kind === "peer" ? "buttons.submit" : "buttons.publish")}
       </Button>
       {action.error && <p role="alert">{localizeError(action.error, t)}</p>}
       <div>

@@ -1,5 +1,14 @@
 {
   "platform": {
+    "peerReviews": "Avaluacions de companys",
+    "reviewer": "Avaluador",
+    "assignPeer": "Assigna una avaluació",
+    "revokePeer": "Revoca l'assignació",
+    "peerPending": "Pendent",
+    "peerSubmitted": "Enviada",
+    "peerRevoked": "Revocada",
+    "noReviewers": "No hi ha companys vinculats i verificats disponibles en aquest espai.",
+    "noPeerAssignments": "No tens avaluacions de companys assignades.",
     "myEvaluations": "Les meves avaluacions",
     "moveMember": "Mou el membre",
     "deleteName": "Elimina {{name}}",

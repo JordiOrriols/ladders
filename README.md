@@ -81,7 +81,16 @@ comments through the existing goals panel's member mode. Goal definitions remain
 manager-owned and existing comments remain append-only. Every write checks the
 mapping/member link and rejects foreign goals; no create/delete/definition controls
 are enabled. Failed saves remain visible without granting workspace-wide access.
-Pending: peer assignments, invitation acceptance, shared
+Managers assign/revoke peer reviews from the member evaluation page. The shared
+selector lists only explicitly mapped, linked colleagues in that workspace.
+Reviewers use `/ladders/me/peer-reviews` and an assignment-specific URL to submit
+through the same assessment editor, without name entry or evaluation history.
+Authorship comes from their linked profile; submissions are peer drafts pending
+manager moderation, with comments hidden by default. Each assignment accepts one
+submission. Revocation/unmapping denies access and never deletes saved feedback.
+No anonymous links, email inference or workspace-wide reviewer grants are used.
+The existing token peer editor retains its original name requirement.
+Pending: invitation acceptance, shared
 workspace lifecycle and real corporate Access acceptance.
 No production data is written. E2Es use only `platform-local.config.ts` and the
 isolated signed test fixture, never historical remote-backed configs.

@@ -13,6 +13,35 @@ export interface PlatformWorkspace {
   name: string;
   role: "owner" | "editor" | "viewer";
 }
+export interface PeerAssignment {
+  id: string;
+  name: string;
+  submitted: boolean;
+  revoked: boolean;
+}
+export interface MyPeerAssignment {
+  id: string;
+  member_id: string;
+  name: string;
+  role: string;
+  template_id: string | null;
+  submitted: boolean;
+}
+function boolean(value: unknown): boolean {
+  if (typeof value !== "boolean") throw new Error("Invalid API response");
+  return value;
+}
+function peerAssignments(value: unknown): PeerAssignment[] {
+  return array(value).map((value) => {
+    const row = object(value);
+    return {
+      id: uuid(row["id"]),
+      name: text(row["name"]),
+      submitted: boolean(row["submitted"]),
+      revoked: boolean(row["revoked"]),
+    };
+  });
+}
 export interface PlatformMemberProfile {
   id: string;
   name: string;
@@ -322,6 +351,77 @@ function profileInput(input: ProfileInput): ProfileInput {
   };
 }
 export const platformRepository = {
+  peerCandidates: async (workspace: string, member: string): Promise<PlatformTeam[]> =>
+    array(
+      await request(`ladders/workspaces/${uuid(workspace)}/members/${uuid(member)}/peer-candidates`)
+    ).map((value) => {
+      const row = object(value);
+      return { id: uuid(row["id"]), name: text(row["name"]) };
+    }),
+  peerAssignments: async (workspace: string, member: string): Promise<PeerAssignment[]> =>
+    peerAssignments(
+      await request(
+        `ladders/workspaces/${uuid(workspace)}/members/${uuid(member)}/peer-assignments`
+      )
+    ),
+  assignPeer: async (
+    workspace: string,
+    member: string,
+    reviewer: string
+  ): Promise<PeerAssignment[]> =>
+    peerAssignments(
+      await request(
+        `ladders/workspaces/${uuid(workspace)}/members/${uuid(member)}/peer-assignments/reviewers/${uuid(reviewer)}`,
+        undefined,
+        "POST"
+      )
+    ),
+  revokePeer: async (
+    workspace: string,
+    member: string,
+    assignment: string
+  ): Promise<PeerAssignment[]> =>
+    peerAssignments(
+      await request(
+        `ladders/workspaces/${uuid(workspace)}/members/${uuid(member)}/peer-assignments/${uuid(assignment)}`,
+        undefined,
+        "DELETE"
+      )
+    ),
+  myPeerAssignments: async (): Promise<MyPeerAssignment[]> =>
+    array(await request("ladders/me/peer-assignments")).map((value) => {
+      const row = object(value);
+      return {
+        id: uuid(row["id"]),
+        member_id: uuid(row["member_id"]),
+        name: text(row["name"]),
+        role: text(row["role"]),
+        template_id: row["template_id"] === null ? null : text(row["template_id"]),
+        submitted: boolean(row["submitted"]),
+      };
+    }),
+  submitPeer: async (
+    assignment: string,
+    member: string,
+    input: EvaluationInput
+  ): Promise<Evaluation> => {
+    const result = evaluation(
+      await request(
+        `ladders/me/peer-assignments/${uuid(assignment)}/submit`,
+        evaluationContent(input),
+        "POST"
+      )
+    );
+    if (
+      result.memberId !== uuid(member) ||
+      result.kind !== "peer" ||
+      result.status !== "draft" ||
+      Object.keys(result.commentVisibility ?? {}).length ||
+      Object.keys(result.goalLevels).length
+    )
+      throw new Error("Invalid API response");
+    return result;
+  },
   myGoals: async (member: string): Promise<SmartGoal[]> => {
     const memberId = uuid(member);
     return smartGoalHistory(await request(`ladders/me/members/${memberId}/goals`), memberId);

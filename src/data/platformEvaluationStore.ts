@@ -1,6 +1,43 @@
 import type { EvaluationStore } from "./evaluationStore";
 import { platformRepository } from "./platform";
 
+export function createPlatformPeerStore(assignment: string): EvaluationStore {
+  let member: string | null = null;
+  return {
+    kind: "peer",
+    authorNameRequired: false,
+    editableProfile: false,
+    showHistory: false,
+    memberId: () => member,
+    async load() {
+      const target = (await platformRepository.myPeerAssignments()).find(
+        (row) => row.id === assignment
+      );
+      if (!target || target.submitted) return null;
+      member = target.member_id;
+      return {
+        profile: { name: target.name, role: target.role, templateId: target.template_id },
+        evaluations: [],
+      };
+    },
+    async saveProfile() {
+      throw new Error("Reviewer profiles are read-only");
+    },
+    async create(input) {
+      if (!member) throw new Error("Peer assignment unavailable");
+      return platformRepository.submitPeer(assignment, member, input);
+    },
+    async setStatus() {
+      throw new Error("Only managers can publish peer reviews");
+    },
+    async remove() {
+      throw new Error("Reviewers cannot delete evaluations");
+    },
+    canDelete: () => false,
+    canChangeStatus: () => false,
+  };
+}
+
 export function createPlatformSelfEvaluationStore(member: string): EvaluationStore {
   return {
     kind: "self",

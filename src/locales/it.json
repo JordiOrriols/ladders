@@ -1,5 +1,14 @@
 {
   "platform": {
+    "peerReviews": "Valutazioni dei colleghi",
+    "reviewer": "Valutatore",
+    "assignPeer": "Assegna valutazione",
+    "revokePeer": "Revoca assegnazione",
+    "peerPending": "In attesa",
+    "peerSubmitted": "Inviata",
+    "peerRevoked": "Revocata",
+    "noReviewers": "Nessun collega collegato e verificato disponibile in questo spazio.",
+    "noPeerAssignments": "Nessuna valutazione dei colleghi assegnata.",
     "myEvaluations": "Le mie valutazioni",
     "moveMember": "Sposta membro",
     "deleteName": "Elimina {{name}}",
