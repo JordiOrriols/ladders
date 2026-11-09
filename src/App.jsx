@@ -9,6 +9,7 @@ import PlatformSelfEvaluation from "./pages/PlatformSelfEvaluation";
 import PlatformMyGoals from "./pages/PlatformMyGoals";
 import PlatformPeerReviews from "./pages/PlatformPeerReviews";
 import PlatformMemberInvitations from "./pages/PlatformMemberInvitations";
+import PlatformWorkspaceAccess from "./pages/PlatformWorkspaceAccess";
 import { PlatformLayout } from "./components/PlatformLayout";
 
 export default function App() {
@@ -34,6 +35,7 @@ export default function App() {
         <Route path="/me/members/:member/goals" element={<PlatformMyGoals />} />
         <Route path="/me/peer-reviews" element={<PlatformPeerReviews />} />
         <Route path="/me/invitations" element={<PlatformMemberInvitations />} />
+        <Route path="/workspace-access" element={<PlatformWorkspaceAccess />} />
         <Route path="/me/peer-reviews/:assignment" element={<PlatformPeerReviews />} />
         <Route path="/workspaces/:workspace/teams" element={<PlatformTeams />} />
         <Route path="/workspaces/:workspace/members/:member" element={<PlatformTeams />} />

@@ -1,4 +1,14 @@
 {
+  "workspaceAccess": {
+    "title": "Accés a l'espai",
+    "intro": "Crea un espai o espera una invitació. Cada aplicació té permisos independents; acceptar una invitació només concedeix el rol indicat.",
+    "invitations": "Invitacions a l'espai",
+    "external": "Extern",
+    "invite": "Convida un compte",
+    "inviteHint": "Fes servir l'ID exacte que el destinatari comparteix des d'aquesta pàgina després d'iniciar sessió. Les invitacions caduquen al cap de 30 dies. Sense coincidències per correu.",
+    "notEmpty": "Aquest espai conté dades o historial. Elimina'ls de totes les aplicacions abans d'esborrar l'espai.",
+    "busy": "L'accés a l'espai està ocupat. Espera que acabi l'operació i torna-ho a provar."
+  },
   "platform": {
     "memberInvitation": "Invitacions de membres",
     "recipientId": "ID del compte verificat",

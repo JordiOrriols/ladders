@@ -1,4 +1,14 @@
 {
+  "workspaceAccess": {
+    "title": "Accesso allo spazio",
+    "intro": "Crea uno spazio o attendi un invito. Ogni app ha permessi separati; accettare un invito concede solo il ruolo indicato.",
+    "invitations": "Inviti allo spazio",
+    "external": "Esterno",
+    "invite": "Invita account",
+    "inviteHint": "Usa l'ID account esatto condiviso dal destinatario connesso da questa pagina. Gli inviti scadono dopo 30 giorni. Nessuna associazione tramite e-mail.",
+    "notEmpty": "Questo spazio contiene dati o cronologia. Rimuovili da tutte le app prima di eliminare lo spazio.",
+    "busy": "L'accesso allo spazio è occupato. Attendi la fine dell'operazione e riprova."
+  },
   "platform": {
     "memberInvitation": "Inviti dei membri",
     "recipientId": "ID account verificato",

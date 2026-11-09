@@ -1,4 +1,14 @@
 {
+  "workspaceAccess": {
+    "title": "Accès à l'espace",
+    "intro": "Créez un espace ou attendez une invitation. Chaque application dispose de droits distincts ; accepter une invitation n'accorde que le rôle indiqué.",
+    "invitations": "Invitations à l'espace",
+    "external": "Externe",
+    "invite": "Inviter un compte",
+    "inviteHint": "Utilisez l'identifiant exact partagé par le destinataire connecté depuis cette page. Les invitations expirent après 30 jours. Aucun rapprochement par e-mail.",
+    "notEmpty": "Cet espace contient des données ou un historique. Supprimez-les de toutes les applications avant de supprimer l'espace.",
+    "busy": "L'accès à l'espace est occupé. Attendez la fin de l'opération, puis réessayez."
+  },
   "platform": {
     "memberInvitation": "Invitations de membres",
     "recipientId": "Identifiant du compte vérifié",

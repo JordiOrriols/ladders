@@ -350,6 +350,161 @@ type ProfileInput = Pick<
   PlatformRoster["members"][number],
   "name" | "role" | "planning_role" | "template_id"
 >;
+export const PLATFORM_APPS = ["planner", "shiplog", "ladders", "pulse", "agents"] as const;
+export type PlatformApp = (typeof PLATFORM_APPS)[number];
+export type WorkspaceRole = "owner" | "editor" | "viewer" | "external";
+export type SharedWorkspaceRole = Exclude<WorkspaceRole, "owner">;
+export interface WorkspaceAccess {
+  grants: { account_id: string; role: WorkspaceRole }[];
+  invitations: { id: string; account_id: string; role: SharedWorkspaceRole; expires_at: string }[];
+}
+export interface WorkspaceInvitation {
+  id: string;
+  workspace_id: string;
+  name: string;
+  app: PlatformApp;
+  role: SharedWorkspaceRole;
+  expires_at: string;
+}
+function appName(value: unknown): PlatformApp {
+  const app = PLATFORM_APPS.find((app) => app === value);
+  if (!app) throw new Error("Invalid API response");
+  return app;
+}
+function workspaceRole(value: unknown): WorkspaceRole {
+  if (value !== "owner" && value !== "editor" && value !== "viewer" && value !== "external")
+    throw new Error("Invalid API response");
+  return value;
+}
+function sharedRole(value: unknown, app: PlatformApp): SharedWorkspaceRole {
+  const role = workspaceRole(value);
+  if (role === "owner" || (role === "external" && app !== "planner" && app !== "shiplog"))
+    throw new Error("Invalid workspace role");
+  return role;
+}
+function expiry(value: unknown): string {
+  const result = text(value);
+  if (!Number.isFinite(Date.parse(result))) throw new Error("Invalid API response");
+  return result;
+}
+function workspaceAccess(value: unknown, app: PlatformApp): WorkspaceAccess {
+  const row = object(value);
+  return {
+    grants: array(row["grants"]).map((value) => {
+      const grant = object(value);
+      const role = workspaceRole(grant["role"]);
+      if (role !== "owner") sharedRole(role, app);
+      return { account_id: uuid(grant["account_id"]), role };
+    }),
+    invitations: array(row["invitations"]).map((value) => {
+      const invite = object(value);
+      return {
+        id: uuid(invite["id"]),
+        account_id: uuid(invite["account_id"]),
+        role: sharedRole(invite["role"], app),
+        expires_at: expiry(invite["expires_at"]),
+      };
+    }),
+  };
+}
+const workspaceAccessPath = (workspace: string, app: PlatformApp) =>
+  `apps/${appName(app)}/workspaces/${uuid(workspace)}`;
+export const workspaceRepository = {
+  create: async (name: string): Promise<{ id: string; name: string }> => {
+    if (!name.trim() || Array.from(name.trim()).length > 120)
+      throw new Error("Invalid workspace name");
+    const saved = object(await request("workspaces", { name: name.trim() }, "POST"));
+    return { id: uuid(saved["id"]), name: text(saved["name"]) };
+  },
+  directory: async (): Promise<
+    { id: string; name: string; app: PlatformApp; role: WorkspaceRole }[]
+  > =>
+    (
+      await Promise.all(
+        PLATFORM_APPS.map(async (app) =>
+          array(await request(`apps/${app}/workspaces`)).map((value) => {
+            const row = object(value);
+            const role = workspaceRole(row["role"]);
+            if (role !== "owner") sharedRole(role, app);
+            return { id: uuid(row["id"]), name: text(row["name"]), app, role };
+          })
+        )
+      )
+    ).flat(),
+  access: async (workspace: string, app: PlatformApp): Promise<WorkspaceAccess> =>
+    workspaceAccess(await request(`${workspaceAccessPath(workspace, app)}/access`), app),
+  invite: async (
+    workspace: string,
+    app: PlatformApp,
+    recipient: string,
+    role: SharedWorkspaceRole
+  ): Promise<WorkspaceAccess> =>
+    workspaceAccess(
+      await request(
+        `${workspaceAccessPath(workspace, app)}/invitations/recipients/${uuid(recipient)}`,
+        { role: sharedRole(role, app) },
+        "POST"
+      ),
+      app
+    ),
+  update: async (
+    workspace: string,
+    app: PlatformApp,
+    recipient: string,
+    role: SharedWorkspaceRole
+  ): Promise<WorkspaceAccess> =>
+    workspaceAccess(
+      await request(
+        `${workspaceAccessPath(workspace, app)}/access/${uuid(recipient)}`,
+        { role: sharedRole(role, app) },
+        "PATCH"
+      ),
+      app
+    ),
+  remove: async (
+    workspace: string,
+    app: PlatformApp,
+    recipient: string
+  ): Promise<WorkspaceAccess> =>
+    workspaceAccess(
+      await request(
+        `${workspaceAccessPath(workspace, app)}/access/${uuid(recipient)}`,
+        undefined,
+        "DELETE"
+      ),
+      app
+    ),
+  invitations: async (): Promise<WorkspaceInvitation[]> =>
+    array(await request("me/workspace-invitations")).map((value) => {
+      const row = object(value);
+      const app = appName(row["app"]);
+      return {
+        id: uuid(row["id"]),
+        workspace_id: uuid(row["workspace_id"]),
+        name: text(row["name"]),
+        app,
+        role: sharedRole(row["role"], app),
+        expires_at: expiry(row["expires_at"]),
+      };
+    }),
+  answer: async (invitation: string, accept: boolean): Promise<void> => {
+    const row = object(
+      await request(
+        `me/workspace-invitations/${uuid(invitation)}/${accept ? "accept" : "decline"}`,
+        undefined,
+        "POST"
+      )
+    );
+    uuid(row["workspace_id"]);
+    appName(row["app"]);
+    if (row["accepted"] !== accept) throw new Error("Invalid API response");
+  },
+  delete: async (workspace: string): Promise<void> => {
+    const id = uuid(workspace);
+    if (uuid(object(await request(`workspaces/${id}`, undefined, "DELETE"))["id"]) !== id)
+      throw new Error("Invalid API response");
+  },
+};
 function profileInput(input: ProfileInput): ProfileInput {
   if (
     !input.name.trim() ||

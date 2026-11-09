@@ -20,7 +20,7 @@ const messages: [RegExp, string][] = [
   ],
   [/recipient must first authenticate/i, "inviteRecipient"],
   [/this member is already linked to an account/i, "memberLinked"],
-  [/member invitation unavailable/i, "invitationUnavailable"],
+  [/(?:member|workspace) invitation unavailable/i, "invitationUnavailable"],
   [/members cannot move across team owners/i, "access"],
   [/progress must be between/i, "progress"],
   [/comment must contain/i, "comment"],
@@ -34,6 +34,8 @@ const messages: [RegExp, string][] = [
 /** Never expose untranslated service messages or their potentially sensitive details in the UI. */
 export function localizeError(error: unknown, t: TFunction): string {
   const message = error instanceof Error ? error.message : typeof error === "string" ? error : "";
+  if (/workspace is not empty/i.test(message)) return t("workspaceAccess.notEmpty");
+  if (/workspace access is busy/i.test(message)) return t("workspaceAccess.busy");
   if (message === "auth.passwordTooShort" || message === "auth.passwordsDoNotMatch") {
     return t(message);
   }

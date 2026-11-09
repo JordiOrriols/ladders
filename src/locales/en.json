@@ -1,4 +1,14 @@
 {
+  "workspaceAccess": {
+    "title": "Workspace access",
+    "intro": "Create a workspace or wait for an invitation. Each app has separate permissions; accepting an invitation grants only the role shown.",
+    "invitations": "Workspace invitations",
+    "external": "External",
+    "invite": "Invite account",
+    "inviteHint": "Use the exact account ID shared by the signed-in recipient from this page. Invitations expire after 30 days. No email matching.",
+    "notEmpty": "This workspace contains content or history. Remove it from all apps before deleting the workspace.",
+    "busy": "Workspace access is busy. Wait for the current operation, then try again."
+  },
   "platform": {
     "memberInvitation": "Member invitations",
     "recipientId": "Verified account ID",

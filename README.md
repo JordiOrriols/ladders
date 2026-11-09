@@ -28,6 +28,20 @@ From the backend API directory, start the `web` profile of `compose.local.yml`.
 The local gateway serves `http://127.0.0.1:5320/ladders/` (direct port 5314).
 Docker installs GitHub Packages with a BuildKit secret. Do not merge or deploy yet.
 
+All migrated apps link to one six-language workspace management screen at
+`/ladders/workspace-access`. Signed-in users can create an empty workspace or wait
+for an invitation, share their exact account ID, accept/decline app-specific
+invitations, and refresh. Creation grants owner access in all five apps and uses
+native platform ownership, without creating legacy accounts or changing imported
+owner IDs. App owners invite verified account IDs, change editor/viewer roles
+(external also in Planner/Shiplog) and remove grants or pending invites.
+The existing UI package name dialog, labels, fields, selectors and confirmation
+are reused. One screen avoids duplicating this cross-app workflow.
+Workspace deletion is available only to owners of all five apps, requires
+confirmation and succeeds only when all apps are empty, including protected
+history/snapshots. Cancellation never writes; failures remain visible. Successful
+deletion removes empty containers, grants and invitations, not user accounts.
+
 Only owners delete members or empty non-default teams, using the existing shared
 confirmation dialog. Cancel performs no write; failed deletion stays visible.
 Deleting a member retains the existing database cascades for their evaluations,
@@ -102,7 +116,8 @@ manager moderation, with comments hidden by default. Each assignment accepts one
 submission. Revocation/unmapping denies access and never deletes saved feedback.
 No anonymous links, email inference or workspace-wide reviewer grants are used.
 The existing token peer editor retains its original name requirement.
-Pending: shared workspace lifecycle and real corporate Access acceptance.
+Pending: real corporate Access acceptance and linking the same workspace screen
+from Pulse/Agents as those adapters migrate.
 No production data is written. E2Es use only `platform-local.config.ts` and the
 isolated signed test fixture, never historical remote-backed configs.
 

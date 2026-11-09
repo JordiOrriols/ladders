@@ -1,4 +1,14 @@
 {
+  "workspaceAccess": {
+    "title": "Arbeitsbereichszugriff",
+    "intro": "Erstellen Sie einen Arbeitsbereich oder warten Sie auf eine Einladung. Jede App hat eigene Rechte; eine Einladung gewährt nur die angezeigte Rolle.",
+    "invitations": "Arbeitsbereichseinladungen",
+    "external": "Extern",
+    "invite": "Konto einladen",
+    "inviteHint": "Verwenden Sie die genaue Konto-ID, die der angemeldete Empfänger auf dieser Seite teilt. Einladungen verfallen nach 30 Tagen. Keine Zuordnung per E-Mail.",
+    "notEmpty": "Dieser Arbeitsbereich enthält Daten oder Verlauf. Entfernen Sie diese aus allen Apps, bevor Sie den Arbeitsbereich löschen.",
+    "busy": "Der Arbeitsbereichszugriff ist belegt. Warten Sie auf das Ende des Vorgangs und versuchen Sie es erneut."
+  },
   "platform": {
     "memberInvitation": "Mitgliedseinladungen",
     "recipientId": "Verifizierte Konto-ID",

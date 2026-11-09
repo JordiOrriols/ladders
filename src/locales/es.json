@@ -1,4 +1,14 @@
 {
+  "workspaceAccess": {
+    "title": "Acceso al espacio",
+    "intro": "Crea un espacio o espera una invitación. Cada aplicación tiene permisos independientes; aceptar una invitación solo concede el rol indicado.",
+    "invitations": "Invitaciones al espacio",
+    "external": "Externo",
+    "invite": "Invitar cuenta",
+    "inviteHint": "Usa el ID exacto que el destinatario comparte desde esta página tras iniciar sesión. Las invitaciones caducan a los 30 días. Sin coincidencias por correo.",
+    "notEmpty": "Este espacio contiene datos o historial. Elimínalos de todas las aplicaciones antes de borrar el espacio.",
+    "busy": "El acceso al espacio está ocupado. Espera a que termine la operación e inténtalo de nuevo."
+  },
   "platform": {
     "memberInvitation": "Invitaciones de miembros",
     "recipientId": "ID de cuenta verificada",

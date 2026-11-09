@@ -74,6 +74,7 @@ export default function PlatformTeams() {
       <Link to="/me">{t("platform.myEvaluations")}</Link>
       <Link to="/me/peer-reviews">{t("platform.peerReviews")}</Link>
       <Link to="/me/invitations">{t("platform.memberInvitation")}</Link>
+      <Link to="/workspace-access">{t("workspaceAccess.title")}</Link>
       {workspace && <Link to="/">{t("platform.workspaces")}</Link>}
       {workspace && (memberId || createTeam) && (
         <Link to={`/workspaces/${workspace}/teams`}>{t("platform.teams")}</Link>
