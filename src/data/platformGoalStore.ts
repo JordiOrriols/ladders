@@ -2,6 +2,22 @@ import type { SmartGoal, SmartGoalInput, TeamAccess } from "../types";
 import type { GoalStore } from "./goalStore";
 import { platformRepository } from "./platform";
 
+export function createPlatformMemberGoalStore(member: string): GoalStore {
+  return {
+    mode: "member",
+    canDelete: async () => false,
+    list: () => platformRepository.myGoals(member),
+    async create() {
+      throw new Error("Employees cannot create goals");
+    },
+    update: (id, input) => platformRepository.updateMyGoalProgress(member, id, input.progress),
+    async remove() {
+      throw new Error("Employees cannot delete goals");
+    },
+    appendComment: (id, text) => platformRepository.appendMyGoalComment(member, id, text),
+  };
+}
+
 export function createPlatformGoalStore(
   workspace: string,
   member: string,

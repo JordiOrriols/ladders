@@ -295,6 +295,12 @@ async function request(path: string, body?: unknown, method = "GET"): Promise<un
   }
   return response.json();
 }
+function goalCommentText(value: string): string {
+  const comment = value.trim();
+  if (!comment || Array.from(comment).length > 10000)
+    throw new Error("Comment must contain 1 to 10000 characters");
+  return comment;
+}
 const path = (workspace: string) => `ladders/workspaces/${uuid(workspace)}/teams`;
 type ProfileInput = Pick<
   PlatformRoster["members"][number],
@@ -316,6 +322,48 @@ function profileInput(input: ProfileInput): ProfileInput {
   };
 }
 export const platformRepository = {
+  myGoals: async (member: string): Promise<SmartGoal[]> => {
+    const memberId = uuid(member);
+    return smartGoalHistory(await request(`ladders/me/members/${memberId}/goals`), memberId);
+  },
+  updateMyGoalProgress: async (
+    member: string,
+    id: string,
+    progress: number
+  ): Promise<SmartGoal> => {
+    const memberId = uuid(member),
+      goalId = uuid(id);
+    if (!Number.isInteger(progress) || progress < 0 || progress > 100)
+      throw new Error("Invalid goal progress");
+    const goal = smartGoal(
+      await request(
+        `ladders/me/members/${memberId}/goals/${goalId}/progress`,
+        { progress },
+        "PATCH"
+      )
+    );
+    if (goal.memberId !== memberId || goal.id !== goalId || goal.progress !== progress)
+      throw new Error("Invalid API response");
+    return goal;
+  },
+  appendMyGoalComment: async (
+    member: string,
+    id: string,
+    textValue: string
+  ): Promise<SmartGoal> => {
+    const memberId = uuid(member),
+      goalId = uuid(id),
+      comment = goalCommentText(textValue);
+    const goal = smartGoal(
+      await request(
+        `ladders/me/members/${memberId}/goals/${goalId}/comments`,
+        { text: comment },
+        "POST"
+      )
+    );
+    if (goal.memberId !== memberId || goal.id !== goalId) throw new Error("Invalid API response");
+    return goal;
+  },
   myMembers: async (): Promise<PlatformMemberProfile[]> =>
     array(await request("ladders/me/members")).map(memberProfile),
   myEvaluations: async (member: string): Promise<PlatformMemberEvaluations> => {
@@ -409,9 +457,7 @@ export const platformRepository = {
   ): Promise<SmartGoal> => {
     const memberId = uuid(member);
     const goalId = uuid(id);
-    const comment = textValue.trim();
-    if (!comment || Array.from(comment).length > 10000)
-      throw new Error("Comment must contain 1 to 10000 characters");
+    const comment = goalCommentText(textValue);
     const goal = smartGoal(
       await request(
         `ladders/workspaces/${uuid(workspace)}/members/${memberId}/goals/${goalId}/comments`,

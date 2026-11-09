@@ -76,7 +76,12 @@ but never receives reviewer comments or moderation metadata. Manager-only goal
 controls, comment visibility, profile editing and deletion are unavailable.
 Identity mappings and existing member-account links are checked server-side on
 every read/write; workspace grants never imply employee ownership.
-Pending: employee goals, peer assignments, invitation acceptance, shared
+Employees use `/ladders/me/members/:member/goals` to update progress and append
+comments through the existing goals panel's member mode. Goal definitions remain
+manager-owned and existing comments remain append-only. Every write checks the
+mapping/member link and rejects foreign goals; no create/delete/definition controls
+are enabled. Failed saves remain visible without granting workspace-wide access.
+Pending: peer assignments, invitation acceptance, shared
 workspace lifecycle and real corporate Access acceptance.
 No production data is written. E2Es use only `platform-local.config.ts` and the
 isolated signed test fixture, never historical remote-backed configs.
