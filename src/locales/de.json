@@ -1,5 +1,18 @@
 {
   "platform": {
+    "memberInvitation": "Mitgliedseinladungen",
+    "recipientId": "Verifizierte Konto-ID",
+    "invitationHint": "Der Empfänger muss sich anmelden und seine Konto-ID aus Mitgliedseinladungen teilen. Keine Zuordnung per E-Mail.",
+    "inviteMember": "Mitgliedskonto einladen",
+    "invitationPending": "Einladung ausstehend (30 Tage gültig).",
+    "revokeInvitation": "Einladung widerrufen",
+    "unlinkMember": "Kontoverknüpfung aufheben",
+    "unlinkHint": "Entfernt persönlichen Zugriff und zugewiesene Bewertungen für dieses Mitglied. Unabhängige Arbeitsbereichsrechte und der Bewertungsverlauf bleiben erhalten.",
+    "yourAccountId": "Ihre Konto-ID",
+    "invitationAccess": "Die Annahme verknüpft Ihr Konto mit Ihren persönlichen Bewertungen und Zielen, nicht mit dem Arbeitsbereichsverzeichnis oder anderen Apps.",
+    "noInvitations": "Keine ausstehenden Einladungen.",
+    "acceptInvitation": "Einladung annehmen",
+    "declineInvitation": "Einladung ablehnen",
     "peerReviews": "Peer-Bewertungen",
     "reviewer": "Gutachter",
     "assignPeer": "Peer-Bewertung zuweisen",
@@ -21,6 +34,9 @@
     "emptyTeams": "Dieser Arbeitsbereich hat keine Teams."
   },
   "errors": {
+    "inviteRecipient": "Der Empfänger muss sich zuerst anmelden und seine verifizierte Konto-ID teilen.",
+    "memberLinked": "Dieses Mitglied ist bereits verknüpft. Heben Sie die Verknüpfung auf, bevor Sie ein anderes Konto einladen.",
+    "invitationUnavailable": "Diese Einladung ist abgelaufen, wurde widerrufen oder ist nicht an Ihr Konto gerichtet.",
     "memberTeamConflict": "Dieses Konto hat bereits ein Mitglied im Zielteam.",
     "title": "Etwas ist schiefgelaufen",
     "retry": "Erneut versuchen",

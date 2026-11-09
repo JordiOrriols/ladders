@@ -52,6 +52,7 @@ export default function PlatformMyEvaluations() {
   return (
     <PlatformLayout>
       <Link to="/">{t("platform.workspaces")}</Link>
+      <Link to="/me/invitations">{t("platform.memberInvitation")}</Link>
       {member && <Link to="/me">{t("platform.myEvaluations")}</Link>}
       {view?.kind === "history" && (
         <>

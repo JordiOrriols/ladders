@@ -1,5 +1,18 @@
 {
   "platform": {
+    "memberInvitation": "Invitations de membres",
+    "recipientId": "Identifiant du compte vérifié",
+    "invitationHint": "Demandez au destinataire de se connecter et de partager son identifiant depuis Invitations de membres. Aucun rapprochement par e-mail.",
+    "inviteMember": "Inviter un compte membre",
+    "invitationPending": "Invitation en attente (valable 30 jours).",
+    "revokeInvitation": "Révoquer l'invitation",
+    "unlinkMember": "Dissocier le compte",
+    "unlinkHint": "Supprime l'accès personnel et les évaluations assignées à ce membre. Les droits indépendants de l'espace et l'historique sont conservés.",
+    "yourAccountId": "Votre identifiant de compte",
+    "invitationAccess": "Accepter relie votre compte à vos évaluations et objectifs personnels, sans accès à l'annuaire de l'espace ni aux autres applications.",
+    "noInvitations": "Aucune invitation en attente.",
+    "acceptInvitation": "Accepter l'invitation",
+    "declineInvitation": "Refuser l'invitation",
     "peerReviews": "Évaluations des pairs",
     "reviewer": "Évaluateur",
     "assignPeer": "Attribuer une évaluation",
@@ -21,6 +34,9 @@
     "emptyTeams": "Cet espace ne contient aucune équipe."
   },
   "errors": {
+    "inviteRecipient": "Le destinataire doit d'abord se connecter et partager l'identifiant de son compte vérifié.",
+    "memberLinked": "Ce membre est déjà lié. Dissociez le compte avant d'en inviter un autre.",
+    "invitationUnavailable": "Cette invitation a expiré, a été révoquée ou ne vous est pas destinée.",
     "memberTeamConflict": "Ce compte possède déjà un membre dans l'équipe de destination.",
     "title": "Une erreur est survenue",
     "retry": "Réessayer",

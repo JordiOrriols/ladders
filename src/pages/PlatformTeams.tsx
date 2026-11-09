@@ -9,6 +9,7 @@ import {
   type PlatformWorkspace,
 } from "../data/platform";
 import { PlatformLayout } from "../components/PlatformLayout";
+import { PlatformMemberInvitation } from "../components/PlatformMemberInvitation";
 import { CreateTeamDialog } from "../components/molecules/CreateTeamDialog";
 import { PlatformMemberProfile } from "../components/PlatformMemberProfile";
 import { PlatformDeleteAction } from "../components/PlatformDeleteAction";
@@ -72,6 +73,7 @@ export default function PlatformTeams() {
     <PlatformLayout>
       <Link to="/me">{t("platform.myEvaluations")}</Link>
       <Link to="/me/peer-reviews">{t("platform.peerReviews")}</Link>
+      <Link to="/me/invitations">{t("platform.memberInvitation")}</Link>
       {workspace && <Link to="/">{t("platform.workspaces")}</Link>}
       {workspace && (memberId || createTeam) && (
         <Link to={`/workspaces/${workspace}/teams`}>{t("platform.teams")}</Link>
@@ -152,6 +154,13 @@ export default function PlatformTeams() {
               )}
               {goalStore && (
                 <SmartGoalsPanel store={goalStore} readOnly={access.role === "viewer"} />
+              )}
+              {access.role !== "viewer" && (
+                <PlatformMemberInvitation
+                  key={`invite:${workspace}:${member.id}`}
+                  workspace={workspace}
+                  member={member.id}
+                />
               )}
             </div>
           ) : (

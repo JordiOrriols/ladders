@@ -1,5 +1,18 @@
 {
   "platform": {
+    "memberInvitation": "Invitaciones de miembros",
+    "recipientId": "ID de cuenta verificada",
+    "invitationHint": "Pide al destinatario que inicie sesión y comparta su ID desde Invitaciones de miembros. No se vinculan cuentas por correo.",
+    "inviteMember": "Invitar cuenta de miembro",
+    "invitationPending": "Invitación pendiente (válida durante 30 días).",
+    "revokeInvitation": "Revocar invitación",
+    "unlinkMember": "Desvincular cuenta",
+    "unlinkHint": "Elimina el acceso personal y las revisiones asignadas a este miembro. Conserva los permisos independientes del espacio y el historial de evaluaciones.",
+    "yourAccountId": "Tu ID de cuenta",
+    "invitationAccess": "Aceptar vincula tu cuenta a tus evaluaciones y objetivos personales, no al directorio del espacio ni a otras aplicaciones.",
+    "noInvitations": "No hay invitaciones pendientes.",
+    "acceptInvitation": "Aceptar invitación",
+    "declineInvitation": "Rechazar invitación",
     "peerReviews": "Evaluaciones de compañeros",
     "reviewer": "Evaluador",
     "assignPeer": "Asignar evaluación",
@@ -21,6 +34,9 @@
     "emptyTeams": "Este espacio no tiene equipos."
   },
   "errors": {
+    "inviteRecipient": "El destinatario debe iniciar sesión primero y compartir su ID de cuenta verificada.",
+    "memberLinked": "Este miembro ya está vinculado. Desvincula la cuenta antes de invitar a otra.",
+    "invitationUnavailable": "Esta invitación ha caducado, se ha revocado o no está dirigida a tu cuenta.",
     "memberTeamConflict": "Esta cuenta ya tiene un miembro en el equipo de destino.",
     "title": "Algo ha salido mal",
     "retry": "Volver a intentar",

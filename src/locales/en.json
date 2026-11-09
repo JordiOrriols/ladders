@@ -1,5 +1,18 @@
 {
   "platform": {
+    "memberInvitation": "Member invitations",
+    "recipientId": "Verified account ID",
+    "invitationHint": "Ask the recipient to sign in and share their account ID from Member invitations. No accounts are matched by email.",
+    "inviteMember": "Invite member account",
+    "invitationPending": "Invitation pending (valid for 30 days).",
+    "revokeInvitation": "Revoke invitation",
+    "unlinkMember": "Unlink member account",
+    "unlinkHint": "Remove personal access and peer assignments for this member. Independent workspace permissions and evaluation history are preserved.",
+    "yourAccountId": "Your account ID",
+    "invitationAccess": "Accepting links your account to this member's personal evaluations and goals, not to the workspace directory or other apps.",
+    "noInvitations": "No pending member invitations.",
+    "acceptInvitation": "Accept invitation",
+    "declineInvitation": "Decline invitation",
     "peerReviews": "Peer reviews",
     "reviewer": "Reviewer",
     "assignPeer": "Assign peer review",
@@ -21,6 +34,9 @@
     "emptyTeams": "This workspace has no teams."
   },
   "errors": {
+    "inviteRecipient": "The recipient must sign in first and share their verified account ID.",
+    "memberLinked": "This member is already linked. Unlink the existing account before inviting another.",
+    "invitationUnavailable": "This invitation has expired, was revoked, or is not addressed to your account.",
     "memberTeamConflict": "This account already has a member in the destination team.",
     "title": "Something went wrong",
     "retry": "Try again",

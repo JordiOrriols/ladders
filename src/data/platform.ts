@@ -27,6 +27,21 @@ export interface MyPeerAssignment {
   template_id: string | null;
   submitted: boolean;
 }
+export interface MemberAccountLink {
+  linked: boolean;
+  invited: boolean;
+}
+export interface MemberInvitation {
+  id: string;
+  member_id: string;
+  name: string;
+  workspace_name: string;
+  expires_at: string;
+}
+function memberAccountLink(value: unknown): MemberAccountLink {
+  const row = object(value);
+  return { linked: boolean(row["linked"]), invited: boolean(row["invited"]) };
+}
 function boolean(value: unknown): boolean {
   if (typeof value !== "boolean") throw new Error("Invalid API response");
   return value;
@@ -351,6 +366,63 @@ function profileInput(input: ProfileInput): ProfileInput {
   };
 }
 export const platformRepository = {
+  myAccountId: async (): Promise<string> => uuid(object(await request("me"))["id"]),
+  memberAccountLink: async (workspace: string, member: string): Promise<MemberAccountLink> =>
+    memberAccountLink(
+      await request(`ladders/workspaces/${uuid(workspace)}/members/${uuid(member)}/account-link`)
+    ),
+  inviteMember: async (
+    workspace: string,
+    member: string,
+    recipient: string
+  ): Promise<MemberAccountLink> =>
+    memberAccountLink(
+      await request(
+        `ladders/workspaces/${uuid(workspace)}/members/${uuid(member)}/invitations/recipients/${uuid(recipient)}`,
+        undefined,
+        "POST"
+      )
+    ),
+  revokeMemberInvitation: async (workspace: string, member: string): Promise<MemberAccountLink> =>
+    memberAccountLink(
+      await request(
+        `ladders/workspaces/${uuid(workspace)}/members/${uuid(member)}/invitations`,
+        undefined,
+        "DELETE"
+      )
+    ),
+  unlinkMember: async (workspace: string, member: string): Promise<MemberAccountLink> =>
+    memberAccountLink(
+      await request(
+        `ladders/workspaces/${uuid(workspace)}/members/${uuid(member)}/account-link`,
+        undefined,
+        "DELETE"
+      )
+    ),
+  myMemberInvitations: async (): Promise<MemberInvitation[]> =>
+    array(await request("ladders/me/member-invitations")).map((value) => {
+      const row = object(value);
+      const expiresAt = text(row["expires_at"]);
+      if (!Number.isFinite(Date.parse(expiresAt))) throw new Error("Invalid API response");
+      return {
+        id: uuid(row["id"]),
+        member_id: uuid(row["member_id"]),
+        name: text(row["name"]),
+        workspace_name: text(row["workspace_name"]),
+        expires_at: expiresAt,
+      };
+    }),
+  answerMemberInvitation: async (invitation: string, accept: boolean): Promise<string> => {
+    const row = object(
+      await request(
+        `ladders/me/member-invitations/${uuid(invitation)}/${accept ? "accept" : "decline"}`,
+        undefined,
+        "POST"
+      )
+    );
+    if (row["accepted"] !== accept) throw new Error("Invalid API response");
+    return uuid(row["member_id"]);
+  },
   peerCandidates: async (workspace: string, member: string): Promise<PlatformTeam[]> =>
     array(
       await request(`ladders/workspaces/${uuid(workspace)}/members/${uuid(member)}/peer-candidates`)

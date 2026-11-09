@@ -60,13 +60,25 @@ comments; viewers are read-only and only owners can delete. Legacy comment histo
 is preserved, comments remain append-only, and goal records are restricted to the
 requested workspace/member. Direct runtime table access remains denied.
 
+Owners/editors use **Member invitations** on a member profile to target an exact
+verified account ID. The recipient signs in first, finds their ID at
+`/ladders/me/invitations` and explicitly accepts or declines. New Access users
+link directly to platform members without legacy accounts, email matching or
+workspace grants. Personal evaluation history, self editing, goals and peer
+assignments work for these links as well as existing mapped legacy links.
+Invitations expire after 30 days; replacement, revocation and consumption invalidate
+the previous ID. The server rejects another recipient, a linked member and a
+duplicate account within a team. Unlink uses the existing confirmation dialog,
+removes personal access and revokes assigned reviews, but preserves evaluation/
+goal records and independent workspace permissions. No other-app shares are added.
+
 The local administrator can explicitly map a verified Access account to a legacy
 account UUID. Mapping never matches by email or grants workspace access. Already-linked
 employees use `/ladders/me` to find only their own member profiles, then open
 `/ladders/me/members/:member/evaluations`. This route reuses the shared layout and
 evaluation viewer, includes own self drafts and published reviewer versions only,
 and receives only server-redacted comments with no internal visibility metadata.
-Workspace grants do not imply employee ownership; unmapping removes employee access.
+Workspace grants do not imply employee ownership; unmapping removes legacy-linked employee access.
 Employees open `/ladders/me/members/:member/self-evaluation` from their history
 to edit self evaluations with the same extracted editor and autosave hook used
 by managers. Own self drafts survive refresh and publish explicitly; published
@@ -74,15 +86,15 @@ answers remain immutable, with subsequent edits saved as a new draft. The
 self-only editor receives own comments even when hidden from the mixed history,
 but never receives reviewer comments or moderation metadata. Manager-only goal
 controls, comment visibility, profile editing and deletion are unavailable.
-Identity mappings and existing member-account links are checked server-side on
+Direct platform links or explicit legacy mappings/member links are checked server-side on
 every read/write; workspace grants never imply employee ownership.
 Employees use `/ladders/me/members/:member/goals` to update progress and append
 comments through the existing goals panel's member mode. Goal definitions remain
 manager-owned and existing comments remain append-only. Every write checks the
-mapping/member link and rejects foreign goals; no create/delete/definition controls
+account/member link and rejects foreign goals; no create/delete/definition controls
 are enabled. Failed saves remain visible without granting workspace-wide access.
 Managers assign/revoke peer reviews from the member evaluation page. The shared
-selector lists only explicitly mapped, linked colleagues in that workspace.
+selector lists only verified, linked colleagues in that workspace.
 Reviewers use `/ladders/me/peer-reviews` and an assignment-specific URL to submit
 through the same assessment editor, without name entry or evaluation history.
 Authorship comes from their linked profile; submissions are peer drafts pending
@@ -90,8 +102,7 @@ manager moderation, with comments hidden by default. Each assignment accepts one
 submission. Revocation/unmapping denies access and never deletes saved feedback.
 No anonymous links, email inference or workspace-wide reviewer grants are used.
 The existing token peer editor retains its original name requirement.
-Pending: invitation acceptance, shared
-workspace lifecycle and real corporate Access acceptance.
+Pending: shared workspace lifecycle and real corporate Access acceptance.
 No production data is written. E2Es use only `platform-local.config.ts` and the
 isolated signed test fixture, never historical remote-backed configs.
 

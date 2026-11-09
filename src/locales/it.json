@@ -1,5 +1,18 @@
 {
   "platform": {
+    "memberInvitation": "Inviti dei membri",
+    "recipientId": "ID account verificato",
+    "invitationHint": "Chiedi al destinatario di accedere e condividere il suo ID da Inviti dei membri. Nessuna associazione tramite e-mail.",
+    "inviteMember": "Invita account membro",
+    "invitationPending": "Invito in attesa (valido per 30 giorni).",
+    "revokeInvitation": "Revoca invito",
+    "unlinkMember": "Scollega account",
+    "unlinkHint": "Rimuove l'accesso personale e le valutazioni assegnate a questo membro. I permessi indipendenti dello spazio e la cronologia restano invariati.",
+    "yourAccountId": "Il tuo ID account",
+    "invitationAccess": "Accettare collega il tuo account alle tue valutazioni e obiettivi personali, non alla directory dello spazio o ad altre app.",
+    "noInvitations": "Nessun invito in attesa.",
+    "acceptInvitation": "Accetta invito",
+    "declineInvitation": "Rifiuta invito",
     "peerReviews": "Valutazioni dei colleghi",
     "reviewer": "Valutatore",
     "assignPeer": "Assegna valutazione",
@@ -21,6 +34,9 @@
     "emptyTeams": "Questo spazio non ha team."
   },
   "errors": {
+    "inviteRecipient": "Il destinatario deve prima accedere e condividere il suo ID account verificato.",
+    "memberLinked": "Questo membro è già collegato. Scollega l'account prima di invitarne un altro.",
+    "invitationUnavailable": "Questo invito è scaduto, è stato revocato o non è destinato al tuo account.",
     "memberTeamConflict": "Questo account ha già un membro nel team di destinazione.",
     "title": "Si è verificato un errore",
     "retry": "Riprova",
