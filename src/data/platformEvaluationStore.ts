@@ -1,6 +1,41 @@
 import type { EvaluationStore } from "./evaluationStore";
 import { platformRepository } from "./platform";
 
+export function createPlatformSelfEvaluationStore(member: string): EvaluationStore {
+  return {
+    kind: "self",
+    editableProfile: false,
+    showHistory: true,
+    memberId: () => member,
+    async load() {
+      const { member: profile, evaluations } = await platformRepository.mySelfEvaluations(member);
+      return {
+        profile: {
+          name: profile.name,
+          role: profile.role,
+          planningRole: profile.planning_role,
+          templateId: profile.template_id,
+        },
+        evaluations,
+      };
+    },
+    async saveProfile() {
+      throw new Error("Employee profiles are read-only");
+    },
+    create: (input) => platformRepository.saveMyEvaluation(member, null, input),
+    updateDraft: (id, input) => platformRepository.saveMyEvaluation(member, id, input),
+    async setStatus(id, status) {
+      if (status !== "published") throw new Error("Published evaluation content is immutable");
+      await platformRepository.publishMyEvaluation(member, id);
+    },
+    async remove() {
+      throw new Error("Employees cannot delete evaluations");
+    },
+    canDelete: () => false,
+    canChangeStatus: () => false,
+  };
+}
+
 export function createPlatformEvaluationStore(
   workspace: string,
   member: string,

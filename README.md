@@ -67,7 +67,16 @@ employees use `/ladders/me` to find only their own member profiles, then open
 evaluation viewer, includes own self drafts and published reviewer versions only,
 and receives only server-redacted comments with no internal visibility metadata.
 Workspace grants do not imply employee ownership; unmapping removes employee access.
-Pending: employee editing/goals, peer assignments, invitation acceptance, shared
+Employees open `/ladders/me/members/:member/self-evaluation` from their history
+to edit self evaluations with the same extracted editor and autosave hook used
+by managers. Own self drafts survive refresh and publish explicitly; published
+answers remain immutable, with subsequent edits saved as a new draft. The
+self-only editor receives own comments even when hidden from the mixed history,
+but never receives reviewer comments or moderation metadata. Manager-only goal
+controls, comment visibility, profile editing and deletion are unavailable.
+Identity mappings and existing member-account links are checked server-side on
+every read/write; workspace grants never imply employee ownership.
+Pending: employee goals, peer assignments, invitation acceptance, shared
 workspace lifecycle and real corporate Access acceptance.
 No production data is written. E2Es use only `platform-local.config.ts` and the
 isolated signed test fixture, never historical remote-backed configs.

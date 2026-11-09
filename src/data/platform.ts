@@ -166,6 +166,39 @@ function evaluationHistory(value: unknown, member: string): Evaluation[] {
     throw new Error("Invalid API response");
   return result;
 }
+function evaluationContent(input: EvaluationInput) {
+  return {
+    current_levels: levels(input.currentLevels),
+    goal_levels: levels(input.goalLevels),
+    comments: competencyMap(input.comments, (value) => {
+      const comment = text(value);
+      if (Array.from(comment).length > 2000) throw new Error("Invalid evaluation content");
+      return comment;
+    }),
+  };
+}
+function personalEvaluations(
+  value: unknown,
+  member: string,
+  selfOnly = false
+): PlatformMemberEvaluations {
+  const row = object(value);
+  const profile = memberProfile(row["member"]);
+  const evaluations = array(row["evaluations"]).map(evaluation);
+  if (
+    profile.id !== member ||
+    evaluations.some(
+      (evaluation) =>
+        evaluation.memberId !== member ||
+        (selfOnly
+          ? evaluation.kind !== "self"
+          : evaluation.kind !== "self" && evaluation.status !== "published") ||
+        Object.keys(evaluation.commentVisibility ?? {}).length > 0
+    )
+  )
+    throw new Error("Invalid API response");
+  return { member: profile, evaluations };
+}
 function calendarDate(value: unknown): string {
   const date = text(value);
   const parsed = new Date(`${date}T00:00:00Z`);
@@ -287,20 +320,61 @@ export const platformRepository = {
     array(await request("ladders/me/members")).map(memberProfile),
   myEvaluations: async (member: string): Promise<PlatformMemberEvaluations> => {
     const memberId = uuid(member);
-    const row = object(await request(`ladders/me/members/${memberId}/evaluations`));
-    const profile = memberProfile(row["member"]);
-    const evaluations = array(row["evaluations"]).map(evaluation);
-    if (
-      profile.id !== memberId ||
-      evaluations.some(
-        (evaluation) =>
-          evaluation.memberId !== memberId ||
-          (evaluation.kind !== "self" && evaluation.status !== "published") ||
-          Object.keys(evaluation.commentVisibility ?? {}).length > 0
+    return personalEvaluations(
+      await request(`ladders/me/members/${memberId}/evaluations`),
+      memberId
+    );
+  },
+  mySelfEvaluations: async (member: string): Promise<PlatformMemberEvaluations> => {
+    const memberId = uuid(member);
+    return personalEvaluations(
+      await request(`ladders/me/members/${memberId}/self-evaluations`),
+      memberId,
+      true
+    );
+  },
+  saveMyEvaluation: async (
+    member: string,
+    id: string | null,
+    input: EvaluationInput
+  ): Promise<Evaluation> => {
+    const memberId = uuid(member);
+    const result = evaluation(
+      await request(
+        `ladders/me/members/${memberId}/self-evaluations${id ? `/${uuid(id)}` : ""}`,
+        evaluationContent(input),
+        id ? "PATCH" : "POST"
       )
+    );
+    if (
+      result.memberId !== memberId ||
+      result.kind !== "self" ||
+      result.status !== "draft" ||
+      (id !== null && result.id !== id) ||
+      Object.keys(result.commentVisibility ?? {}).length > 0
     )
       throw new Error("Invalid API response");
-    return { member: profile, evaluations };
+    return result;
+  },
+  publishMyEvaluation: async (member: string, id: string): Promise<Evaluation> => {
+    const memberId = uuid(member);
+    const evaluationId = uuid(id);
+    const result = evaluation(
+      await request(
+        `ladders/me/members/${memberId}/self-evaluations/${evaluationId}/publish`,
+        undefined,
+        "POST"
+      )
+    );
+    if (
+      result.memberId !== memberId ||
+      result.id !== evaluationId ||
+      result.kind !== "self" ||
+      result.status !== "published" ||
+      Object.keys(result.commentVisibility ?? {}).length > 0
+    )
+      throw new Error("Invalid API response");
+    return result;
   },
   goals: async (workspace: string, member: string): Promise<SmartGoal[]> => {
     const memberId = uuid(member);
@@ -367,15 +441,7 @@ export const platformRepository = {
     id: string | null,
     input: EvaluationInput
   ): Promise<Evaluation> => {
-    const content = {
-      current_levels: levels(input.currentLevels),
-      goal_levels: levels(input.goalLevels),
-      comments: competencyMap(input.comments, (value) => {
-        const comment = text(value);
-        if (Array.from(comment).length > 2000) throw new Error("Invalid evaluation content");
-        return comment;
-      }),
-    };
+    const content = evaluationContent(input);
     const result = evaluation(
       await request(
         `ladders/workspaces/${uuid(workspace)}/members/${uuid(member)}/evaluations${id ? `/${uuid(id)}` : ""}`,

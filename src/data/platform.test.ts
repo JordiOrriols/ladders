@@ -1,9 +1,98 @@
 import { afterEach, expect, it, vi } from "vitest";
 import { platformRepository } from "./platform";
+import { createPlatformSelfEvaluationStore } from "./platformEvaluationStore";
 
 const workspace = "11111111-1111-4111-8111-111111111111";
 const team = "22222222-2222-4222-8222-222222222222";
 afterEach(() => vi.unstubAllGlobals());
+it("edits only own self drafts through personal routes and keeps author, visibility and status out of content writes", async () => {
+  const member = {
+    id: team,
+    name: "Own profile",
+    role: "",
+    planning_role: null,
+    template_id: null,
+    workspace_id: workspace,
+    workspace_name: "Workspace",
+  };
+  const row = {
+    id: workspace,
+    member_id: team,
+    kind: "self",
+    status: "draft",
+    author_name: member.name,
+    current_levels: { Technology: 3.5 },
+    goal_levels: {},
+    comments: { Technology: "Own answer" },
+    comment_visibility: {},
+    created_at: "2026-11-01T00:00:00.000Z",
+  };
+  const fetch = vi
+    .fn()
+    .mockImplementation(async () => new Response(JSON.stringify({ member, evaluations: [row] })));
+  vi.stubGlobal("fetch", fetch);
+  const store = createPlatformSelfEvaluationStore(team);
+  expect(await store.load()).toEqual({
+    profile: { name: member.name, role: "", planningRole: null, templateId: null },
+    evaluations: [expect.objectContaining({ kind: "self", status: "draft" })],
+  });
+  expect(fetch).toHaveBeenLastCalledWith(
+    `/api/ladders/me/members/${team}/self-evaluations`,
+    expect.objectContaining({ method: "GET" })
+  );
+  fetch.mockImplementation(
+    async () =>
+      new Response(
+        JSON.stringify({ member, evaluations: [{ ...row, kind: "manager", status: "published" }] })
+      )
+  );
+  await expect(store.load()).rejects.toThrow("Invalid API response");
+  fetch.mockImplementation(async () => new Response(JSON.stringify(row)));
+  const input = {
+    status: "published" as const,
+    authorName: "Injected author",
+    currentLevels: row.current_levels,
+    goalLevels: {},
+    comments: row.comments,
+    commentVisibility: { Technology: false },
+  };
+  await store.create(input);
+  expect(fetch).toHaveBeenLastCalledWith(
+    `/api/ladders/me/members/${team}/self-evaluations`,
+    expect.objectContaining({
+      method: "POST",
+      body: '{"current_levels":{"Technology":3.5},"goal_levels":{},"comments":{"Technology":"Own answer"}}',
+    })
+  );
+  await store.updateDraft!(workspace, input);
+  expect(fetch).toHaveBeenLastCalledWith(
+    `/api/ladders/me/members/${team}/self-evaluations/${workspace}`,
+    expect.objectContaining({ method: "PATCH" })
+  );
+  fetch.mockImplementation(
+    async () => new Response(JSON.stringify({ ...row, status: "published" }))
+  );
+  await store.setStatus(workspace, "published");
+  expect(fetch).toHaveBeenLastCalledWith(
+    `/api/ladders/me/members/${team}/self-evaluations/${workspace}/publish`,
+    expect.objectContaining({ method: "POST" })
+  );
+  await expect(store.setStatus(workspace, "draft")).rejects.toThrow("immutable");
+  await expect(
+    store.saveProfile({ name: member.name, role: "", templateId: null })
+  ).rejects.toThrow("read-only");
+  await expect(store.remove(workspace)).rejects.toThrow("cannot delete");
+  expect(store.setCommentVisibility).toBeUndefined();
+  for (const patch of [
+    { kind: "manager" },
+    { member_id: workspace },
+    { id: team },
+    { comment_visibility: { Technology: true } },
+  ]) {
+    fetch.mockImplementation(async () => new Response(JSON.stringify({ ...row, ...patch })));
+    await expect(store.updateDraft!(workspace, input)).rejects.toThrow("Invalid API response");
+  }
+});
 it("loads only own employee history, permits own self drafts and rejects reviewer drafts or internal visibility metadata", async () => {
   const member = {
     id: team,

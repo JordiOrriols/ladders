@@ -3,6 +3,7 @@ import { AppSkeleton, Button, ErrorState } from "@jordiorriols/ui";
 import { useAsyncAction } from "@jordiorriols/ui/hooks";
 import { useTranslation } from "react-i18next";
 import { createPlatformEvaluationStore } from "../data/platformEvaluationStore";
+import type { EvaluationStore } from "../data/evaluationStore";
 import { useEvaluationEditor } from "../hooks/useEvaluationEditor";
 import { AssessmentFormColumn } from "./organisms/AssessmentFormColumn";
 import { AssessmentPreview } from "./organisms/AssessmentPreview";
@@ -25,25 +26,34 @@ export function PlatformEvaluationEditor({
   member: string;
   canDelete: boolean;
 }) {
-  const { t, i18n } = useTranslation();
   const store = useMemo(
     () => createPlatformEvaluationStore(workspace, member, canDelete),
     [workspace, member, canDelete]
   );
+  return <PlatformAssessmentEditor store={store} />;
+}
+
+export function PlatformAssessmentEditor({ store }: { store: EvaluationStore }) {
+  const { t, i18n } = useTranslation();
+  const hideGoal = store.kind !== "manager";
   const editor = useEvaluationEditor(store);
   const action = useAsyncAction();
   const template = findTemplate(editor.profile.templateId);
   const series = useMemo(
     () =>
       buildRadarSeries({
-        primary: { currentLevels: editor.form.currentLevels, goalLevels: editor.form.goalLevels },
+        primary: {
+          currentLevels: editor.form.currentLevels,
+          goalLevels: editor.form.goalLevels,
+          hideGoal,
+        },
         compare: editor.compare,
         all: editor.evaluations,
         template,
         t,
         locale: i18n.language,
       }),
-    [editor.form, editor.compare, editor.evaluations, template, t, i18n.language]
+    [editor.form, editor.compare, editor.evaluations, template, hideGoal, t, i18n.language]
   );
   if (editor.loadState === "loading") return <AppSkeleton label={t("pageMessage.loading")} />;
   if (editor.loadState !== "ready")
@@ -69,6 +79,7 @@ export function PlatformEvaluationEditor({
       />
       <fieldset disabled={editor.saving || action.busy}>
         <AssessmentFormColumn
+          hideGoal={hideGoal}
           name={editor.profile.name}
           role={editor.profile.role}
           readOnlyProfile
@@ -99,7 +110,7 @@ export function PlatformEvaluationEditor({
       )}
       {editor.autosaveState === "error" && <p role="alert">{t("errors.generic")}</p>}
       <Button
-        data-testid="manager-evaluation-publish"
+        data-testid={`${store.kind}-evaluation-publish`}
         disabled={!editor.canPublish || action.busy}
         onClick={() => void action.run(() => editor.save("published"))}
       >
@@ -116,9 +127,19 @@ export function PlatformEvaluationEditor({
               value: editor.currentAverage.toFixed(1),
               tone: "current",
             },
-            { label: t("series.goal"), value: editor.goalAverage.toFixed(1), tone: "goal" },
+            ...(!hideGoal
+              ? [
+                  {
+                    label: t("series.goal"),
+                    value: editor.goalAverage.toFixed(1),
+                    tone: "goal" as const,
+                  },
+                ]
+              : []),
           ]}
-          verticalStats={editor.verticalStats}
+          verticalStats={editor.verticalStats.map(({ vertical, current, goal }) =>
+            hideGoal ? { vertical, current } : { vertical, current, goal }
+          )}
           labels={{
             sectionTitle: t("memberAssessment.competencyLevels"),
             currentLabel: t("buttons.current"),
@@ -129,7 +150,7 @@ export function PlatformEvaluationEditor({
               groups={[
                 {
                   id: editor.editingId ?? "draft",
-                  label: t("versions.kind.manager"),
+                  label: t(`versions.kind.${store.kind}`),
                   color: SERIES_COLORS.current,
                   comments: editor.form.comments,
                 },
@@ -146,11 +167,13 @@ export function PlatformEvaluationEditor({
           <TemplatePanel templateId={editor.profile.templateId} />
         </AssessmentPreview>
       </div>
-      <CommentVisibilityPanel
-        evaluations={editor.evaluations}
-        disabled={editor.autosaveState === "saving"}
-        onChange={editor.setCommentVisibility}
-      />
+      {store.setCommentVisibility && (
+        <CommentVisibilityPanel
+          evaluations={editor.evaluations}
+          disabled={editor.autosaveState === "saving"}
+          onChange={editor.setCommentVisibility}
+        />
+      )}
     </div>
   );
 }

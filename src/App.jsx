@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import PlatformTeams from "./pages/PlatformTeams";
 import PlatformEvaluations from "./pages/PlatformEvaluations";
 import PlatformMyEvaluations from "./pages/PlatformMyEvaluations";
+import PlatformSelfEvaluation from "./pages/PlatformSelfEvaluation";
 import { PlatformLayout } from "./components/PlatformLayout";
 
 export default function App() {
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="/" element={<PlatformTeams />} />
         <Route path="/me" element={<PlatformMyEvaluations />} />
         <Route path="/me/members/:member/evaluations" element={<PlatformMyEvaluations />} />
+        <Route path="/me/members/:member/self-evaluation" element={<PlatformSelfEvaluation />} />
         <Route path="/workspaces/:workspace/teams" element={<PlatformTeams />} />
         <Route path="/workspaces/:workspace/members/:member" element={<PlatformTeams />} />
         <Route

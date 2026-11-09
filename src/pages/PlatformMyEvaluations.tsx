@@ -53,6 +53,11 @@ export default function PlatformMyEvaluations() {
     <PlatformLayout>
       <Link to="/">{t("platform.workspaces")}</Link>
       {member && <Link to="/me">{t("platform.myEvaluations")}</Link>}
+      {view?.kind === "history" && (
+        <Link to={`/me/members/${view.data.member.id}/self-evaluation`}>
+          {t("selfAssessment.title")}
+        </Link>
+      )}
       <h2 className="text-2xl font-semibold">
         {t("platform.myEvaluations")}
         {view?.kind === "history" ? ` - ${view.data.member.name}` : ""}
