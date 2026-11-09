@@ -1,7 +1,11 @@
 import type { EvaluationStore } from "./evaluationStore";
 import { platformRepository } from "./platform";
 
-export function createPlatformEvaluationStore(workspace: string, member: string): EvaluationStore {
+export function createPlatformEvaluationStore(
+  workspace: string,
+  member: string,
+  isOwner = false
+): EvaluationStore {
   return {
     kind: "manager",
     editableProfile: false,
@@ -32,10 +36,9 @@ export function createPlatformEvaluationStore(workspace: string, member: string)
     async setStatus(id, status) {
       await platformRepository.setEvaluationStatus(workspace, member, id, status);
     },
-    async remove() {
-      throw new Error("Evaluation deletion is not enabled");
-    },
-    canDelete: () => false,
+    remove: (id) => platformRepository.deleteEvaluation(workspace, member, id),
+    canDelete: (evaluation) =>
+      isOwner && (evaluation.kind !== "self" || evaluation.status === "published"),
     canChangeStatus: (evaluation) => evaluation.kind !== "self",
     async setCommentVisibility(id, category, visible) {
       const evaluations = await platformRepository.setCommentVisibility(

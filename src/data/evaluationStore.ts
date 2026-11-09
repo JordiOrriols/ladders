@@ -28,7 +28,7 @@ export interface EvaluationStore {
   create(input: EvaluationInput): Promise<Evaluation>;
   updateDraft?(id: string, input: EvaluationInput): Promise<Evaluation>;
   setStatus(id: string, status: EvaluationStatus): Promise<void>;
-  remove(id: string): Promise<void>;
+  remove(id: string): Promise<void | Evaluation[]>;
   canChangeStatus(evaluation: Evaluation): boolean;
   canDelete(evaluation: Evaluation): boolean;
   setCommentVisibility?(id: string, category: string, visible: boolean): Promise<Evaluation>;

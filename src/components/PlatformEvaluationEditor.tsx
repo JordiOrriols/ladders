@@ -19,14 +19,16 @@ import { SERIES_COLORS } from "./atoms/radarChart";
 export function PlatformEvaluationEditor({
   workspace,
   member,
+  canDelete,
 }: {
   workspace: string;
   member: string;
+  canDelete: boolean;
 }) {
   const { t, i18n } = useTranslation();
   const store = useMemo(
-    () => createPlatformEvaluationStore(workspace, member),
-    [workspace, member]
+    () => createPlatformEvaluationStore(workspace, member, canDelete),
+    [workspace, member, canDelete]
   );
   const editor = useEvaluationEditor(store);
   const action = useAsyncAction();
@@ -60,6 +62,8 @@ export function PlatformEvaluationEditor({
         compareIds={editor.compareIds}
         onSelect={editor.selectVersion}
         onToggleCompare={editor.toggleCompare}
+        onDelete={(evaluation) => editor.deleteVersion(evaluation)}
+        canDelete={store.canDelete}
         canChangeStatus={store.canChangeStatus}
         onChangeStatus={editor.changeVersionStatus}
       />

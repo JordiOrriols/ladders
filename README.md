@@ -55,8 +55,8 @@ vacation records survive; reselecting the current team is an idempotent no-op.
 The profile URL stays stable and the directory reloads the new team association.
 
 Pending:
-evaluation deletion, explicit employee identity mapping,
-SMART goals, shared workspace lifecycle and real corporate Access acceptance.
+explicit employee identity mapping, SMART goals, shared workspace lifecycle and
+real corporate Access acceptance.
 No production data is written. E2Es use only `platform-local.config.ts` and the
 isolated signed test fixture, never historical remote-backed configs.
 
@@ -93,7 +93,11 @@ server-side, not from caller-supplied identity/status/visibility fields.
 The existing peer publish/return-to-draft controls change status independently
 of comment sharing. Managers cannot edit peer/self content or change self status.
 Draft conflicts return 409; viewer, foreign and revoked writes are denied.
-Evaluation deletion is not yet exposed. Legacy anonymous routes remain disabled.
+Workspace owners reuse the existing version-panel delete confirmation to remove
+manager, peer and published self evaluations. Editors/viewers cannot delete, and
+private self drafts stay absent from both history and deletion. Failed deletes
+remain visible; autosave is flushed before deletion to avoid stale draft writes.
+Legacy anonymous routes remain disabled.
 
 ## Historical legacy application
 

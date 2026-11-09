@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { AppSkeleton, ErrorState } from "@jordiorriols/ui";
 import { useTranslation } from "react-i18next";
-import { platformRepository, type PlatformRoster } from "../data/platform";
+import { platformRepository, type PlatformRoster, type PlatformWorkspace } from "../data/platform";
 import type { Evaluation } from "../types";
 import { PlatformLayout } from "../components/PlatformLayout";
 import { EvaluationViewer } from "../components/organisms/EvaluationViewer";
@@ -15,7 +15,7 @@ export default function PlatformEvaluations() {
   const [data, setData] = useState<{
     member: PlatformRoster["members"][number];
     evaluations: Evaluation[];
-    editable: boolean;
+    role: PlatformWorkspace["role"];
   }>();
   const [error, setError] = useState<unknown>();
   const [loading, setLoading] = useState(true);
@@ -35,7 +35,7 @@ export default function PlatformEvaluations() {
       const profile = roster.members.find((profile) => profile.id === member);
       const access = directory.find((item) => item.id === workspace);
       if (!profile || !access) throw new Error("Member unavailable in this workspace");
-      return { member: profile, evaluations, editable: access.role !== "viewer" };
+      return { member: profile, evaluations, role: access.role };
     };
     void load().then(
       (data) => {
@@ -75,11 +75,12 @@ export default function PlatformEvaluations() {
           onRetry={() => setRevision((value) => value + 1)}
         />
       ) : data ? (
-        data.editable && workspace && member ? (
+        data.role !== "viewer" && workspace && member ? (
           <PlatformEvaluationEditor
             key={`${workspace}:${member}`}
             workspace={workspace}
             member={member}
+            canDelete={data.role === "owner"}
           />
         ) : (
           <EvaluationViewer evaluations={data.evaluations} templateId={data.member.template_id} />

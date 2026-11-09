@@ -229,6 +229,24 @@ export const platformRepository = {
       throw new Error("Invalid API response");
     return result;
   },
+  deleteEvaluation: async (
+    workspace: string,
+    member: string,
+    id: string
+  ): Promise<Evaluation[]> => {
+    const memberId = uuid(member);
+    const removed = uuid(id);
+    const result = evaluationHistory(
+      await request(
+        `ladders/workspaces/${uuid(workspace)}/members/${memberId}/evaluations/${removed}`,
+        undefined,
+        "DELETE"
+      ),
+      memberId
+    );
+    if (result.some((item) => item.id === removed)) throw new Error("Invalid API response");
+    return result;
+  },
   setCommentVisibility: async (
     workspace: string,
     member: string,

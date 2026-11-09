@@ -65,6 +65,40 @@ it("changes only comment visibility through the explicit evaluation scope", asyn
   ).rejects.toThrow("Choose an existing competency comment");
   expect(fetch).toHaveBeenCalledTimes(1);
 });
+it("deletes only through the scoped API and validates the returned history", async () => {
+  const remaining = [
+    {
+      id: team,
+      member_id: team,
+      kind: "manager",
+      status: "published",
+      author_name: null,
+      current_levels: {},
+      goal_levels: {},
+      comments: {},
+      comment_visibility: {},
+      created_at: "2026-11-01T00:00:00.000Z",
+    },
+  ];
+  const fetch = vi.fn().mockImplementation(async () => new Response(JSON.stringify(remaining)));
+  vi.stubGlobal("fetch", fetch);
+  expect(await platformRepository.deleteEvaluation(workspace, team, workspace)).toEqual([
+    expect.objectContaining({ id: team, kind: "manager", status: "published" }),
+  ]);
+  expect(fetch).toHaveBeenCalledWith(
+    `/api/ladders/workspaces/${workspace}/members/${team}/evaluations/${workspace}`,
+    expect.objectContaining({ method: "DELETE" })
+  );
+  fetch.mockImplementation(
+    async () => new Response(JSON.stringify([{ ...remaining[0], id: workspace }]))
+  );
+  await expect(platformRepository.deleteEvaluation(workspace, team, workspace)).rejects.toThrow(
+    "Invalid API response"
+  );
+  await expect(platformRepository.deleteEvaluation("../foreign", team, workspace)).rejects.toThrow(
+    "Invalid workspace"
+  );
+});
 it("parses scoped evaluation history without legacy adapters and rejects invalid levels or private self drafts", async () => {
   const evaluation = {
     id: workspace,
