@@ -4,6 +4,19 @@ import { platformRepository } from "./platform";
 const workspace = "11111111-1111-4111-8111-111111111111";
 const team = "22222222-2222-4222-8222-222222222222";
 afterEach(() => vi.unstubAllGlobals());
+it("changes only comment visibility through the explicit evaluation scope", async () => {
+  const fetch = vi.fn().mockImplementation(async () => new Response("[]"));
+  vi.stubGlobal("fetch", fetch);
+  await platformRepository.setCommentVisibility(workspace, team, workspace, "Technology", false);
+  expect(fetch).toHaveBeenCalledWith(
+    `/api/ladders/workspaces/${workspace}/members/${team}/evaluations/${workspace}/comments/Technology`,
+    expect.objectContaining({ method: "PATCH", body: '{"visible":false}' })
+  );
+  await expect(
+    platformRepository.setCommentVisibility(workspace, team, workspace, "Unknown", true)
+  ).rejects.toThrow("Choose an existing competency comment");
+  expect(fetch).toHaveBeenCalledTimes(1);
+});
 it("parses scoped evaluation history without legacy adapters and rejects invalid levels or private self drafts", async () => {
   const evaluation = {
     id: workspace,

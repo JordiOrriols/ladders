@@ -6,6 +6,7 @@ import { platformRepository, type PlatformRoster } from "../data/platform";
 import type { Evaluation } from "../types";
 import { PlatformLayout } from "../components/PlatformLayout";
 import { EvaluationViewer } from "../components/organisms/EvaluationViewer";
+import { CommentVisibilityPanel } from "../components/organisms/CommentVisibilityPanel";
 import { localizeError } from "../utils/localizeError";
 
 export default function PlatformEvaluations() {
@@ -14,6 +15,7 @@ export default function PlatformEvaluations() {
   const [data, setData] = useState<{
     member: PlatformRoster["members"][number];
     evaluations: Evaluation[];
+    editable: boolean;
   }>();
   const [error, setError] = useState<unknown>();
   const [loading, setLoading] = useState(true);
@@ -25,13 +27,15 @@ export default function PlatformEvaluations() {
     setError(undefined);
     const load = async () => {
       if (!workspace || !member) throw new Error("Member unavailable in this workspace");
-      const [roster, evaluations] = await Promise.all([
+      const [roster, evaluations, directory] = await Promise.all([
         platformRepository.teams(workspace),
         platformRepository.evaluations(workspace, member),
+        platformRepository.workspaces(),
       ]);
       const profile = roster.members.find((profile) => profile.id === member);
-      if (!profile) throw new Error("Member unavailable in this workspace");
-      return { member: profile, evaluations };
+      const access = directory.find((item) => item.id === workspace);
+      if (!profile || !access) throw new Error("Member unavailable in this workspace");
+      return { member: profile, evaluations, editable: access.role !== "viewer" };
     };
     void load().then(
       (data) => {
@@ -71,7 +75,25 @@ export default function PlatformEvaluations() {
           onRetry={() => setRevision((value) => value + 1)}
         />
       ) : data ? (
-        <EvaluationViewer evaluations={data.evaluations} templateId={data.member.template_id} />
+        <>
+          <EvaluationViewer evaluations={data.evaluations} templateId={data.member.template_id} />
+          {data.editable && (
+            <CommentVisibilityPanel
+              evaluations={data.evaluations}
+              onChange={async (id, category, visible) => {
+                if (!workspace || !member) throw new Error("Member unavailable in this workspace");
+                const evaluations = await platformRepository.setCommentVisibility(
+                  workspace,
+                  member,
+                  id,
+                  category,
+                  visible
+                );
+                setData((data) => (data?.member.id === member ? { ...data, evaluations } : data));
+              }}
+            />
+          )}
+        </>
       ) : null}
     </PlatformLayout>
   );

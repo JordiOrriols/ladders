@@ -55,7 +55,7 @@ vacation records survive; reselecting the current team is an idempotent no-op.
 The profile URL stays stable and the directory reloads the new team association.
 
 Pending:
-evaluation editing/comment visibility, explicit employee identity mapping,
+evaluation editing, explicit employee identity mapping,
 SMART goals, shared workspace lifecycle and real corporate Access acceptance.
 No production data is written. E2Es use only `platform-local.config.ts` and the
 isolated signed test fixture, never historical remote-backed configs.
@@ -67,7 +67,17 @@ details, comments and templates. Owner/editor/viewer grants inspect manager/peer
 versions and published self versions; self drafts remain private, matching
 legacy team access. The internal history includes hidden manager/peer comments
 for reviewers, not an employee-safe projection. No account/token metadata is
-returned and version/status/deletion controls are not enabled. Member and
+returned and version/status/deletion controls are not enabled. Owners/editors
+use the same extracted `CommentVisibilityPanel` as the legacy assessment page
+to share or hide each saved manager, published self or peer comment independently.
+Peer comments default hidden; changing draft peer metadata does not publish it.
+Only visibility metadata changes, never content/status/identity/timestamps.
+Missing/private-self-draft/foreign evaluations cannot be targeted, and viewer
+or revoked grants cannot save. Errors stay localized and visible; successful
+updates preserve history selection and comparisons. Employee/member identity
+mapping and an authenticated employee-safe API remain pending; the existing
+legacy employee projection's server-side redaction is verified in integration.
+Member and
 workspace boundaries, foreign/missing members and revoked access are enforced
 server-side. Shared language selection/footer and hash-free refresh/navigation
 remain available; no legacy Supabase client is initialized by this route.

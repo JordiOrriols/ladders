@@ -122,6 +122,18 @@ function evaluation(value: unknown): Evaluation {
     createdAt,
   };
 }
+function evaluationHistory(value: unknown, member: string): Evaluation[] {
+  const result = array(value).map(evaluation);
+  if (
+    result.some(
+      (evaluation) =>
+        evaluation.memberId !== member ||
+        (evaluation.kind === "self" && evaluation.status === "draft")
+    )
+  )
+    throw new Error("Invalid API response");
+  return result;
+}
 async function request(path: string, body?: unknown, method = "GET"): Promise<unknown> {
   const response = await fetch(`/api/${path}`, {
     credentials: "same-origin",
@@ -163,20 +175,31 @@ function profileInput(input: ProfileInput): ProfileInput {
   };
 }
 export const platformRepository = {
+  setCommentVisibility: async (
+    workspace: string,
+    member: string,
+    evaluation: string,
+    category: string,
+    visible: boolean
+  ): Promise<Evaluation[]> => {
+    if (!VERTICALS.includes(category) || typeof visible !== "boolean")
+      throw new Error("Choose an existing competency comment");
+    const id = uuid(member);
+    return evaluationHistory(
+      await request(
+        `ladders/workspaces/${uuid(workspace)}/members/${id}/evaluations/${uuid(evaluation)}/comments/${category}`,
+        { visible },
+        "PATCH"
+      ),
+      id
+    );
+  },
   evaluations: async (workspace: string, member: string): Promise<Evaluation[]> => {
     const id = uuid(member);
-    const result = array(
-      await request(`ladders/workspaces/${uuid(workspace)}/members/${id}/evaluations`)
-    ).map(evaluation);
-    if (
-      result.some(
-        (evaluation) =>
-          evaluation.memberId !== id ||
-          (evaluation.kind === "self" && evaluation.status === "draft")
-      )
-    )
-      throw new Error("Invalid API response");
-    return result;
+    return evaluationHistory(
+      await request(`ladders/workspaces/${uuid(workspace)}/members/${id}/evaluations`),
+      id
+    );
   },
   moveMember: async (workspace: string, member: string, team: string) =>
     roster(
