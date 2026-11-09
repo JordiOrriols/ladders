@@ -1,5 +1,6 @@
 {
   "platform": {
+    "myEvaluations": "Meine Bewertungen",
     "moveMember": "Mitglied verschieben",
     "deleteName": "{{name}} löschen",
     "profile": "Mitgliederprofil",
@@ -7,7 +8,7 @@
     "memberUnavailable": "Mitglied in diesem Arbeitsbereich nicht verfügbar.",
     "workspaces": "Arbeitsbereiche",
     "noAccess": "Kein Zugriff auf einen Ladders-Arbeitsbereich. Bitte den Eigentümer um eine Einladung.",
-    "migration": "Verwalte Teams, Profile und den Bewertungsverlauf hier. Eigentümer und Bearbeiter können Mitglieder hinzufügen und verschieben, Managerentwürfe bearbeiten und Bewertungen veröffentlichen. Eigentümer können Mitglieder und leere Nicht-Standardteams löschen. Mitarbeiterzugriff und Ziele sind noch nicht aktiviert.",
+    "migration": "Verwalte Teams, Profile, den Bewertungsverlauf und SMART-Ziele hier. Eigentümer und Bearbeiter können Mitglieder hinzufügen und verschieben, Managerentwürfe bearbeiten und Bewertungen veröffentlichen. Eigentümer können Mitglieder und leere Nicht-Standardteams löschen. Verknüpfte Mitarbeiter können ihre eigenen Bewertungen unter Meine Bewertungen ansehen.",
     "emptyTeams": "Dieser Arbeitsbereich hat keine Teams."
   },
   "errors": {

@@ -70,6 +70,7 @@ export default function PlatformTeams() {
   );
   return (
     <PlatformLayout>
+      <Link to="/me">{t("platform.myEvaluations")}</Link>
       {workspace && <Link to="/">{t("platform.workspaces")}</Link>}
       {workspace && (memberId || createTeam) && (
         <Link to={`/workspaces/${workspace}/teams`}>{t("platform.teams")}</Link>

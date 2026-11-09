@@ -13,6 +13,19 @@ export interface PlatformWorkspace {
   name: string;
   role: "owner" | "editor" | "viewer";
 }
+export interface PlatformMemberProfile {
+  id: string;
+  name: string;
+  role: string;
+  planning_role: PlatformRoster["members"][number]["planning_role"];
+  template_id: string | null;
+  workspace_id: string;
+  workspace_name: string;
+}
+export interface PlatformMemberEvaluations {
+  member: PlatformMemberProfile;
+  evaluations: Evaluation[];
+}
 export interface PlatformTeam {
   id: string;
   name: string;
@@ -82,6 +95,18 @@ function roster(value: unknown): PlatformRoster {
         template_id: row["template_id"] === null ? null : text(row["template_id"]),
       };
     }),
+  };
+}
+function memberProfile(value: unknown): PlatformMemberProfile {
+  const row = object(value);
+  return {
+    id: uuid(row["id"]),
+    name: text(row["name"]),
+    role: text(row["role"]),
+    planning_role: planningRole(row["planning_role"]),
+    template_id: row["template_id"] === null ? null : text(row["template_id"]),
+    workspace_id: uuid(row["workspace_id"]),
+    workspace_name: text(row["workspace_name"]),
   };
 }
 function competencyMap<T>(value: unknown, parse: (value: unknown) => T): Record<string, T> {
@@ -258,6 +283,25 @@ function profileInput(input: ProfileInput): ProfileInput {
   };
 }
 export const platformRepository = {
+  myMembers: async (): Promise<PlatformMemberProfile[]> =>
+    array(await request("ladders/me/members")).map(memberProfile),
+  myEvaluations: async (member: string): Promise<PlatformMemberEvaluations> => {
+    const memberId = uuid(member);
+    const row = object(await request(`ladders/me/members/${memberId}/evaluations`));
+    const profile = memberProfile(row["member"]);
+    const evaluations = array(row["evaluations"]).map(evaluation);
+    if (
+      profile.id !== memberId ||
+      evaluations.some(
+        (evaluation) =>
+          evaluation.memberId !== memberId ||
+          (evaluation.kind !== "self" && evaluation.status !== "published") ||
+          Object.keys(evaluation.commentVisibility ?? {}).length > 0
+      )
+    )
+      throw new Error("Invalid API response");
+    return { member: profile, evaluations };
+  },
   goals: async (workspace: string, member: string): Promise<SmartGoal[]> => {
     const memberId = uuid(member);
     return smartGoalHistory(

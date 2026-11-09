@@ -1,5 +1,6 @@
 {
   "platform": {
+    "myEvaluations": "Le mie valutazioni",
     "moveMember": "Sposta membro",
     "deleteName": "Elimina {{name}}",
     "profile": "Profilo del membro",
@@ -7,7 +8,7 @@
     "memberUnavailable": "Membro non disponibile in questo spazio.",
     "workspaces": "Spazi di lavoro",
     "noAccess": "Nessun accesso a uno spazio Ladders. Chiedi un invito al proprietario.",
-    "migration": "Gestisci team, profili e cronologia delle valutazioni qui. Proprietari ed editor possono aggiungere e spostare membri, modificare le bozze del responsabile e pubblicare valutazioni. I proprietari possono eliminare membri e team vuoti non predefiniti. L'accesso dei dipendenti e gli obiettivi non sono ancora abilitati.",
+    "migration": "Gestisci team, profili, cronologia delle valutazioni e obiettivi SMART qui. Proprietari ed editor possono aggiungere e spostare membri, modificare le bozze del responsabile e pubblicare valutazioni. I proprietari possono eliminare membri e team vuoti non predefiniti. I dipendenti collegati possono consultare le proprie valutazioni in Le mie valutazioni.",
     "emptyTeams": "Questo spazio non ha team."
   },
   "errors": {

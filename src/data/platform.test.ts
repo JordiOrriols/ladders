@@ -4,6 +4,63 @@ import { platformRepository } from "./platform";
 const workspace = "11111111-1111-4111-8111-111111111111";
 const team = "22222222-2222-4222-8222-222222222222";
 afterEach(() => vi.unstubAllGlobals());
+it("loads only own employee history, permits own self drafts and rejects reviewer drafts or internal visibility metadata", async () => {
+  const member = {
+    id: team,
+    name: "Own profile",
+    role: "",
+    planning_role: null,
+    template_id: null,
+    workspace_id: workspace,
+    workspace_name: "Workspace",
+  };
+  const row = {
+    id: workspace,
+    member_id: team,
+    kind: "self",
+    status: "draft",
+    author_name: null,
+    current_levels: {},
+    goal_levels: {},
+    comments: { Technology: "My draft" },
+    comment_visibility: {},
+    created_at: "2026-11-01T00:00:00.000Z",
+  };
+  const fetch = vi
+    .fn()
+    .mockImplementation(async () => new Response(JSON.stringify({ member, evaluations: [row] })));
+  vi.stubGlobal("fetch", fetch);
+  expect(await platformRepository.myEvaluations(team)).toEqual({
+    member,
+    evaluations: [expect.objectContaining({ kind: "self", status: "draft" })],
+  });
+  expect(fetch).toHaveBeenLastCalledWith(
+    `/api/ladders/me/members/${team}/evaluations`,
+    expect.objectContaining({ method: "GET" })
+  );
+  for (const patch of [
+    { kind: "manager" },
+    { kind: "peer" },
+    { member_id: workspace },
+    { comment_visibility: { Technology: true } },
+  ]) {
+    fetch.mockImplementation(
+      async () => new Response(JSON.stringify({ member, evaluations: [{ ...row, ...patch }] }))
+    );
+    await expect(platformRepository.myEvaluations(team)).rejects.toThrow("Invalid API response");
+  }
+  fetch.mockImplementation(
+    async () =>
+      new Response(JSON.stringify({ member: { ...member, id: workspace }, evaluations: [] }))
+  );
+  await expect(platformRepository.myEvaluations(team)).rejects.toThrow("Invalid API response");
+  fetch.mockImplementation(async () => new Response(JSON.stringify([member])));
+  expect(await platformRepository.myMembers()).toEqual([member]);
+  expect(fetch).toHaveBeenLastCalledWith(
+    "/api/ladders/me/members",
+    expect.objectContaining({ method: "GET" })
+  );
+});
 it("saves only manager draft content and changes status through a separate scoped route", async () => {
   const row = {
     id: workspace,

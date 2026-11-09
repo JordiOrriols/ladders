@@ -1,5 +1,6 @@
 {
   "platform": {
+    "myEvaluations": "My evaluations",
     "moveMember": "Move member",
     "deleteName": "Delete {{name}}",
     "profile": "Member profile",
@@ -7,7 +8,7 @@
     "memberUnavailable": "Member unavailable in this workspace.",
     "workspaces": "Workspaces",
     "noAccess": "No Ladders workspace access. Ask a workspace owner for an invitation.",
-    "migration": "Manage teams, member profiles and evaluation history here. Owners and editors can add and move members, edit manager drafts and publish evaluations. Owners can delete members and empty non-default teams. Employee access and goals are not yet enabled.",
+    "migration": "Manage teams, member profiles, evaluation history and SMART goals here. Owners and editors can add and move members, edit manager drafts and publish evaluations. Owners can delete members and empty non-default teams. Linked employees can read their own evaluations from My evaluations.",
     "emptyTeams": "This workspace has no teams."
   },
   "errors": {

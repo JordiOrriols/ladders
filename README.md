@@ -60,8 +60,15 @@ comments; viewers are read-only and only owners can delete. Legacy comment histo
 is preserved, comments remain append-only, and goal records are restricted to the
 requested workspace/member. Direct runtime table access remains denied.
 
-Pending: explicit employee identity mapping, shared workspace lifecycle and real
-corporate Access acceptance.
+The local administrator can explicitly map a verified Access account to a legacy
+account UUID. Mapping never matches by email or grants workspace access. Already-linked
+employees use `/ladders/me` to find only their own member profiles, then open
+`/ladders/me/members/:member/evaluations`. This route reuses the shared layout and
+evaluation viewer, includes own self drafts and published reviewer versions only,
+and receives only server-redacted comments with no internal visibility metadata.
+Workspace grants do not imply employee ownership; unmapping removes employee access.
+Pending: employee editing/goals, peer assignments, invitation acceptance, shared
+workspace lifecycle and real corporate Access acceptance.
 No production data is written. E2Es use only `platform-local.config.ts` and the
 isolated signed test fixture, never historical remote-backed configs.
 
@@ -79,9 +86,9 @@ Peer comments default hidden; changing draft peer metadata does not publish it.
 Only visibility metadata changes, never content/status/identity/timestamps.
 Missing/private-self-draft/foreign evaluations cannot be targeted, and viewer
 or revoked grants cannot save. Errors stay localized and visible; successful
-updates preserve history selection and comparisons. Employee/member identity
-mapping and an authenticated employee-safe API remain pending; the existing
-legacy employee projection's server-side redaction is verified in integration.
+updates preserve history selection and comparisons. The authenticated employee
+API applies the same default-hidden peer/default-visible manager comment rules
+server-side, excludes private reviewer drafts and never returns tokens/account IDs.
 Member and
 workspace boundaries, foreign/missing members and revoked access are enforced
 server-side. Shared language selection/footer and hash-free refresh/navigation

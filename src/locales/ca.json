@@ -1,5 +1,6 @@
 {
   "platform": {
+    "myEvaluations": "Les meves avaluacions",
     "moveMember": "Mou el membre",
     "deleteName": "Elimina {{name}}",
     "profile": "Perfil del membre",
@@ -7,7 +8,7 @@
     "memberUnavailable": "El membre no està disponible en aquest espai.",
     "workspaces": "Espais de treball",
     "noAccess": "No tens accés a cap espai de Ladders. Demana una invitació al propietari.",
-    "migration": "Gestiona equips, perfils i historial d'avaluacions aquí. Els propietaris i editors poden afegir i moure membres, editar esborranys del responsable i publicar avaluacions. Els propietaris poden eliminar membres i equips buits no predeterminats. L'accés d'empleats i els objectius encara no estan habilitats.",
+    "migration": "Gestiona equips, perfils, historial d'avaluacions i objectius SMART aquí. Els propietaris i editors poden afegir i moure membres, editar esborranys del responsable i publicar avaluacions. Els propietaris poden eliminar membres i equips buits no predeterminats. Els empleats vinculats poden consultar les seves avaluacions a Les meves avaluacions.",
     "emptyTeams": "Aquest espai no té equips."
   },
   "errors": {

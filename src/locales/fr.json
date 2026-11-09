@@ -1,5 +1,6 @@
 {
   "platform": {
+    "myEvaluations": "Mes évaluations",
     "moveMember": "Déplacer le membre",
     "deleteName": "Supprimer {{name}}",
     "profile": "Profil du membre",
@@ -7,7 +8,7 @@
     "memberUnavailable": "Membre indisponible dans cet espace.",
     "workspaces": "Espaces de travail",
     "noAccess": "Aucun accès à un espace Ladders. Demandez une invitation à son propriétaire.",
-    "migration": "Gérez les équipes, les profils et l'historique des évaluations ici. Les propriétaires et éditeurs peuvent ajouter et déplacer des membres, modifier les brouillons du responsable et publier des évaluations. Les propriétaires peuvent supprimer les membres et les équipes vides non définies par défaut. L'accès des employés et les objectifs ne sont pas encore activés.",
+    "migration": "Gérez les équipes, les profils, l'historique des évaluations et les objectifs SMART ici. Les propriétaires et éditeurs peuvent ajouter et déplacer des membres, modifier les brouillons du responsable et publier des évaluations. Les propriétaires peuvent supprimer les membres et les équipes vides non définies par défaut. Les employés liés peuvent consulter leurs propres évaluations dans Mes évaluations.",
     "emptyTeams": "Cet espace ne contient aucune équipe."
   },
   "errors": {
