@@ -4,6 +4,54 @@ import { platformRepository } from "./platform";
 const workspace = "11111111-1111-4111-8111-111111111111";
 const team = "22222222-2222-4222-8222-222222222222";
 afterEach(() => vi.unstubAllGlobals());
+it("saves only manager draft content and changes status through a separate scoped route", async () => {
+  const row = {
+    id: workspace,
+    member_id: team,
+    kind: "manager",
+    status: "draft",
+    author_name: null,
+    current_levels: { Technology: 3.5 },
+    goal_levels: {},
+    comments: {},
+    comment_visibility: { Technology: false },
+    created_at: "2026-11-01T00:00:00.000Z",
+  };
+  const fetch = vi.fn().mockImplementation(async () => new Response(JSON.stringify(row)));
+  vi.stubGlobal("fetch", fetch);
+  const input = {
+    status: "draft" as const,
+    authorName: null,
+    currentLevels: row.current_levels,
+    goalLevels: {},
+    comments: {},
+    commentVisibility: { Technology: true },
+  };
+  await platformRepository.saveEvaluation(workspace, team, null, input);
+  expect(fetch).toHaveBeenLastCalledWith(
+    `/api/ladders/workspaces/${workspace}/members/${team}/evaluations`,
+    expect.objectContaining({
+      method: "POST",
+      body: '{"current_levels":{"Technology":3.5},"goal_levels":{},"comments":{}}',
+    })
+  );
+  await platformRepository.saveEvaluation(workspace, team, workspace, input);
+  expect(fetch).toHaveBeenLastCalledWith(
+    `/api/ladders/workspaces/${workspace}/members/${team}/evaluations/${workspace}`,
+    expect.objectContaining({ method: "PATCH" })
+  );
+  fetch.mockImplementation(
+    async () => new Response(JSON.stringify({ ...row, status: "published" }))
+  );
+  await platformRepository.setEvaluationStatus(workspace, team, workspace, "published");
+  expect(fetch).toHaveBeenLastCalledWith(
+    `/api/ladders/workspaces/${workspace}/members/${team}/evaluations/${workspace}/status`,
+    expect.objectContaining({ method: "PATCH", body: '{"status":"published"}' })
+  );
+  await expect(
+    platformRepository.saveEvaluation(workspace, team, workspace, input)
+  ).rejects.toThrow("Invalid API response");
+});
 it("changes only comment visibility through the explicit evaluation scope", async () => {
   const fetch = vi.fn().mockImplementation(async () => new Response("[]"));
   vi.stubGlobal("fetch", fetch);

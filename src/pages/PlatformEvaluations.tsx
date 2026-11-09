@@ -6,7 +6,7 @@ import { platformRepository, type PlatformRoster } from "../data/platform";
 import type { Evaluation } from "../types";
 import { PlatformLayout } from "../components/PlatformLayout";
 import { EvaluationViewer } from "../components/organisms/EvaluationViewer";
-import { CommentVisibilityPanel } from "../components/organisms/CommentVisibilityPanel";
+import { PlatformEvaluationEditor } from "../components/PlatformEvaluationEditor";
 import { localizeError } from "../utils/localizeError";
 
 export default function PlatformEvaluations() {
@@ -75,25 +75,15 @@ export default function PlatformEvaluations() {
           onRetry={() => setRevision((value) => value + 1)}
         />
       ) : data ? (
-        <>
+        data.editable && workspace && member ? (
+          <PlatformEvaluationEditor
+            key={`${workspace}:${member}`}
+            workspace={workspace}
+            member={member}
+          />
+        ) : (
           <EvaluationViewer evaluations={data.evaluations} templateId={data.member.template_id} />
-          {data.editable && (
-            <CommentVisibilityPanel
-              evaluations={data.evaluations}
-              onChange={async (id, category, visible) => {
-                if (!workspace || !member) throw new Error("Member unavailable in this workspace");
-                const evaluations = await platformRepository.setCommentVisibility(
-                  workspace,
-                  member,
-                  id,
-                  category,
-                  visible
-                );
-                setData((data) => (data?.member.id === member ? { ...data, evaluations } : data));
-              }}
-            />
-          )}
-        </>
+        )
       ) : null}
     </PlatformLayout>
   );

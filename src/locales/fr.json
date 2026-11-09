@@ -7,7 +7,7 @@
     "memberUnavailable": "Membre indisponible dans cet espace.",
     "workspaces": "Espaces de travail",
     "noAccess": "Aucun accès à un espace Ladders. Demandez une invitation à son propriétaire.",
-    "migration": "Gérez les équipes, les profils et l'historique des évaluations ici. Les propriétaires et éditeurs peuvent ajouter et déplacer des membres ; les propriétaires peuvent supprimer les membres et les équipes vides non définies par défaut. La modification des évaluations n'est pas encore activée.",
+    "migration": "Gérez les équipes, les profils et l'historique des évaluations ici. Les propriétaires et éditeurs peuvent ajouter et déplacer des membres, modifier les brouillons du responsable et publier des évaluations. Les propriétaires peuvent supprimer les membres et les équipes vides non définies par défaut. L'accès des employés et les objectifs ne sont pas encore activés.",
     "emptyTeams": "Cet espace ne contient aucune équipe."
   },
   "errors": {

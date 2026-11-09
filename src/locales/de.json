@@ -7,7 +7,7 @@
     "memberUnavailable": "Mitglied in diesem Arbeitsbereich nicht verfügbar.",
     "workspaces": "Arbeitsbereiche",
     "noAccess": "Kein Zugriff auf einen Ladders-Arbeitsbereich. Bitte den Eigentümer um eine Einladung.",
-    "migration": "Verwalte Teams, Profile und den Bewertungsverlauf hier. Eigentümer und Bearbeiter können Mitglieder hinzufügen und verschieben; Eigentümer können Mitglieder und leere Nicht-Standardteams löschen. Das Bearbeiten von Bewertungen ist noch nicht aktiviert.",
+    "migration": "Verwalte Teams, Profile und den Bewertungsverlauf hier. Eigentümer und Bearbeiter können Mitglieder hinzufügen und verschieben, Managerentwürfe bearbeiten und Bewertungen veröffentlichen. Eigentümer können Mitglieder und leere Nicht-Standardteams löschen. Mitarbeiterzugriff und Ziele sind noch nicht aktiviert.",
     "emptyTeams": "Dieser Arbeitsbereich hat keine Teams."
   },
   "errors": {

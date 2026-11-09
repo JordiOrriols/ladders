@@ -1,4 +1,4 @@
-import type { Evaluation } from "../types";
+import type { Evaluation, EvaluationInput, EvaluationStatus } from "../types";
 import { VERTICALS } from "../components/atoms/levelSelector";
 
 export interface PlatformWorkspace {
@@ -175,6 +175,60 @@ function profileInput(input: ProfileInput): ProfileInput {
   };
 }
 export const platformRepository = {
+  saveEvaluation: async (
+    workspace: string,
+    member: string,
+    id: string | null,
+    input: EvaluationInput
+  ): Promise<Evaluation> => {
+    const content = {
+      current_levels: levels(input.currentLevels),
+      goal_levels: levels(input.goalLevels),
+      comments: competencyMap(input.comments, (value) => {
+        const comment = text(value);
+        if (Array.from(comment).length > 2000) throw new Error("Invalid evaluation content");
+        return comment;
+      }),
+    };
+    const result = evaluation(
+      await request(
+        `ladders/workspaces/${uuid(workspace)}/members/${uuid(member)}/evaluations${id ? `/${uuid(id)}` : ""}`,
+        content,
+        id ? "PATCH" : "POST"
+      )
+    );
+    if (
+      result.memberId !== member ||
+      result.kind !== "manager" ||
+      result.status !== "draft" ||
+      (id !== null && result.id !== id)
+    )
+      throw new Error("Invalid API response");
+    return result;
+  },
+  setEvaluationStatus: async (
+    workspace: string,
+    member: string,
+    id: string,
+    status: EvaluationStatus
+  ): Promise<Evaluation> => {
+    if (status !== "draft" && status !== "published") throw new Error("Invalid evaluation status");
+    const result = evaluation(
+      await request(
+        `ladders/workspaces/${uuid(workspace)}/members/${uuid(member)}/evaluations/${uuid(id)}/status`,
+        { status },
+        "PATCH"
+      )
+    );
+    if (
+      result.memberId !== member ||
+      result.id !== id ||
+      result.kind === "self" ||
+      result.status !== status
+    )
+      throw new Error("Invalid API response");
+    return result;
+  },
   setCommentVisibility: async (
     workspace: string,
     member: string,
